@@ -14,6 +14,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
+import { Route as DashboardManageAdminsRouteImport } from './routes/dashboard/manage-admins'
 import { Route as DashboardDisputesRouteImport } from './routes/dashboard/disputes'
 import { Route as DashboardAuditTrailsRouteImport } from './routes/dashboard/audit-trails'
 import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
@@ -45,6 +46,11 @@ const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
 const DashboardManageFiatRoute = DashboardManageFiatRouteImport.update({
   id: '/dashboard/manage-fiat',
   path: '/dashboard/manage-fiat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardManageAdminsRoute = DashboardManageAdminsRouteImport.update({
+  id: '/dashboard/manage-admins',
+  path: '/dashboard/manage-admins',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardDisputesRoute = DashboardDisputesRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
     | '/dashboard/transactions'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
     | '/dashboard/transactions'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
     | '/dashboard/transactions'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
   DashboardDisputesRoute: typeof DashboardDisputesRoute
+  DashboardManageAdminsRoute: typeof DashboardManageAdminsRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/manage-fiat'
       fullPath: '/dashboard/manage-fiat'
       preLoaderRoute: typeof DashboardManageFiatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/manage-admins': {
+      id: '/dashboard/manage-admins'
+      path: '/dashboard/manage-admins'
+      fullPath: '/dashboard/manage-admins'
+      preLoaderRoute: typeof DashboardManageAdminsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/disputes': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
   DashboardDisputesRoute: DashboardDisputesRoute,
+  DashboardManageAdminsRoute: DashboardManageAdminsRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
