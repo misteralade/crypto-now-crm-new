@@ -1,4 +1,4 @@
-import type { DisputeRow } from '../routes/disputes/DisputeTable';
+import type {DisputeRow} from "../components/pages/disputes/DisputeTable.tsx";
 
 export const disputes: Array<DisputeRow> = [
   {
