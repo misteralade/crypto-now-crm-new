@@ -1,12 +1,10 @@
-import { Search } from 'lucide-react'
-
 interface AuditTrailsControlsProps {
   onOpenFilter: () => void
   searchValue: string
   onSearchChange: (value: string) => void
 }
 
-const AuditTrailsControls = ({ onOpenFilter, searchValue, onSearchChange }: AuditTrailsControlsProps) => {
+const AuditTrailsControls = ({ onOpenFilter }: AuditTrailsControlsProps) => {
   return (
     <div className="bg-white p-2 mt-5 mb-8">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
