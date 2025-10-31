@@ -12,7 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
-import { Route as DashboardCoinManagementRouteImport } from './routes/dashboard/coin-management'
+import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
+import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,57 +30,71 @@ const DashboardTransactionsRoute = DashboardTransactionsRouteImport.update({
   path: '/dashboard/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardCoinManagementRoute = DashboardCoinManagementRouteImport.update({
-  id: '/dashboard/coin-management',
-  path: '/dashboard/coin-management',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const DashboardCoinManagementIndexRoute =
+  DashboardCoinManagementIndexRouteImport.update({
+    id: '/dashboard/coin-management/',
+    path: '/dashboard/coin-management/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCoinManagementAddCoinRoute =
+  DashboardCoinManagementAddCoinRouteImport.update({
+    id: '/dashboard/coin-management/add-coin',
+    path: '/dashboard/coin-management/add-coin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard/coin-management': typeof DashboardCoinManagementRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard/coin-management': typeof DashboardCoinManagementRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard/coin-management': typeof DashboardCoinManagementRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard/coin-management'
     | '/dashboard/transactions'
     | '/dashboard'
+    | '/dashboard/coin-management/add-coin'
+    | '/dashboard/coin-management'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard/coin-management'
     | '/dashboard/transactions'
     | '/dashboard'
+    | '/dashboard/coin-management/add-coin'
+    | '/dashboard/coin-management'
   id:
     | '__root__'
     | '/'
-    | '/dashboard/coin-management'
     | '/dashboard/transactions'
     | '/dashboard/'
+    | '/dashboard/coin-management/add-coin'
+    | '/dashboard/coin-management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardCoinManagementRoute: typeof DashboardCoinManagementRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardCoinManagementAddCoinRoute: typeof DashboardCoinManagementAddCoinRoute
+  DashboardCoinManagementIndexRoute: typeof DashboardCoinManagementIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -105,11 +120,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/coin-management': {
-      id: '/dashboard/coin-management'
+    '/dashboard/coin-management/': {
+      id: '/dashboard/coin-management/'
       path: '/dashboard/coin-management'
       fullPath: '/dashboard/coin-management'
-      preLoaderRoute: typeof DashboardCoinManagementRouteImport
+      preLoaderRoute: typeof DashboardCoinManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/coin-management/add-coin': {
+      id: '/dashboard/coin-management/add-coin'
+      path: '/dashboard/coin-management/add-coin'
+      fullPath: '/dashboard/coin-management/add-coin'
+      preLoaderRoute: typeof DashboardCoinManagementAddCoinRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -117,9 +139,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardCoinManagementRoute: DashboardCoinManagementRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardCoinManagementAddCoinRoute: DashboardCoinManagementAddCoinRoute,
+  DashboardCoinManagementIndexRoute: DashboardCoinManagementIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
