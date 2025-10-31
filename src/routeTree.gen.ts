@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
+import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
 import { Route as DashboardDisputesRouteImport } from './routes/dashboard/disputes'
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
@@ -31,6 +32,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 const DashboardTransactionsRoute = DashboardTransactionsRouteImport.update({
   id: '/dashboard/transactions',
   path: '/dashboard/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/dashboard/notifications',
+  path: '/dashboard/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardManageFiatRoute = DashboardManageFiatRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardDisputesRoute: typeof DashboardDisputesRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/transactions'
       fullPath: '/dashboard/transactions'
       preLoaderRoute: typeof DashboardTransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/notifications': {
+      id: '/dashboard/notifications'
+      path: '/dashboard/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/manage-fiat': {
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardDisputesRoute: DashboardDisputesRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import ManageTransactionsControls from "../components/pages/manageTransactions/ManageTransactionsControls.tsx";
 import PageHeader from "../components/global/pageHeader.tsx";
 import {TransactionsManagementColumn, TransactionsManagementDataRow } from '../components/tables/TransactionsManagementTables.tsx';
-import {useTransactionsTable} from "../hooks/pages/tables/useTransactionsTable.ts";
+import {useTransactionsTable} from "../hooks/tables/useTransactionsTable.ts";
 import Table from "../components/table.tsx";
 import TableFooter from '../components/tables/TableFooter.tsx';
 import ManageTransactionFilterModal from '../components/pages/manageTransactions/ManageTransactionFilterModal.tsx';
