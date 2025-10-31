@@ -42,7 +42,7 @@ const Dashboard = () => {
   
   return (
     <AuthenticatedLayout>
-      <div className="p-6 min-h-screen container max-w-7xl">
+      <div className="p-6 min-h-screen container">
         <PageHeader title="Overview" />
         
         <div className="p-4 w-full flex items-center justify-between">

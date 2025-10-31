@@ -23,7 +23,7 @@ const ManageFiat = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 min-h-screen container max-w-7xl">
+      <div className="p-6 min-h-screen container">
         <PageHeader title="ManageFiat" />
         
         <div className="mt-8 text-[24px] font-medium text-[#0E0F0C]">

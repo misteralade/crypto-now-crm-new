@@ -41,7 +41,7 @@ const CoinManagement = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 mx-auto">
         <PageHeader title="Coin Management" />
         
         {/* Controls */}

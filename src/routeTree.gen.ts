@@ -15,6 +15,7 @@ import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/tr
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
 import { Route as DashboardDisputesRouteImport } from './routes/dashboard/disputes'
+import { Route as DashboardAuditTrailsRouteImport } from './routes/dashboard/audit-trails'
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
@@ -49,6 +50,11 @@ const DashboardDisputesRoute = DashboardDisputesRouteImport.update({
   path: '/dashboard/disputes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardAuditTrailsRoute = DashboardAuditTrailsRouteImport.update({
+  id: '/dashboard/audit-trails',
+  path: '/dashboard/audit-trails',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCoinManagementIndexRoute =
   DashboardCoinManagementIndexRouteImport.update({
     id: '/dashboard/coin-management/',
@@ -70,6 +76,7 @@ const DashboardCoinManagementCoinIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -93,6 +101,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
   DashboardDisputesRoute: typeof DashboardDisputesRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDisputesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/audit-trails': {
+      id: '/dashboard/audit-trails'
+      path: '/dashboard/audit-trails'
+      fullPath: '/dashboard/audit-trails'
+      preLoaderRoute: typeof DashboardAuditTrailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/coin-management/': {
       id: '/dashboard/coin-management/'
       path: '/dashboard/coin-management'
@@ -220,6 +240,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
   DashboardDisputesRoute: DashboardDisputesRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,

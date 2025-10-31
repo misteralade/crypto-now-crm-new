@@ -87,7 +87,7 @@ const ManageTransactions = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 max-w-7xl mx-auto bg-white">
+      <div className="p-6 mx-auto bg-white">
         {/* header */}
         <PageHeader title="Manage Transactions" />
         

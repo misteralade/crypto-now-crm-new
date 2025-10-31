@@ -23,7 +23,7 @@ const EditCoin = () => {
   
   return (
     <AuthenticatedLayout>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 mx-auto">
         {loadingAdminCryptoDetails ? (
           <Fragment>
             <div className="flex items-center justify-center min-h-[80vh]">
