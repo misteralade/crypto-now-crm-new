@@ -1,34 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { Outlet } from '@tanstack/react-router'
+import { Menu } from 'lucide-react'
+import Sidebar from './components/sidebar'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  
+  useEffect(() => {
+    const isDesktop = window.innerWidth >= 1024
+    setSidebarOpen(isDesktop)
+    const onResize = () => {
+      const desktop = window.innerWidth >= 1024
+      setSidebarOpen(desktop)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && window.innerWidth < 1024) setSidebarOpen(false)
+    }
+    window.addEventListener('resize', onResize)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [])
+  
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="min-h-screen font-[DM Sans]]">
+      <div className="flex">
+        <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/30 z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {!sidebarOpen && (
+            <button
+              aria-label="Open sidebar"
+              className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md border border-[#ECECEC] bg-white shadow"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          <main className="">
+            <Outlet />
+          </main>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

@@ -1,10 +1,46 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import ReactDOM from 'react-dom/client'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { ToastContainer } from 'react-toastify'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import QueryClientProviderWrapper from './queries/ReactQuery'
+import './styles.css'
+import { persistor, store } from './store'
 
-createRoot(document.getElementById('root')!).render(
+// Import the generated route tree
+import { routeTree } from './routeTree.gen'
+
+// Create a new router instance
+const router = createRouter({ routeTree })
+
+// Register the router instance for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root')!)
+root.render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <PersistGate persistor={persistor} loading={null}>
+        <QueryClientProviderWrapper>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          <RouterProvider router={router} />
+        </QueryClientProviderWrapper>
+      </PersistGate>
+    </Provider>
   </StrictMode>,
 )
