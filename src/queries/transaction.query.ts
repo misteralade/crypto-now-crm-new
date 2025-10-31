@@ -233,7 +233,7 @@ export const useTransactionQuery = () => {
     },
     onSuccess: (response) => {
       toast.dismiss()
-      const { success, message } = response
+      const { message } = response
       if (response.success) {
         toast.success(response.message)
         queryClient.invalidateQueries({

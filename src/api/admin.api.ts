@@ -1,10 +1,10 @@
 import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from "./index";
-import {
+import type {
   AdminGetAllPermissionsAPIResponse,
   AdminGetAllRolesAPIResponse,
   BaseApiResponse, SearchAdminsAPIResponse
 } from "../types/response.payload.types";
-import {CreateNewAdminRequestType, CreateNewRoleRequestType, SearchAdminRequestType} from "../schemas/admin.schema";
+import type { CreateNewAdminRequestType, CreateNewRoleRequestType, SearchAdminRequestType } from "../schemas/admin.schema";
 
 class AdminServiceApi {
   private static instance: AdminServiceApi;

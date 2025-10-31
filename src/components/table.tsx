@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FC, type ReactNode } from 'react'
 import { ExternalLink } from 'lucide-react'
-import { UserStatusVariant } from '../types/global.types'
 import {LoadingSpinner} from "./global/LoadingSpinner";
+import type {UserStatusVariant} from "../types/global.types.ts";
 
 // ============================================================================
 // Types & Interfaces

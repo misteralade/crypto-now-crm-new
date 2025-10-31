@@ -1,8 +1,8 @@
 import {Fragment} from "react";
 import {StatusColumn} from "./global";
 import type {TableColumn} from "../table";
-import {AdminSearchUsersResponsePayload, SearchAdminResponsePayload} from "../../types/response.payload.types";
 import momentClient from "../../util/moment";
+import type {SearchAdminResponsePayload} from "../../types/response.payload.types.ts";
 
 export const SearchAdminDataColumn = (
   handleUpdateAdminStatus: (id: string, status: boolean) => void

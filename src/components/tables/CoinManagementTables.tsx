@@ -130,7 +130,7 @@ export const SearchSupportedCryptoColumn = (
   {
     key: 'actions',
     header: 'Actions',
-    render: (value, row) => (
+    render: (_value, row) => (
       <Fragment>
         <div className="px-4 py-5">
           <div className="flex gap-2">

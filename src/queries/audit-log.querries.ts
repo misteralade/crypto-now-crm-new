@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import {useMatchRoute} from "@tanstack/react-router";
 import {useSelector} from "react-redux";
 import {ROUTES} from "../util/constants";
@@ -8,7 +8,6 @@ import {QUERY_KEYS} from "./querries.keys";
 import type {RootState} from "../store";
 
 export const useAuditLogQuery = () => {
-  const queryClient = useQueryClient();
   const matchRoute = useMatchRoute();
   const search = useSelector((state: RootState) => state.auditLog.search);
 

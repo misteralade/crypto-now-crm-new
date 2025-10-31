@@ -1,6 +1,6 @@
 import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from "./index";
 import type {AdminSearchUserRequestType} from "../schemas/user.schema";
-import {
+import type {
   AdminSearchUsersAPIResponse, BaseApiResponse,
   GetDashboardUserStatsSummaryAPIResponse,
   GetSummarisedUserProfileAPIResponse, GetUserProfileAPIResponse

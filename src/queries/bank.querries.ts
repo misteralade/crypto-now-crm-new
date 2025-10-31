@@ -46,7 +46,7 @@ export const useBankQuery = () => {
       if (!selectedBankId) throw new Error("Selected bank ID is undefined.");
       
       toast.loading("Making bank account default...");
-      const { success, message, error } = await bankServiceApi.makeAdminBankAccountDefault(selectedBankId);
+      const { success, message } = await bankServiceApi.makeAdminBankAccountDefault(selectedBankId);
       return { success, message };
     },
     onSuccess: ({ message, success }) => {
@@ -70,7 +70,7 @@ export const useBankQuery = () => {
       if (!selectedBankId) throw new Error("Selected bank ID is undefined.");
       
       toast.loading("Deleting bank account...");
-      const { success, message, error } = await bankServiceApi.adminDeleteBankAccount(selectedBankId);
+      const { success, message } = await bankServiceApi.adminDeleteBankAccount(selectedBankId);
       return { success, message };
     },
     onSuccess: ({ message, success }) => {
@@ -94,7 +94,7 @@ export const useBankQuery = () => {
       if (!payload.bankId || !payload.accountNumber || !payload.accountHolderName) throw new Error("Incomplete bank account data.");
       
       toast.loading("Creating bank account...");
-      const { success, message, error } = await bankServiceApi.adminCreateBankAccount(payload);
+      const { success, message } = await bankServiceApi.adminCreateBankAccount(payload);
       return { success, message };
     },
     onSuccess: ({ message, success }) => {
