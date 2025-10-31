@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "crypto-now-crm-87992"
+  },
+  "targets": {
+    "crypto-now-crm-87992": {
+      "hosting": {
+        "dev": [
+          "crypto-now-crm-dev-new"
+        ]
+      }
+    }
+  }
+}
