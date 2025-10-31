@@ -21,9 +21,9 @@ jobs:
       - name: Set target environment
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            echo "FIREBASE_TARGET=crypto-now-dev" >> $GITHUB_ENV
+            echo "FIREBASE_TARGET=dev" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/master" ]; then
-            echo "FIREBASE_TARGET=crypto-now-prod" >> $GITHUB_ENV
+            echo "FIREBASE_TARGET=prod" >> $GITHUB_ENV
           fi
 
       - name: Setup Node.js
