@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Outlet } from '@tanstack/react-router'
+import {type ReactNode, useEffect, useState} from 'react'
 import { Menu } from 'lucide-react'
-import Sidebar from './components/sidebar'
+import Sidebar from "../components/sidebar.tsx";
 
-function App() {
+const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   
   useEffect(() => {
@@ -45,7 +44,7 @@ function App() {
             </button>
           )}
           <main className="">
-            <Outlet />
+            {children}
           </main>
         </div>
       </div>
@@ -53,4 +52,4 @@ function App() {
   )
 }
 
-export default App
+export default AuthenticatedLayout;
