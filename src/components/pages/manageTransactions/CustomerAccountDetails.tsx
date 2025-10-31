@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import CopyIcon from "../../../../assets/img/fluent_copy-16-regular.svg"
+import CopyIcon from "../../../assets/img/fluent_copy-16-regular.svg"
 
 interface CustomerAccountDetailsProps {
   address: string

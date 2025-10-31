@@ -21,7 +21,7 @@ const AddCoin = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 mx-auto">
         {/* Header */}
         <CoinManagementHeader />
         

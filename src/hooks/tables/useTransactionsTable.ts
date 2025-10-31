@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import {clearSearchTransactions, setSearchTransactionsField} from "../../../redux/transaction-management.slice";
-import type {TransactionStatus} from "../../../schemas/enum.schema.ts";
-import type { SearchTransactionsRequestType } from "../../../schemas/transaction.schema.ts";
-import momentClient from "../../../util/moment.ts";
+import {clearSearchTransactions, setSearchTransactionsField} from "../../redux/transaction-management.slice.ts";
+import type {TransactionStatus} from "../../schemas/enum.schema.ts";
+import type { SearchTransactionsRequestType } from "../../schemas/transaction.schema.ts";
+import momentClient from "../../util/moment.ts";
 
 export const useTransactionsTable = () => {
   const dispatch = useDispatch();

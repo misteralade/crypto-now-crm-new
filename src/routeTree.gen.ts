@@ -12,9 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
+import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
+import { Route as DashboardManageAdminsRouteImport } from './routes/dashboard/manage-admins'
 import { Route as DashboardDisputesRouteImport } from './routes/dashboard/disputes'
+import { Route as DashboardAuditTrailsRouteImport } from './routes/dashboard/audit-trails'
+import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
+import { Route as DashboardUsersUserIdRouteImport } from './routes/dashboard/users/$userId'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
 
@@ -33,14 +38,34 @@ const DashboardTransactionsRoute = DashboardTransactionsRouteImport.update({
   path: '/dashboard/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/dashboard/notifications',
+  path: '/dashboard/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardManageFiatRoute = DashboardManageFiatRouteImport.update({
   id: '/dashboard/manage-fiat',
   path: '/dashboard/manage-fiat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardManageAdminsRoute = DashboardManageAdminsRouteImport.update({
+  id: '/dashboard/manage-admins',
+  path: '/dashboard/manage-admins',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardDisputesRoute = DashboardDisputesRouteImport.update({
   id: '/dashboard/disputes',
   path: '/dashboard/disputes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardAuditTrailsRoute = DashboardAuditTrailsRouteImport.update({
+  id: '/dashboard/audit-trails',
+  path: '/dashboard/audit-trails',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardUsersIndexRoute = DashboardUsersIndexRouteImport.update({
+  id: '/dashboard/users/',
+  path: '/dashboard/users/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardCoinManagementIndexRoute =
@@ -49,6 +74,11 @@ const DashboardCoinManagementIndexRoute =
     path: '/dashboard/coin-management/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardUsersUserIdRoute = DashboardUsersUserIdRouteImport.update({
+  id: '/dashboard/users/$userId',
+  path: '/dashboard/users/$userId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCoinManagementAddCoinRoute =
   DashboardCoinManagementAddCoinRouteImport.update({
     id: '/dashboard/coin-management/add-coin',
@@ -64,77 +94,112 @@ const DashboardCoinManagementCoinIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
+  '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
+  '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/disputes': typeof DashboardDisputesRoute
+  '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
+  '/dashboard/users/': typeof DashboardUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/users/$userId'
     | '/dashboard/coin-management'
+    | '/dashboard/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/users/$userId'
     | '/dashboard/coin-management'
+    | '/dashboard/users'
   id:
     | '__root__'
     | '/'
+    | '/dashboard/audit-trails'
     | '/dashboard/disputes'
+    | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
+    | '/dashboard/notifications'
     | '/dashboard/transactions'
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/users/$userId'
     | '/dashboard/coin-management/'
+    | '/dashboard/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
   DashboardDisputesRoute: typeof DashboardDisputesRoute
+  DashboardManageAdminsRoute: typeof DashboardManageAdminsRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
   DashboardCoinManagementAddCoinRoute: typeof DashboardCoinManagementAddCoinRoute
+  DashboardUsersUserIdRoute: typeof DashboardUsersUserIdRoute
   DashboardCoinManagementIndexRoute: typeof DashboardCoinManagementIndexRoute
+  DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -160,11 +225,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/notifications': {
+      id: '/dashboard/notifications'
+      path: '/dashboard/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/manage-fiat': {
       id: '/dashboard/manage-fiat'
       path: '/dashboard/manage-fiat'
       fullPath: '/dashboard/manage-fiat'
       preLoaderRoute: typeof DashboardManageFiatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/manage-admins': {
+      id: '/dashboard/manage-admins'
+      path: '/dashboard/manage-admins'
+      fullPath: '/dashboard/manage-admins'
+      preLoaderRoute: typeof DashboardManageAdminsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/disputes': {
@@ -174,11 +253,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDisputesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/audit-trails': {
+      id: '/dashboard/audit-trails'
+      path: '/dashboard/audit-trails'
+      fullPath: '/dashboard/audit-trails'
+      preLoaderRoute: typeof DashboardAuditTrailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/users/': {
+      id: '/dashboard/users/'
+      path: '/dashboard/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/coin-management/': {
       id: '/dashboard/coin-management/'
       path: '/dashboard/coin-management'
       fullPath: '/dashboard/coin-management'
       preLoaderRoute: typeof DashboardCoinManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/users/$userId': {
+      id: '/dashboard/users/$userId'
+      path: '/dashboard/users/$userId'
+      fullPath: '/dashboard/users/$userId'
+      preLoaderRoute: typeof DashboardUsersUserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/coin-management/add-coin': {
@@ -200,13 +300,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
   DashboardDisputesRoute: DashboardDisputesRoute,
+  DashboardManageAdminsRoute: DashboardManageAdminsRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,
   DashboardCoinManagementAddCoinRoute: DashboardCoinManagementAddCoinRoute,
+  DashboardUsersUserIdRoute: DashboardUsersUserIdRoute,
   DashboardCoinManagementIndexRoute: DashboardCoinManagementIndexRoute,
+  DashboardUsersIndexRoute: DashboardUsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

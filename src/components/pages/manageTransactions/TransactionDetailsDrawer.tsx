@@ -11,7 +11,7 @@ import {
 } from '../../../util/constants'
 import {setTransactionDetailUpdateField} from "../../../redux/transaction-management.slice";
 import { store} from "../../../store";
-import CustomerAccountDetails from './components/CustomerAccountDetails'
+import CustomerAccountDetails from './CustomerAccountDetails.tsx'
 import type {TransactionStatusType} from "../../../schemas/enum.schema";
 import type {RootState} from "../../../store";
 import type { SearchTransactionsResponse } from '../../../types/response.payload.types'

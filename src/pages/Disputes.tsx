@@ -39,7 +39,7 @@ const Disputes = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 mx-auto">
         <div className="mb-6 flex justify-between items-center">
           <h2 className="text-[20px] font-semibold text-gray-900">
             Dispute Quote
