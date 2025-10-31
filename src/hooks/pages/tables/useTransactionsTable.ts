@@ -1,0 +1,120 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import {clearSearchTransactions, setSearchTransactionsField} from "../../../redux/transaction-management.slice";
+import type {TransactionStatus} from "../../../schemas/enum.schema.ts";
+import type { SearchTransactionsRequestType } from "../../../schemas/transaction.schema.ts";
+import momentClient from "../../../util/moment.ts";
+
+export const useTransactionsTable = () => {
+  const dispatch = useDispatch();
+  
+  const [query, setQuery] = useState('')
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [showFilter, setShowFilter] = useState(false)
+  const [showApplyActionPanel, setShowApplyActionPanel] = useState(false)
+  const [fromDate, setFromDate] = useState<Date>()
+  const [toDate, setToDate] = useState<Date>()
+  const [minAmountRange, setMinAmountRange] = useState<number>()
+  const [maxAmountRange, setMaxAmountRange] = useState<number>()
+  const [selectedCryptoId, setSelectedCryptoId] = useState<string>()
+  const [selectedStatus, setSelectedStatus] = useState<TransactionStatus | "ALL">("ALL")
+
+  const toggleApplyAction = () => setShowApplyActionPanel(!showApplyActionPanel)
+
+  const toggleApplyFilter = () => setShowFilter(!showFilter)
+
+  const handleSearchTransactionFieldUpdate = (field: keyof SearchTransactionsRequestType, value: any ) => {
+    dispatch(setSearchTransactionsField({
+      field,
+      value,
+    }))
+  }
+  
+  const handleSearchQuery = (value: string) => {
+    setQuery(value)
+    dispatch(setSearchTransactionsField({
+      field: "searchQuery",
+      value,
+    }))
+  }
+
+  const handlePageChange = (page: number) => {
+    dispatch(setSearchTransactionsField({
+      field: 'page',
+      value: page,
+    }));
+  }
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+  }
+
+  const resetSearchFilter = () => {
+    setQuery("");
+    setFromDate(undefined)
+    setToDate(undefined)
+    setMinAmountRange(undefined)
+    setMaxAmountRange(undefined)
+    setSelectedCryptoId(undefined)
+    setSelectedStatus("ALL")
+    dispatch(clearSearchTransactions())
+  }
+
+  const handleFromDate = (date: Date) => {
+    setFromDate(date)
+    handleSearchTransactionFieldUpdate("createdAtFrom", momentClient.toISOStringFromDateWithDayBoundary(date, true))
+  }
+
+  const handleToDate = (date: Date) => {
+    setToDate(date)
+    handleSearchTransactionFieldUpdate("createdAtTo", momentClient.toISOStringFromDateWithDayBoundary(date, false))
+  }
+
+  const handleMinAmountRange = (amount: number) => {
+    setMinAmountRange(amount)
+    handleSearchTransactionFieldUpdate("minUsdAmount", amount)
+  }
+
+  const handleMaxAmountRange = (amount: number) => {
+    setMaxAmountRange(amount)
+    handleSearchTransactionFieldUpdate("maxUsdAmount", amount)
+  }
+
+  const handleSelectedCryptoId = (cryptoId: string) => {
+    setSelectedCryptoId(cryptoId)
+    handleSearchTransactionFieldUpdate("cryptoCurrencyId", cryptoId)
+  }
+
+  const handleSelectedStatus = (status: TransactionStatus | "ALL") => {
+    setSelectedStatus(status)
+    handleSearchTransactionFieldUpdate("status", status === "ALL" ? undefined : status)
+  }
+  
+  return {
+    // 🧩 Values
+    query,
+    pageSize,
+    showFilter,
+    showApplyActionPanel,
+    fromDate,
+    toDate,
+    minAmountRange,
+    maxAmountRange,
+    selectedCryptoId,
+    selectedStatus,
+
+    // ⚙️ Functions
+    toggleApplyAction,
+    toggleApplyFilter,
+    handleSearchQuery,
+    handlePageChange,
+    handlePageSizeChange,
+    resetSearchFilter,
+    handleFromDate,
+    handleToDate,
+    handleMinAmountRange,
+    handleMaxAmountRange,
+    handleSelectedCryptoId,
+    handleSelectedStatus,
+  }
+}
