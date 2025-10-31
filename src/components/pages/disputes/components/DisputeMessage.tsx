@@ -11,7 +11,6 @@ interface DisputeMessageProps {
 export default function DisputeMessage({
   message,
   attachmentUrl,
-  onOpenChat,
 }: DisputeMessageProps) {
   return (
     <>
@@ -32,14 +31,14 @@ export default function DisputeMessage({
         <img src={Dispute} alt="dispute" width={200} height={232} />
       </div>
 
-      <div className="mt-4">
-        <button
-          onClick={onOpenChat}
-          className="cursor-pointer hover:opacity-70 px-6 py-4 border border-[#03034D] text-lg rounded-full text-[#03034D] font-semibold hover:bg-[#F0F0FF]"
-        >
-          Open chat interface
-        </button>
-      </div>
+      {/*<div className="mt-4">*/}
+      {/*  <button*/}
+      {/*    onClick={onOpenChat}*/}
+      {/*    className="cursor-pointer hover:opacity-70 px-6 py-4 border border-[#03034D] text-lg rounded-full text-[#03034D] font-semibold hover:bg-[#F0F0FF]"*/}
+      {/*  >*/}
+      {/*    Open chat interface*/}
+      {/*  </button>*/}
+      {/*</div>*/}
     </>
   )
 }
