@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
+import { Route as DashboardDisputesRouteImport } from './routes/dashboard/disputes'
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
@@ -37,6 +38,11 @@ const DashboardManageFiatRoute = DashboardManageFiatRouteImport.update({
   path: '/dashboard/manage-fiat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardDisputesRoute = DashboardDisputesRouteImport.update({
+  id: '/dashboard/disputes',
+  path: '/dashboard/disputes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCoinManagementIndexRoute =
   DashboardCoinManagementIndexRouteImport.update({
     id: '/dashboard/coin-management/',
@@ -58,6 +64,7 @@ const DashboardCoinManagementCoinIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -77,6 +85,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard/disputes': typeof DashboardDisputesRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/transactions'
     | '/dashboard'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/transactions'
     | '/dashboard'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dashboard/disputes'
     | '/dashboard/manage-fiat'
     | '/dashboard/transactions'
     | '/dashboard/'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardDisputesRoute: typeof DashboardDisputesRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardManageFiatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/disputes': {
+      id: '/dashboard/disputes'
+      path: '/dashboard/disputes'
+      fullPath: '/dashboard/disputes'
+      preLoaderRoute: typeof DashboardDisputesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/coin-management/': {
       id: '/dashboard/coin-management/'
       path: '/dashboard/coin-management'
@@ -180,6 +200,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardDisputesRoute: DashboardDisputesRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
