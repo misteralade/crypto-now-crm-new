@@ -1,7 +1,7 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { ROUTES } from '../../../util/constants.ts'
 
-const AddCoinHeader = () => {
+const CoinManagementHeader = () => {
   const navigate = useNavigate()
   const routerState = useRouterState()
   const currentPath = routerState.location.pathname
@@ -42,4 +42,4 @@ const AddCoinHeader = () => {
   )
 }
 
-export default AddCoinHeader;
+export default CoinManagementHeader;

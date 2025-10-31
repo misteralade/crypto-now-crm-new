@@ -1,6 +1,6 @@
 import { useAddCoinPage } from '../hooks/pages/useAddCoinPage'
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
-import AddCoinHeader from "../components/pages/coinManagement/AddCoinHeader.tsx";
+import CoinManagementHeader from "../components/pages/coinManagement/CoinManagementHeader.tsx";
 import UploadCoinIcon from "../components/pages/coinManagement/UploadCoinIcon.tsx";
 import CoinDetails from "../components/pages/coinManagement/add-coin/CoinDetails.tsx";
 import TradeLimits from "../components/pages/coinManagement/add-coin/TradeLimits.tsx";
@@ -23,7 +23,7 @@ const AddCoin = () => {
     <AuthenticatedLayout>
       <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <AddCoinHeader />
+        <CoinManagementHeader />
         
         <div>
           <h2 className="text-2xl lg:text-4xl font-medium text-[#0E0F0C] mb-8 mt-4">
