@@ -98,16 +98,6 @@ const Users = () => {
               </span>
               </button>
             </div>
-            
-            {/* Right: Add user */}
-            <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-              <button
-                onClick={() => alert('Add new user')}
-                className="px-4 py-[10px] whitespace-nowrap bg-[#03034D] cursor-pointer text-white text-sm font-semibold rounded-full hover:opacity-80 transition-colors w-full md:w-auto"
-              >
-                Add new user
-              </button>
-            </div>
           </div>
         </div>
         
