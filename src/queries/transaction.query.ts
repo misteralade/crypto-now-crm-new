@@ -59,9 +59,6 @@ export const useTransactionQuery = () => {
         await transactionServiceApi.getTransactionCount({ timeline })
 
       if (success) {
-        console.log({
-          data,
-        })
         return data
       }
 

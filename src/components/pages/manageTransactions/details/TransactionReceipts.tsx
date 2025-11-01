@@ -1,5 +1,5 @@
-import {Download, X} from "lucide-react";
-import {Fragment, useState} from "react";
+import { Fragment } from "react";
+import { Download } from "lucide-react";
 
 interface TransactionReceiptsProps {
   receiptImageUrl?: string;
@@ -7,7 +7,15 @@ interface TransactionReceiptsProps {
 }
 
 const TransactionReceipts = ({ receiptImageUrl, adminPaymentReceiptUrl }: TransactionReceiptsProps) => {
-  const [imageModal, setImageModal] = useState<string | null>(null)
+  
+  const handleDownloadImage = (url: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${url}-receipt.jpg`; // You can set a default file name here
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
   
   return (
     <Fragment>
@@ -20,13 +28,15 @@ const TransactionReceipts = ({ receiptImageUrl, adminPaymentReceiptUrl }: Transa
                 <p className="text-sm text-gray-500 mb-2">User Receipt</p>
                 <div className="relative group">
                   <img
-                    src={receiptImageUrl}
+                    src={receiptImageUrl as string}
                     alt="User receipt"
                     className="w-full h-48 object-cover rounded-lg cursor-pointer border-2 border-gray-200 hover:border-indigo-500 transition-colors"
-                    onClick={() => setImageModal(receiptImageUrl!)}
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 rounded-lg transition-all flex items-center justify-center">
-                    <Download className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/0 group-hover:bg-white/20 backdrop-blur-[0px] transition-all">
+                    <Download
+                      className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer hover:scale-110"
+                      onClick={() => handleDownloadImage(receiptImageUrl!)}
+                    />
                   </div>
                 </div>
               </div>
@@ -36,47 +46,19 @@ const TransactionReceipts = ({ receiptImageUrl, adminPaymentReceiptUrl }: Transa
                 <p className="text-sm text-gray-500 mb-2">Admin Receipt</p>
                 <div className="relative group">
                   <img
-                    src={adminPaymentReceiptUrl}
-                    alt="Admin receipt"
+                    src={adminPaymentReceiptUrl as string}
+                    alt="User receipt"
                     className="w-full h-48 object-cover rounded-lg cursor-pointer border-2 border-gray-200 hover:border-indigo-500 transition-colors"
-                    onClick={() => setImageModal(adminPaymentReceiptUrl!)}
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 rounded-lg transition-all flex items-center justify-center">
-                    <Download className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/0 group-hover:bg-white/20 backdrop-blur-[0px] transition-all">
+                    <Download
+                      className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer hover:scale-110"
+                      onClick={() => handleDownloadImage(adminPaymentReceiptUrl!)}
+                    />
                   </div>
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      )}
-      
-      {imageModal && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-          onClick={() => setImageModal(null)}
-        >
-          <div className="relative max-w-4xl max-h-full">
-            <button
-              onClick={() => setImageModal(null)}
-              className="absolute -top-10 right-0 text-white hover:text-gray-300"
-            >
-              <X className="w-8 h-8" />
-            </button>
-            <img
-              src={imageModal}
-              alt="Receipt"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
-            />
-            <a
-              href={imageModal}
-              download
-              className="absolute bottom-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-100 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Download className="w-4 h-4" />
-              Download
-            </a>
           </div>
         </div>
       )}

@@ -14,7 +14,7 @@ const TransactionHash = ({ cryptoTxHash, network, walletAddress }: TransactionHa
   const [chainUrl, setChainUrl] = useState('')
   
   useEffect(() => {
-    const { txUrl, addressUrl, isSupported, tokenUrl, explorerName } = getExplorerLinks(cryptoTxHash, network, walletAddress)
+    const { txUrl } = getExplorerLinks(cryptoTxHash, network, walletAddress)
     setChainUrl(txUrl || '')
   }, [cryptoTxHash, network, walletAddress]);
   
@@ -25,8 +25,7 @@ const TransactionHash = ({ cryptoTxHash, network, walletAddress }: TransactionHa
         <div className="space-y-3">
           <div>
             <p className="text-sm text-gray-500 mb-2">Transaction Hash</p>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-mono text-gray-900 break-all">{cryptoTxHash}</p>
+            <div className="flex items-center gap-2 w-full">
               <CopyDetails text={cryptoTxHash} className="!max-w-[700px]" iconClassName="!w-8 !h-8" />
               <a
                 href={chainUrl}

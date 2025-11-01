@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
+import {Link, useNavigate, useRouterState} from '@tanstack/react-router'
 import { History, LogOut } from 'lucide-react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -128,11 +128,13 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const routerState = useRouterState()
+  const navigate = useNavigate()
   const currentPath = routerState.location.pathname
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const handleLogout = () => {
-    console.log('Logging out...')
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+    navigate({ to: ROUTES.LOGIN });
   }
 
   return (
