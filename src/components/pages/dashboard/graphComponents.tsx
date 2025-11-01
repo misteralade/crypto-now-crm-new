@@ -14,6 +14,7 @@ import type {
   WeeklyTransactionVolumeTrend,
 } from '../../../types/response.payload.types'
 import { Fragment } from 'react'
+import {LoadingSpinner} from "../../global/LoadingSpinner.tsx";
 
 // Sample data for pie chart
 const COLORS = ['#575AE5', '#FF4F64']
@@ -31,64 +32,70 @@ export const VolumeTrend = ({ loading, data }: VolumeTrendProps) => {
   }))
 
   return (
-    <div className="w-full h-full border-[#ECECEC] bg-[#eeeeee3c] border rounded-lg p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-[20px] text-[#0E0F0C]">Volume trend</h2>
-      </div>
-
-      <ResponsiveContainer width="100%" height={240}>
-        <AreaChart
-          data={lineData}
-          margin={{
-            top: 10,
-            right: 20,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <defs>
-            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis
-            dataKey="date"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fontSize: 12, fill: '#9ca3af' }}
-            tickMargin={12}
-            padding={{ left: 16, right: 8 }}
-          />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fontSize: 12, fill: '#9ca3af' }}
-            ticks={[0, 1, 2, 3]}
-            domain={[0, 3]}
-            tickFormatter={(value) => `${value}M`}
-            tickMargin={12}
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-            }}
-            formatter={(value: number) => [`${value}M`, 'Volume']}
-          />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="#8b5cf6"
-            strokeWidth={2}
-            fill="url(#areaFill)"
-            dot={false}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+    <Fragment>
+      {loading ? (
+        <LoadingSpinner size="md" message="Loading..."/>
+      ) : (
+        <div className="w-full h-full border-[#ECECEC] bg-[#eeeeee3c] border rounded-lg p-4">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-[20px] text-[#0E0F0C]">Volume trend</h2>
+          </div>
+          
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart
+              data={lineData}
+              margin={{
+                top: 10,
+                right: 20,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <defs>
+                <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: '#9ca3af' }}
+                tickMargin={12}
+                padding={{ left: 16, right: 8 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: '#9ca3af' }}
+                ticks={[0, 1, 2, 3]}
+                domain={[0, 3]}
+                tickFormatter={(value) => `${value}M`}
+                tickMargin={12}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'white',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                }}
+                formatter={(value: number) => [`${value}M`, 'Volume']}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#8b5cf6"
+                strokeWidth={2}
+                fill="url(#areaFill)"
+                dot={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+    </Fragment>
   )
 }
 
