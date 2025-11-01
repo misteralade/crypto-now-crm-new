@@ -23,12 +23,10 @@ jobs:
             echo "FIREBASE_TARGET=dev" >> $GITHUB_ENV
             echo "DEPLOY_ENV=development" >> $GITHUB_ENV
             echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_DEV }}" >> $GITHUB_ENV
-            echo "FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/master" ]; then
             echo "FIREBASE_TARGET=prod" >> $GITHUB_ENV
             echo "DEPLOY_ENV=production" >> $GITHUB_ENV
             echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_PROD }}" >> $GITHUB_ENV
-            echo "FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}" >> $GITHUB_ENV
           else
             echo "Unknown branch, deployment skipped"
             exit 1
@@ -64,9 +62,15 @@ jobs:
           fi
           echo "Build output verified successfully"
 
-      - name: Setup Firebase credentials
+      - name: Setup Firebase credentials for Dev
+        if: github.ref == 'refs/heads/dev'
         run: |
-          echo '${{ env.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud-key.json
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud-key.json
+
+      - name: Setup Firebase credentials for Prod
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}' > $HOME/gcloud-key.json
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
@@ -75,5 +79,4 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
         run: |
-          echo '${{ env.FIREBASE_SERVICE_ACCOUNT }}' > /home/runner/gcloud-key.json
           firebase deploy --only hosting:${{ env.FIREBASE_TARGET }} --non-interactive --project ${{ env.FIREBASE_PROJECT }}
