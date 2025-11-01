@@ -1,6 +1,9 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { ROUTES } from '../../../util/constants.ts'
 
+// Assets
+import AvatarIcon from '../../../assets/img/avatar.webp'
+
 const CoinManagementHeader = () => {
   const navigate = useNavigate()
   const routerState = useRouterState()
@@ -15,7 +18,7 @@ const CoinManagementHeader = () => {
           <span className="text-[#EB5757] font-medium">Admin</span>
           <div className="rounded-full h-8 w-8 overflow-hidden">
             <img
-              src="/images/avatar.png"
+              src={AvatarIcon}
               alt="Admin avatar"
               className="h-8 w-8 object-cover"
             />

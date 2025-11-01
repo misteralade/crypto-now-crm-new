@@ -1,7 +1,7 @@
 import { useState } from 'react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import Avatar from '../assets/img/avatar.png'
+import Avatar from '../assets/img/avatar.webp'
 import { disputes } from '../data/disputes.1'
 import DisputesControls from "../components/pages/disputes/DisputesControls.tsx";
 import DisputeTable, {type DisputeRow} from "../components/pages/disputes/DisputeTable.tsx";

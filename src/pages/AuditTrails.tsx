@@ -7,6 +7,9 @@ import AuditTrailsFilterModal from '../components/pages/auditTrails/AuditTrailsF
 import AuditTrailsControls from "../components/pages/auditTrails/AuditTrailsControls.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 
+// Assets
+import AvatarIcon from '../assets/img/avatar.webp'
+
 const AuditTrails = () => {
   const {
     // 🧩 Values
@@ -54,7 +57,7 @@ const AuditTrails = () => {
             <span className="text-red-500 font-medium">Admin</span>
             <div className="rounded-full h-8 w-8 overflow-hidden">
               <img
-                src="/images/avatar.png"
+                src={AvatarIcon}
                 alt="Admin avatar"
                 className="h-8 w-8 object-cover"
               />

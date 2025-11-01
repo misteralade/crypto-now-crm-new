@@ -7,7 +7,7 @@ import logo from '../assets/img/logo.svg'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import sidebar from '../assets/img/Vector.svg'
-import { ROUTES } from '../util/constants'
+import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants'
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false)
@@ -196,7 +196,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <div className="p-4 mt-auto">
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[#EB5757] hover:bg-[#FDECEC] transition-colors w-full"
+              className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[#EB5757] transition-colors w-full hover:bg-[#FDECEC] hover:cursor-pointer "
             >
               <LogOut size={20} />
               <span>Logout</span>

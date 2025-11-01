@@ -1,5 +1,6 @@
 import {Fragment} from "react";
 import {convertToMillify, formatNumber, getCurrencySymbolFromCode} from "../../../../util/index.util.ts";
+import {StatusBadge} from "../../../global/StatusBadge.tsx";
 
 interface TransactionOverviewProps {
   type: 'BUY' | 'SELL'
@@ -8,9 +9,10 @@ interface TransactionOverviewProps {
   currency: string;
   amountFiat: number;
   stableToFiatRate: number;
+  status: string;
 }
 
-const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiat, stableToFiatRate }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiat, stableToFiatRate, status }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -36,6 +38,12 @@ const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiat,
               {formatNumber(stableToFiatRate)}
             </p>
           </div>
+          
+          <div>
+            <p className="text-sm text-gray-500 mb-1 normal-case">Transaction Status</p>
+            <StatusBadge status={status} />
+          </div>
+          
         </div>
       </div>
     </Fragment>

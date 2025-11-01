@@ -63,6 +63,7 @@ const TransactionDetails = () => {
                   currency={transaction.currency}
                   amountFiat={Number(transaction.amountFiat || 0)}
                   stableToFiatRate={Number(transaction.stableToFiatRate)}
+                  status={transaction.status}
                 />
                 
                 {/* Cryptocurrency Info */}

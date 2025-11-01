@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMatchRoute } from '@tanstack/react-router'
 import { toast } from 'react-toastify'
 import {useSelector} from "react-redux";
-import { ROUTES } from '../util/constants'
+import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
 import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'
@@ -151,6 +151,7 @@ export const useTransactionQuery = () => {
       return null;
     },
     enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction,
+    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
   const { data: transactionDetail, isLoading: loadingTransactionDetails } = useQuery({

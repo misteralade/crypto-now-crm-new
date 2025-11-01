@@ -19,24 +19,6 @@ const AdminPaymentAccountDetails = ({ type, hasBankAccount, accountName, account
     <Fragment>
       {type === 'SELL' && hasBankAccount ? (
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Bank Account</h2>
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-gray-500">Account Name</p>
-              <p className="text-base font-medium text-gray-900">{accountName}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Account Number</p>
-              <CopyDetails text={accountNumber || ''} className="!max-w-[700px]" iconClassName="!w-8 !h-8" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Bank Name</p>
-              <p className="text-base font-medium text-gray-900">{bankName}</p>
-            </div>
-          </div>
-        </div>
-      ) : type === 'BUY' && hasCryptoWallet && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Crypto Wallet</h2>
           
           <div className="space-y-3">
@@ -55,6 +37,24 @@ const AdminPaymentAccountDetails = ({ type, hasBankAccount, accountName, account
               <p className="text-base font-medium text-gray-900">
                 {cryptoName} ({cryptoSymbol})
               </p>
+            </div>
+          </div>
+        </div>
+      ) : type === 'BUY' && hasCryptoWallet && (
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Bank Account</h2>
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm text-gray-500">Account Name</p>
+              <p className="text-base font-medium text-gray-900">{accountName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Account Number</p>
+              <CopyDetails text={accountNumber || ''} className="!max-w-[700px]" iconClassName="!w-8 !h-8" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Bank Name</p>
+              <p className="text-base font-medium text-gray-900">{bankName}</p>
             </div>
           </div>
         </div>
