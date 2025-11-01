@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import {useDashboardPage} from "../hooks/pages/useDashboardPage";
-import { convertToMillify } from '../util';
+import { convertToMillify } from '../util/index.util.ts';
 import { UsersWithTopTransactionColumn, UsersWithTopTransactionDataRow } from '../components/tables/TransactionsManagementTables';
 import type {TransactionTypeByPercentage, WeeklyTransactionVolumeTrend } from '../types/response.payload.types';
 import type {TimelineFilter} from "../types/global.types";

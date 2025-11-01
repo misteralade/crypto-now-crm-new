@@ -1,6 +1,6 @@
 import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { Fragment } from 'react'
-import { convertToMillify } from '../../util'
+import { convertToMillify } from '../../util/index.util.ts'
 import { CustomCheckbox } from '../global/CheckBoxes'
 import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
 import momentClient from '../../util/moment'
@@ -256,7 +256,7 @@ export const UserTransactionsManagementColumn = (
     ),
     render: (value) => (
       <div className="px-4 py-5 text-sm text-[14px] text-[#101828]">
-        <CopyDetails text={value} className="!max-w-[200px]" iconClassName='!h-10 !w-10'/>
+        <CopyDetails text={value} className="!max-w-[200px]" iconClassName='!h-8 !w-8'/>
       </div>
     ),
   },

@@ -1,7 +1,7 @@
 import {Fragment, useState} from 'react'
 import { Upload, X } from 'lucide-react'
 import {useDispatch} from "react-redux";
-import { convertToMillify } from '../../../util'
+import { convertToMillify } from '../../../util/index.util.ts'
 import momentClient from '../../../util/moment'
 import CopyDetails from '../../global/CopyDetails'
 import { StatusBadge } from '../../global/StatusBadge'
@@ -337,7 +337,7 @@ const TransactionDetailsDrawer = ({
                                   : 'N/A'
                               }
                               className="!max-w-[200px] !h-[25px]"
-                              iconClassName="!w-10 !h-15"
+                              iconClassName="!w-8 !h-8"
                             />
                           </div>
                         </div>

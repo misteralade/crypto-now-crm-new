@@ -9,7 +9,7 @@ import type {
 } from '../schemas/transaction.schema'
 import type {
   BaseApiResponse,
-  GetTransactionCountAPIResponse,
+  GetTransactionCountAPIResponse, GetTransactionDetailsAPIResponse,
   GetTransactionTypeByPercentageAPIResponse,
   GetTransactionVolumeAPIResponse,
   GetTransactionVolumeTrendAPIResponse,
@@ -94,6 +94,10 @@ class TransactionServiceApi {
         },
       },
     )) as UploadAPIResponse
+  }
+  
+  async adminGetTransactionDetails(sessionId: string) {
+    return await axiosGetRequestHandler(`/transaction/admin/details/${sessionId}`) as GetTransactionDetailsAPIResponse
   }
 }
 

@@ -48,7 +48,10 @@ export type SearchTransactionsAPIResponse = BaseApiResponse<{
   totalPages: number;
 }>;
 
+export type GetTransactionDetailsAPIResponse = BaseApiResponse<SearchTransactionsResponse>
+
 export type SearchTransactionsResponse = {
+  adminPaymentReceiptUrl: string | undefined;
   id: string;
   userId: string;
   sessionId: string;
@@ -62,6 +65,7 @@ export type SearchTransactionsResponse = {
   stableToCryptoRate: string;
   currency: string;
   status: TransactionStatus;
+  email: string | undefined;
   priority: TransactionPriority;
   userBankAccountId: string;
   adminBankAccountId: string;
@@ -75,13 +79,14 @@ export type SearchTransactionsResponse = {
   internalNotes: string;
   failureReason: string;
   processedBy: string;
-  processedAt: string;
+  processedAt: Date;
   usdAmount: number;
   createdAt: Date;
   updatedAt: Date;
 
   // Relations
   user?: UserResponsePayload;
+  profile?: UserProfileResponsePayload;
   cryptocurrency?: SearchSupportedCryptoData;
   exchangeRate?: ExchangeRateResponsePayload;
   adminBankAccount?: AdminBankAccountResponsePayload;
@@ -216,6 +221,12 @@ export type UserProfileResponsePayload = {
   lastName: string;
   profileImg: string;
   createdAt: Date;
+  phoneNumber: string | null;
+  dateOfBirth: Date | null;
+  address: string | null;
+  city: string | null;
+  postalCode: string | null;
+  country: string | null;
 }
 // End Profile
 
