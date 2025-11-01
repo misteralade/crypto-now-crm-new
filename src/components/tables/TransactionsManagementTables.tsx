@@ -2,7 +2,7 @@ import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { Fragment } from 'react'
 import { convertToMillify } from '../../util'
 import { CustomCheckbox } from '../global/CheckBoxes'
-import CopyDetails from '../global/CopyDetails'
+import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
 import momentClient from '../../util/moment'
 import {
   TableAmount,
@@ -17,7 +17,7 @@ import type {
 } from '../../types/response.payload.types'
 
 // Dashboard Tables Start
-export const usersWithTopTransactionColumn: Array<TableColumn> = [
+export const UsersWithTopTransactionColumn: Array<TableColumn> = [
   {
     key: 'user',
     header: 'User',
@@ -78,6 +78,7 @@ export const TransactionsManagementColumn = (
   handleSelectAllTransactionIds: () => void,
   handleSortBy: (columnKey: string) => void,
   handleShowTransactionDetails: (sessionId: string) => void,
+  handleViewTransactionDetails: (sessionId: string) => void,
   selectedTransactionIds: Array<string>, // Add this to track selected state
   selectedIdCount: number,
 ): Array<TableColumn> => [
@@ -117,7 +118,7 @@ export const TransactionsManagementColumn = (
     ),
     render: (value) => (
       <div className="px-4 py-5 text-sm text-[14px] text-[#101828]">
-        <CopyDetails text={value} className="!max-w-[200px]"/>
+        <ClickableDetails text={value} className="!max-w-[200px]" onClick={handleViewTransactionDetails}/>
       </div>
     ),
   },

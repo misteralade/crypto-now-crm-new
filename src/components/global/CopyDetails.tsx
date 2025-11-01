@@ -45,4 +45,37 @@ const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
     )
 }
 
-export default CopyDetails
+interface ClickableDetailsProps {
+  text: string;
+  onClick: (value: any) => void;
+  className?: string;
+}
+
+export const ClickableDetails = ({ text, onClick, className }: ClickableDetailsProps) => {
+  const [clicked, setClicked] = useState(false);
+  
+  const handleClick = () => {
+    setClicked(true);
+    onClick(text);
+    setTimeout(() => setClicked(false), 1500);
+  };
+  
+  return (
+    <div className={`relative flex items-center gap-2 max-w-[200px] w-3/4 md:w-fit ${className}`}>
+      <a
+        onClick={handleClick}
+        className={`text-blue-600 overflow-hidden whitespace-nowrap text-ellipsis hover:underline cursor-pointer`}
+      >
+        {text}
+      </a>
+      
+      {clicked && (
+        <span className="text-green-500 text-sm absolute -top-5 left-0 transition-all duration-300">
+          Clicked!
+        </span>
+      )}
+    </div>
+  );
+};
+
+export default CopyDetails;

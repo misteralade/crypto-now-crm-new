@@ -32,7 +32,6 @@ export const IsStableCoinColumn = ({ status }: { status: string }) => {
   )
 }
 
-
 export const SearchSupportedCryptoColumn = (
   onEditClick: (id: string) => void,
   onDisableCoin: (id: string, status: boolean) => void,

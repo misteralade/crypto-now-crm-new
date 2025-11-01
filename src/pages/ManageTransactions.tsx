@@ -58,6 +58,7 @@ const ManageTransactions = () => {
     handleMaxAmountRange,
     handleSelectedCryptoId,
     handleSelectedStatus,
+    handleViewTransactionDetails,
   } = useTransactionsTable();
 
   const columns = useMemo(
@@ -67,6 +68,7 @@ const ManageTransactions = () => {
         handleSelectAllTransactionIds,
         handleSortBy,
         handleShowTransactionDetails,
+        handleViewTransactionDetails,
         selectedTransactionIds,
         searchTransactions?.transactions.length || 0,
       ),

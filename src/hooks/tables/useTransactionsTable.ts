@@ -4,9 +4,12 @@ import {clearSearchTransactions, setSearchTransactionsField} from "../../redux/t
 import type {TransactionStatus} from "../../schemas/enum.schema.ts";
 import type { SearchTransactionsRequestType } from "../../schemas/transaction.schema.ts";
 import momentClient from "../../util/moment.ts";
+import {useNavigate} from "@tanstack/react-router";
+import {ROUTES} from "../../util/constants.ts";
 
 export const useTransactionsTable = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   
   const [query, setQuery] = useState('')
   const [pageSize, setPageSize] = useState<number>(10);
@@ -36,6 +39,10 @@ export const useTransactionsTable = () => {
       field: "searchQuery",
       value,
     }))
+  }
+  
+  const handleViewTransactionDetails = (sessionId: string) => {
+    navigate({ to: `${ROUTES.TRANSACTIONS}/${sessionId}` })
   }
 
   const handlePageChange = (page: number) => {
@@ -116,5 +123,6 @@ export const useTransactionsTable = () => {
     handleMaxAmountRange,
     handleSelectedCryptoId,
     handleSelectedStatus,
+    handleViewTransactionDetails,
   }
 }
