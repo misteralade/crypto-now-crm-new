@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
+import {Link, useNavigate, useRouterState} from '@tanstack/react-router'
 import { History, LogOut } from 'lucide-react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -7,7 +7,7 @@ import logo from '../assets/img/logo.svg'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import sidebar from '../assets/img/Vector.svg'
-import { ROUTES } from '../util/constants'
+import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants'
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false)
@@ -128,11 +128,13 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const routerState = useRouterState()
+  const navigate = useNavigate()
   const currentPath = routerState.location.pathname
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const handleLogout = () => {
-    console.log('Logging out...')
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+    navigate({ to: ROUTES.LOGIN });
   }
 
   return (
@@ -194,7 +196,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <div className="p-4 mt-auto">
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[#EB5757] hover:bg-[#FDECEC] transition-colors w-full"
+              className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[#EB5757] transition-colors w-full hover:bg-[#FDECEC] hover:cursor-pointer "
             >
               <LogOut size={20} />
               <span>Logout</span>

@@ -8,6 +8,9 @@ import UsersFilterModal from "../components/pages/users/UsersFilterModal.tsx";
 import UserTransactionDetailsDrawer from "../components/pages/users/UsersTransactionDetailsDrawer.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 
+// Asset Imports
+import AvatarIcon from '../assets/img/avatar.webp'
+
 const Users = () => {
   const {
     // Values
@@ -66,7 +69,7 @@ const Users = () => {
             <span className="text-red-500 font-medium">Admin</span>
             <div className="rounded-full h-8 w-8 overflow-hidden">
               <img
-                src="/images/avatar.png"
+                src={AvatarIcon}
                 alt="Admin avatar"
                 className="h-8 w-8 object-cover"
               />

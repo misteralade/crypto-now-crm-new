@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import {convertToMillify} from "../../util";
+import {convertToMillify} from "../../util/index.util.ts";
 import momentClient from "../../util/moment";
 import {StatusColumn} from "./global";
 import type { SearchSupportedCryptoData } from "../../types/response.payload.types";
@@ -31,7 +31,6 @@ export const IsStableCoinColumn = ({ status }: { status: string }) => {
     </Fragment>
   )
 }
-
 
 export const SearchSupportedCryptoColumn = (
   onEditClick: (id: string) => void,

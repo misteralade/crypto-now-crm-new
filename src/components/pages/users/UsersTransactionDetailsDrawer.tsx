@@ -6,7 +6,7 @@ import type {
   SummarisedUserProfileResponsePayload,
   UserBankAccountResponsePayload
 } from "../../../types/response.payload.types.ts";
-import { convertToMillify } from '../../../util/index.ts';
+import { convertToMillify } from '../../../util/index.util.ts';
 
 interface UserTransactionDetailsDrawerProps {
   open: boolean

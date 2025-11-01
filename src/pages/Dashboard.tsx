@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import {useDashboardPage} from "../hooks/pages/useDashboardPage";
-import { convertToMillify } from '../util';
-import { usersWithTopTransactionColumn, UsersWithTopTransactionDataRow } from '../components/tables/TransactionsManagementTables';
+import { convertToMillify } from '../util/index.util.ts';
+import { UsersWithTopTransactionColumn, UsersWithTopTransactionDataRow } from '../components/tables/TransactionsManagementTables';
 import type {TransactionTypeByPercentage, WeeklyTransactionVolumeTrend } from '../types/response.payload.types';
 import type {TimelineFilter} from "../types/global.types";
 import PageHeader from '../components/global/pageHeader';
@@ -34,7 +34,7 @@ const Dashboard = () => {
   const numberOfTransactionsDisplay = !loadingTransactionCount
     ? convertToMillify(transactionCount || 0)
     : 'Loading...'
-  const columns = useMemo(() => usersWithTopTransactionColumn, [])
+  const columns = useMemo(() => UsersWithTopTransactionColumn, [])
   const data = useMemo(
     () => UsersWithTopTransactionDataRow(usersWithTopTransactionVolume) ?? [],
     [usersWithTopTransactionVolume, loadingUsersWithTopTransactionVolume],

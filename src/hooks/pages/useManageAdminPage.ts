@@ -119,7 +119,6 @@ export const useManageAdminPage = () => {
   }
 
   const handleUpdateAdminStatus = async (id: string, active: boolean) => {
-    console.log(`Update admin ${id} status to ${active}`);
     dispatch(setUpdateAdminField({
       field: 'id',
       value: id,

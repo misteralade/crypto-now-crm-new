@@ -8,7 +8,6 @@ on:
 
 env:
   NODE_VERSION: "22"
-  FIREBASE_PROJECT: "crypto-now-crm-87992"
 
 jobs:
   deploy:
@@ -18,14 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set target environment
+      - name: Set target environment and project
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "FIREBASE_TARGET=dev" >> $GITHUB_ENV
             echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+            echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_DEV }}" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/master" ]; then
             echo "FIREBASE_TARGET=prod" >> $GITHUB_ENV
             echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+            echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_PROD }}" >> $GITHUB_ENV
           else
             echo "Unknown branch, deployment skipped"
             exit 1

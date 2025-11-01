@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMatchRoute } from '@tanstack/react-router'
 import { toast } from 'react-toastify'
 import {useSelector} from "react-redux";
-import { ROUTES } from '../util/constants'
+import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
 import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'
@@ -20,8 +20,7 @@ export const useTransactionQuery = () => {
   const matchRoute = useMatchRoute()
   const searchTransaction = useSelector((state: RootState) => state.transactionManagement.search.transactions);
 
-  const { data: transactionVolume, isLoading: loadingTransactionVolume } =
-    useQuery({
+  const { data: transactionVolume, isLoading: loadingTransactionVolume } = useQuery({
       queryKey: [
         QUERY_KEYS.TRANSACTION.GET_WEEKLY_TRANSACTION_VOLUME,
         (store.getState() as RootState).dashboard.timelineFilter,
@@ -44,12 +43,9 @@ export const useTransactionQuery = () => {
       enabled:
         !!matchRoute({ to: ROUTES.DASHBOARD }) &&
         !!(store.getState() as RootState).dashboard.timelineFilter,
-    })
+    });
 
-  const {
-    data: weeklyTransactionCount,
-    isLoading: loadingWeeklyTransactionCount,
-  } = useQuery({
+  const { data: weeklyTransactionCount, isLoading: loadingWeeklyTransactionCount } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_WEEKLY_TRANSACTION_COUNT,
       (store.getState() as RootState).dashboard.timelineFilter,
@@ -63,9 +59,6 @@ export const useTransactionQuery = () => {
         await transactionServiceApi.getTransactionCount({ timeline })
 
       if (success) {
-        console.log({
-          data,
-        })
         return data
       }
 
@@ -74,12 +67,9 @@ export const useTransactionQuery = () => {
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
       !!(store.getState() as RootState).dashboard.timelineFilter,
-  })
+  });
 
-  const {
-    data: transactionVolumeTrend,
-    isLoading: loadingTransactionVolumeTrend,
-  } = useQuery({
+  const { data: transactionVolumeTrend, isLoading: loadingTransactionVolumeTrend } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_TRANSACTION_VOLUME_TREND,
       (store.getState() as RootState).dashboard.timelineFilter,
@@ -97,12 +87,9 @@ export const useTransactionQuery = () => {
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
       !!(store.getState() as RootState).dashboard.timelineFilter,
-  })
+  });
 
-  const {
-    data: usersWithTopTransactionVolume,
-    isLoading: loadingUsersWithTopTransactionVolume,
-  } = useQuery({
+  const { data: usersWithTopTransactionVolume, isLoading: loadingUsersWithTopTransactionVolume } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_USERS_WITH_TOP_TRANSACTION_VOLUME,
       (store.getState() as RootState).dashboard.timelineFilter,
@@ -122,12 +109,9 @@ export const useTransactionQuery = () => {
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
       !!(store.getState() as RootState).dashboard.timelineFilter,
-  })
+  });
 
-  const {
-    data: transactionTypeByPercentage,
-    isLoading: loadingTransactionTypeByPercentage,
-  } = useQuery({
+  const { data: transactionTypeByPercentage, isLoading: loadingTransactionTypeByPercentage } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_TRANSACTION_TYPE_BY_PERCENTAGE,
       (store.getState() as RootState).dashboard.timelineFilter,
@@ -145,7 +129,7 @@ export const useTransactionQuery = () => {
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
       !!(store.getState() as RootState).dashboard.timelineFilter,
-  })
+  });
 
   // Aliases expected by consumers
   const transactionCount = weeklyTransactionCount
@@ -167,10 +151,10 @@ export const useTransactionQuery = () => {
       return null;
     },
     enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction,
+    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
-  const { data: transactionDetail, isLoading: loadingTransactionDetails } =
-    useQuery({
+  const { data: transactionDetail, isLoading: loadingTransactionDetails } = useQuery({
       queryKey: [
         QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS,
         (store.getState() as RootState).transactionManagement.details
@@ -207,7 +191,25 @@ export const useTransactionQuery = () => {
         !!matchRoute({ to: ROUTES.TRANSACTIONS }) &&
         !!(store.getState() as RootState).transactionManagement.details
           .transactionSessionId,
-    })
+    });
+  
+  const { data: transactionInfo, isLoading: loadingTransactionInfo } = useQuery({
+    queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS_PAGE, (store.getState() as RootState).transactionManagement.details.transactionSessionId],
+    queryFn: async () => {
+      const sessionId = (store.getState() as RootState).transactionManagement.details.transactionSessionId
+      
+      if (!sessionId) return null
+      
+      const { data, success } = await transactionServiceApi.adminGetTransactionDetails(sessionId)
+      
+      if (success) {
+        return data
+      }
+      
+      return null
+    },
+    enabled: !!matchRoute({ to: ROUTES.TRANSACTIONS_DETAILS }) && !!(store.getState() as RootState).transactionManagement.details.transactionSessionId
+  })
 
   const adminUpdateTransactionMutation = useMutation({
     mutationFn: async () => {
@@ -285,6 +287,10 @@ export const useTransactionQuery = () => {
     loadingSearchTransactions,
     transactionDetail,
     loadingTransactionDetails,
+    transactionInfo,
+    loadingTransactionInfo,
+    
+    // Mutation
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
   }

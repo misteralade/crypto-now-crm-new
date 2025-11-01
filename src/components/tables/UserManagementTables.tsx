@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { convertToMillify } from '../../util'
+import { convertToMillify } from '../../util/index.util.ts'
 import CopyDetails from '../global/CopyDetails'
 import momentClient from '../../util/moment'
 import { UserStatusBadge } from '../table'

@@ -6,6 +6,7 @@ import TableFooter from "../components/tables/TableFooter";
 import NotificationControls from "../components/pages/notifications/NotificationControls.tsx";
 import NotificationFilterModal from "../components/pages/notifications/NotificationFilterModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import AvatarIcon from '../assets/img/avatar.webp'
 
 const NotificationsPage = () => {
   const {
@@ -47,7 +48,7 @@ const NotificationsPage = () => {
             <span className="text-red-500 font-medium">Admin</span>
             <div className="rounded-full h-8 w-8 overflow-hidden">
               <img
-                src="/images/avatar.png"
+                src={AvatarIcon}
                 alt="Admin avatar"
                 className="h-8 w-8 object-cover"
               />

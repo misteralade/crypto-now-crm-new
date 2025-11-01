@@ -24,9 +24,6 @@ interface VolumeTrendProps {
 }
 
 export const VolumeTrend = ({ loading, data }: VolumeTrendProps) => {
-  console.log({
-    loading
-  })
   // const lineData = data?.map(item => ({ date: item.dateLabel, value: Number(item.totalFiatVolume) }));
   const lineData = data?.map((item) => ({
     date: item.dateLabel,
