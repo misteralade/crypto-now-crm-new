@@ -118,7 +118,34 @@ export const useAdminQuery = () => {
       const { data } = error.response as { data: { error: { message: string } } };
       toast.error(`Failed to update Admin Status: ${data.error.message}`)
     }
-  })
+  });
+  
+  const adminSoftDeleteAdminMutation = useMutation({
+    mutationKey: [QUERY_KEYS.ADMIN.SOFT_DELETE_ADMIN],
+    mutationFn: async () => {
+      toast.loading(`Deleting Admin...`, { toastId: QUERY_KEYS.ADMIN.SOFT_DELETE_ADMIN });
+      
+      const adminId = (store.getState() as RootState).admin.delete.adminId;
+      
+      if (!adminId) {
+        throw new Error("Admin ID is required to delete an admin.");
+      }
+      
+      const { message, success } = await adminServiceApi.adminSoftDeleteAdmin(adminId);
+      return { message, success };
+    },
+    onSuccess: ({ message, success }) => {
+      toast.dismiss();
+      toast.success(message || "Successfully Deleted Admin");
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN.SEARCH_ADMINS] });
+      return success;
+    },
+    onError: (error: AxiosServerError) => {
+      toast.dismiss()
+      const { data } = error.response as { data: { error: { message: string } } };
+      toast.error(`Failed to delete Admin: ${data.error.message}`)
+    }
+  });
 
   return {
     // 🧩 Values
@@ -133,5 +160,6 @@ export const useAdminQuery = () => {
     createRoleMutation,
     createAdminMutation,
     updateAdminActiveStatusMutation,
+    adminSoftDeleteAdminMutation,
   };
 };

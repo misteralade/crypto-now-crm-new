@@ -5,7 +5,8 @@ import momentClient from "../../util/moment";
 import type {SearchAdminResponsePayload} from "../../types/response.payload.types.ts";
 
 export const SearchAdminDataColumn = (
-  handleUpdateAdminStatus: (id: string, status: boolean) => void
+  handleUpdateAdminStatus: (id: string, status: boolean) => void,
+  handleDeleteUser: (id: string) => void,
 ): Array<TableColumn> => [
   {
     key: 'id',
@@ -75,6 +76,13 @@ export const SearchAdminDataColumn = (
           onClick={() => handleUpdateAdminStatus(row.id, !row.status)}
         >
           {row.status === true ? 'Suspend' : 'Unsuspend'}
+        </button>
+        
+        <button
+          className="px-3 py-1 font-medium text-[12px] bg-[#EF4444] text-white rounded-full hover:opacity-70 cursor-pointer hover:cursor-pointer"
+          onClick={() => handleDeleteUser(row.id)}
+        >
+          Delete
         </button>
       </div>
     ),
