@@ -1,8 +1,10 @@
 import {Fragment} from "react";
 import AvatarImage from '../../../../assets/img/avatar.webp';
 import {ClickableDetails} from "../../../global/CopyDetails.tsx";
+import {ROUTES} from "../../../../util/constants.ts";
 
 interface TransactionDetailsUserProfileProps {
+  userId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -10,7 +12,7 @@ interface TransactionDetailsUserProfileProps {
   profileImageUrl?: string;
 }
 
-const TransactionDetailsUserProfile = ({ firstName, lastName, email, phone, profileImageUrl }: TransactionDetailsUserProfileProps) => {
+const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, phone, profileImageUrl }: TransactionDetailsUserProfileProps) => {
   const openCallLine = (phoneNumber: string) => {
     window.open(`tel:${phoneNumber}`, '_blank');
   }
@@ -18,7 +20,16 @@ const TransactionDetailsUserProfile = ({ firstName, lastName, email, phone, prof
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">User Profile</h2>
+        <div className="flex justify-between">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">User Profile</h2>
+          
+          <a
+            className="text-sm text-blue-600 hover:underline cursor-pointer"
+            href={`${ROUTES.USERS}/${userId}`}
+          >
+            Transactions
+          </a>
+        </div>
         <div className="space-y-4">
           <img
             src={profileImageUrl || AvatarImage}
