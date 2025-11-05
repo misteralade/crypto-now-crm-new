@@ -28,7 +28,7 @@ const NotificationsPage = () => {
     resetSearchFilter,
     toggleShowFilterModal,
     handleSearchChange,
-  } =useNotificationsPage();
+  } = useNotificationsPage();
 
   const columns = useMemo(() => NotificationsDataColumn(handleViewTransactionDetails), [ handleViewTransactionDetails ],)
 

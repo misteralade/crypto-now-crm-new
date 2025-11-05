@@ -60,7 +60,7 @@ export const NotificationsDataColumn = (
           <button
             aria-label="View Transaction"
             className={`p-1 rounded cursor-pointer hover:bg-black/5`}
-            onClick={() => viewTransactionDetails(row.transactionId)}
+            onClick={() => viewTransactionDetails(row.sessionId)}
           >
             View Transaction
           </button>
@@ -78,10 +78,11 @@ export const NotificationsDataRow = (
   if (!data) {
     return rowItems
   }
-
+  
   data.map((item: AdminSearchNotifications) => {
     rowItems.push({
       transactionId: item.transactionId,
+      sessionId: item.transaction?.sessionId,
       type: item.adminUserId ? 'ADMIN' : item.userId ? 'USER' : 'ANONYMOUS',
       message: item.message,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),

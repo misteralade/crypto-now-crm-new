@@ -19,7 +19,7 @@ export const searchNotificationInitialState: SearchNotificationRequestType = {
   // Include Related Entities
   includeUser: false,
   includeAdmin: false,
-  includeTransaction: false,
+  includeTransaction: true,
 
   // BasicSearchQuerySchema fields
   page: 1,
