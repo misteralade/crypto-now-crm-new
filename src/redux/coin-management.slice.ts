@@ -21,6 +21,9 @@ const coinManagementSlice = createSlice({
       coinId: undefined as string | undefined,
       payload: editSupportedCryptoInitialState,
     },
+    delete: {
+      coinId: undefined as string | undefined,
+    },
   },
   reducers: {
     // Sets
@@ -59,6 +62,9 @@ const coinManagementSlice = createSlice({
       const { field, value } = action.payload;
       state.edit.payload[field] = value;
     },
+    setDeleteCoinId: (state, action: PayloadAction<string | undefined>) => {
+      state.delete.coinId = action.payload
+    },
 
     // Clears
     clearSearchSupportedCrypto: (state) => {
@@ -73,6 +79,9 @@ const coinManagementSlice = createSlice({
     clearEditCoinPayload: (state) => {
       state.edit.payload = { ...editSupportedCryptoInitialState }
     },
+    clearDeleteCoinId: (state) => {
+      state.delete.coinId = undefined;
+    }
   },
 })
 
@@ -82,11 +91,13 @@ export const {
   setSearchSupportedCrypto,
   setEditCoinId,
   setEditCoinPayloadField,
+  setDeleteCoinId,
 
   clearSearchSupportedCrypto,
   clearAddCoin,
   clearEditCoinId,
   clearEditCoinPayload,
+  clearDeleteCoinId,
 } = coinManagementSlice.actions;
 
 export default coinManagementSlice.reducer;

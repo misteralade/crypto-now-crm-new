@@ -1,4 +1,9 @@
-import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from './index.js'
+import {
+  axiosDeleteRequestHandler,
+  axiosGetRequestHandler,
+  axiosPatchRequestHandler,
+  axiosPostRequestHandler
+} from './index.js'
 import type {
   CreateSupportedCryptoAndAdminWalletRequestType, EditSupportedCryptoAndAdminWalletRequestType,
   SearchSupportedCryptoWalletRequestSchema,
@@ -52,6 +57,10 @@ class CryptoServiceApi {
 
   async adminGetSupportedCrypto(cryptoId: string) {
     return await axiosGetRequestHandler(`/crypto/admin/supported-crypto/${cryptoId}`) as GetSupportedCryptoAPIResponse;
+  }
+  
+  async adminDeleteSupportedCrypto(cryptoId: string) {
+    return await axiosDeleteRequestHandler(`/crypto/admin/supported-crypto/${cryptoId}`) as BaseApiResponse<null>;
   }
 }
 
