@@ -56,7 +56,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
             type="number"
             min={0.001}
             max={NUMBERS.ONE_BILLION}
-            defaultValue="0.001"
+            placeholder="0.001"
             labelClass="text-[14px] text-[#454745]"
             valueClass="text-[18px] text-[#4B5563]"
           />
@@ -71,7 +71,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"
-            defaultValue="100"
+            placeholder="100"
             labelClass="text-[14px] text-[#454745]"
             valueClass="text-[18px] text-[#4B5563]"
           />
@@ -88,7 +88,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
             min={0.001}
             max={NUMBERS.ONE_BILLION}
             type="number"
-            defaultValue="0.5"
+            placeholder="0.5"
             step="0.1"
             labelClass="text-[14px] text-[#454745]"
             valueClass="text-[18px] text-[#4B5563]"
@@ -104,7 +104,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"
-            defaultValue="30"
+            placeholder="30"
             labelClass="text-[14px] text-[#454745] xl:whitespace-nowrap"
             valueClass="text-[18px] text-[#4B5563]"
           />
