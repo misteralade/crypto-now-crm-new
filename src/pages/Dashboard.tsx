@@ -29,12 +29,13 @@ const Dashboard = () => {
     
     // ⚙️ Functions
     handleSelectedTimelineChange,
+    handleViewTransactionDetails,
   } = useDashboardPage()
   
   const numberOfTransactionsDisplay = !loadingTransactionCount
     ? convertToMillify(transactionCount || 0)
     : 'Loading...'
-  const columns = useMemo(() => UsersWithTopTransactionColumn, [])
+  const columns = useMemo(() => UsersWithTopTransactionColumn(handleViewTransactionDetails), [ handleViewTransactionDetails ])
   const data = useMemo(
     () => UsersWithTopTransactionDataRow(usersWithTopTransactionVolume) ?? [],
     [usersWithTopTransactionVolume, loadingUsersWithTopTransactionVolume],

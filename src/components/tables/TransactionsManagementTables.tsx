@@ -17,7 +17,9 @@ import type {
 } from '../../types/response.payload.types'
 
 // Dashboard Tables Start
-export const UsersWithTopTransactionColumn: Array<TableColumn> = [
+export const UsersWithTopTransactionColumn = (
+  handleViewTransaction: (sessionId: string) => void,
+): Array<TableColumn> => [
   {
     key: 'user',
     header: 'User',
@@ -44,6 +46,20 @@ export const UsersWithTopTransactionColumn: Array<TableColumn> = [
     key: 'date',
     header: 'Date',
     render: (value) => <TableDate date={value} />,
+  },
+  {
+    key: 'action',
+    header: 'Action',
+    render: (_, row) => (
+      <div className="flex items-center justify-start gap-2 lg:gap-x-[16px] whitespace-nowrap">
+        <button
+          className="px-2.5 md:px-3 py-1 rounded-full bg-[#E6E6FE] cursor-pointer hover:opacity-80 text-[#03034D] text-xs md:text-xs font-medium"
+          onClick={() => handleViewTransaction(row.transactionId)}
+        >
+          View
+        </button>
+      </div>
+    ),
   },
 ]
 
