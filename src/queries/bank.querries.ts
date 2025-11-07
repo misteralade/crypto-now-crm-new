@@ -108,6 +108,7 @@ export const useBankQuery = () => {
     mutationKey: [QUERY_KEYS.BANK.ADMIN_CREATE_BANK_ACCOUNT],
     mutationFn: async () => {
       const payload = (store.getState() as RootState).fiat.bank.createBank;
+      
       if (!payload.bankId || !payload.accountNumber || !payload.accountHolderName) throw new Error("Incomplete bank account data.");
       
       toast.loading("Creating bank account...");
@@ -118,7 +119,7 @@ export const useBankQuery = () => {
       toast.dismiss();
       toast.success(message || "Bank account created successfully.");
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.BANK.PLATFORM_BANK_ACCOUNTS]
+        queryKey: [QUERY_KEYS.BANK.PLATFORM_BANK_ACCOUNTS, QUERY_KEYS.BANK.SEARCHED_SUPPORTED_BANKS]
       });
       return success;
     },

@@ -82,7 +82,7 @@ export default function BankDetailsModal({
               Go back
             </button>
             <button
-              className="rounded-full bg-[#03034D] hover:bg-[#FF8B5A] text-white px-12 py-4 text-lg font-semibold w/full md:w-fit"
+              className="rounded-full bg-[#03034D] text-white px-12 py-4 text-lg font-semibold w/full hover:bg-[#FF8B5A] hover:cursor-pointer md:w-fit"
               disabled={
                 !payload.bankId ||
                 !payload.accountNumber ||
