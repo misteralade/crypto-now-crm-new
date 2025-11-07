@@ -1,12 +1,14 @@
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import { useDispatch } from "react-redux";
 import {useBankQuery} from "../../queries/bank.querries";
 import {
   clearSelectedBankId,
-  setCreateBankField,
+  setCreateBankField, setSearchFiatField,
   setSelectedBankId,
 } from '../../redux/fiat.slice'
 import type {CreateBankAccountRequestType} from "../../schemas/bank.schema";
+import {debounce} from "../../util/debouce.util.ts";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.ts";
 
 export const useManageFiatPage = () => {
   const dispatch = useDispatch();
@@ -16,15 +18,18 @@ export const useManageFiatPage = () => {
     loadingPlatformBankAccounts,
     platformSupportedBanks,
     loadingPlatformSupportedBanks,
+    searchedSupportedBanks,
+    loadingSearchedSupportedBanks,
 
     // Mutations
     makeAdminBankAccountDefaultMutation,
     adminDeleteBankAccountMutation,
     adminCreateBankAccountMutation,
   } = useBankQuery();
-
+  
+  const [searchQuery, setSearchQuery] = useState('')
+  
   const [openBankModal, setOpenBankModal] = useState(false)
-
 
   const handleMakeDefault = async (id: string) => {
     dispatch(setSelectedBankId(id));
@@ -49,7 +54,24 @@ export const useManageFiatPage = () => {
       value
     }))
   }
-
+  
+  const handleSearchChange = useMemo(() => {
+    const debouncedUpdate = debounce(
+      (query: string) => {
+        dispatch(setSearchFiatField({
+          field: "searchQuery",
+          value: query
+        }))
+      },
+      TIME_IN_MILLISECONDS.FIVE_HUNDRED_MILLISECONDS
+    );
+    
+    return (query: string) => {
+      setSearchQuery(query);
+      debouncedUpdate(query);
+    };
+  }, [dispatch]);
+  
   // toggle functions can be added here if needed in the future
   const toggleBankModal = () => setOpenBankModal(!openBankModal);
 
@@ -60,6 +82,9 @@ export const useManageFiatPage = () => {
     openBankModal,
     platformSupportedBanks,
     loadingPlatformSupportedBanks,
+    searchQuery,
+    searchedSupportedBanks,
+    loadingSearchedSupportedBanks,
 
     // ⚙️ Functions
     toggleBankModal,
@@ -67,5 +92,6 @@ export const useManageFiatPage = () => {
     handleDeleteBank,
     handleCreateBankField,
     handleAdminCreateBank,
+    handleSearchChange,
   }
 }

@@ -7,9 +7,9 @@ import {
 import type {
   BaseApiResponse,
   GetAllPlatformBankAccountAPIResponsePayload,
-  GetSupportedPlatformBankAccountAPIResponsePayload
+  GetSupportedPlatformBankAccountAPIResponsePayload, SearchSupportedBanksAPIResponse
 } from "../types/response.payload.types";
-import type {CreateBankAccountRequestType} from "../schemas/bank.schema";
+import type {AdminSearchSupportedBankRequestType, CreateBankAccountRequestType} from "../schemas/bank.schema";
 
 class BankServiceApi {
   private static instance: BankServiceApi;
@@ -43,6 +43,10 @@ class BankServiceApi {
 
   async adminCreateBankAccount(payload: CreateBankAccountRequestType) {
     return await axiosPostRequestHandler(`/bank/platform/create`, payload) as BaseApiResponse<null>;
+  }
+  
+  async adminSearchSupportedBanks(payload: AdminSearchSupportedBankRequestType) {
+    return await axiosPostRequestHandler(`/bank/admin/supported-bank/search`, payload) as SearchSupportedBanksAPIResponse;
   }
 }
 

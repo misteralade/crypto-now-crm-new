@@ -6,10 +6,13 @@ import { bankServiceApi } from "../api/bank.api";
 import { store} from "../store";
 import { QUERY_KEYS } from './querries.keys.js'
 import type {RootState} from "../store";
+import {useSelector} from "react-redux";
 
 export const useBankQuery = () => {
   const queryClient = useQueryClient();
   const matchRoute = useMatchRoute();
+  
+  const searchBank = useSelector((state: RootState) => state.fiat.bank.search);
 
   const { data: platformBankAccounts, isLoading: loadingPlatformBankAccounts } = useQuery({
     queryKey: [QUERY_KEYS.BANK.PLATFORM_BANK_ACCOUNTS],
@@ -38,6 +41,20 @@ export const useBankQuery = () => {
     },
     enabled: !!(matchRoute({ to: ROUTES.MANAGE_FIAT })),
   });
+  
+  const { data: searchedSupportedBanks, isLoading: loadingSearchedSupportedBanks } = useQuery({
+    queryKey: [QUERY_KEYS.BANK.SEARCHED_SUPPORTED_BANKS, searchBank],
+    queryFn: async () => {
+      const { data, success } = await bankServiceApi.adminSearchSupportedBanks(searchBank);
+
+      if (success) {
+        return data;
+      }
+
+      return null;
+    },
+    enabled: !!(matchRoute({ to: ROUTES.MANAGE_FIAT })) && !!searchBank,
+  })
 
   const makeAdminBankAccountDefaultMutation = useMutation({
     mutationKey: [QUERY_KEYS.BANK.MAKE_ADMIN_BANK_ACCOUNT_DEFAULT],
@@ -117,6 +134,8 @@ export const useBankQuery = () => {
     loadingPlatformBankAccounts,
     platformSupportedBanks,
     loadingPlatformSupportedBanks,
+    searchedSupportedBanks,
+    loadingSearchedSupportedBanks,
     
     // Mutations
     makeAdminBankAccountDefaultMutation,

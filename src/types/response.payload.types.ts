@@ -319,6 +319,14 @@ export type GetAllPlatformBankAccountAPIResponsePayload = BaseApiResponse<Array<
 
 export type GetSupportedPlatformBankAccountAPIResponsePayload = BaseApiResponse<Array<SupportedPlatformBankAccountResponse>>
 
+export type SearchSupportedBanksAPIResponse = BaseApiResponse<{
+  banks: Array<AdminBankAccountResponsePayload>;
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}>;
+
 export type SupportedPlatformBankAccountResponse = {
   id: string;
   name: string;

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { authServiceApi } from '../../api/auth.api'
-import { ROUTES } from '../../util/constants'
+import {LOCAL_STORAGE_KEYS, ROUTES} from '../../util/constants'
 import type { FormEvent } from 'react'
 import type { AuthAPIResponse } from '../../types/response.payload.types'
 
@@ -14,6 +14,15 @@ export const useSignInPage = () => {
   const [keepLoggedIn, setKeepLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  
+  useEffect(() => {
+    // Retrieve access token from local storage
+    const accessToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN)
+    if (accessToken) {
+      // If access token exists, navigate to dashboard
+      navigate({ to: ROUTES.DASHBOARD })
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()

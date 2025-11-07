@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {BankAndCryptoType} from './enum.schema'
+import { BasicSearchQuerySchema } from "./common.schema";
 
 export const CreateBankAccountRequestSchema = z.object({
   bankId: z.coerce.string().uuid({ message: "Invalid bank ID format" }),
@@ -12,4 +13,14 @@ export const CreateBankAccountRequestSchema = z.object({
   instructions: z.coerce.string().max(1500).optional(),
 });
 
+export const AdminSearchSupportedBankRequestSchema = BasicSearchQuerySchema.extend({
+  createdBy: z.coerce.string().uuid({ message: "Invalid bank ID format" }).optional(),
+  accountNumber: z.coerce.string().max(50, { message: "Account number must be at most 50 characters" }).optional(),
+  accountHolderName: z.coerce.string().max(100, { message: "Account holder name must be at most 100 characters" }).optional(),
+  isActive: z.coerce.boolean().optional().default(true),
+  isDeleted: z.coerce.boolean().optional().default(false),
+  isDefault: z.coerce.boolean().optional(),
+})
+
 export type CreateBankAccountRequestType = z.infer<typeof CreateBankAccountRequestSchema>;
+export type AdminSearchSupportedBankRequestType = z.infer<typeof AdminSearchSupportedBankRequestSchema>;
