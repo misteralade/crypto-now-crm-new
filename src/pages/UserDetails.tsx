@@ -52,9 +52,10 @@ const UserDetails = () => {
     handleMaxAmountRange,
     handleSelectedCryptoId,
     handleSelectedStatus,
+    handleViewTransactionDetails
   } = useTransactionsTable();
 
-  const columns = useMemo(() => UserTransactionsManagementColumn(handleDownloadSingle),
+  const columns = useMemo(() => UserTransactionsManagementColumn(handleViewTransactionDetails, handleDownloadSingle),
     [
       searchTransactions,
       loadingSearchTransactions,

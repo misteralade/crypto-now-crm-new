@@ -1,4 +1,4 @@
-import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
+import {ArrowUpRight, ChevronDown, ChevronRight, Download} from 'lucide-react'
 import { Fragment } from 'react'
 import { convertToMillify } from '../../util/index.util.ts'
 import { CustomCheckbox } from '../global/CheckBoxes'
@@ -257,7 +257,8 @@ export const TransactionsManagementDataRow = (
 
 // Start User Details Transactions History Table
 export const UserTransactionsManagementColumn = (
-  onDownload?: (id: string) => void
+  handleViewTransaction: (sessionId: string) => void,
+  onDownload: (id: string) => void,
 ): Array<TableColumn> => [
   {
     key: 'id',
@@ -353,13 +354,13 @@ export const UserTransactionsManagementColumn = (
     header: (
       <Fragment>
         <div className="py-3 text-left text-sm font-medium text-gray-500">
-          <span className="flex items-center gap-2"></span>
+          <span className="flex items-center gap-2">Actions</span>
         </div>
       </Fragment>
     ),
     render: (_, row) => (
       <Fragment>
-        <div className="px-4 py-4 align-middle">
+        <div className="px-4 justify-between min-w-[100px] items-center align-middle">
           <button
             aria-label="Download"
             className={`p-1 rounded cursor-pointer ${
@@ -370,18 +371,14 @@ export const UserTransactionsManagementColumn = (
             disabled={row.status === 'EXPIRED'}
             onClick={() => onDownload?.(row.id)}
           >
-            <svg
-              width="16"
-              height="19"
-              viewBox="0 0 16 19"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.35714 0.642857C8.35714 0.472361 8.28941 0.308848 8.16885 0.188288C8.0483 0.0677293 7.88478 0 7.71429 0C7.54379 0 7.38028 0.0677293 7.25972 0.188288C7.13916 0.308848 7.07143 0.472361 7.07143 0.642857V13.2343L2.81143 8.97429C2.68956 8.86073 2.52838 8.79891 2.36184 8.80185C2.19529 8.80479 2.03639 8.87226 1.91861 8.99004C1.80083 9.10782 1.73336 9.26672 1.73042 9.43327C1.72748 9.59981 1.7893 9.76099 1.90286 9.88286L7.26 15.24C7.38054 15.3604 7.54393 15.428 7.71429 15.428C7.88464 15.428 8.04804 15.3604 8.16857 15.24L13.5257 9.88286C13.5889 9.824 13.6395 9.75303 13.6747 9.67418C13.7098 9.59532 13.7287 9.51019 13.7302 9.42388C13.7317 9.33756 13.7159 9.25182 13.6835 9.17177C13.6512 9.09173 13.6031 9.01901 13.542 8.95797C13.481 8.89692 13.4083 8.8488 13.3282 8.81647C13.2482 8.78413 13.1624 8.76826 13.0761 8.76978C12.9898 8.7713 12.9047 8.79019 12.8258 8.82533C12.747 8.86047 12.676 8.91113 12.6171 8.97429L8.35714 13.2343V0.642857ZM0.642857 17.5714C0.472361 17.5714 0.308848 17.6392 0.188288 17.7597C0.0677293 17.8803 0 18.0438 0 18.2143C0 18.3848 0.0677293 18.5483 0.188288 18.6689C0.308848 18.7894 0.472361 18.8571 0.642857 18.8571H14.7857C14.9562 18.8571 15.1197 18.7894 15.2403 18.6689C15.3608 18.5483 15.4286 18.3848 15.4286 18.2143C15.4286 18.0438 15.3608 17.8803 15.2403 17.7597C15.1197 17.6392 14.9562 17.5714 14.7857 17.5714H0.642857Z"
-                fill={row.status === 'EXPIRED' ? '#98A2B3' : '#575AE5'}
-              />
-            </svg>
+            <Download size={20} fill={row.status === 'EXPIRED' ? '#98A2B3' : '#575AE5'}/>
+          </button>
+          
+          <button
+            className="ml-4 px-2.5 md:px-3 py-1 rounded-full bg-[#E6E6FE] cursor-pointer hover:opacity-80 text-[#03034D] text-xs md:text-xs font-medium"
+            onClick={() => handleViewTransaction(row.transactionId)}
+          >
+            View
           </button>
         </div>
       </Fragment>
