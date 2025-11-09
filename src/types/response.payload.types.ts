@@ -473,3 +473,28 @@ export type AdminSearchNotifications = {
   transaction: SearchTransactionsResponse;
 }
 // End Notification
+
+// Start Dispute
+export type AdminSearchDisputesAPIResponse = BaseApiResponse<AdminSearchDisputesResponse>;
+
+export type AdminSearchDisputesResponse = {
+  disputes: Array<AdminSearchDisputes>;
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export type AdminSearchDisputes = {
+  id: string;
+  transactionId: string;
+  disputeReason: string;
+  resolution: "APPROVED" | "REJECTED" | "REFUNDED" | "PARTIALLY_REFUNDED" | "TRANSACTION_CORRECTED" | "NO_ACTION_REQUIRED" | "ESCALATED_TO_MANAGEMENT";
+  status: "OPEN" | "UNDER_REVIEW" | "AWAITING_EVIDENCE" | "AWAITING_USER_RESPONSE" | "AWAITING_ADMIN_RESPONSE" | "ESCALATED" | "RESOLVED" | "REJECTED" | "CLOSED";
+  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  transaction: SearchTransactionsResponse;
+  creator: UserResponsePayload;
+  createdAt: Date;
+  updatedAt: Date;
+}
+// End Dispute

@@ -1,24 +1,50 @@
-import { useState } from 'react'
+import {useMemo, useState} from 'react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Avatar from '../assets/img/avatar.webp'
 import { disputes } from '../data/disputes.1'
 import DisputesControls from "../components/pages/disputes/DisputesControls.tsx";
-import DisputeTable, {type DisputeRow} from "../components/pages/disputes/DisputeTable.tsx";
+import {type DisputeRow} from "../components/pages/disputes/DisputeTable.tsx";
 import DisputeDetailsDrawer from '../components/pages/disputes/DisputeDetailsDrawer.tsx';
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import {useDisputesPage} from "../hooks/pages/useDisputesPage.ts";
+import {DisputeManagementColumn, DisputeManagementDataRow} from "../components/tables/DisputesTable.tsx";
+import Table from "../components/table.tsx";
 
 const Disputes = () => {
+  const {
+    // 🧩 Values
+    searchDispute,
+    loadingSearchDispute,
+    showTransactionDrawer,
+    
+    // ⚙️ Functions
+    handleViewDisputeDetails,
+    handleShowTransactionDetails,
+    handleNavigateToTransactionPage,
+    toggleTransactionDetailsDrawer,
+    handleSortByField,
+  } = useDisputesPage();
+  
+  const columns = useMemo(() => DisputeManagementColumn(handleViewDisputeDetails, handleShowTransactionDetails, handleSortByField, handleNavigateToTransactionPage),
+    [
+      handleViewDisputeDetails,
+      handleShowTransactionDetails,
+      handleSortByField,
+      handleNavigateToTransactionPage,
+    ]
+  );
+  const data = useMemo(() => DisputeManagementDataRow(searchDispute?.disputes || []), [searchDispute, loadingSearchDispute]);
+  
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<DisputeRow | undefined>(undefined)
-
-  const filtered = disputes.filter(
+  disputes.filter(
     (d) =>
       d.transactionId.toLowerCase().includes(query.toLowerCase()) ||
       d.user.toLowerCase().includes(query.toLowerCase()) ||
       d.id.includes(query),
-  )
-
+  );
+  
   const openNewDispute = () => {
     const now = new Date()
     setSelected({
@@ -36,7 +62,7 @@ const Disputes = () => {
       status: 'Open',
     })
   }
-
+  
   return (
     <AuthenticatedLayout>
       <div className="p-6 mx-auto">
@@ -63,11 +89,11 @@ const Disputes = () => {
           onSearchChange={setQuery}
         />
         
-        <DisputeTable data={filtered} onView={setSelected} />
+        <Table data={data} columns={columns} loading={loadingSearchDispute} />
         
         <DisputeDetailsDrawer
-          isOpen={!!selected}
-          onClose={() => setSelected(undefined)}
+          isOpen={showTransactionDrawer}
+          onClose={toggleTransactionDetailsDrawer}
           dispute={
             selected
               ? {
@@ -94,5 +120,6 @@ const Disputes = () => {
     </AuthenticatedLayout>
   )
 }
+
 
 export default Disputes;

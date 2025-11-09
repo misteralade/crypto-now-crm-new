@@ -29,6 +29,7 @@ export const ROUTES = {
   TRANSACTIONS: '/dashboard/transactions',
   TRANSACTIONS_DETAILS: '/dashboard/transactions/$id',
   DISPUTES: '/dashboard/disputes',
+  DISPUTE_DETAILS: `/dashboard/disputes/$id`,
   COIN_MANAGEMENT: '/dashboard/coin-management',
   ADD_COIN: '/dashboard/coin-management/add-coin',
   EDIT_COIN: '/dashboard/coin-management/$coinId',
@@ -227,6 +228,144 @@ export const transactionStatusStyles: Record<
     textColor: 'text-blue-600',
   },
 }
+
+export const disputeStatusStyles: Record<
+  string,
+  { text: string; bg: string; dot: string; textColor: string }
+> = {
+  OPEN: {
+    text: "Open",
+    bg: "bg-yellow-50",
+    dot: "bg-yellow-400",
+    textColor: "text-yellow-700",
+  },
+  UNDER_REVIEW: {
+    text: "Under Review",
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-700",
+  },
+  AWAITING_EVIDENCE: {
+    text: "Awaiting Evidence",
+    bg: "bg-purple-50",
+    dot: "bg-purple-400",
+    textColor: "text-purple-700",
+  },
+  AWAITING_USER_RESPONSE: {
+    text: "Awaiting User Response",
+    bg: "bg-orange-50",
+    dot: "bg-orange-400",
+    textColor: "text-orange-700",
+  },
+  AWAITING_ADMIN_RESPONSE: {
+    text: "Awaiting Admin Response",
+    bg: "bg-teal-50",
+    dot: "bg-teal-400",
+    textColor: "text-teal-700",
+  },
+  ESCALATED: {
+    text: "Escalated",
+    bg: "bg-red-50",
+    dot: "bg-red-400",
+    textColor: "text-red-700",
+  },
+  RESOLVED: {
+    text: "Resolved",
+    bg: "bg-green-50",
+    dot: "bg-green-400",
+    textColor: "text-green-700",
+  },
+  REJECTED: {
+    text: "Rejected",
+    bg: "bg-gray-100",
+    dot: "bg-gray-500",
+    textColor: "text-gray-700",
+  },
+  CLOSED: {
+    text: "Closed",
+    bg: "bg-gray-50",
+    dot: "bg-gray-400",
+    textColor: "text-gray-700",
+  },
+};
+
+export const disputeResolutionStyles: Record<
+  string,
+  { text: string; bg: string; dot: string; textColor: string }
+> = {
+  APPROVED: {
+    text: "Approved",
+    bg: "bg-green-50",
+    dot: "bg-green-500",
+    textColor: "text-green-700",
+  },
+  REJECTED: {
+    text: "Rejected",
+    bg: "bg-red-50",
+    dot: "bg-red-400",
+    textColor: "text-red-700",
+  },
+  REFUNDED: {
+    text: "Refunded",
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-700",
+  },
+  PARTIALLY_REFUNDED: {
+    text: "Partially Refunded",
+    bg: "bg-yellow-50",
+    dot: "bg-yellow-400",
+    textColor: "text-yellow-700",
+  },
+  TRANSACTION_CORRECTED: {
+    text: "Transaction Corrected",
+    bg: "bg-purple-50",
+    dot: "bg-purple-400",
+    textColor: "text-purple-700",
+  },
+  NO_ACTION_REQUIRED: {
+    text: "No Action Required",
+    bg: "bg-gray-50",
+    dot: "bg-gray-400",
+    textColor: "text-gray-700",
+  },
+  ESCALATED_TO_MANAGEMENT: {
+    text: "Escalated to Management",
+    bg: "bg-red-50",
+    dot: "bg-red-500",
+    textColor: "text-red-700",
+  },
+};
+
+export const disputePriorityStyles: Record<
+  string,
+  { text: string; bg: string; dot: string; textColor: string }
+> = {
+  LOW: {
+    text: "Low",
+    bg: "bg-gray-50",
+    dot: "bg-gray-400",
+    textColor: "text-gray-700",
+  },
+  MEDIUM: {
+    text: "Medium",
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-700",
+  },
+  HIGH: {
+    text: "High",
+    bg: "bg-orange-50",
+    dot: "bg-orange-400",
+    textColor: "text-orange-700",
+  },
+  URGENT: {
+    text: "Urgent",
+    bg: "bg-red-50",
+    dot: "bg-red-500",
+    textColor: "text-red-700",
+  },
+};
 
 export const userStatusOptions = [
   { value: undefined, label: 'All' },
