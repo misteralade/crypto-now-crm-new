@@ -18,6 +18,7 @@ const DisputeDetails = () => {
     // ⚙️ Functions
     getDisputeStatusColor,
     adminSendDisputeMutation,
+    goBack,
   } = useDisputeDetailsPage();
   
   const getStatusIcon = (status: | 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED') => {
@@ -58,6 +59,13 @@ const DisputeDetails = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
+                      <button
+                        className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 hover:cursor-pointer"
+                        onClick={goBack}
+                      >
+                        Go Back
+                      </button>
+                      
                       <div>
                         <h1 className="text-2xl font-bold text-gray-900">Dispute Details</h1>
                         <p className="text-sm text-gray-500">Dispute ID: {disputeDetails.id}</p>
