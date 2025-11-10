@@ -1,8 +1,11 @@
 import {Fragment} from "react";
 import TransactionDetailsUserProfile from "../../manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../../manageTransactions/details/TransactionDetailsPipeline.tsx";
+import {useNavigate} from "@tanstack/react-router";
+import {ROUTES} from "../../../../util/constants.util.ts";
 
 interface DisputeUserInformationProps {
+  disputeId: string;
   userId: string;
   firstName: string;
   lastName: string | null;
@@ -16,7 +19,19 @@ interface DisputeUserInformationProps {
   processorLastName: string | null;
 }
 
-const DisputeUserInformation = ({ userId, firstName, lastName, email, phoneNumber, profileImg, transactionCreatedAt, transactionUpdatedAt, transactionProcessedAt, processorFirstName, processorLastName }: DisputeUserInformationProps) => {
+const DisputeUserInformation = ({ disputeId, userId, firstName, lastName, email, phoneNumber, profileImg, transactionCreatedAt, transactionUpdatedAt, transactionProcessedAt, processorFirstName, processorLastName }: DisputeUserInformationProps) => {
+  const navigate = useNavigate();
+  
+  const navigateToUserTransactions = () => {
+    if (userId) {
+      navigate({ to: `${ROUTES.USERS}/${userId}` });
+    }
+  }
+  
+  const navigateToAllDisputes = () => navigate({ to: ROUTES.DISPUTES });
+  
+  const navigateToDisputes = () => navigate({ to: `${ROUTES.DISPUTES}/${disputeId}` });
+  
   return (
     <Fragment>
       <div className="lg:col-span-1">
@@ -54,13 +69,25 @@ const DisputeUserInformation = ({ userId, firstName, lastName, email, phoneNumbe
               </p>
               
               <div className="space-y-2">
-                <button className="w-full px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">
-                  View All Transactions
-                </button>
-                <button className="w-full px-4 py-2 text-sm bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors">
+                {userId && (
+                  <button
+                    onClick={navigateToUserTransactions}
+                    className="w-full px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors hover:cursor-pointer"
+                  >
+                    View All Transactions
+                  </button>
+                )}
+                <button
+                  onClick={navigateToAllDisputes}
+                  className="w-full px-4 py-2 text-sm bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors hover:cursor-pointer"
+                >
                   View All Disputes
                 </button>
-                <button className="w-full px-4 py-2 text-sm bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                
+                <button
+                  onClick={navigateToDisputes}
+                  className="w-full px-4 py-2 text-sm bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors hover:cursor-pointer"
+                >
                   Send Message
                 </button>
               </div>

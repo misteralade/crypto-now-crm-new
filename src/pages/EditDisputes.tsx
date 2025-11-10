@@ -191,6 +191,7 @@ const EditDisputes = () => {
                   {/* Right Column - User Information */}
                   {!loadingTransactionDetails && transactionDetails && (
                     <DisputeUserInformation
+                      disputeId={disputeDetails.id}
                       userId={transactionDetails.userId}
                       firstName={transactionDetails.profile?.firstName || ''}
                       lastName={transactionDetails.profile?.lastName || ''}
