@@ -6,6 +6,7 @@ import {useDisputeDetailsPage} from "../hooks/pages/useDisputeDetailsPage.ts";
 import DisputeInformation from "../components/pages/disputes/details/DisputeInformation.tsx";
 import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";
 import DisputeMessage from "../components/pages/disputes/details/DisputeMessage.tsx";
+import {getDisputeStatusColor} from "../util/dispute.constants.util.ts";
 
 const DisputeDetails = () => {
   const {
@@ -16,7 +17,6 @@ const DisputeDetails = () => {
     loadingDisputeDetails,
     
     // ⚙️ Functions
-    getDisputeStatusColor,
     adminSendDisputeMutation,
     goBack,
   } = useDisputeDetailsPage();

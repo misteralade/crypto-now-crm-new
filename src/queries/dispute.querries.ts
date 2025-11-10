@@ -1,12 +1,15 @@
-import {useSelector} from "react-redux";
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {useMatchRoute} from "@tanstack/react-router";
-import {toast} from "react-toastify";
+import { useSelector } from "react-redux";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMatchRoute } from "@tanstack/react-router";
+import { toast } from "react-toastify";
 import { ROUTES } from '../util/constants.util.ts'
 import { QUERY_KEYS } from './querries.keys.js'
-import {type RootState, store} from "../store";
-import {disputeServiceApi} from "../api/dispute.api.ts";
-import type {AxiosServerError, MessageAttachment} from '../types/response.payload.types.ts';
+import { type RootState, store } from "../store";
+import { disputeServiceApi } from "../api/dispute.api.ts";
+import type { AxiosServerError, MessageAttachment } from '../types/response.payload.types.ts';
+import { transactionServiceApi } from "../api/transaction.api.ts";
+import type { SearchTransactionsRequestType } from "../schemas/transaction.schema.ts";
+import { searchTransactionsInitialState } from "../redux/states/initial-transaction-management.states.ts";
 
 export const useDisputeQuery = () => {
   const matchRoute = useMatchRoute();
@@ -47,7 +50,7 @@ export const useDisputeQuery = () => {
   const { data: disputeDetails, isLoading: loadingDisputeDetails } = useQuery({
     queryKey: [QUERY_KEYS.DISPUTE.DISPUTE_DETAILS, store.getState().dispute.details.id],
     queryFn: async () => {
-      const disputeId = (store.getState() as RootState).dispute.details.id;
+      const disputeId = (store.getState() as RootState).dispute.details.id ;
       if (!disputeId) return null;
       
       const { data, success } = await disputeServiceApi.getDisputeDetails(disputeId);
@@ -58,7 +61,48 @@ export const useDisputeQuery = () => {
       
       return null;
     },
-    enabled: !!matchRoute({ to: ROUTES.DISPUTE_DETAILS }) && !!(store.getState() as RootState).dispute.details.id,
+    enabled: !!(matchRoute({ to: ROUTES.DISPUTE_DETAILS })) && !!((store.getState() as RootState).dispute.details.id),
+  });
+  
+  const { data: editDisputeDetails, isLoading: loadingEditDisputeDetails } = useQuery({
+    queryKey: [QUERY_KEYS.DISPUTE.DISPUTE_DETAILS, (store.getState() as RootState).dispute.edit.id],
+    queryFn: async () => {
+      const disputeId = (store.getState() as RootState).dispute.edit.id;
+      if (!disputeId) return null;
+      
+      const { data, success } = await disputeServiceApi.getDisputeDetails(disputeId);
+      
+      if (success) {
+        return data;
+      }
+      
+      return null;
+    },
+    enabled: !!matchRoute({ to: ROUTES.EDIT_DISPUTE }) && !!(store.getState() as RootState).dispute.edit.id,
+  });
+  
+  const { data: transactionDetails, isLoading: loadingTransactionDetails } = useQuery({
+    queryKey: [QUERY_KEYS.DISPUTE.SEARCH_TRANSACTIONS_DISPUTE_DETAILS],
+    queryFn: async () => {
+      const payload: SearchTransactionsRequestType = {
+        ...searchTransactionsInitialState,
+        sessionId: (store.getState() as RootState).dispute.edit.transactionId || undefined,
+        includeUser: true,
+        includeUserBankAccount: true,
+        includeUserCryptoWallet: true,
+        includeCryptoCurrency: true,
+        includeProcessedBy: true,
+      }
+      
+      const { data, success } = await transactionServiceApi.searchTransactions(payload);
+      
+      if (success) {
+        return data.transactions[0];
+      }
+      
+      return null;
+    },
+    enabled: !!matchRoute({ to: ROUTES.EDIT_DISPUTE }),
   });
   
   const adminSendDisputeMutation = useMutation({
@@ -98,6 +142,10 @@ export const useDisputeQuery = () => {
     loadingDisputeMessages,
     disputeDetails,
     loadingDisputeDetails,
+    editDisputeDetails,
+    loadingEditDisputeDetails,
+    transactionDetails,
+    loadingTransactionDetails,
     
     // Mutations
     adminSendDisputeMutation

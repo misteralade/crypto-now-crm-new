@@ -542,6 +542,7 @@ export type DisputeMessageResponse = {
 }
 
 export type DisputeDetailsResponse = {
+  internalNotes: string;
   id: string;
   disputeReason: string;
   status: 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
