@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import { useMatchRoute } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
 import {toast} from "react-toastify";
-import { ROUTES } from '../util/constants.js'
+import { ROUTES } from '../util/constants.util.ts'
 import { adminServiceApi } from "../api/admin.api";
 import { store} from "../store";
 import { QUERY_KEYS } from './querries.keys.js'

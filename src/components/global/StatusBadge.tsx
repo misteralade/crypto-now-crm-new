@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import {disputePriorityStyles, disputeResolutionStyles, disputeStatusStyles, transactionStatusStyles} from "../../util/constants";
+import {disputePriorityStyles, disputeResolutionStyles, disputeStatusStyles, transactionStatusStyles} from "../../util/constants.util.ts";
 
 interface StatusBadgeProps {
   status: string;

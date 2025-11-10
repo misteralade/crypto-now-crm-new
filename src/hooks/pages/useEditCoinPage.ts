@@ -8,7 +8,7 @@ import {
   setEditCoinPayloadField,
 } from '../../redux/coin-management.slice'
 import {useCryptoQuery} from "../../queries/crypto.querries";
-import {ROUTES} from "../../util/constants";
+import {ROUTES} from "../../util/constants.util.ts";
 import type { EditSupportedCryptoAndAdminWalletRequestType } from "../../schemas/crypto.schema";
 
 export const useEditCoinPage = () => {

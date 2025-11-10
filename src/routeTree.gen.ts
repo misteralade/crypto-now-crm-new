@@ -21,6 +21,7 @@ import { Route as DashboardDisputesIndexRouteImport } from './routes/dashboard/d
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
 import { Route as DashboardUsersUserIdRouteImport } from './routes/dashboard/users/$userId'
 import { Route as DashboardTransactionsIdRouteImport } from './routes/dashboard/transactions/$id'
+import { Route as DashboardDisputesIdRouteImport } from './routes/dashboard/disputes/$id'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
 
@@ -86,6 +87,11 @@ const DashboardTransactionsIdRoute = DashboardTransactionsIdRouteImport.update({
   path: '/dashboard/transactions/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardDisputesIdRoute = DashboardDisputesIdRouteImport.update({
+  id: '/dashboard/disputes/$id',
+  path: '/dashboard/disputes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCoinManagementAddCoinRoute =
   DashboardCoinManagementAddCoinRouteImport.update({
     id: '/dashboard/coin-management/add-coin',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
+  '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/disputes/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/disputes/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
+    | '/dashboard/disputes/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management/'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
   DashboardCoinManagementAddCoinRoute: typeof DashboardCoinManagementAddCoinRoute
+  DashboardDisputesIdRoute: typeof DashboardDisputesIdRoute
   DashboardTransactionsIdRoute: typeof DashboardTransactionsIdRoute
   DashboardUsersUserIdRoute: typeof DashboardUsersUserIdRoute
   DashboardCoinManagementIndexRoute: typeof DashboardCoinManagementIndexRoute
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTransactionsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/disputes/$id': {
+      id: '/dashboard/disputes/$id'
+      path: '/dashboard/disputes/$id'
+      fullPath: '/dashboard/disputes/$id'
+      preLoaderRoute: typeof DashboardDisputesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/coin-management/add-coin': {
       id: '/dashboard/coin-management/add-coin'
       path: '/dashboard/coin-management/add-coin'
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,
   DashboardCoinManagementAddCoinRoute: DashboardCoinManagementAddCoinRoute,
+  DashboardDisputesIdRoute: DashboardDisputesIdRoute,
   DashboardTransactionsIdRoute: DashboardTransactionsIdRoute,
   DashboardUsersUserIdRoute: DashboardUsersUserIdRoute,
   DashboardCoinManagementIndexRoute: DashboardCoinManagementIndexRoute,

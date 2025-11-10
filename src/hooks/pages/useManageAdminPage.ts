@@ -12,7 +12,7 @@ import {
   setSearchAdminField, setUpdateAdminField,
 } from '../../redux/admin.slice'
 import {debounce} from "../../util/debouce.util";
-import {TIME_IN_MILLISECONDS} from "../../util/constants";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 import momentClient from "../../util/moment";
 import type {CreateNewAdminRequestType, SearchAdminRequestType} from "../../schemas/admin.schema";
 

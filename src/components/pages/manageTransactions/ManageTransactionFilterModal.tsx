@@ -1,6 +1,6 @@
 import { Fragment, useRef } from 'react'
 import { Calendar } from 'lucide-react'
-import { TRANSACTION_STATUS_OPTIONS } from '../../../util/constants'
+import { TRANSACTION_STATUS_OPTIONS } from '../../../util/constants.util.ts'
 import type { SearchSupportedCryptoData } from '../../../types/response.payload.types'
 import type { TransactionStatus } from '../../../schemas/enum.schema'
 

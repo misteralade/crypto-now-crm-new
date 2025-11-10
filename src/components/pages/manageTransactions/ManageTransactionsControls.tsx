@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react'
 import {useMatchRoute} from "@tanstack/react-router";
-import {ROUTES} from "../../../util/constants";
+import {ROUTES} from "../../../util/constants.util.ts";
 
 interface ControlsProps {
   onOpenFilter: () => void

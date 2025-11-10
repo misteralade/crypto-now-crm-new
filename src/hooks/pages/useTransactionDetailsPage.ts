@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {useNavigate, useParams} from "@tanstack/react-router";
 import {clearTransactionDetailSessionId, setTransactionDetailSessionId } from "../../redux/transaction-management.slice";
 import {useTransactionQuery} from "../../queries/transaction.query.ts";
-import {ROUTES} from "../../util/constants.ts";
+import {ROUTES} from "../../util/constants.util.ts";
 
 export const useTransactionDetailsPage = () => {
   const dispatch = useDispatch();

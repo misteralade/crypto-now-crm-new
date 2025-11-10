@@ -5,7 +5,7 @@ import { useUserQuery } from '../../queries/user.query'
 import { setSelectedTimeline as reduxSetSelectedTimeline } from '../../redux/dashboard.slice'
 import type { TimelineFilter } from '../../types/global.types'
 import {useNavigate} from "@tanstack/react-router";
-import {ROUTES} from "../../util/constants.ts";
+import {ROUTES} from "../../util/constants.util.ts";
 
 export const useDashboardPage = () => {
   const dispatch = useDispatch();

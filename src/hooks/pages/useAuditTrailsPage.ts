@@ -7,7 +7,7 @@ import {
 } from '../../redux/audit-log.slice'
 import { searchAuditLogInitialState } from '../../redux/states/audit-log.states'
 import {debounce} from "../../util/debouce.util";
-import {TIME_IN_MILLISECONDS} from "../../util/constants";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 
 export const useAuditTrailsPage = () => {
   const dispatch = useDispatch()

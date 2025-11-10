@@ -7,7 +7,7 @@ import logo from '../assets/img/logo.svg'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import sidebar from '../assets/img/Vector.svg'
-import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants'
+import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants.util.ts'
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false)

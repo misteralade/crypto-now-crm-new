@@ -1,7 +1,7 @@
 import {Fragment} from "react";
 import AvatarImage from '../../../../assets/img/avatar.webp';
 import {ClickableDetails} from "../../../global/CopyDetails.tsx";
-import {ROUTES} from "../../../../util/constants.ts";
+import {ROUTES} from "../../../../util/constants.util.ts";
 
 interface TransactionDetailsUserProfileProps {
   userId: string;

@@ -477,6 +477,35 @@ export type AdminSearchNotifications = {
 // Start Dispute
 export type AdminSearchDisputesAPIResponse = BaseApiResponse<AdminSearchDisputesResponse>;
 
+export type GetDisputeMessagesAPIResponse = BaseApiResponse<Array<DisputeMessageResponse>>
+
+export type GetDisputeDetailsAPIResponse = BaseApiResponse<DisputeDetailsResponse>
+
+export type AttachmentType =
+  | 'IMAGE'
+  | 'VIDEO'
+  | 'PDF'
+  | 'DOCUMENT'
+  | 'AUDIO'
+  | 'SPREADSHEET'
+  | 'OTHER';
+
+export interface MessageAttachment {
+  url: string;
+  type: AttachmentType;
+  filename: string;
+  size: number; // in bytes
+  mimeType: string;
+  uploadedAt: Date;
+  metadata?: {
+    width?: number;
+    height?: number;
+    duration?: number; // for videos in seconds
+    pageCount?: number; // for PDFs
+    [key: string]: any;
+  };
+}
+
 export type AdminSearchDisputesResponse = {
   disputes: Array<AdminSearchDisputes>;
   count: number;
@@ -494,6 +523,35 @@ export type AdminSearchDisputes = {
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   transaction: SearchTransactionsResponse;
   creator: UserResponsePayload;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type DisputeMessageResponse = {
+  id: string;
+  disputeId: string;
+  messageText: string;
+  attachments: MessageAttachment[];
+  senderType: 'USER' | 'ADMIN';
+  adminId: string | null;
+  userId: string | null;
+  email: string;
+  admin: AdminResponsePayload;
+  user: UserResponsePayload;
+  createdAt: Date;
+}
+
+export type DisputeDetailsResponse = {
+  id: string;
+  disputeReason: string;
+  status: 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
+  priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+  lastMessageAt: Date;
+  attachments: MessageAttachment[];
+  resolutionNotes: string | null;
+  transaction: SearchTransactionsResponse | null;
+  creator: UserResponsePayload | null;
+  resolver: AdminResponsePayload | null;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -14,7 +14,7 @@ import {adminSearchUsersInitialState} from "../../redux/states/initial-users-man
 import type {AdminSearchUserRequestType} from "../../schemas/user.schema";
 import type {UserStatusVariant} from "../../types/global.types";
 import {debounce} from "../../util/debouce.util.ts";
-import {TIME_IN_MILLISECONDS} from "../../util/constants.ts";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 
 export const useUsersPage = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import {useDisputeQuery} from "../../queries/dispute.querries.ts";
 import {useNavigate} from "@tanstack/react-router";
-import {ROUTES, TIME_IN_MILLISECONDS} from "../../util/constants.ts";
+import {ROUTES, TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 import {useDispatch} from "react-redux";
 import {
   setManageDisputeTransactionId,

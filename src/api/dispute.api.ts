@@ -1,5 +1,10 @@
-import { axiosPostRequestHandler } from "./index";
-import type {AdminSearchDisputesAPIResponse } from "../types/response.payload.types";
+import {axiosGetRequestHandler, axiosPostRequestHandler} from "./index";
+import type {
+  AdminSearchDisputesAPIResponse, BaseApiResponse,
+  GetDisputeDetailsAPIResponse,
+  GetDisputeMessagesAPIResponse,
+  MessageAttachment
+} from "../types/response.payload.types";
 import type {AdminSearchDisputesRequestType} from "../schemas/dispute.schema.ts";
 
 class DisputeServiceApi {
@@ -18,6 +23,21 @@ class DisputeServiceApi {
   
   async adminSearchDisputes(payload: AdminSearchDisputesRequestType) {
     return await axiosPostRequestHandler(`/dispute/admin/search`, payload) as AdminSearchDisputesAPIResponse;
+  }
+  
+  async getDisputeMessages(disputeId: string) {
+    return await axiosGetRequestHandler(`/dispute/admin/messages/${disputeId}`) as GetDisputeMessagesAPIResponse;
+  }
+  
+  async getDisputeDetails(disputeId: string) {
+    return await axiosGetRequestHandler(`/dispute/admin/details/${disputeId}`) as GetDisputeDetailsAPIResponse;
+  }
+  
+  async sendDisputeMessage(disputeId: string, message: string, attachments: Array<MessageAttachment>) {
+    return await axiosPostRequestHandler(`/dispute/admin/message/${disputeId}/send`, {
+      message,
+      attachments,
+    }) as BaseApiResponse<null>;
   }
 }
 

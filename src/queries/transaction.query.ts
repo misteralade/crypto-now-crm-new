@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMatchRoute } from '@tanstack/react-router'
 import { toast } from 'react-toastify'
 import {useSelector} from "react-redux";
-import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants'
+import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
 import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'

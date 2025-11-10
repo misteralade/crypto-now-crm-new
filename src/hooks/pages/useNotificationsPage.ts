@@ -10,7 +10,7 @@ import {
 import {searchNotificationInitialState} from "../../redux/states/notification.states";
 import momentClient from "../../util/moment";
 import {debounce} from "../../util/debouce.util";
-import {ROUTES, TIME_IN_MILLISECONDS} from '../../util/constants'
+import {ROUTES, TIME_IN_MILLISECONDS} from '../../util/constants.util.ts'
 import type {SearchNotificationRequestType} from "../../schemas/notification.schema";
 
 export const useNotificationsPage = () => {

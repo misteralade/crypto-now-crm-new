@@ -376,3 +376,13 @@ export const userStatusOptions = [
   { value: 'BANNED', label: 'Banned' },
   { value: 'DELETED', label: 'Deleted' },
 ]
+
+export const ATTACHMENT_TYPE = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  PDF: 'PDF',
+  DOCUMENT: 'DOCUMENT',
+  AUDIO: 'AUDIO',
+  SPREADSHEET: 'SPREADSHEET',
+  OTHER: 'OTHER',
+} as const;

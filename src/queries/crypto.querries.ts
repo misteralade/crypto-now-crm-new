@@ -3,7 +3,7 @@ import {useMatchRoute} from "@tanstack/react-router";
 import { toast } from 'react-toastify'
 import {useSelector} from "react-redux";
 import { store} from "../store";
-import { ROUTES } from '../util/constants.js'
+import { ROUTES } from '../util/constants.util.ts'
 import { cryptoServiceApi } from '../api/crypto.api.js'
 import { QUERY_KEYS } from './querries.keys.js'
 import type {AxiosServerError} from "../types/response.payload.types";

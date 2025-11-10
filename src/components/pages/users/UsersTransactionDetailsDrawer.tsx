@@ -1,7 +1,7 @@
 import { X } from 'lucide-react'
 import {Fragment} from "react";
 import {useNavigate} from "@tanstack/react-router";
-import {ROUTES} from "../../../util/constants.ts";
+import {ROUTES} from "../../../util/constants.util.ts";
 import type {
   SummarisedUserProfileResponsePayload,
   UserBankAccountResponsePayload
