@@ -28,7 +28,7 @@ const disputeSlice = createSlice({
     },
     
     // Clears
-    clearManageSearchDisputeField: (state) => {
+    clearManageSearchDispute: (state) => {
       state.manage.search = { ...searchDisputeInitialState }
     },
     clearManageDisputeTransactionId: (state) => {
@@ -44,7 +44,7 @@ export const {
   setManageDisputeTransactionId,
   
   // Clears
-  clearManageSearchDisputeField,
+  clearManageSearchDispute,
   clearManageDisputeTransactionId,
 } = disputeSlice.actions;
 

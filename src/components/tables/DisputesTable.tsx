@@ -1,6 +1,6 @@
 import {Fragment} from "react";
-import {ClickableDetails} from "../global/CopyDetails.tsx";
-import {ChevronDown, ChevronRight} from "lucide-react";
+import CopyDetails, {ClickableDetails} from "../global/CopyDetails.tsx";
+import { ChevronDown } from "lucide-react";
 import {DisputeStatusBadge} from "../global/StatusBadge.tsx";
 import type { TableColumn } from "../table.tsx";
 import type {AdminSearchDisputes} from "../../types/response.payload.types.ts";
@@ -9,9 +9,9 @@ import momentClient from "../../util/moment.ts";
 
 export const DisputeManagementColumn = (
   handleViewDisputeDetails: (disputeId: string) => void,
-  handleShowTransactionDetails: (sessionId: string) => void,
   handleSortBy: (columnKey: string) => void,
   handleNavigateToTransactionPage: (sessionId: string) => void,
+  handleNavigateToEditDisputePage: (disputeId: string) => void,
 ): Array<TableColumn> => [
   {
     key: 'id',
@@ -26,7 +26,7 @@ export const DisputeManagementColumn = (
     ),
     render: (value) => (
       <div className="px-4 py-5 text-sm text-[14px] text-[#101828]">
-        <ClickableDetails text={value} className="!max-w-[200px]" onClick={handleViewDisputeDetails}/>
+        <CopyDetails text={value} className="!max-w-[200px]" iconClassName="h-6 w-6"/>
       </div>
     ),
   },
@@ -116,19 +116,27 @@ export const DisputeManagementColumn = (
     header: (
       <Fragment>
         <div className="py-3 text-left text-sm font-medium text-gray-500">
-          <span className="flex items-center gap-2"></span>
+          <span className="flex items-center gap-2">Action</span>
         </div>
       </Fragment>
     ),
     render: (_, row) => (
       <Fragment>
-        <button
-          className="text-[#03034D] hover:opacity-80 text-[12px] cursor-pointer font-medium inline-flex items-center gap-1"
-          onClick={() => handleShowTransactionDetails(row.transactionId)}
-        >
-          <span>View Order</span>
-          <span aria-hidden><ChevronRight size={16} /></span>
-        </button>
+        <div className="flex items-center justify-start gap-2 lg:gap-x-[16px] whitespace-nowrap">
+          <button
+            className="px-2.5 md:px-3 py-1 rounded-full bg-[#E6E6FE] cursor-pointer hover:opacity-80 text-[#03034D] text-xs md:text-xs font-medium"
+            onClick={() => handleViewDisputeDetails(row.id)}
+          >
+            View
+          </button>
+          
+          <button
+            className="px-2.5 md:px-3 py-1 rounded-full bg-[#03034D] cursor-pointer hover:opacity-80 text-white text-xs md:text-xs font-medium"
+            onClick={() => handleNavigateToEditDisputePage(row.id)}
+          >
+            Edit
+          </button>
+        </div>
       </Fragment>
     ),
   },

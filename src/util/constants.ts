@@ -29,6 +29,7 @@ export const ROUTES = {
   TRANSACTIONS: '/dashboard/transactions',
   TRANSACTIONS_DETAILS: '/dashboard/transactions/$id',
   DISPUTES: '/dashboard/disputes',
+  EDIT_DISPUTE: '/dashboard/disputes/edit/$id',
   DISPUTE_DETAILS: `/dashboard/disputes/$id`,
   COIN_MANAGEMENT: '/dashboard/coin-management',
   ADD_COIN: '/dashboard/coin-management/add-coin',
