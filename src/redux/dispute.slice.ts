@@ -17,6 +17,9 @@ const disputeSlice = createSlice({
         text: undefined as undefined | string,
         attachments: undefined as Array<MessageAttachment> | undefined,
       }
+    },
+    edit: {
+      id: undefined as undefined | string,
     }
   },
   reducers: {
@@ -55,6 +58,9 @@ const disputeSlice = createSlice({
     setDisputeMessageText: (state, action: PayloadAction<string>) => {
       state.details.message.text = action.payload;
     },
+    setEditDisputeId: (state, action: PayloadAction<string>) => {
+      state.edit.id = action.payload;
+    },
     
     // Clears
     clearManageSearchDispute: (state) => {
@@ -72,6 +78,9 @@ const disputeSlice = createSlice({
     clearDisputeMessageText: (state) => {
       state.details.message.text = undefined;
     },
+    clearEditDisputeId: (state) => {
+      state.edit.id = undefined;
+    }
   },
 });
 
@@ -85,6 +94,7 @@ export const {
   addDisputeAttachment,
   removeDisputeAttachment,
   setDisputeMessageText,
+  setEditDisputeId,
   
   // Clears
   clearManageSearchDispute,
@@ -92,6 +102,7 @@ export const {
   clearDisputeDetailsId,
   clearDisputeMessageAttachments,
   clearDisputeMessageText,
+  clearEditDisputeId,
 } = disputeSlice.actions;
 
 export default disputeSlice.reducer;

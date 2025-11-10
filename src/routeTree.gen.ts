@@ -24,6 +24,7 @@ import { Route as DashboardTransactionsIdRouteImport } from './routes/dashboard/
 import { Route as DashboardDisputesIdRouteImport } from './routes/dashboard/disputes/$id'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
+import { Route as DashboardDisputesEditIdRouteImport } from './routes/dashboard/disputes/edit/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -104,6 +105,11 @@ const DashboardCoinManagementCoinIdRoute =
     path: '/dashboard/coin-management/$coinId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardDisputesEditIdRoute = DashboardDisputesEditIdRouteImport.update({
+  id: '/dashboard/disputes/edit/$id',
+  path: '/dashboard/disputes/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/disputes': typeof DashboardDisputesIndexRoute
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
+  '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/dashboard/disputes': typeof DashboardDisputesIndexRoute
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
+  '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/dashboard/disputes/': typeof DashboardDisputesIndexRoute
   '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
+  '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/dashboard/disputes'
     | '/dashboard/transactions'
     | '/dashboard/users'
+    | '/dashboard/disputes/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard/disputes'
     | '/dashboard/transactions'
     | '/dashboard/users'
+    | '/dashboard/disputes/edit/$id'
   id:
     | '__root__'
     | '/'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/dashboard/disputes/'
     | '/dashboard/transactions/'
     | '/dashboard/users/'
+    | '/dashboard/disputes/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -227,6 +239,7 @@ export interface RootRouteChildren {
   DashboardDisputesIndexRoute: typeof DashboardDisputesIndexRoute
   DashboardTransactionsIndexRoute: typeof DashboardTransactionsIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
+  DashboardDisputesEditIdRoute: typeof DashboardDisputesEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -336,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCoinManagementCoinIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/disputes/edit/$id': {
+      id: '/dashboard/disputes/edit/$id'
+      path: '/dashboard/disputes/edit/$id'
+      fullPath: '/dashboard/disputes/edit/$id'
+      preLoaderRoute: typeof DashboardDisputesEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardDisputesIndexRoute: DashboardDisputesIndexRoute,
   DashboardTransactionsIndexRoute: DashboardTransactionsIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,
+  DashboardDisputesEditIdRoute: DashboardDisputesEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

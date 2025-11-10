@@ -3,9 +3,9 @@ import {AlertCircle, CheckCircle, Clock, HelpCircle, Loader, X, Zap} from "lucid
 import {LoadingSpinner} from "../components/global/LoadingSpinner.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import {useDisputeDetailsPage} from "../hooks/pages/useDisputeDetailsPage.ts";
-import DisputeInformation from "../components/pages/disputes/view/DisputeInformation.tsx";
-import TransactionDisputeInfo from "../components/pages/disputes/view/TransactionDisputeInfo.tsx";
-import DisputeMessage from "../components/pages/disputes/view/DisputeMessage.tsx";
+import DisputeInformation from "../components/pages/disputes/details/DisputeInformation.tsx";
+import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";
+import DisputeMessage from "../components/pages/disputes/details/DisputeMessage.tsx";
 
 const DisputeDetails = () => {
   const {
