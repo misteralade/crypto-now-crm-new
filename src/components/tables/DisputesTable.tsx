@@ -54,7 +54,7 @@ export const DisputeManagementColumn = (
     ),
     render: (value) => (
       <div className="px-4 py-5 text-sm text-[14px] text-[#101828]">
-        <ClickableDetails text={value} className="!max-w-[200px]" onClick={handleNavigateToTransactionPage}/>
+        <ClickableDetails text={value} className="!max-w-[150px]" onClick={handleNavigateToTransactionPage}/>
       </div>
     ),
   },
@@ -75,7 +75,7 @@ export const DisputeManagementColumn = (
     key: 'date',
     header: (
       <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
+        <div className="py-3 text-left text-sm font-medium !min-w-[150px] text-gray-500">
           <span className="flex items-center gap-2">
             <span>Date</span>
             <ChevronDown
@@ -88,7 +88,7 @@ export const DisputeManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-[#667085] !min-w-[150px]">{value}</span>
       </Fragment>
     ),
   },
@@ -157,7 +157,7 @@ export const DisputeManagementDataRow = (
       initiator: item?.creator ? `${item.creator.profile?.firstName} ${item.creator.profile?.lastName}` : 'Anonymous',
       transactionId: item.transaction.sessionId,
       amount: convertToMillify(Number(item.transaction.amountFiat)),
-      date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
+      date: momentClient.formatToTransactionInitiationDate(item.createdAt),
       status: item.status,
     })
     

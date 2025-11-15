@@ -143,13 +143,6 @@ export const useDisputeQuery = () => {
       const note = (store.getState() as RootState).dispute.edit.statusModal.note;
       const resolution = (store.getState() as RootState).dispute.edit.statusModal.resolution;
       
-      console.log({
-        disputeId,
-        status,
-        note,
-        resolution,
-      })
-      
       if (!status || !disputeId) {
         throw new Error("Dispute status missing");
       }
