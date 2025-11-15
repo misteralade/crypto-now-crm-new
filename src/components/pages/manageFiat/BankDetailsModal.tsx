@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import { store } from '../../../store'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
-import MFLabeledPillSelect from '../../global/LabeledPillSelect'
+import { MFLabeledPillSearchSelect } from '../../global/LabeledPillSelect'
 import type { RootState } from '../../../store'
 import type { SupportedPlatformBankAccountResponse } from '../../../types/response.payload.types'
 import type { CreateBankAccountRequestType } from '../../../schemas/bank.schema'
@@ -53,9 +53,9 @@ export default function BankDetailsModal({
           </div>
 
           <div className="px-6 pb-4 space-y-8 mt-8">
-            <MFLabeledPillSelect
+            <MFLabeledPillSearchSelect
               label="Select Bank"
-              onChange={(e) => handleCreateBankField('bankId', e.target.value)}
+              onChange={(value) => handleCreateBankField('bankId', value)}
               options={bankOptions}
             />
 
