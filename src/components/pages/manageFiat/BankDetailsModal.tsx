@@ -1,3 +1,4 @@
+import {useEffect} from "react";
 import { store } from '../../../store'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
 import MFLabeledPillSelect from '../../global/LabeledPillSelect'
@@ -33,6 +34,10 @@ export default function BankDetailsModal({
           label: bank.name,
         }))
       : [{ value: '', label: 'No banks available' }]
+  
+  useEffect(() => {
+    handleCreateBankField('bankId', bankOptions[0].value || '')
+  }, [bankOptions]);
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">

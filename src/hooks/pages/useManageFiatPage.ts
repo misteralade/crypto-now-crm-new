@@ -43,8 +43,8 @@ export const useManageFiatPage = () => {
     dispatch(clearSelectedBankId());
   }
 
-  const handleAdminCreateBank = () => {
-    adminCreateBankAccountMutation.mutate();
+  const handleAdminCreateBank = async () => {
+    await adminCreateBankAccountMutation.mutateAsync();
     toggleBankModal();
   }
   

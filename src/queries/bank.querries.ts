@@ -7,6 +7,7 @@ import { store} from "../store";
 import { QUERY_KEYS } from './querries.keys.js'
 import type {RootState} from "../store";
 import {useSelector} from "react-redux";
+import type {AxiosServerError} from "../types/response.payload.types.ts";
 
 export const useBankQuery = () => {
   const queryClient = useQueryClient();
@@ -112,8 +113,7 @@ export const useBankQuery = () => {
       if (!payload.bankId || !payload.accountNumber || !payload.accountHolderName) throw new Error("Incomplete bank account data.");
       
       toast.loading("Creating bank account...");
-      const { success, message } = await bankServiceApi.adminCreateBankAccount(payload);
-      return { success, message };
+      return await bankServiceApi.adminCreateBankAccount(payload);
     },
     onSuccess: ({ message, success }) => {
       toast.dismiss();
@@ -123,9 +123,10 @@ export const useBankQuery = () => {
       });
       return success;
     },
-    onError: (error: Error) => {
+    onError: (error: AxiosServerError) => {
       toast.dismiss()
-      toast.error(`Failed to create bank account: ${error.message}`)
+      const { data } = error.response as { data: { error: { message: string } } };
+      toast.error(`Failed to create bank account: ${data.error.message}`)
     },
   });
 
