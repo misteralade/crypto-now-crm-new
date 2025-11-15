@@ -1,4 +1,4 @@
-import {axiosPostRequestHandler} from "./index";
+import {axiosGetRequestHandler, axiosPostRequestHandler} from "./index";
 import type {BaseApiResponse} from "../types/response.payload.types";
 
 class AuthServiceApi {
@@ -17,6 +17,10 @@ class AuthServiceApi {
 
   async login(payload: Record<string, any>): Promise<BaseApiResponse<null>> {
     return await axiosPostRequestHandler("/admin/auth/sign-in", payload) as BaseApiResponse<null>;
+  }
+  
+  async pingAdmin() {
+    return await axiosGetRequestHandler('/admin/ping') as BaseApiResponse<null>;
   }
 }
 

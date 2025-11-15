@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import {searchDisputeInitialState} from "./states/dispute.states.ts";
 import type {AdminSearchDisputesRequestType} from "../schemas/dispute.schema.ts";
 import type {MessageAttachment} from "../types/response.payload.types.ts";
+import type {DisputeResolution, DisputeStatus} from "../types/dispute.types.ts";
 
 const disputeSlice = createSlice({
   name: "dispute",
@@ -21,7 +22,12 @@ const disputeSlice = createSlice({
     edit: {
       id: undefined as undefined | string,
       transactionId: undefined as undefined | string,
-    }
+      statusModal: {
+        note: undefined as string | undefined,
+        status: undefined as DisputeStatus | undefined,
+        resolution: undefined as DisputeResolution | undefined,
+      }
+    },
   },
   reducers: {
     // Sets
@@ -65,6 +71,15 @@ const disputeSlice = createSlice({
     setEditDisputeTransactionId: (state, action: PayloadAction<string>) => {
       state.edit.transactionId = action.payload;
     },
+    setEditDisputeStatusModalNote: (state, action: PayloadAction<string>) => {
+      state.edit.statusModal.note = action.payload;
+    },
+    setEditDisputeStatusModalStatus: (state, action: PayloadAction<DisputeStatus | undefined>) => {
+      state.edit.statusModal.status = action.payload;
+    },
+    setEditDisputeStatusModalResolution: (state, action: PayloadAction<DisputeResolution | undefined>) => {
+      state.edit.statusModal.resolution = action.payload;
+    },
     
     // Clears
     clearManageSearchDispute: (state) => {
@@ -87,6 +102,15 @@ const disputeSlice = createSlice({
     },
     clearEditDisputeTransactionId: (state) => {
       state.edit.transactionId = undefined;
+    },
+    clearEditDisputeStatusModalNote: (state) => {
+      state.edit.statusModal.note = undefined;
+    },
+    clearEditDisputeStatusModalStatus: (state) => {
+      state.edit.statusModal.status = undefined;
+    },
+    clearEditDisputeStatusModalResolution: (state) => {
+      state.edit.statusModal.resolution = undefined;
     }
   },
 });
@@ -103,6 +127,9 @@ export const {
   setDisputeMessageText,
   setEditDisputeId,
   setEditDisputeTransactionId,
+  setEditDisputeStatusModalNote,
+  setEditDisputeStatusModalStatus,
+  setEditDisputeStatusModalResolution,
   
   // Clears
   clearManageSearchDispute,
@@ -112,6 +139,9 @@ export const {
   clearDisputeMessageText,
   clearEditDisputeId,
   clearEditDisputeTransactionId,
+  clearEditDisputeStatusModalNote,
+  clearEditDisputeStatusModalStatus,
+  clearEditDisputeStatusModalResolution,
 } = disputeSlice.actions;
 
 export default disputeSlice.reducer;

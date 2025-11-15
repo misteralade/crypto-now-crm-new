@@ -1,8 +1,12 @@
 import {type ReactNode, useEffect, useState} from 'react'
 import { Menu } from 'lucide-react'
 import Sidebar from "../components/sidebar.tsx";
+import {authServiceApi} from "../api/auth.api.ts";
+import {useNavigate} from "@tanstack/react-router";
+import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants.util.ts";
 
 const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   
   useEffect(() => {
@@ -22,6 +26,20 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('keydown', onKey)
     }
   }, [])
+  
+  // Ping if user is valid before login
+  useEffect(() => {
+    pingAdminUser();
+  }, []);
+  
+  const pingAdminUser = async () => {
+    const { success } = await authServiceApi.pingAdmin();
+    
+    if (!success) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      navigate({ to: ROUTES.LOGIN })
+    }
+  }
   
   return (
     <div className="min-h-screen font-[DM Sans]]">

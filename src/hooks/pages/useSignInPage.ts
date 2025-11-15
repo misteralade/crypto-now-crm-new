@@ -16,14 +16,17 @@ export const useSignInPage = () => {
   const [error, setError] = useState('')
   
   useEffect(() => {
-    // Retrieve access token from local storage
-    const accessToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN)
-    if (accessToken) {
-      // If access token exists, navigate to dashboard
+    pingAdminUser();
+  }, []);
+  
+  const pingAdminUser = async () => {
+    const { success } = await authServiceApi.pingAdmin();
+    
+    if (success) {
       navigate({ to: ROUTES.DASHBOARD })
     }
-  }, []);
-
+  }
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsLoading(true)

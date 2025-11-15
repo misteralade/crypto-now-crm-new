@@ -132,6 +132,44 @@ export const useDisputeQuery = () => {
       const message = response ? response.data.error.message : 'Failed to send dispute message. Please try again.'
       toast.error(message);
     },
+  });
+  
+  const updateDisputeStatusMutation = useMutation({
+    mutationKey: [QUERY_KEYS.DISPUTE.UPDATE_DISPUTE_STATUS],
+    mutationFn: async () => {
+      toast.loading(`Update dispute status...`);
+      const disputeId = (store.getState() as RootState).dispute.edit.id
+      const status = (store.getState() as RootState).dispute.edit.statusModal.status;
+      const note = (store.getState() as RootState).dispute.edit.statusModal.note;
+      const resolution = (store.getState() as RootState).dispute.edit.statusModal.resolution;
+      
+      console.log({
+        disputeId,
+        status,
+        note,
+        resolution,
+      })
+      
+      if (!status || !disputeId) {
+        throw new Error("Dispute status missing");
+      }
+      
+      return await disputeServiceApi.updateDisputeStatus(disputeId as string, status, note, resolution);
+    },
+    onSuccess: ({ success, message}) => {
+      toast.dismiss();
+      if (success) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+    },
+    onError: ( error: AxiosServerError ) => {
+      toast.dismiss();
+      const { response } = error;
+      const message = response ? response.data.error.message : 'Failed to update dispute status'
+      toast.error(message);
+    },
   })
   
   return {
@@ -148,6 +186,7 @@ export const useDisputeQuery = () => {
     loadingTransactionDetails,
     
     // Mutations
-    adminSendDisputeMutation
+    adminSendDisputeMutation,
+    updateDisputeStatusMutation,
   };
 };

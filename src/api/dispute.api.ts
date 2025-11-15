@@ -1,4 +1,4 @@
-import {axiosGetRequestHandler, axiosPostRequestHandler} from "./index";
+import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from "./index";
 import type {
   AdminSearchDisputesAPIResponse, BaseApiResponse,
   GetDisputeDetailsAPIResponse,
@@ -6,6 +6,7 @@ import type {
   MessageAttachment
 } from "../types/response.payload.types";
 import type {AdminSearchDisputesRequestType} from "../schemas/dispute.schema.ts";
+import type {DisputeResolution, DisputeStatus} from "../types/dispute.types.ts";
 
 class DisputeServiceApi {
   private static instance: DisputeServiceApi;
@@ -38,6 +39,14 @@ class DisputeServiceApi {
       message,
       attachments,
     }) as BaseApiResponse<null>;
+  };
+  
+  async updateDisputeStatus(disputeId: string, status: DisputeStatus, note?: string, resolution?: DisputeResolution) {
+    return await axiosPatchRequestHandler(`/dispute/admin/status/${disputeId}`, {
+      status,
+      ...(note ? { note } : {}),
+      ...(resolution ? { resolution } : {}),
+    }) as BaseApiResponse<null>
   }
 }
 

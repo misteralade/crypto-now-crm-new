@@ -9,6 +9,7 @@ import DisputeAttachments from "../components/pages/disputes/edit/DisputeAttachm
 import DisputeAdminNotes from "../components/pages/disputes/edit/DisputeAdminNotes.tsx";
 import TransactionDetails from "../components/pages/disputes/edit/TransactionDetails.tsx";
 import DisputeUserInformation from "../components/pages/disputes/edit/DisputeUserInformation.tsx";
+import DisputeStatusUpdateModal from "../components/pages/disputes/edit/modal/DisputeStatusUpdateModal.tsx";
 
 const EditDisputes = () => {
   const {
@@ -21,7 +22,9 @@ const EditDisputes = () => {
     isUpdating,
     adminNotes,
     statusNotes,
-    
+    selectedDisputeStatus,
+    showStatusUpdateModal,
+    selectedResolution,
     
     // ⚙️ Functions
     goBack,
@@ -30,6 +33,10 @@ const EditDisputes = () => {
     updateStatusNotes,
     handleUpdateStatusNotes,
     dispatchDisputeTransactionId,
+    handleOpenStatusUpdateModal,
+    toggleShowStatusUpdateModal,
+    handleUpdateStatus,
+    handleSelectedResolution,
   } = useEditDisputesPage();
   
   useEffect(() => {
@@ -110,19 +117,21 @@ const EditDisputes = () => {
                         </h2>
                         <div className="flex gap-2">
                           <button
-                            // onClick={() => handleOpenStatusModal("UNDER_REVIEW")}
+                            onClick={() => handleOpenStatusUpdateModal("UNDER_REVIEW")}
                             className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors hover:cursor-pointer"
                           >
                             Review
                           </button>
+                          
                           <button
-                            // onClick={() => handleOpenStatusModal("RESOLVED")}
+                            onClick={() => handleOpenStatusUpdateModal("RESOLVED")}
                             className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors hover:cursor-pointer"
                           >
                             Resolve
                           </button>
+                          
                           <button
-                            // onClick={() => handleOpenStatusModal("REJECTED")}
+                            onClick={() => handleOpenStatusUpdateModal("REJECTED")}
                             className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors hover:cursor-pointer"
                           >
                             Reject
@@ -209,6 +218,19 @@ const EditDisputes = () => {
               </div>
             </div>
           </div>
+          
+          {showStatusUpdateModal && (
+            <DisputeStatusUpdateModal
+              selectedStatus={selectedDisputeStatus}
+              statusNotes={statusNotes}
+              // isUpdating={false}
+              onClose={toggleShowStatusUpdateModal}
+              handleUpdateStatus={handleUpdateStatus}
+              updateStatusNotes={updateStatusNotes}
+              selectedResolution={selectedResolution}
+              handleSelectedResolution={handleSelectedResolution}
+            />
+          )}
         </Fragment>
       )}
     </AuthenticatedLayout>

@@ -1,3 +1,5 @@
+import type { DisputeResolution, DisputeStatus } from "../types/dispute.types";
+
 export const getDisputeStatusColor = (status: | 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED' ): string => {
   switch (status) {
     case 'OPEN':
@@ -22,6 +24,16 @@ export const getDisputeStatusColor = (status: | 'OPEN' | 'UNDER_REVIEW' | 'AWAIT
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
 };
+
+export const DISPUTE_RESOLUTIONS: DisputeResolution[] = [
+  'APPROVED',
+  'REJECTED',
+  'REFUNDED',
+  'PARTIALLY_REFUNDED',
+  'TRANSACTION_CORRECTED',
+  'NO_ACTION_REQUIRED',
+  // 'ESCALATED_TO_MANAGEMENT',
+];
 
 export const disputePriorityStyles: Record<
   string,
@@ -159,4 +171,20 @@ export const disputeStatusStyles: Record<
     dot: "bg-gray-400",
     textColor: "text-gray-700",
   },
+};
+
+
+export const getStatusMessage = (status: DisputeStatus): string => {
+  const messages: Record<DisputeStatus, string> = {
+    OPEN: "Mark this dispute as open and ready for review.",
+    UNDER_REVIEW: "Move this dispute to under review status. Your team will investigate the issue.",
+    AWAITING_EVIDENCE: "Request additional evidence from the user to proceed with this dispute.",
+    AWAITING_USER_RESPONSE: "Mark as awaiting user response. The user will be notified to provide more information.",
+    AWAITING_ADMIN_RESPONSE: "Mark as awaiting admin response. This indicates that admin action is required.",
+    ESCALATED: "Escalate this dispute to management for immediate attention and further review.",
+    RESOLVED: "Mark this dispute as resolved. Select a resolution type and provide detailed notes.",
+    REJECTED: "Reject this dispute. Provide a clear reason for rejection.",
+    CLOSED: "Close this dispute. Provide closing notes for documentation purposes.",
+  };
+  return messages[status] || "Update the status of this dispute.";
 };

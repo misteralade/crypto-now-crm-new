@@ -6,6 +6,7 @@ import type {
   UserStatusType,
   UserTypeEnumType
 } from "../schemas/enum.schema";
+import type {DisputePriority, DisputeResolution, DisputeStatus} from "./dispute.types.ts";
 
 export interface StandardizedServerError {
   success: false;
@@ -518,9 +519,9 @@ export type AdminSearchDisputes = {
   id: string;
   transactionId: string;
   disputeReason: string;
-  resolution: "APPROVED" | "REJECTED" | "REFUNDED" | "PARTIALLY_REFUNDED" | "TRANSACTION_CORRECTED" | "NO_ACTION_REQUIRED" | "ESCALATED_TO_MANAGEMENT";
-  status: "OPEN" | "UNDER_REVIEW" | "AWAITING_EVIDENCE" | "AWAITING_USER_RESPONSE" | "AWAITING_ADMIN_RESPONSE" | "ESCALATED" | "RESOLVED" | "REJECTED" | "CLOSED";
-  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  resolution: DisputeResolution;
+  status: DisputeStatus;
+  priority: DisputePriority;
   transaction: SearchTransactionsResponse;
   creator: UserResponsePayload;
   createdAt: Date;
@@ -545,8 +546,8 @@ export type DisputeDetailsResponse = {
   internalNotes: string;
   id: string;
   disputeReason: string;
-  status: 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED';
-  priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+  status: DisputeStatus;
+  priority: DisputePriority;
   lastMessageAt: Date;
   attachments: MessageAttachment[];
   resolutionNotes: string | null;
