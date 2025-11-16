@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useMatchRoute} from "@tanstack/react-router";
 import {useSelector} from "react-redux";
-import {ROUTES, TIME_IN_MILLISECONDS} from "../util/constants";
+import {ROUTES, TIME_IN_MILLISECONDS} from "../util/constants.util.ts";
 import {notificationServiceApi} from "../api/notification.api";
 import {QUERY_KEYS} from "./querries.keys";
 import type {RootState} from "../store";

@@ -1,12 +1,15 @@
-import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { authServiceApi } from '../../api/auth.api'
-import { ROUTES } from '../../util/constants'
+import { ROUTES } from '../../util/constants.util.ts'
 import type { FormEvent } from 'react'
 import type { AuthAPIResponse } from '../../types/response.payload.types'
 
 export const useSignInPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  const { email: queryEmail, password: queryPassword } = useSearch({ from: '/' })
 
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
@@ -14,7 +17,24 @@ export const useSignInPage = () => {
   const [keepLoggedIn, setKeepLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-
+  
+  useEffect(() => {
+    pingAdminUser();
+  }, []);
+  
+  useEffect(() => {
+    setEmail(queryEmail);
+    setPassword(queryPassword);
+  }, [queryEmail, queryPassword]);
+  
+  const pingAdminUser = async () => {
+    const { success } = await authServiceApi.pingAdmin();
+    
+    if (success) {
+      navigate({ to: ROUTES.DASHBOARD })
+    }
+  }
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsLoading(true)

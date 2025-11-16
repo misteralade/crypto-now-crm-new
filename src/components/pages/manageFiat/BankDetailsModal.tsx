@@ -1,6 +1,7 @@
+import {useEffect} from "react";
 import { store } from '../../../store'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
-import MFLabeledPillSelect from '../../global/LabeledPillSelect'
+import { MFLabeledPillSearchSelect } from '../../global/LabeledPillSelect'
 import type { RootState } from '../../../store'
 import type { SupportedPlatformBankAccountResponse } from '../../../types/response.payload.types'
 import type { CreateBankAccountRequestType } from '../../../schemas/bank.schema'
@@ -33,6 +34,10 @@ export default function BankDetailsModal({
           label: bank.name,
         }))
       : [{ value: '', label: 'No banks available' }]
+  
+  useEffect(() => {
+    handleCreateBankField('bankId', bankOptions[0].value || '')
+  }, [bankOptions]);
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
@@ -48,9 +53,9 @@ export default function BankDetailsModal({
           </div>
 
           <div className="px-6 pb-4 space-y-8 mt-8">
-            <MFLabeledPillSelect
+            <MFLabeledPillSearchSelect
               label="Select Bank"
-              onChange={(e) => handleCreateBankField('bankId', e.target.value)}
+              onChange={(value) => handleCreateBankField('bankId', value)}
               options={bankOptions}
             />
 
@@ -82,7 +87,7 @@ export default function BankDetailsModal({
               Go back
             </button>
             <button
-              className="rounded-full bg-[#03034D] hover:bg-[#FF8B5A] text-white px-12 py-4 text-lg font-semibold w/full md:w-fit"
+              className="rounded-full bg-[#03034D] text-white px-12 py-4 text-lg font-semibold w/full hover:bg-[#FF8B5A] hover:cursor-pointer md:w-fit"
               disabled={
                 !payload.bankId ||
                 !payload.accountNumber ||

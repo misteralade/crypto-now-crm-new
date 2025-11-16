@@ -18,6 +18,9 @@ const adminSlice = createSlice({
         id: undefined as string | undefined,
         active: undefined as boolean | undefined,
       }
+    },
+    delete: {
+      adminId: undefined as string | undefined,
     }
   },
   reducers: {
@@ -49,6 +52,9 @@ const adminSlice = createSlice({
       const { field, value } = action.payload;
       (state.update.admin as any)[field] = value;
     },
+    setDeleteAdminId: (state, action: PayloadAction<string | undefined>) => {
+      state.delete.adminId = action.payload;
+    },
 
     // Clears
     clearCreateRoleField: (state) => {
@@ -65,6 +71,9 @@ const adminSlice = createSlice({
         id: undefined,
         active: undefined,
       }
+    },
+    clearDeleteAdminId: (state) => {
+      state.delete.adminId = undefined;
     }
   },
 });
@@ -78,12 +87,14 @@ export const {
   setSearchAdminField,
   setSearchAdmin,
   setUpdateAdminField,
+  setDeleteAdminId,
 
   // Clears
   clearCreateRoleField,
   clearCreateAdminField,
   clearSearchAdminField,
   clearUpdateAdminField,
+  clearDeleteAdminId,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

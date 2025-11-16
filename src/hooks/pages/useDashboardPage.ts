@@ -4,9 +4,13 @@ import { useTransactionQuery } from '../../queries/transaction.query'
 import { useUserQuery } from '../../queries/user.query'
 import { setSelectedTimeline as reduxSetSelectedTimeline } from '../../redux/dashboard.slice'
 import type { TimelineFilter } from '../../types/global.types'
+import {useNavigate} from "@tanstack/react-router";
+import {ROUTES} from "../../util/constants.util.ts";
 
 export const useDashboardPage = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const {
     transactionVolume,
     loadingTransactionVolume,
@@ -29,6 +33,8 @@ export const useDashboardPage = () => {
     setSelectedTimeline(timeline)
     dispatch(reduxSetSelectedTimeline(timeline))
   }
+  
+  const handleViewTransactionDetails = (sessionId: string) => navigate( { to: `${ROUTES.TRANSACTIONS}/${sessionId}` })
 
   return {
     // 🧩 Values
@@ -48,5 +54,6 @@ export const useDashboardPage = () => {
 
     // ⚙️ Functions
     handleSelectedTimelineChange,
+    handleViewTransactionDetails,
   }
 }

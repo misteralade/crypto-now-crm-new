@@ -8,7 +8,7 @@ import { StatusBadge } from '../../global/StatusBadge'
 import {
   ALLOWED_ADMIN_TRANSACTION_STATUS,
   transactionStatusStyles,
-} from '../../../util/constants'
+} from '../../../util/constants.util.ts'
 import {setTransactionDetailUpdateField} from "../../../redux/transaction-management.slice";
 import { store} from "../../../store";
 import CustomerAccountDetails from './CustomerAccountDetails.tsx'

@@ -1,4 +1,9 @@
-import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from "./index";
+import {
+  axiosDeleteRequestHandler,
+  axiosGetRequestHandler,
+  axiosPatchRequestHandler,
+  axiosPostRequestHandler
+} from "./index";
 import type {
   AdminGetAllPermissionsAPIResponse,
   AdminGetAllRolesAPIResponse,
@@ -42,6 +47,10 @@ class AdminServiceApi {
 
   async updateAdminActiveStatus(adminId: string, isActive: boolean) {
     return await axiosPatchRequestHandler(`/admin/update/status/${adminId}`, { active: isActive }) as BaseApiResponse<null>;
+  }
+  
+  async adminSoftDeleteAdmin(adminId: string) {
+    return await axiosDeleteRequestHandler(`/admin/delete/${adminId}`) as BaseApiResponse<null>
   }
 }
 

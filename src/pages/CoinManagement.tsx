@@ -9,6 +9,7 @@ import TableFooter from "../components/tables/TableFooter";
 import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import CoinManagementControls from "../components/pages/coinManagement/CoinManagementControls.tsx";
+import ConfirmModal from "../components/global/ConfirmModal.tsx";
 
 const CoinManagement = () => {
   const {
@@ -17,6 +18,7 @@ const CoinManagement = () => {
     supportedCrypto,
     loadingSupportedCrypto,
     pageSize,
+    deleteCoinModal,
 
 
     // ⚙️ Functions
@@ -26,10 +28,14 @@ const CoinManagement = () => {
     handlePageChange,
     handleViewCoinDetails,
     handleDisableCoin,
+    handleDeleteCryptoCurrency,
+    toggleDeleteCoinModal,
+    handleConfirmDeleteCryptoCurrency,
   } = useCoinManagementPage()
 
   const columns = useMemo(() => SearchSupportedCryptoColumn(
     handleViewCoinDetails,
+    handleDeleteCryptoCurrency,
     handleDisableCoin,
   ), [])
   
@@ -66,6 +72,15 @@ const CoinManagement = () => {
           </div>
         </div>
       </div>
+      
+      <ConfirmModal
+        open={deleteCoinModal}
+        actionType="delete"
+        onClose={toggleDeleteCoinModal}
+        onConfirm={handleConfirmDeleteCryptoCurrency}
+        message="Are you sure you want to delete this coin?"
+        confirmText="Delete Coin"
+      />
     </AuthenticatedLayout>
   )
 }

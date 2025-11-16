@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {createAdminBankInitialState, editExchangeRateInitialState} from "./states/initial-fiat.states";
+import {
+  createAdminBankInitialState,
+  editExchangeRateInitialState,
+  searchSupportedBankInitialState
+} from "./states/initial-fiat.states";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { CreateBankAccountRequestType } from "../schemas/bank.schema";
+import type {AdminSearchSupportedBankRequestType, CreateBankAccountRequestType} from "../schemas/bank.schema";
 import type { EditPlatformExchangeRateRequestType } from "../schemas/rate.schema";
 
 const fiatSlice = createSlice({
@@ -10,6 +14,7 @@ const fiatSlice = createSlice({
     bank: {
       createBank: createAdminBankInitialState,
       selectedBankId: undefined as string | undefined,
+      search: searchSupportedBankInitialState,
     },
     rate: {
       selectedRateId: undefined as string | undefined,
@@ -34,6 +39,12 @@ const fiatSlice = createSlice({
       const { field, value } = action.payload;
       state.rate.editRate[field] = value;
     },
+    setSearchFiatField: (state, action: PayloadAction<{ field: (keyof AdminSearchSupportedBankRequestType), value: any }>) => {
+      const { field, value } = action.payload;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      state.bank.search[field] = value;
+    },
 
     // Clears
     clearCreateBankField: (state) => {
@@ -47,6 +58,9 @@ const fiatSlice = createSlice({
     },
     clearEditPlatformExchangeRate: (state) => {
       state.rate.editRate = editExchangeRateInitialState;
+    },
+    clearSearchFiat: (state) => {
+      state.bank.search = { ...searchSupportedBankInitialState }
     }
   },
 });
@@ -57,12 +71,14 @@ export const {
   setSelectedBankId,
   setSelectedRate,
   setEditPlatformExchangeRate,
+  setSearchFiatField,
 
   // Clears
   clearCreateBankField,
   clearSelectedBankId,
   clearSelectedRate,
   clearEditPlatformExchangeRate,
+  clearSearchFiat,
 } = fiatSlice.actions;
 
 export default fiatSlice.reducer;

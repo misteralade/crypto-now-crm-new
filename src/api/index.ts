@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import {BASIC} from "../config/index.config";
-import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants";
+import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants.util.ts";
 import type {AxiosRequestHeaders} from "axios";
 import type {BaseApiResponse} from "../types/response.payload.types";
 

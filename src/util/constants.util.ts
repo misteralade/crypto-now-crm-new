@@ -29,6 +29,8 @@ export const ROUTES = {
   TRANSACTIONS: '/dashboard/transactions',
   TRANSACTIONS_DETAILS: '/dashboard/transactions/$id',
   DISPUTES: '/dashboard/disputes',
+  EDIT_DISPUTE: '/dashboard/disputes/edit/$id',
+  DISPUTE_DETAILS: `/dashboard/disputes/$id`,
   COIN_MANAGEMENT: '/dashboard/coin-management',
   ADD_COIN: '/dashboard/coin-management/add-coin',
   EDIT_COIN: '/dashboard/coin-management/$coinId',
@@ -236,3 +238,13 @@ export const userStatusOptions = [
   { value: 'BANNED', label: 'Banned' },
   { value: 'DELETED', label: 'Deleted' },
 ]
+
+export const ATTACHMENT_TYPE = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  PDF: 'PDF',
+  DOCUMENT: 'DOCUMENT',
+  AUDIO: 'AUDIO',
+  SPREADSHEET: 'SPREADSHEET',
+  OTHER: 'OTHER',
+} as const;

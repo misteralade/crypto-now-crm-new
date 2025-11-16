@@ -6,6 +6,7 @@ import type {
   UserStatusType,
   UserTypeEnumType
 } from "../schemas/enum.schema";
+import type {DisputePriority, DisputeResolution, DisputeStatus} from "./dispute.types.ts";
 
 export interface StandardizedServerError {
   success: false;
@@ -319,6 +320,14 @@ export type GetAllPlatformBankAccountAPIResponsePayload = BaseApiResponse<Array<
 
 export type GetSupportedPlatformBankAccountAPIResponsePayload = BaseApiResponse<Array<SupportedPlatformBankAccountResponse>>
 
+export type SearchSupportedBanksAPIResponse = BaseApiResponse<{
+  banks: Array<AdminBankAccountResponsePayload>;
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}>;
+
 export type SupportedPlatformBankAccountResponse = {
   id: string;
   name: string;
@@ -465,3 +474,87 @@ export type AdminSearchNotifications = {
   transaction: SearchTransactionsResponse;
 }
 // End Notification
+
+// Start Dispute
+export type AdminSearchDisputesAPIResponse = BaseApiResponse<AdminSearchDisputesResponse>;
+
+export type GetDisputeMessagesAPIResponse = BaseApiResponse<Array<DisputeMessageResponse>>
+
+export type GetDisputeDetailsAPIResponse = BaseApiResponse<DisputeDetailsResponse>
+
+export type AttachmentType =
+  | 'IMAGE'
+  | 'VIDEO'
+  | 'PDF'
+  | 'DOCUMENT'
+  | 'AUDIO'
+  | 'SPREADSHEET'
+  | 'OTHER';
+
+export interface MessageAttachment {
+  url: string;
+  type: AttachmentType;
+  filename: string;
+  size: number; // in bytes
+  mimeType: string;
+  uploadedAt: Date;
+  metadata?: {
+    width?: number;
+    height?: number;
+    duration?: number; // for videos in seconds
+    pageCount?: number; // for PDFs
+    [key: string]: any;
+  };
+}
+
+export type AdminSearchDisputesResponse = {
+  disputes: Array<AdminSearchDisputes>;
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export type AdminSearchDisputes = {
+  id: string;
+  transactionId: string;
+  disputeReason: string;
+  resolution: DisputeResolution;
+  status: DisputeStatus;
+  priority: DisputePriority;
+  transaction: SearchTransactionsResponse;
+  creator: UserResponsePayload;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type DisputeMessageResponse = {
+  id: string;
+  disputeId: string;
+  messageText: string;
+  attachments: MessageAttachment[];
+  senderType: 'USER' | 'ADMIN';
+  adminId: string | null;
+  userId: string | null;
+  email: string;
+  admin: AdminResponsePayload;
+  user: UserResponsePayload;
+  createdAt: Date;
+}
+
+export type DisputeDetailsResponse = {
+  internalNotes: string;
+  id: string;
+  disputeReason: string;
+  status: DisputeStatus;
+  priority: DisputePriority;
+  lastMessageAt: Date;
+  attachments: MessageAttachment[];
+  resolutionNotes: string | null;
+  transaction: SearchTransactionsResponse | null;
+  creator: UserResponsePayload | null;
+  resolver: AdminResponsePayload | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+// End Dispute

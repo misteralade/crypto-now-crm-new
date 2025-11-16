@@ -1,5 +1,5 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router'
-import { ROUTES } from '../../../util/constants.ts'
+import { ROUTES } from '../../../util/constants.util.ts'
 
 // Assets
 import AvatarIcon from '../../../assets/img/avatar.webp'

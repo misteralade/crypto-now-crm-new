@@ -99,6 +99,24 @@ class TransactionServiceApi {
   async adminGetTransactionDetails(sessionId: string) {
     return await axiosGetRequestHandler(`/transaction/admin/details/${sessionId}`) as GetTransactionDetailsAPIResponse
   }
+  
+  async uploadDisputeAttachment(formData: FormData) {
+    const response =  await axiosPostRequestHandler(
+      `/upload/transaction/dispute/attachment-upload`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+    
+    if (response.success) {
+      return response.data;
+    }
+    
+    throw new Error(response.message);
+  }
 }
 
 export const transactionServiceApi = TransactionServiceApi.getInstance()

@@ -4,6 +4,7 @@ export const adminSearchUsersInitialState: AdminSearchUserRequestType = {
   // Common Search Fields
   id: undefined,
   searchField: undefined,
+  searchQuery: undefined,
   createdAt: undefined,
   updatedAt: undefined,
   createdAtFrom: undefined,

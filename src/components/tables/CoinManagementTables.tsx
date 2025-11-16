@@ -34,6 +34,7 @@ export const IsStableCoinColumn = ({ status }: { status: string }) => {
 
 export const SearchSupportedCryptoColumn = (
   onEditClick: (id: string) => void,
+  handleDeleteCryptoCurrency: (id: string) => void,
   onDisableCoin: (id: string, status: boolean) => void,
 ): Array<TableColumn> => [
   {
@@ -135,15 +136,23 @@ export const SearchSupportedCryptoColumn = (
           <div className="flex gap-2">
             <button
               onClick={() => onEditClick(row.id)}
-              className="px-3 py-1 font-medium text-[12px] bg-[#E6E6FE] text-[#03034D] rounded-full hover:bg-opacity-70 cursor-pointer"
+              className="px-3 py-1 font-medium text-[12px] bg-[#03034D] text-white rounded-full hover:bg-opacity-70 cursor-pointer hover:cursor-pointer"
             >
               Edit
             </button>
+            
             <button
               onClick={() => onDisableCoin(row.id, row.status)}
-              className="px-3 py-1 font-medium text-[12px] bg-[#FCE8E8] text-[#EB5757] rounded-full hover:opacity-70 cursor-pointer"
+              className="px-3 py-1 font-medium text-[12px] bg-[#FBBF24] text-white rounded-full hover:opacity-70 cursor-pointerhover:cursor-pointer"
             >
               {row.status ? 'Deactivate' : 'Activate'}
+            </button>
+            
+            <button
+              onClick={() => handleDeleteCryptoCurrency(row.id)}
+              className="px-3 py-1 font-medium text-[12px] bg-[#EF4444] text-white rounded-full hover:opacity-70 cursor-pointer hover:cursor-pointer"
+            >
+              Delete
             </button>
           </div>
         </div>

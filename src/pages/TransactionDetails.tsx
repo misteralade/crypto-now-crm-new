@@ -175,6 +175,7 @@ const TransactionDetails = () => {
                 {/* User Profile */}
                 {transaction.user && (
                   <TransactionDetailsUserProfile
+                    userId={transaction.userId}
                     firstName={transaction.profile?.firstName || ''}
                     lastName={transaction.profile?.lastName || ''}
                     email={transaction.user?.email || ''}

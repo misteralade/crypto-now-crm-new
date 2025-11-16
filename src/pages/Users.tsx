@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Search } from 'lucide-react'
 import {useUsersPage} from "../hooks/pages/useUsersPage";
 import {AdminSearchUserColumn, AdminSearchUserDataRow} from "../components/tables/UserManagementTables";
@@ -23,6 +23,7 @@ const Users = () => {
     userProfileSummary,
     loadingUserProfileSummary,
     pageSize,
+    searchQuery,
 
     // ⚙️ Functions
     toggleFilter,
@@ -36,6 +37,7 @@ const Users = () => {
     handleResetUserPassword,
     handlePageSizeChange,
     handlePageChange,
+    handleSearchChange,
   } = useUsersPage();
 
   const columns = useMemo(
@@ -56,8 +58,6 @@ const Users = () => {
     () => AdminSearchUserDataRow(!loadingAdminSearchUsers ? adminSearchUsers?.users : []),
     [loadingAdminSearchUsers, adminSearchUsers?.users],
   )
-
-  const [query, setQuery] = useState('')
 
   return (
     <AuthenticatedLayout>
@@ -86,8 +86,8 @@ const Users = () => {
                 <input
                   type="text"
                   placeholder="Search User"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="w-full md:w-[280px] pl-10 pr-4 h-10 border text-[#0E0F0C] placeholder:text-[#9A9A9A] border-[#D9D9D9] rounded-full focus:ring-2 focus:border-transparent text-sm"
                 />
               </div>

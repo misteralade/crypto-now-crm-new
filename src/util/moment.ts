@@ -31,6 +31,16 @@ class MomentClient {
   formatToNormalisedDateAndTime(date: Date): string {
     return moment(date).format("MMMM Do YYYY, h:mm:ss A");
   }
+  
+  /**
+   * Formats a Date object to a transaction initiation date string
+   * @param: date - The Date object to format
+   * @return: string - The formatted date string in "DD-MM-YYYY, h:mm A" format
+   * @example: "05-10-2023, 2:48 PM"
+   */
+  formatToTransactionInitiationDate(date: Date): string {
+    return moment(date).format("DD-MM-YYYY, h:mm A");
+  }
 
   /**
    * Converts a Date object to an ISO string with time set to the start or end of the day

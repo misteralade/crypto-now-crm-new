@@ -3,15 +3,17 @@ import { useManageFiatPage } from '../hooks/pages/useManageFiatPage'
 import AccountCard from "../components/pages/manageFiat/AccountCard.tsx";
 import BankDetailsModal from "../components/pages/manageFiat/BankDetailsModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import {Search} from "lucide-react";
 
 const ManageFiat = () => {
   const {
     // 🧩 Values
-    platformBankAccounts,
-    loadingPlatformBankAccounts,
     openBankModal,
     platformSupportedBanks,
     loadingPlatformSupportedBanks,
+    searchQuery,
+    searchedSupportedBanks,
+    loadingSearchedSupportedBanks,
 
     // ⚙️ Functions
     toggleBankModal,
@@ -19,22 +21,36 @@ const ManageFiat = () => {
     handleDeleteBank,
     handleCreateBankField,
     handleAdminCreateBank,
-  } = useManageFiatPage()
-
+    handleSearchChange,
+  } = useManageFiatPage();
+  
   return (
     <AuthenticatedLayout>
       <div className="p-6 min-h-screen container">
         <PageHeader title="ManageFiat" />
         
-        <div className="mt-8 text-[24px] font-medium text-[#0E0F0C]">
-          Account Numbers
+        <div className="flex w-full items-center gap-2 justify-between lg:w-auto">
+          <div className="mt-8 text-[24px] font-medium text-[#0E0F0C]">
+            Account Numbers
+          </div>
+          
+          <div className="relative items-center flex-1 lg:flex-none">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              type="text"
+              placeholder="Search Bank"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full md:w-[280px] pl-10 pr-4 h-11 border border-[#D9D9D9] rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            />
+          </div>
         </div>
         
         {/* cards */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {!loadingPlatformBankAccounts &&
-            platformBankAccounts &&
-            platformBankAccounts.map((account, index) => (
+          {!loadingSearchedSupportedBanks &&
+            searchedSupportedBanks?.banks &&
+            searchedSupportedBanks?.banks?.map((account, index) => (
               <AccountCard
                 key={account.id}
                 account={account}

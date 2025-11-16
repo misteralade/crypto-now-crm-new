@@ -3,7 +3,7 @@ import {useMatchRoute} from "@tanstack/react-router";
 import { toast } from 'react-toastify'
 import {useSelector} from "react-redux";
 import { store} from "../store";
-import { ROUTES } from '../util/constants.js'
+import { ROUTES } from '../util/constants.util.ts'
 import { cryptoServiceApi } from '../api/crypto.api.js'
 import { QUERY_KEYS } from './querries.keys.js'
 import type {AxiosServerError} from "../types/response.payload.types";
@@ -139,6 +139,34 @@ export const useCryptoQuery = () => {
       toast.error(`Failed to update coin: ${data.error.message}`)
     },
   });
+  
+  const adminDeleteCryptoCurrencyMutation = useMutation({
+    mutationFn: async () => {
+      toast.loading("Deleting coin...");
+      const cryptoId = (store.getState() as RootState).coinManagement.delete.coinId;
+      
+      if (!cryptoId) throw new Error("Missing crypto ID to delete.")
+      
+      const { message, success } = await cryptoServiceApi.adminDeleteSupportedCrypto(cryptoId);
+      if (!success) {
+        throw new Error(message);
+      }
+      return { message, success };
+    },
+    onSuccess: ({ message, success }) => {
+      toast.dismiss();
+      toast.success(message || "Delete coin successfully.");
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.SEARCH_SUPPORTED_CRYPTO_CURRENCIES]
+      });
+      return success;
+    },
+    onError: (error: AxiosServerError) => {
+      const { data } = error.response as { data: { error: { message: string } } };
+      toast.dismiss()
+      toast.error(`Failed to delete coin: ${data.error.message}`)
+    },
+  })
 
   return {
     // 🧩 Values
@@ -153,5 +181,6 @@ export const useCryptoQuery = () => {
     uploadCryptoLogoIconMutation,
     createCryptoCurrencyMutation,
     updateCryptoCurrencyMutation,
+    adminDeleteCryptoCurrencyMutation,
   };
 };

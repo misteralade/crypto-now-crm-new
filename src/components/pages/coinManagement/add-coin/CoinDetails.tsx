@@ -1,4 +1,4 @@
-import {CRYPTO_NETWORK_OPTIONS} from "../../../../util/constants";
+import {CRYPTO_NETWORK_OPTIONS} from "../../../../util/constants.util.ts";
 import type { CreateSupportedCryptoAndAdminWalletRequestType } from '../../../../schemas/crypto.schema'
 import LabeledPillInput from "../../../global/LabeledPillInput";
 import LabeledPillSelect from "../../../global/LabeledPillSelect";

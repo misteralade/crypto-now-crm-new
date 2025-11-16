@@ -1,6 +1,6 @@
 import {useNavigate} from "@tanstack/react-router";
 import { useDispatch } from 'react-redux'
-import { ROUTES } from '../../util/constants.js'
+import { ROUTES } from '../../util/constants.util.ts'
 import { useCryptoQuery } from '../../queries/crypto.querries.js'
 import {setAddCoinField} from "../../redux/coin-management.slice";
 import type { CreateSupportedCryptoAndAdminWalletRequestType } from '../../schemas/crypto.schema'

@@ -130,6 +130,30 @@ export const NotificationTypeEnum = z.preprocess((val) => {
   'USER_CONFIRMS_RECEIVING_ACCOUNT',
 ]));
 
+export const AttachmentTypeEnum = z.preprocess((val) => {
+  if (typeof val === "string") return val.toUpperCase();
+  
+  return val;
+}, z.enum(["IMAGE", "VIDEO", "DOCUMENT", "PDF", "AUDIO", "SPREADSHEET", "OTHER"]));
+
+export const DisputeStatusEnum = z.preprocess((val) => {
+  if (typeof val === "string") return val.toUpperCase();
+  
+  return val;
+}, z.enum(["OPEN", "UNDER_REVIEW", "AWAITING_EVIDENCE", "AWAITING_USER_RESPONSE", "AWAITING_ADMIN_RESPONSE", "ESCALATED", "RESOLVED", "REJECTED", "CLOSED"]));
+
+export const DisputeResolutionEnum = z.preprocess((val) => {
+  if (typeof val === "string") return val.toUpperCase();
+  
+  return val;
+}, z.enum(["APPROVED", "REJECTED", "REFUNDED", "PARTIALLY_REFUNDED", "TRANSACTION_CORRECTED", "NO_ACTION_REQUIRED", "ESCALATED_TO_MANAGEMENT"]) )
+
+export const DisputePriorityEnum = z.preprocess((val) => {
+  if (typeof val === "string") return val.toUpperCase();
+  
+  return val;
+}, z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]));
+
 export type TimelineEnumType = z.infer<typeof TimelineEnumType>;
 export type CryptoNetworkType = z.infer<typeof CryptoNetworkType>;
 export type TransactionAction = z.infer<typeof TransactionAction>;
@@ -139,3 +163,7 @@ export type TransactionPriority = z.infer<typeof TransactionPriority>;
 export type UserStatusType = z.infer<typeof UserStatus>;
 export type RequestTypeEnumType = z.infer<typeof RequestTypeEnum>;
 export type UserTypeEnumType = z.infer<typeof UserTypeEnum>;
+export type DisputeStatusEnumType = z.infer<typeof DisputeStatusEnum>;
+export type DisputeResolutionEnumType = z.infer<typeof DisputeResolutionEnum>;
+export type DisputePriorityEnumType = z.infer<typeof DisputePriorityEnum>;
+export type AttachmentTypeEnumType = z.infer<typeof AttachmentTypeEnum>;

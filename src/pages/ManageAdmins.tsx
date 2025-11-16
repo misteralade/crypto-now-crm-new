@@ -9,6 +9,7 @@ import CreateAdminModal from '../components/pages/manageAdmins/CreateAdminModal.
 import CreateNewPermissionsModal from '../components/pages/manageAdmins/CreateNewPermissionModals.tsx';
 import ManageAdminFilterModal from "../components/pages/manageAdmins/ManageAdminFilterModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import ConfirmModal from "../components/global/ConfirmModal.tsx";
 
 const ManageAdmins = () => {
   const {
@@ -27,6 +28,7 @@ const ManageAdmins = () => {
     searchedAdmins,
     loadingSearchedAdmins,
     pageSize,
+    showDeleteAdminModal,
 
 
     // ⚙️ Functions
@@ -47,15 +49,20 @@ const ManageAdmins = () => {
     handleUpdateAdminStatus,
     handlePageChange,
     handlePageSizeChange,
+    handleDeleteAdmin,
+    toggleDeleteAdminModal,
+    handleConfirmDeleteAdmin,
   } = useManageAdminPage();
 
   const columns = useMemo(
     () =>
       SearchAdminDataColumn(
         handleUpdateAdminStatus,
+        handleDeleteAdmin,
       ),
     [
       handleUpdateAdminStatus,
+      handleDeleteAdmin
     ],
   );
 
@@ -120,6 +127,15 @@ const ManageAdmins = () => {
           handleSelectedRole={handleSelectedRoleIdChange}
         />
       </div>
+      
+      <ConfirmModal
+        open={showDeleteAdminModal}
+        actionType="delete"
+        onClose={toggleDeleteAdminModal}
+        onConfirm={handleConfirmDeleteAdmin}
+        message="Are you sure you want to delete this admin?"
+        confirmText="Delete Admin"
+      />
     </AuthenticatedLayout>
   )
 }

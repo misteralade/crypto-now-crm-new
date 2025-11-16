@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import {useMatchRoute} from "@tanstack/react-router";
 import {useSelector} from "react-redux";
-import {ROUTES} from "../util/constants";
+import {ROUTES} from "../util/constants.util.ts";
 import { store} from "../store";
 import {auditServiceApi} from "../api/audit.api";
 import {QUERY_KEYS} from "./querries.keys";

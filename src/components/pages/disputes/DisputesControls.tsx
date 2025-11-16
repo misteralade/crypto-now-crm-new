@@ -1,16 +1,13 @@
 import { Search } from 'lucide-react'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import filterIcon from '../../../assets/icons/Filter.svg'
 
 interface ControlsProps {
   onOpenFilter: () => void
-  onCreateNewDispute: () => void
   searchValue: string
   onSearchChange: (value: string) => void
 }
 
-const DisputesControls = ({ onOpenFilter, onCreateNewDispute, searchValue, onSearchChange }: ControlsProps) => {
+const DisputesControls = ({ onOpenFilter, searchValue, onSearchChange }: ControlsProps) => {
   return (
     <div className="bg-white p-4 lg:p-5 mb-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
@@ -32,16 +29,6 @@ const DisputesControls = ({ onOpenFilter, onCreateNewDispute, searchValue, onSea
           >
             <img src={filterIcon} alt="Filter" className="w-4 h-4" />
             <span className="text-sm font-semibold text-[#454745]">Filter</span>
-          </button>
-        </div>
-
-        {/* Right: Create new dispute button */}
-        <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-          <button
-            onClick={onCreateNewDispute}
-            className="px-4 py-2 rounded-full bg-[#03034D] text-white text-sm hover:opacity-90 w-full md:w-auto"
-          >
-            Create new dispute
           </button>
         </div>
       </div>

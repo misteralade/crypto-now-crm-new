@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Calendar } from 'lucide-react'
-import {userStatusOptions} from "../../../util/constants.ts";
+import {userStatusOptions} from "../../../util/constants.util.ts";
 
 export interface FilterModalProps {
   // 🧩 Values

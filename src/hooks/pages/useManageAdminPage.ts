@@ -5,13 +5,14 @@ import { useAdminQuery } from "../../queries/admin.querries";
 import {
   clearCreateAdminField,
   clearCreateRoleField,
+  clearDeleteAdminId,
   clearSearchAdminField, clearUpdateAdminField,
   setCreateAdminField,
-  setCreateRoleField,
+  setCreateRoleField, setDeleteAdminId,
   setSearchAdminField, setUpdateAdminField,
 } from '../../redux/admin.slice'
 import {debounce} from "../../util/debouce.util";
-import {TIME_IN_MILLISECONDS} from "../../util/constants";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 import momentClient from "../../util/moment";
 import type {CreateNewAdminRequestType, SearchAdminRequestType} from "../../schemas/admin.schema";
 
@@ -30,6 +31,7 @@ export const useManageAdminPage = () => {
     createRoleMutation,
     createAdminMutation,
     updateAdminActiveStatusMutation,
+    adminSoftDeleteAdminMutation,
   } = useAdminQuery();
 
   // Filters
@@ -43,6 +45,7 @@ export const useManageAdminPage = () => {
   const [showAddNewRole, setShowAddNewRole] = useState(false);
   const [showAddNewAdmin, setShowAddNewAdmin] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+  const [showDeleteAdminModal, setShowDeleteAdminModal] = useState(false);
 
   // Create Role
   const [selectedPermissions, setSelectedPermissions] = useState<Array<string>>([])
@@ -194,6 +197,19 @@ export const useManageAdminPage = () => {
       dispatch(clearCreateRoleField())
     }
   }
+  
+  const handleDeleteAdmin = (id: string) => {
+    toggleDeleteAdminModal();
+    dispatch(setDeleteAdminId(id));
+  }
+  
+  const handleConfirmDeleteAdmin = async () => {
+    const { success } = await adminSoftDeleteAdminMutation.mutateAsync();
+    if (success) {
+      toggleDeleteAdminModal();
+      dispatch(clearDeleteAdminId());
+    }
+  }
 
   // Toggle Modals
   const toggleAddNewRoleModal = () => setShowAddNewRole(!showAddNewRole);
@@ -201,7 +217,9 @@ export const useManageAdminPage = () => {
   const toggleAddNewAdmin = () => setShowAddNewAdmin(!showAddNewAdmin);
 
   const toggleFilter = () => setShowFilter(!showFilter);
-
+  
+  const toggleDeleteAdminModal = () => setShowDeleteAdminModal(!showDeleteAdminModal);
+  
   return {
     // 🧩 Values
     showAddNewRole,
@@ -221,6 +239,7 @@ export const useManageAdminPage = () => {
     searchedAdmins,
     loadingSearchedAdmins,
     pageSize,
+    showDeleteAdminModal,
 
 
     // ⚙️ Functions
@@ -241,5 +260,8 @@ export const useManageAdminPage = () => {
     handleUpdateAdminStatus,
     handlePageChange,
     handlePageSizeChange,
+    handleDeleteAdmin,
+    toggleDeleteAdminModal,
+    handleConfirmDeleteAdmin,
   }
 }

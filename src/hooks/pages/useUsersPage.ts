@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useUserQuery} from "../../queries/user.query";
 import {
@@ -13,6 +13,8 @@ import momentClient from "../../util/moment";
 import {adminSearchUsersInitialState} from "../../redux/states/initial-users-management.states";
 import type {AdminSearchUserRequestType} from "../../schemas/user.schema";
 import type {UserStatusVariant} from "../../types/global.types";
+import {debounce} from "../../util/debouce.util.ts";
+import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 
 export const useUsersPage = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ export const useUsersPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [createdAtFrom, setCreatedAtFrom] = useState<Date>();
   const [createdAtTo, setCreatedAtTo] = useState<Date>();
+  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined)
 
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
@@ -65,6 +68,18 @@ export const useUsersPage = () => {
     setCreatedAtTo(undefined);
     dispatch(clearSearchUsers());
   }
+  
+  const handleSearchChange = useMemo(() => {
+    const debouncedUpdate = debounce(
+      (query: string) => handleUpdateSearchUserField("searchQuery", query),
+      TIME_IN_MILLISECONDS.FIVE_HUNDRED_MILLISECONDS
+    );
+    
+    return (query: string) => {
+      setSearchQuery(query);
+      debouncedUpdate(query);
+    };
+  }, [dispatch]);
 
   const handleViewUserDetails = (userId: string) => {
     // Route to user details page
@@ -124,6 +139,7 @@ export const useUsersPage = () => {
     userProfileSummary,
     loadingUserProfileSummary,
     pageSize,
+    searchQuery,
 
     // ⚙️ Functions
     toggleFilter,
@@ -138,5 +154,6 @@ export const useUsersPage = () => {
     handleResetUserPassword,
     handlePageSizeChange,
     handlePageChange,
+    handleSearchChange,
   }
 }

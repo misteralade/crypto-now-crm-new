@@ -1,4 +1,4 @@
-import {NUMBERS} from "../../../../util/constants";
+import {NUMBERS} from "../../../../util/constants.util.ts";
 import type { CreateSupportedCryptoAndAdminWalletRequestType } from "../../../../schemas/crypto.schema";
 import LabeledPillInput from "../../../global/LabeledPillInput";
 
