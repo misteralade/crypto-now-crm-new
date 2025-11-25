@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMatchRoute } from "@tanstack/react-router";
 import { toast } from "react-toastify";
-import { ROUTES } from '../util/constants.util.ts'
+import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
 import { QUERY_KEYS } from './querries.keys.js'
 import { type RootState, store } from "../store";
 import { disputeServiceApi } from "../api/dispute.api.ts";
@@ -45,6 +45,7 @@ export const useDisputeQuery = () => {
       return null;
     },
     enabled: !!matchRoute({ to: ROUTES.DISPUTE_DETAILS }) && !!(store.getState() as RootState).dispute.details.id,
+    refetchInterval: TIME_IN_MILLISECONDS.TEN_SECONDS,
   });
   
   const { data: disputeDetails, isLoading: loadingDisputeDetails } = useQuery({
