@@ -1,5 +1,5 @@
 import {Fragment} from "react";
-import {convertToMillify, formatNumber, getCurrencySymbolFromCode} from "../../../../util/index.util.ts";
+import {convertToMillify, formatNumber} from "../../../../util/index.util.ts";
 import {StatusBadge} from "../../../global/StatusBadge.tsx";
 
 interface TransactionOverviewProps {
@@ -12,7 +12,7 @@ interface TransactionOverviewProps {
   status: string;
 }
 
-const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiatNGN, stableToFiatRate, status }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type, amountCrypto, symbol, amountFiatNGN, stableToFiatRate, status }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
