@@ -61,6 +61,7 @@ export type SearchTransactionsResponse = {
   type: TransactionAction;
   amountCrypto: string;
   amountFiat: string;
+  amountFiatNGN: number;
   cryptoToStableRate: string;
   stableToFiatRate: string;
   stableToCryptoRate: string;

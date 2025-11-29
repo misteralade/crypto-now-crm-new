@@ -160,7 +160,7 @@ const TransactionDetailsDrawer = ({
                 <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
                   {transaction.type === 'BUY' ? (
                     <Fragment>
-                      ₦ {Number(transaction.amountFiat).toLocaleString()}
+                      ₦ {Number(transaction.amountFiatNGN).toLocaleString()}
                     </Fragment>
                   ) : (
                     <Fragment>
@@ -220,13 +220,13 @@ const TransactionDetailsDrawer = ({
                   {transaction.type === 'BUY' ? (
                     <Fragment>
                       {transaction.amountCrypto}{' '}
-                      {transaction.cryptocurrency ? transaction.cryptocurrency.symbol : ''} ($
-                      {convertToMillify(Number(transaction.usdAmount))})
+                      {transaction.cryptocurrency ? transaction.cryptocurrency.symbol : ''}{' '}
+                      (₦ {convertToMillify(Number(transaction.amountFiatNGN))})
                     </Fragment>
                   ) : (
                     <Fragment>
-                      ₦ {Number(transaction.amountFiat).toLocaleString()} ($
-                      {convertToMillify(Number(transaction.usdAmount))})
+                      ₦ {Number(transaction.amountFiatNGN).toLocaleString()}{' '}
+                      (${convertToMillify(Number(transaction.usdAmount))})
                     </Fragment>
                   )}
                 </div>

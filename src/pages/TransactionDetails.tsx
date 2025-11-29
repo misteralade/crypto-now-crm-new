@@ -61,7 +61,7 @@ const TransactionDetails = () => {
                   amountCrypto={Number(transaction.amountCrypto)}
                   symbol={transaction.cryptocurrency?.symbol || 'CRYPTO'}
                   currency={transaction.currency}
-                  amountFiat={Number(transaction.amountFiat || 0)}
+                  amountFiatNGN={Number(transaction.amountFiatNGN || 0)}
                   stableToFiatRate={Number(transaction.stableToFiatRate)}
                   status={transaction.status}
                 />
@@ -78,11 +78,11 @@ const TransactionDetails = () => {
                 {/* User Bank Account And/Or Crypto Wallet Details */}
                 <PaymentAccountDetails
                   type={transaction.type}
-                  hasBankAccount={transaction.userBankAccount !== undefined}
+                  hasBankAccount={transaction.userBankAccount ? true : false}
                   accountName={transaction.userBankAccount?.accountName}
                   accountNumber={transaction.userBankAccount?.accountNumber}
                   bankName={transaction.userBankAccount?.bankName}
-                  hasCryptoWallet={transaction.userCryptoWallet !== undefined}
+                  hasCryptoWallet={transaction?.userCryptoWallet ? true : false}
                   walletAddress={transaction.userCryptoWallet?.walletAddress}
                   network={transaction.userCryptoWallet?.network}
                   cryptoName={transaction.cryptocurrency?.name}
@@ -92,11 +92,11 @@ const TransactionDetails = () => {
                 {/* Admin Bank Account And/Or Crypto Wallet Details */}
                 <AdminPaymentAccountDetails
                   type={transaction.type}
-                  hasBankAccount={transaction.adminBankAccount !== undefined}
+                  hasBankAccount={transaction?.adminBankAccount ? true : false}
                   accountName={transaction.adminBankAccount?.accountHolderName}
                   accountNumber={transaction.adminBankAccount?.accountNumber}
                   bankName={transaction.adminBankAccount?.bankName}
-                  hasCryptoWallet={transaction.adminCryptoWallet !== undefined}
+                  hasCryptoWallet={transaction?.adminCryptoWallet ? true : false}
                   walletAddress={transaction.adminCryptoWallet?.walletAddress}
                   network={transaction.adminCryptoWallet?.network}
                   cryptoName={transaction.cryptocurrency?.name}

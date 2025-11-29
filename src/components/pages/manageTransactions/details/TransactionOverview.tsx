@@ -1,5 +1,5 @@
 import {Fragment} from "react";
-import {convertToMillify, formatNumber, getCurrencySymbolFromCode} from "../../../../util/index.util.ts";
+import {convertToMillify, formatNumber} from "../../../../util/index.util.ts";
 import {StatusBadge} from "../../../global/StatusBadge.tsx";
 
 interface TransactionOverviewProps {
@@ -7,12 +7,12 @@ interface TransactionOverviewProps {
   amountCrypto: number;
   symbol: string;
   currency: string;
-  amountFiat: number;
+  amountFiatNGN: number;
   stableToFiatRate: number;
   status: string;
 }
 
-const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiat, stableToFiatRate, status }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type, amountCrypto, symbol, amountFiatNGN, stableToFiatRate, status }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -26,9 +26,9 @@ const TransactionOverview = ({ type, amountCrypto, symbol, currency, amountFiat,
           </div>
           
           <div>
-            <p className="text-sm text-gray-500 mb-1">Fiat Amount</p>
+            <p className="text-sm text-gray-500 mb-1">Fiat Amount (NGN)</p>
             <p className="text-2xl font-bold text-gray-900">
-              {getCurrencySymbolFromCode(currency)} {convertToMillify(amountFiat, 3)}
+              ₦ {convertToMillify(amountFiatNGN, 3)}
             </p>
           </div>
           

@@ -3,11 +3,11 @@ import CopyDetails from "../../../global/CopyDetails.tsx";
 
 interface PaymentAccountDetailsProps {
   type: 'BUY' | 'SELL';
-  hasBankAccount: boolean;
+  hasBankAccount: boolean | null;
   accountName: string | undefined;
   accountNumber: string | undefined;
   bankName: string | undefined;
-  hasCryptoWallet: boolean;
+  hasCryptoWallet: boolean | null;
   walletAddress: string | undefined;
   network: string | undefined;
   cryptoName: string | undefined;
