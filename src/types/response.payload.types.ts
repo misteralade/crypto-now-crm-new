@@ -558,3 +558,26 @@ export type DisputeDetailsResponse = {
   updatedAt: Date;
 }
 // End Dispute
+
+// Start Testimonial
+export type TestimonialResponsePayload = {
+  id: string;
+  contentLink: string;
+  name: string | null;
+  description: string | null;
+  contentType: "VIDEO" | "IMAGE" | "TEXT";
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type GetTestimonialsAPIResponse = BaseApiResponse<{
+  testimonials: Array<TestimonialResponsePayload>;
+  count: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}>;
+
+export type GetTestimonialDetailsAPIResponse = BaseApiResponse<TestimonialResponsePayload>;
+// End Testimonial

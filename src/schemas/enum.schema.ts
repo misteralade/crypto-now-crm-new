@@ -154,6 +154,12 @@ export const DisputePriorityEnum = z.preprocess((val) => {
   return val;
 }, z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]));
 
+export const TestimonialContentTypeEnum = z.preprocess((val) => {
+  if (typeof val === "string") return val.toUpperCase();
+  
+  return val;
+}, z.enum(["VIDEO", "IMAGE", "TEXT"]));
+
 export type TimelineEnumType = z.infer<typeof TimelineEnumType>;
 export type CryptoNetworkType = z.infer<typeof CryptoNetworkType>;
 export type TransactionAction = z.infer<typeof TransactionAction>;
@@ -167,3 +173,4 @@ export type DisputeStatusEnumType = z.infer<typeof DisputeStatusEnum>;
 export type DisputeResolutionEnumType = z.infer<typeof DisputeResolutionEnum>;
 export type DisputePriorityEnumType = z.infer<typeof DisputePriorityEnum>;
 export type AttachmentTypeEnumType = z.infer<typeof AttachmentTypeEnum>;
+export type TestimonialContentTypeEnumType = z.infer<typeof TestimonialContentTypeEnum>;

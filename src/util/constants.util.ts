@@ -40,6 +40,7 @@ export const ROUTES = {
   USERS_DETAILS: '/dashboard/users/$userId',
   NOTIFICATIONS: '/dashboard/notifications',
   MANAGE_ADMINS: '/dashboard/manage-admins',
+  TESTIMONIALS: '/dashboard/testimonials',
 }
 
 export const CRYPTO_NETWORK_OPTIONS = [

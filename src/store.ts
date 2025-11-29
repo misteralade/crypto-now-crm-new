@@ -19,6 +19,7 @@ import auditLogSlice from './redux/audit-log.slice'
 import notificationSlice from './redux/notification.slice';
 import adminSlice from './redux/admin.slice';
 import disputeSlice from './redux/dispute.slice.ts';
+import testimonialSlice from './redux/testimonial.slice';
 import { BASIC } from './config/index.config'
 // (To persist to localStorage instead: import storage from 'redux-persist/lib/storage')
 
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   notification: notificationSlice,
   admin: adminSlice,
   dispute: disputeSlice,
+  testimonial: testimonialSlice,
 })
 
 const persistConfig = {
@@ -47,6 +49,7 @@ const persistConfig = {
     'notification',
     'admin',
     'dispute',
+    'testimonial',
   ],
 }
 

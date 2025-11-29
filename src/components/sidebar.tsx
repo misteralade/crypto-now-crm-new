@@ -71,6 +71,17 @@ const navItems = [
     ),
   },
   {
+    path: ROUTES.TESTIMONIALS,
+    label: 'Testimonials',
+    icon: (props: { className?: string }) => (
+      <img
+        src="/icons/testimonial.svg"
+        alt="Testimonial"
+        className={`${props.className ?? ''} w-5 h-5`}
+      />
+    ),
+  },
+  {
     path: ROUTES.DISPUTES,
     label: 'Disputes',
     icon: (props: { className?: string }) => (
