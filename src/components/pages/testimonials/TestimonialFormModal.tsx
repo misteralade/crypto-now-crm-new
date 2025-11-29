@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import MFLabeledPillInput from '../../global/LabeledPillInput';
 import MFLabeledPillSelect from '../../global/LabeledPillSelect';
@@ -65,7 +65,7 @@ const TestimonialFormModal = ({
 
           <Formik
             initialValues={defaultValues}
-            validationSchema={toFormikValidationSchema(CreateTestimonialRequestSchema)}
+            validationSchema={toFormikValidationSchema(CreateTestimonialRequestSchema as any)}
             onSubmit={(values) => {
               onSubmit(values);
             }}
