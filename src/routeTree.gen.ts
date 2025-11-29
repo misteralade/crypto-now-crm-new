@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardTestimonialsRouteImport } from './routes/dashboard/testimonials'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
 import { Route as DashboardManageAdminsRouteImport } from './routes/dashboard/manage-admins'
@@ -34,6 +35,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardTestimonialsRoute = DashboardTestimonialsRouteImport.update({
+  id: '/dashboard/testimonials',
+  path: '/dashboard/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/testimonials'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/testimonials'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/testimonials'
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   DashboardManageAdminsRoute: typeof DashboardManageAdminsRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardTestimonialsRoute: typeof DashboardTestimonialsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
   DashboardCoinManagementAddCoinRoute: typeof DashboardCoinManagementAddCoinRoute
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/testimonials': {
+      id: '/dashboard/testimonials'
+      path: '/dashboard/testimonials'
+      fullPath: '/dashboard/testimonials'
+      preLoaderRoute: typeof DashboardTestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/notifications': {
@@ -365,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardManageAdminsRoute: DashboardManageAdminsRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardTestimonialsRoute: DashboardTestimonialsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,
   DashboardCoinManagementAddCoinRoute: DashboardCoinManagementAddCoinRoute,
