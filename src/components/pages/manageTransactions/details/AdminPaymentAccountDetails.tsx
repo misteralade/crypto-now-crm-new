@@ -3,11 +3,11 @@ import CopyDetails from "../../../global/CopyDetails.tsx";
 
 interface AdminPaymentAccountDetailsProps {
   type: 'BUY' | 'SELL';
-  hasBankAccount: boolean;
+  hasBankAccount: boolean | null;
   accountName: string | undefined;
   accountNumber: string | undefined;
   bankName: string | undefined;
-  hasCryptoWallet: boolean;
+  hasCryptoWallet: boolean | null;
   walletAddress: string | undefined;
   network: string | undefined;
   cryptoName: string | undefined;
@@ -17,7 +17,7 @@ interface AdminPaymentAccountDetailsProps {
 const AdminPaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumber, bankName, hasCryptoWallet, walletAddress, network, cryptoName, cryptoSymbol }: AdminPaymentAccountDetailsProps) => {
   return (
     <Fragment>
-      {type === 'SELL' && hasBankAccount ? (
+      {type === 'SELL' && hasCryptoWallet ? (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Crypto Wallet</h2>
           
@@ -40,7 +40,7 @@ const AdminPaymentAccountDetails = ({ type, hasBankAccount, accountName, account
             </div>
           </div>
         </div>
-      ) : type === 'BUY' && hasCryptoWallet && (
+      ) : type === 'BUY' && hasBankAccount && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Bank Account</h2>
           <div className="space-y-3">
