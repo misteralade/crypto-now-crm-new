@@ -36,10 +36,8 @@ const Testimonials = () => {
     handleDeleteTestimonial,
     
     handleTogglePublishStatus,
-    handleRefresh,
     handlePageChange,
     handlePageSizeChange,
-    createTestimonialMutation,
   } = useTestimonialPage();
 
   const handleEdit = (testimonial: TestimonialResponsePayload) => {
