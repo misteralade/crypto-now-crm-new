@@ -54,7 +54,7 @@ export const TestimonialDataColumn = (
     key: 'isPublished',
     header: 'Status',
     render: (value) => (
-      <StatusColumn status={value === true ? 'Published' : 'Draft'} />
+      <StatusColumn status={value === true ? 'true' : 'false'} />
     ),
   },
   {
