@@ -376,7 +376,7 @@ export const UserTransactionsManagementColumn = (
           
           <button
             className="ml-4 px-2.5 md:px-3 py-1 rounded-full bg-[#E6E6FE] cursor-pointer hover:opacity-80 text-[#03034D] text-xs md:text-xs font-medium"
-            onClick={() => handleViewTransaction(row.transactionId)}
+            onClick={() => handleViewTransaction(row.id)}
           >
             View
           </button>
