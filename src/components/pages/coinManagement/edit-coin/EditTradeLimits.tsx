@@ -95,7 +95,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
               setMaxTradeAmount(Number(e.target.value))
               onChangeInputField("maxTransactionLimit", Number(e.target.value))
             }}
-            label="Min trade amount"
+            label="Max trade amount"
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"
