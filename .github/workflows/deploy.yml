@@ -20,16 +20,15 @@ jobs:
       - name: Set target environment and project
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            echo "FIREBASE_TARGET=dev" >> $GITHUB_ENV
-            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+            echo "FIREBASE_TARGET=cryptonow-ng-crm-dev" >> $GITHUB_ENV
             echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_DEV }}" >> $GITHUB_ENV
+            echo "FIREBASE_SITE_ID=${{ secrets.FIREBASE_PROJECT_DEV }}" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/master" ]; then
-            echo "FIREBASE_TARGET=prod" >> $GITHUB_ENV
-            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+            echo "FIREBASE_TARGET=cryptonow-ng-crm" >> $GITHUB_ENV
             echo "FIREBASE_PROJECT=${{ secrets.FIREBASE_PROJECT_PROD }}" >> $GITHUB_ENV
-          else
-            echo "Unknown branch, deployment skipped"
-            exit 1
+            echo "FIREBASE_SITE_ID=${{ secrets.FIREBASE_PROJECT_PROD }}" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
           fi
 
       - name: Setup Node.js
@@ -50,6 +49,7 @@ jobs:
             echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_PROD }}" > .env
             echo "VITE_NODE_ENV=production" >> .env
           fi
+          echo "✓ Environment configured for ${{ env.DEPLOY_ENV }}"
 
       - name: Build project
         run: npm run build
@@ -57,26 +57,76 @@ jobs:
       - name: Verify build output
         run: |
           if [ ! -d "dist" ]; then
-            echo "Build directory not found!"
+            echo "❌ Error: Build output directory 'dist' not found!"
             exit 1
           fi
-          echo "Build output verified successfully"
-
-      - name: Setup Firebase credentials for Dev
-        if: github.ref == 'refs/heads/dev'
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud-key.json
-
-      - name: Setup Firebase credentials for Prod
-        if: github.ref == 'refs/heads/master'
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}' > $HOME/gcloud-key.json
+          echo "✓ Build completed successfully"
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy to Firebase Hosting
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+      - name: Setup Firebase Service Account (Dev)
+        if: github.ref == 'refs/heads/dev'
         run: |
-          firebase deploy --only hosting:${{ env.FIREBASE_TARGET }} --non-interactive --project ${{ env.FIREBASE_PROJECT }}
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}' > $HOME/gcloud-service-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json" >> $GITHUB_ENV
+          echo "✓ Service account configured for development"
+
+      - name: Setup Firebase Service Account (Prod)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}' > $HOME/gcloud-service-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json" >> $GITHUB_ENV
+          echo "✓ Service account configured for production"
+
+      - name: Configure Firebase project and targets
+        run: |
+          cat > .firebaserc << EOF
+          {
+            "projects": {
+              "default": "${{ env.FIREBASE_PROJECT }}"
+            },
+            "targets": {
+              "${{ env.FIREBASE_PROJECT }}": {
+                "hosting": {
+                  "${{ env.FIREBASE_TARGET }}": [
+                    "${{ env.FIREBASE_SITE_ID }}"
+                  ]
+                }
+              }
+            }
+          }
+          EOF
+          
+          echo "✓ Firebase configuration:"
+          cat .firebaserc
+
+      - name: Deploy to Firebase Hosting
+        run: |
+          firebase use ${{ env.FIREBASE_PROJECT }}
+          firebase deploy --only hosting:${{ env.FIREBASE_TARGET }} --non-interactive
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f $HOME/gcloud-service-key.json
+
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "🚀 Deployment successful!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Environment: ${{ env.DEPLOY_ENV }}"
+          echo "Target: ${{ env.FIREBASE_TARGET }}"
+          echo "Project: ${{ env.FIREBASE_PROJECT }}"
+          echo "Site ID: ${{ env.FIREBASE_SITE_ID }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: Deployment failed
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check the logs above for details."
+          exit 1
