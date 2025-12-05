@@ -1,19 +1,30 @@
 {
-  "hosting": {
-    "target": "dev",
-    "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false
-  }
+  "hosting": [
+    {
+      "target": "cryptonow-ng-crm-dev",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "cleanUrls": true,
+      "trailingSlash": false
+    },
+    {
+      "target": "cryptonow-ng-crm",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "cleanUrls": true,
+      "trailingSlash": false
+    }
+  ]
 }
