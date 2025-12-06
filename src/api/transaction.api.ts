@@ -100,6 +100,13 @@ class TransactionServiceApi {
     return await axiosGetRequestHandler(`/transaction/admin/details/${sessionId}`) as GetTransactionDetailsAPIResponse
   }
   
+  async adminLockTransaction(sessionId: string) {
+    return (await axiosPostRequestHandler(
+      `/transaction/admin/${sessionId}/lock`,
+      {},
+    )) as BaseApiResponse<{ lockExpiresAt: string }>
+  }
+  
   async uploadDisputeAttachment(formData: FormData) {
     const response =  await axiosPostRequestHandler(
       `/upload/transaction/dispute/attachment-upload`,

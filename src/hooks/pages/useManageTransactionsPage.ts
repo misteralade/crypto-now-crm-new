@@ -1,5 +1,6 @@
 import {useState} from "react";
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import {useTransactionQuery} from "../../queries/transaction.query";
 import {
   clearTransactionDetailSessionId,
@@ -17,6 +18,7 @@ import type {
   UpdateTransactionStatusRequestType
 } from "../../schemas/transaction.schema";
 import type {RootState} from "../../store";
+import type {AxiosServerError} from "../../types/response.payload.types";
 
 export const useManageTransactionsPage = () => {
   const dispatch = useDispatch()
@@ -30,6 +32,7 @@ export const useManageTransactionsPage = () => {
     // Mutations
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
+    adminLockTransactionMutation,
   } = useTransactionQuery();
   
   const { allSupportedCrypto, loadingAllSupportedCrypto } = useCryptoQuery();
@@ -78,15 +81,37 @@ export const useManageTransactionsPage = () => {
     })
   }
 
-  const handleShowTransactionDetails = (sessionId?: string) => {
-    // If sessionId is present, then update the state
-    if (sessionId) {
-      dispatch(setTransactionDetailSessionId(sessionId));
-      toggleShowTransactionDetails()
-    } else {
-      // If sessionId is not present, then just toggle the state and clear the redux
+  const handleShowTransactionDetails = async (sessionId?: string) => {
+    // If sessionId is not present, then just toggle the state and clear the redux
+    if (!sessionId) {
       dispatch(clearTransactionDetailSessionId())
       toggleShowTransactionDetails()
+      return
+    }
+
+    // If sessionId is present, try to lock the transaction first
+    try {
+      await adminLockTransactionMutation.mutateAsync(sessionId)
+      // Lock successful, open the sidebar
+      dispatch(setTransactionDetailSessionId(sessionId))
+      toggleShowTransactionDetails()
+    } catch (error) {
+      console.log({
+        error
+      })
+      // Handle lock error
+      const axiosError = error as AxiosServerError
+      const statusCode = axiosError.response?.status
+      const errorMessage = axiosError.response?.data?.error?.message || 'Failed to lock transaction'
+      
+      // Show error message
+      toast.error(errorMessage)
+      
+      // Ensure sidebar is closed and clear sessionId
+      if (showTransactionDetails) {
+        toggleShowTransactionDetails()
+      }
+      dispatch(clearTransactionDetailSessionId())
     }
   }
 
