@@ -271,6 +271,17 @@ export const useTransactionQuery = () => {
     },
   })
 
+  const adminLockTransactionMutation = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { success, data } = await transactionServiceApi.adminLockTransaction(sessionId)
+      return { success, data }
+    },
+    onError: (error: AxiosServerError) => {
+      // Error handling will be done in the component
+      throw error
+    },
+  })
+
   return {
     // 🧩 Values
     transactionVolume,
@@ -293,5 +304,6 @@ export const useTransactionQuery = () => {
     // Mutation
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
+    adminLockTransactionMutation,
   }
 }
