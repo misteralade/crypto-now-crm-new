@@ -67,7 +67,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
           <LabeledPillInput
             id="maxTradeAmount"
             onChange={(e) => onChangeInputField("maxTransactionLimit", Number(e.target.value))}
-            label="Min trade amount"
+            label="Max trade amount"
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"
