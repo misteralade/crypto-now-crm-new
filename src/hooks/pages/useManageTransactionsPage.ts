@@ -101,7 +101,6 @@ export const useManageTransactionsPage = () => {
       })
       // Handle lock error
       const axiosError = error as AxiosServerError
-      const statusCode = axiosError.response?.status
       const errorMessage = axiosError.response?.data?.error?.message || 'Failed to lock transaction'
       
       // Show error message
