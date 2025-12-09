@@ -128,13 +128,16 @@ export const useManageTransactionsPage = () => {
   const handleTransactionReceiptUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
-    const url = await adminUploadTransactionReceiptMutation.mutateAsync(formData);
+    const result = await adminUploadTransactionReceiptMutation.mutateAsync(formData);
+    
+    // Store url in Redux for saving (this is what gets sent to the backend)
     dispatch(setTransactionDetailUpdateField({
       field: "adminPaymentReceiptUrl",
-      value: url,
+      value: result?.url || '',
     }))
 
-    return url || '';
+    // Return signedUrl for preview
+    return result?.signedUrl || '';
   }
 
   const toggleShowTransactionDetails = () => setShowTransactionDetails(!showTransactionDetails)

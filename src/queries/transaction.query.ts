@@ -242,19 +242,26 @@ export const useTransactionQuery = () => {
   const adminUploadTransactionReceiptMutation = useMutation({
     mutationFn: async (formData: FormData) => {
       toast.loading('Uploading transaction receipt...')
+      const sessionId = (store.getState() as RootState).transactionManagement.details.transactionSessionId
+      
+      if (!sessionId) {
+        toast.dismiss()
+        throw new Error('Transaction session ID is required')
+      }
+      
       const { data } =
-        await transactionServiceApi.adminUploadTransactionReceipt(formData)
-      return data.url
+        await transactionServiceApi.adminUploadTransactionReceipt(formData, sessionId)
+      return { url: data.url, signedUrl: data.signedUrl }
     },
     onError: (error: AxiosServerError) => {
       const { response } = error
       toast.dismiss()
       toast.error(response?.data.error.message || 'Failed to upload transaction reciept.')
     },
-    onSuccess: (url: string | undefined) => {
+    onSuccess: (result: { url: string; signedUrl: string } | undefined) => {
       toast.dismiss()
       toast.success('Successfully uploaded transaction receipt')
-      return url
+      return result
     },
   })
 

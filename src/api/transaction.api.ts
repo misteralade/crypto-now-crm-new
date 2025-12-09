@@ -84,13 +84,16 @@ class TransactionServiceApi {
     )) as BaseApiResponse<null>
   }
 
-  async adminUploadTransactionReceipt(formData: FormData) {
+  async adminUploadTransactionReceipt(formData: FormData, sessionId: string) {
     return (await axiosPostRequestHandler(
       '/upload/admin/transaction/payment-receipt-upload',
       formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
+        },
+        params: {
+          sessionId,
         },
       },
     )) as UploadAPIResponse

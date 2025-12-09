@@ -288,7 +288,7 @@ export type UserCryptoWalletResponsePayload = {
 // End Crypto
 
 // Start Upload
-export type UploadAPIResponse = BaseApiResponse<{ url: string }>;
+export type UploadAPIResponse = BaseApiResponse<{ url: string; signedUrl: string }>;
 // End Upload
 
 // Start Exchange Rate

@@ -10,10 +10,8 @@ import {
   transactionStatusStyles,
 } from '../../../util/constants.util.ts'
 import {setTransactionDetailUpdateField} from "../../../redux/transaction-management.slice";
-import { store} from "../../../store";
 import CustomerAccountDetails from './CustomerAccountDetails.tsx'
 import type {TransactionStatusType} from "../../../schemas/enum.schema";
-import type {RootState} from "../../../store";
 import type { SearchTransactionsResponse } from '../../../types/response.payload.types'
 import type { UpdateTransactionStatusRequestType } from '../../../schemas/transaction.schema'
 import type {ChangeEvent} from 'react';
@@ -41,10 +39,9 @@ const TransactionDetailsDrawer = ({
 }: TransactionDetailsDrawerProps) => {
   const dispatch = useDispatch();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
   const [showCustomerDetails, setShowCustomerDetails] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<TransactionStatusType | undefined>(undefined);
-
-  const previewUrl = (store.getState() as RootState).transactionManagement.details.update.adminPaymentReceiptUrl;
   
   // Reset showCustomerDetails when drawer closes
   useEffect(() => {
@@ -52,6 +49,7 @@ const TransactionDetailsDrawer = ({
       setShowCustomerDetails(false);
       setSelectedStatus(undefined);
       setUploadedFile(null);
+      setPreviewUrl(undefined);
     }
   }, [isOpen]);
   
@@ -110,8 +108,9 @@ const TransactionDetailsDrawer = ({
       return
     }
 
-    await handleTransactionReceiptUpload(file)
+    const signedUrl = await handleTransactionReceiptUpload(file)
     setUploadedFile(file)
+    setPreviewUrl(signedUrl)
   }
 
   const removeFile = () => {
@@ -120,10 +119,7 @@ const TransactionDetailsDrawer = ({
       value: undefined,
     }))
     setUploadedFile(null)
-    dispatch(setTransactionDetailUpdateField({
-      field: 'adminPaymentReceiptUrl',
-      value: undefined,
-    }))
+    setPreviewUrl(undefined)
   }
 
   return (
