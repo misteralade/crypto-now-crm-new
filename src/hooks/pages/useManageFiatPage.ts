@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import {useBankQuery} from "../../queries/bank.querries";
 import {
   clearSelectedBankId,
+  clearCreateBankField,
   setCreateBankField, setSearchFiatField,
   setSelectedBankId,
 } from '../../redux/fiat.slice'
@@ -45,6 +46,7 @@ export const useManageFiatPage = () => {
 
   const handleAdminCreateBank = async () => {
     await adminCreateBankAccountMutation.mutateAsync();
+    dispatch(clearCreateBankField());
     toggleBankModal();
   }
   
