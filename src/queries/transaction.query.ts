@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
-import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'
 import { QUERY_KEYS } from './querries.keys'
 import type {RootState} from '../store';
 import type {
@@ -166,23 +165,11 @@ export const useTransactionQuery = () => {
 
         if (!sessionId) return null
 
-        // Build Payload
-        const searchTransactionPayload = {
-          ...searchTransactionsInitialState,
-          includeExchangeRate: true,
-          includeCryptoCurrency: true,
-          includeUserBankAccount: true,
-          includeUserCryptoWallet: true,
-          sessionId,
-        }
-
         const { data, success } =
-          await transactionServiceApi.searchTransactions(
-            searchTransactionPayload,
-          )
+          await transactionServiceApi.adminGetTransactionDetails(sessionId)
 
         if (success) {
-          return data.transactions[0] as SearchTransactionsResponse | undefined
+          return data as SearchTransactionsResponse | undefined
         }
 
         return null
