@@ -13,17 +13,11 @@ interface BankDetailsModalProps {
   supportedBanks: Array<SupportedPlatformBankAccountResponse> | null | undefined
   handleCreateBankField: (
     field: keyof CreateBankAccountRequestType,
-    value: any,
+    value: string,
   ) => void
 }
 
-export default function BankDetailsModal({
-  open,
-  onClose,
-  onConfirm,
-  supportedBanks,
-  handleCreateBankField,
-}: BankDetailsModalProps) {
+const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCreateBankField }: BankDetailsModalProps) => {
   const payload = useSelector((state: RootState) => state.fiat.bank.createBank)
   
   const bankOptions = useMemo(() => {
@@ -53,7 +47,7 @@ export default function BankDetailsModal({
       <div className="absolute inset-0 grid place-items-center">
         <div className="w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC]">
           <div className="px-6 pt-6 pb-2 text-center text-2xl font-medium">
-            Bank details
+            Bank Details
           </div>
 
           <div className="px-6 pb-4 space-y-8 mt-8">
@@ -110,3 +104,5 @@ export default function BankDetailsModal({
     </div>
   )
 }
+
+export default BankDetailsModal;

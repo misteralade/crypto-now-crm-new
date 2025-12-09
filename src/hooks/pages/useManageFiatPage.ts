@@ -45,9 +45,14 @@ export const useManageFiatPage = () => {
   }
 
   const handleAdminCreateBank = async () => {
-    await adminCreateBankAccountMutation.mutateAsync();
-    dispatch(clearCreateBankField());
-    toggleBankModal();
+    try {
+      await adminCreateBankAccountMutation.mutateAsync();
+      // Only close modal on successful creation (handleCloseBankModal already clears the form)
+      handleCloseBankModal();
+    } catch (error) {
+      // Error is already handled in the mutation's onError callback
+      // Don't close modal on error so user can fix and retry
+    }
   }
   
   const handleCreateBankField = (field: keyof CreateBankAccountRequestType, value: any) => {
@@ -74,8 +79,15 @@ export const useManageFiatPage = () => {
     };
   }, [dispatch]);
   
-  // toggle functions can be added here if needed in the future
-  const toggleBankModal = () => setOpenBankModal(!openBankModal);
+  const handleOpenBankModal = () => {
+    dispatch(clearCreateBankField());
+    setOpenBankModal(true);
+  };
+
+  const handleCloseBankModal = () => {
+    setOpenBankModal(false);
+    dispatch(clearCreateBankField());
+  };
 
   return {
     // 🧩 Values
@@ -89,7 +101,8 @@ export const useManageFiatPage = () => {
     loadingSearchedSupportedBanks,
 
     // ⚙️ Functions
-    toggleBankModal,
+    handleOpenBankModal,
+    handleCloseBankModal,
     handleMakeDefault,
     handleDeleteBank,
     handleCreateBankField,
