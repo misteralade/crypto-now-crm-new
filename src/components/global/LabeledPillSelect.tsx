@@ -42,16 +42,24 @@ interface MFLabeledPillSearchSelectProps {
   valueClass?: string;
   labelClass?: string;
   className?: string;
+  value?: string;
   onChange: (value: string) => void;
 }
 
-export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass = '', valueClass = '', className = '', placeholder = 'Search...' }: MFLabeledPillSearchSelectProps) => {
+export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass = '', valueClass = '', className = '', placeholder = 'Search...', value: controlledValue }: MFLabeledPillSearchSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const [selectedItem, setSelectedItem] = useState('')
+  const [selectedItem, setSelectedItem] = useState(controlledValue || '')
   const dropdownRef = useRef<any>(null);
   const searchInputRef = useRef<any>(null);
+  
+  // Sync internal state with controlled value
+  useEffect(() => {
+    if (controlledValue !== undefined) {
+      setSelectedItem(controlledValue);
+    }
+  }, [controlledValue]);
   
   // Filter options based on search term
   const filteredOptions = options.filter(opt =>

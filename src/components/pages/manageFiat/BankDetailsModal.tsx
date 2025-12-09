@@ -1,5 +1,5 @@
-import {useEffect} from "react";
-import { store } from '../../../store'
+import {useEffect, useMemo} from "react";
+import { useSelector } from 'react-redux'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
 import { MFLabeledPillSearchSelect } from '../../global/LabeledPillSelect'
 import type { RootState } from '../../../store'
@@ -13,31 +13,29 @@ interface BankDetailsModalProps {
   supportedBanks: Array<SupportedPlatformBankAccountResponse> | null | undefined
   handleCreateBankField: (
     field: keyof CreateBankAccountRequestType,
-    value: any,
+    value: string,
   ) => void
 }
 
-export default function BankDetailsModal({
-  open,
-  onClose,
-  onConfirm,
-  supportedBanks,
-  handleCreateBankField,
-}: BankDetailsModalProps) {
-  const payload = (store.getState() as RootState).fiat.bank.createBank
-  if (!open) return null
-
-  const bankOptions =
-    supportedBanks && supportedBanks.length
+const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCreateBankField }: BankDetailsModalProps) => {
+  const payload = useSelector((state: RootState) => state.fiat.bank.createBank)
+  
+  const bankOptions = useMemo(() => {
+    return supportedBanks && supportedBanks.length
       ? supportedBanks.map((bank) => ({
           value: bank.id,
           label: bank.name,
         }))
       : [{ value: '', label: 'No banks available' }]
+  }, [supportedBanks])
   
   useEffect(() => {
-    handleCreateBankField('bankId', bankOptions[0].value || '')
-  }, [bankOptions]);
+    if (open && bankOptions[0]?.value) {
+      handleCreateBankField('bankId', bankOptions[0].value)
+    }
+  }, [open, bankOptions, handleCreateBankField]);
+  
+  if (!open) return null
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
@@ -49,12 +47,13 @@ export default function BankDetailsModal({
       <div className="absolute inset-0 grid place-items-center">
         <div className="w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC]">
           <div className="px-6 pt-6 pb-2 text-center text-2xl font-medium">
-            Bank details
+            Bank Details
           </div>
 
           <div className="px-6 pb-4 space-y-8 mt-8">
             <MFLabeledPillSearchSelect
               label="Select Bank"
+              value={payload.bankId || ''}
               onChange={(value) => handleCreateBankField('bankId', value)}
               options={bankOptions}
             />
@@ -62,6 +61,7 @@ export default function BankDetailsModal({
             <MFLabeledPillInput
               label="Account Name"
               placeholder="e.g John doe"
+              value={payload.accountHolderName || ''}
               onChange={(e) =>
                 handleCreateBankField('accountHolderName', e.target.value)
               }
@@ -71,6 +71,7 @@ export default function BankDetailsModal({
             <MFLabeledPillInput
               label="Account Number"
               placeholder="0000000000"
+              value={payload.accountNumber || ''}
               onChange={(e) =>
                 handleCreateBankField('accountNumber', e.target.value)
               }
@@ -103,3 +104,5 @@ export default function BankDetailsModal({
     </div>
   )
 }
+
+export default BankDetailsModal;
