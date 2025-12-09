@@ -264,6 +264,26 @@ const TransactionDetailsDrawer = ({
             </div>
           </section>
 
+          {/* Activity Log */}
+          {transaction.transactionActivities.length > 0 && (
+            <Fragment>
+              <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6">
+                <h3 className="text-[14px] font-semibold text-[#828282]">
+                  Activity Log
+                </h3>
+
+                <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
+                  {transaction.transactionActivities.map((activity) => (
+                    <div key={activity.id}>
+                      {activity.action.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} - {activity.message}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+
           {/* Customer Account Details fetch + panel */}
           <section>
             {!showCustomerDetails && (
@@ -396,7 +416,8 @@ const TransactionDetailsDrawer = ({
                   </label>
 
                   {/* File Preview */}
-                  {uploadedFile && (
+                  {uploadedFile ? (
+                    // Show uploaded file preview (takes priority)
                     <div className="relative group">
                       {previewUrl ? (
                         // Image preview
@@ -439,7 +460,46 @@ const TransactionDetailsDrawer = ({
                         </div>
                       )}
                     </div>
-                  )}
+                  ) : transaction.adminPaymentReceiptUrl ? (
+                    // Show admin transaction receipt when no file is uploaded
+                    <div className="relative group">
+                      {transaction.adminPaymentReceiptUrl.toLowerCase().endsWith('.pdf') ? (
+                        // PDF preview
+                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
+                              <span className="text-red-600 font-semibold text-xs">PDF</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-[#0E0F0C]">Admin Payment Receipt</p>
+                              <p className="text-xs text-[#828282]">
+                                <a
+                                  href={transaction.adminPaymentReceiptUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[#03034D] hover:underline"
+                                >
+                                  View receipt
+                                </a>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        // Image preview
+                        <div className="relative">
+                          <img
+                            src={transaction.adminPaymentReceiptUrl}
+                            alt="Admin payment receipt"
+                            className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          />
+                          <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                            Admin Payment Receipt
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </section>
