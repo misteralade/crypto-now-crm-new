@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
-import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'
 import { QUERY_KEYS } from './querries.keys'
 import type {RootState} from '../store';
 import type {
@@ -166,23 +165,11 @@ export const useTransactionQuery = () => {
 
         if (!sessionId) return null
 
-        // Build Payload
-        const searchTransactionPayload = {
-          ...searchTransactionsInitialState,
-          includeExchangeRate: true,
-          includeCryptoCurrency: true,
-          includeUserBankAccount: true,
-          includeUserCryptoWallet: true,
-          sessionId,
-        }
-
         const { data, success } =
-          await transactionServiceApi.searchTransactions(
-            searchTransactionPayload,
-          )
+          await transactionServiceApi.adminGetTransactionDetails(sessionId)
 
         if (success) {
-          return data.transactions[0] as SearchTransactionsResponse | undefined
+          return data as SearchTransactionsResponse | undefined
         }
 
         return null
@@ -255,19 +242,26 @@ export const useTransactionQuery = () => {
   const adminUploadTransactionReceiptMutation = useMutation({
     mutationFn: async (formData: FormData) => {
       toast.loading('Uploading transaction receipt...')
+      const sessionId = (store.getState() as RootState).transactionManagement.details.transactionSessionId
+      
+      if (!sessionId) {
+        toast.dismiss()
+        throw new Error('Transaction session ID is required')
+      }
+      
       const { data } =
-        await transactionServiceApi.adminUploadTransactionReceipt(formData)
-      return data.url
+        await transactionServiceApi.adminUploadTransactionReceipt(formData, sessionId)
+      return { url: data.url, signedUrl: data.signedUrl }
     },
     onError: (error: AxiosServerError) => {
       const { response } = error
       toast.dismiss()
       toast.error(response?.data.error.message || 'Failed to upload transaction reciept.')
     },
-    onSuccess: (url: string | undefined) => {
+    onSuccess: (result: { url: string; signedUrl: string } | undefined) => {
       toast.dismiss()
       toast.success('Successfully uploaded transaction receipt')
-      return url
+      return result
     },
   })
 
