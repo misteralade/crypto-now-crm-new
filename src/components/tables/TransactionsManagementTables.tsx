@@ -127,7 +127,7 @@ export const TransactionsManagementColumn = (
       <Fragment>
         <div className="py-3 text-left text-sm font-medium text-gray-500">
           <span className="flex items-center gap-2">
-            <span>Transaction ID</span>
+            <span>Session ID</span>
           </span>
         </div>
       </Fragment>
