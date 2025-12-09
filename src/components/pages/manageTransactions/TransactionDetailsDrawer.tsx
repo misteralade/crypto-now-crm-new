@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react'
+import {Fragment, useState, useEffect} from 'react'
 import { Upload, X } from 'lucide-react'
 import {useDispatch} from "react-redux";
 import { convertToMillify } from '../../../util/index.util.ts'
@@ -45,7 +45,22 @@ const TransactionDetailsDrawer = ({
   const [selectedStatus, setSelectedStatus] = useState<TransactionStatusType | undefined>(undefined);
 
   const previewUrl = (store.getState() as RootState).transactionManagement.details.update.adminPaymentReceiptUrl;
+  
+  // Reset showCustomerDetails when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      setShowCustomerDetails(false);
+      setSelectedStatus(undefined);
+      setUploadedFile(null);
+    }
+  }, [isOpen]);
+  
   if (!isOpen || !transaction) return null
+
+  // Check if wallet/bank details are available
+  const hasWalletDetails = transaction.type === 'BUY' 
+    ? !!transaction.userCryptoWallet 
+    : !!transaction.userBankAccount;
 
   // Get the exchange rate to the local currency - 1 USDT = 800 NGN
   const getExchangeRate = (
@@ -257,12 +272,21 @@ const TransactionDetailsDrawer = ({
           <section>
             {!showCustomerDetails && (
               <button
-                className="px-6 py-4 text-sm md:text-lg font-semibold border border-[#03034D] rounded-full text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]"
-                onClick={() => setShowCustomerDetails(true)}
+                className={`px-6 py-4 text-sm md:text-lg font-semibold border rounded-full ${
+                  hasWalletDetails
+                    ? 'border-[#03034D] text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]'
+                    : 'border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50'
+                }`}
+                onClick={() => hasWalletDetails && setShowCustomerDetails(true)}
+                disabled={!hasWalletDetails}
               >
                 {transaction.type === 'BUY'
-                  ? 'View Wallet Details'
-                  : 'View Bank Details'}
+                  ? hasWalletDetails
+                    ? 'View Wallet Details'
+                    : 'Wallet Details Not Available'
+                  : hasWalletDetails
+                    ? 'View Bank Details'
+                    : 'Bank Details Not Available'}
               </button>
             )}
 
@@ -333,7 +357,7 @@ const TransactionDetailsDrawer = ({
                               text={
                                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                                 transaction.userBankAccount
-                                  ? transaction.userBankAccount.userId
+                                  ? transaction.userBankAccount.accountNumber
                                   : 'N/A'
                               }
                               className="!max-w-[200px] !h-[25px]"
@@ -346,13 +370,6 @@ const TransactionDetailsDrawer = ({
                   )}
                 </div>
               </Fragment>
-            )}
-
-            {!showCustomerDetails && (
-              <div className="text-[#828282] text-base text-justify lg:text-lg mt-6">
-                NO DETAILS HAS BEEN PROVIDED YET, YOU’LL BE NOTIFIED WHEN THE
-                DETAILS HAVE BEEN UPLOADED BY THE USER
-              </div>
             )}
 
             {/* Admin Upload transaction receipt */}
