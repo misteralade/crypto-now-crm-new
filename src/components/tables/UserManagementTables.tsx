@@ -71,15 +71,15 @@ export const AdminSearchUserColumn = (
       return <UserStatusBadge status={value as UserStatusVariant} />
     },
   },
-  {
-    key: 'amount',
-    header: 'Amount',
-    render: (value) => (
-      <div className="px-4 py-5 text-sm text-[14px] text-[#101828] w-[120px]">
-        <span>₦ {convertToMillify(value, 3)}</span>
-      </div>
-    ),
-  },
+  // {
+  //   key: 'amount',
+  //   header: 'Amount',
+  //   render: (value) => (
+  //     <div className="px-4 py-5 text-sm text-[14px] text-[#101828] w-[120px]">
+  //       <span>₦ {convertToMillify(value, 3)}</span>
+  //     </div>
+  //   ),
+  // },
   {
     key: 'lastLogin',
     header: 'Last Login',
@@ -139,7 +139,7 @@ export const AdminSearchUserDataRow = (
       imgUrl: item.profile.profileImg,
       email: item.user.email,
       status: item.user.status,
-      amount: Number(item.totalVolume),
+      // amount: Number(item.totalVolume),
       lastLogin: item.user.lastLogin,
     })
 
