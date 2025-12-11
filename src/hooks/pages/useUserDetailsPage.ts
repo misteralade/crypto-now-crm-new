@@ -1,108 +1,128 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux";
-import { useParams } from "@tanstack/react-router";
-import { toast } from 'react-toastify'
-import {setSelectedUserDetailId} from "../../redux/user.slice";
+import { useParams, useNavigate } from "@tanstack/react-router";
+import {setSelectedUserDetailId, setSelectedUserStatus, clearSelectedUserStatus, clearSelectedUserDetailId} from "../../redux/user.slice";
 import {useUserQuery} from "../../queries/user.query";
-import {searchTransactionsInitialState} from "../../redux/states/initial-transaction-management.states";
-import { setSearchTransactions } from "../../redux/transaction-management.slice";
-import {useTransactionQuery} from "../../queries/transaction.query";
-import {useCryptoQuery} from "../../queries/crypto.querries";
-import type {SearchTransactionsResponse} from "../../types/response.payload.types";
-
+import {ROUTES} from "../../util/constants.util.ts";
+import type { UserStatusVariant } from "../../types/global.types";
 
 export const useUserDetailsPage = () => {
   const dispatch = useDispatch();
-  const { userProfile, loadingUserProfile } = useUserQuery();
-  const { searchTransactions, loadingSearchTransactions } = useTransactionQuery();
-  const { allSupportedCrypto, loadingAllSupportedCrypto } = useCryptoQuery();
+  const navigate = useNavigate();
+  const { 
+    userProfile, 
+    loadingUserProfile, 
+    userProfileSummary,
+    loadingUserProfileSummary,
+    patchUserStatusMutation, 
+    adminResetPasswordMutation, 
+    adminUpdateUserProfileMutation 
+  } = useUserQuery();
+  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFirstName, setEditFirstName] = useState('');
+  const [editLastName, setEditLastName] = useState('');
   
   const { userId } = useParams({ from: '/dashboard/users/$userId' })
   
   useEffect(() => {
     if (userId) {
       dispatch(setSelectedUserDetailId(userId));
-      dispatch(setSearchTransactions({
-        ...searchTransactionsInitialState,
-        includeCryptoCurrency: true,
-        userId,
-      }))
     }
   }, [userId, dispatch]);
-  
-  const toCsv = (rows: Array<SearchTransactionsResponse>) => {
-    const headers = [
-      'Transaction ID',
-      'Date',
-      'Type',
-      'Amount',
-      'Rate',
-      'Status',
-    ]
-    const lines = rows.map((itx) =>
-      [itx.id, itx.createdAt, itx.type, itx.usdAmount, itx.stableToFiatRate, itx.status]
-        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
-        .join(','),
-    )
-    return [headers.join(','), ...lines].join('\n')
-  }
 
-  const downloadBlob = (
-    content: BlobPart,
-    fileName: string,
-    mimeType = 'text/csv',
-  ) => {
-    const blob = new Blob([content], { type: mimeType })
-    const url = URL.createObjectURL(blob)
+  useEffect(() => {
+    if (userProfile?.profile) {
+      setEditFirstName(userProfile.profile.firstName || '');
+      setEditLastName(userProfile.profile.lastName || '');
+    }
+  }, [userProfile]);
 
-    const link = document.createElement('a')
-    link.href = url
-    link.download = fileName
-    link.click()
-
-    // Clean up
-    setTimeout(() => URL.revokeObjectURL(url), 100)
-  }
-
-  const handleExportAll = () => {
-    if (searchTransactions?.transactions && searchTransactions.transactions.length > 0) {
-      const csv = toCsv(searchTransactions.transactions)
-      downloadBlob(csv, `${userId || 'user'}_transactions.csv`)
-    } else {
-      toast.info('No transactions found.')
+  const handleNavigateToTransactionHistory = () => {
+    if (userId) {
+      navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', userId)}` })
     }
   }
 
-  const handleDownloadSingle = (id: string) => {
-    const transaction = searchTransactions?.transactions.find(tx => tx.sessionId === id);
-    if (!transaction) return
-    const csv = toCsv([transaction])
-    const safeId = id.replace(/[^\w-]+/g, '_')
-    downloadBlob(csv, `transaction_${safeId}.csv`)
+  const handleUpdateUserStatus = async (status: UserStatusVariant) => {
+    if (!userId) return;
+    
+    dispatch(setSelectedUserDetailId(userId));
+    dispatch(setSelectedUserStatus(status));
+    
+    const response = await patchUserStatusMutation.mutateAsync();
+    
+    if (response && response.success) {
+      dispatch(clearSelectedUserStatus());
+      dispatch(clearSelectedUserDetailId());
+    }
   }
 
-  const handlePageSizeChange = (size: number) => {
-    dispatch(setSearchTransactions({
-      ...searchTransactionsInitialState,
-      size: size,
-      userId,
-    }))
+  const handleResetUserPassword = async () => {
+    if (!userId) return;
+    
+    dispatch(setSelectedUserDetailId(userId));
+    const response = await adminResetPasswordMutation.mutateAsync();
+    
+    if (response && response.success) {
+      dispatch(clearSelectedUserDetailId());
+    }
   }
 
-  // Provide useful values and helpers for the page
+  const openEditModal = () => {
+    if (userProfile?.profile) {
+      setEditFirstName(userProfile.profile.firstName || '');
+      setEditLastName(userProfile.profile.lastName || '');
+      setIsEditModalOpen(true);
+    }
+  }
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  }
+
+  const handleEditFieldChange = (field: 'firstName' | 'lastName', value: string) => {
+    if (field === 'firstName') {
+      setEditFirstName(value);
+    } else {
+      setEditLastName(value);
+    }
+  }
+
+  const handleUpdateUserProfile = async () => {
+    if (!userId || !editFirstName.trim() || !editLastName.trim()) return;
+    
+    dispatch(setSelectedUserDetailId(userId));
+    const response = await adminUpdateUserProfileMutation.mutateAsync({
+      firstName: editFirstName.trim(),
+      lastName: editLastName.trim(),
+    });
+    
+    if (response && response.success) {
+      dispatch(clearSelectedUserDetailId());
+      closeEditModal();
+    }
+  }
+
   return {
     // 🧩 Values
     userId,
     userProfile,
     loadingUserProfile,
-    searchTransactions,
-    loadingSearchTransactions,
-    allSupportedCrypto,
-    loadingAllSupportedCrypto,
+    userProfileSummary,
+    loadingUserProfileSummary,
+    isEditModalOpen,
+    editFirstName,
+    editLastName,
+    isUpdatingProfile: adminUpdateUserProfileMutation.isPending,
 
     // ⚙️ Functions
-    handleDownloadSingle,
-    handleExportAll,
-    handlePageSizeChange,
+    handleNavigateToTransactionHistory,
+    handleUpdateUserStatus,
+    handleResetUserPassword,
+    openEditModal,
+    closeEditModal,
+    handleEditFieldChange,
+    handleUpdateUserProfile,
   };
 };

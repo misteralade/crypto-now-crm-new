@@ -43,6 +43,10 @@ class UserServiceApi {
   async adminRetrieveUserProfile(userId: string) {
     return await axiosGetRequestHandler(`/user/admin/${userId}/profile`) as GetUserProfileAPIResponse;
   }
+
+  async adminUpdateUserProfile(userId: string, payload: { firstName: string; lastName: string }) {
+    return await axiosPatchRequestHandler(`/user/admin/${userId}/profile`, payload) as BaseApiResponse<null>;
+  }
 }
 
 export const userServiceApi = UserServiceApi.getInstance();

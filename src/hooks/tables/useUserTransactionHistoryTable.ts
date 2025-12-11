@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import {clearSearchTransactions, setSearchTransactionsField} from "../../redux/transaction-management.slice.ts";
+import {clearSearchUserTransactionHistory, setSearchUserTransactionHistoryField} from "../../redux/transaction-management.slice.ts";
 import type {TransactionStatus} from "../../schemas/enum.schema.ts";
 import type { SearchTransactionsRequestType } from "../../schemas/transaction.schema.ts";
 import momentClient from "../../util/moment.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {ROUTES} from "../../util/constants.util.ts";
 
-export const useTransactionsTable = () => {
+export const useUserTransactionHistoryTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
   
@@ -27,7 +27,7 @@ export const useTransactionsTable = () => {
   const toggleApplyFilter = () => setShowFilter(!showFilter)
 
   const handleSearchTransactionFieldUpdate = (field: keyof SearchTransactionsRequestType, value: any ) => {
-    dispatch(setSearchTransactionsField({
+    dispatch(setSearchUserTransactionHistoryField({
       field,
       value,
     }))
@@ -35,7 +35,7 @@ export const useTransactionsTable = () => {
   
   const handleSearchQuery = (value: string) => {
     setQuery(value)
-    dispatch(setSearchTransactionsField({
+    dispatch(setSearchUserTransactionHistoryField({
       field: "searchQuery",
       value,
     }))
@@ -46,7 +46,7 @@ export const useTransactionsTable = () => {
   }
 
   const handlePageChange = (page: number) => {
-    dispatch(setSearchTransactionsField({
+    dispatch(setSearchUserTransactionHistoryField({
       field: 'page',
       value: page,
     }));
@@ -64,12 +64,7 @@ export const useTransactionsTable = () => {
     setMaxAmountRange(undefined)
     setSelectedCryptoId(undefined)
     setSelectedStatus("ALL")
-    dispatch(clearSearchTransactions())
-    // Explicitly ensure userId is cleared
-    dispatch(setSearchTransactionsField({
-      field: 'userId',
-      value: undefined,
-    }))
+    dispatch(clearSearchUserTransactionHistory())
   }
 
   const handleFromDate = (date: Date) => {

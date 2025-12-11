@@ -43,7 +43,7 @@ export const useCryptoQuery = () => {
 
       return null;
     },
-    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })),
+    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS }) || matchRoute({ to: ROUTES.USER_TRANSACTIONS })),
   });
 
   const { data: adminCryptoDetails, isLoading: loadingAdminCryptoDetails } = useQuery({

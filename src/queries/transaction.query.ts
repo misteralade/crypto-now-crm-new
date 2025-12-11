@@ -134,6 +134,8 @@ export const useTransactionQuery = () => {
   const transactionCount = weeklyTransactionCount
   const loadingTransactionCount = loadingWeeklyTransactionCount
 
+  const searchUserTransactionHistory = useSelector((state: RootState) => state.transactionManagement.search.userTransactionHistory);
+
   const { data: searchTransactions, isLoading: loadingSearchTransactions } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchTransaction],
     queryFn: async () => {
@@ -149,7 +151,26 @@ export const useTransactionQuery = () => {
 
       return null;
     },
-    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction,
+    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction && !matchRoute({ to: ROUTES.USER_TRANSACTIONS }),
+    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
+  });
+
+  const { data: searchUserTransactions, isLoading: loadingSearchUserTransactions } = useQuery({
+    queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchUserTransactionHistory],
+    queryFn: async () => {
+      const payload = (store.getState() as RootState).transactionManagement.search.userTransactionHistory
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!payload) return null;
+
+      const { data, success } = await transactionServiceApi.searchTransactions(payload);
+
+      if (success) {
+        return data;
+      }
+
+      return null;
+    },
+    enabled: !!matchRoute({ to: ROUTES.USER_TRANSACTIONS }) && !!searchUserTransactionHistory,
     refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
@@ -290,6 +311,8 @@ export const useTransactionQuery = () => {
     loadingUsersWithTopTransactionVolume,
     searchTransactions,
     loadingSearchTransactions,
+    searchUserTransactions,
+    loadingSearchUserTransactions,
     transactionDetail,
     loadingTransactionDetails,
     transactionInfo,

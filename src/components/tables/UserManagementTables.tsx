@@ -9,7 +9,8 @@ import type { TableColumn } from '../table'
 
 // Start Admin View Users Table Columns
 export const AdminSearchUserColumn = (
-  handleViewUserDetails: (userId: string) => void,
+  handleNavigateToUserDetails: (userId: string) => void,
+  handleNavigateToTransactionHistory: (userId: string) => void,
   handleUpdateUserStatus: (userId: string, status: UserStatusVariant) => void,
   handleResetUserPassword: (userId: string) => void,
 ): Array<TableColumn> => [
@@ -95,9 +96,15 @@ export const AdminSearchUserColumn = (
       <div className="flex items-center justify-start gap-2 lg:gap-x-[16px] whitespace-nowrap">
         <button
           className="px-2.5 md:px-3 py-1 rounded-full bg-[#E6E6FE] cursor-pointer hover:opacity-80 text-[#03034D] text-xs md:text-xs font-medium"
-          onClick={() => handleViewUserDetails(row.id)}
+          onClick={() => handleNavigateToUserDetails(row.id)}
         >
           View
+        </button>
+        <button
+          className="px-2.5 md:px-3 py-1 rounded-full bg-[#E6F5FF] cursor-pointer hover:opacity-80 text-[#0066CC] text-xs md:text-xs font-medium"
+          onClick={() => handleNavigateToTransactionHistory(row.id)}
+        >
+          Transactions
         </button>
         <button
           className={`px-2.5 md:px-3 py-1 rounded-full text-[11px] cursor-pointer hover:opacity-80 md:text-xs font-medium ${row.status === 'Active' ? 'bg-[#FCE8E8] text-[#EB5757]' : 'bg-[#FDF2E7] text-[#F2994A]'}`}

@@ -38,6 +38,7 @@ export const ROUTES = {
   AUDIT_TRAILS: '/dashboard/audit-trails',
   USERS: '/dashboard/users',
   USERS_DETAILS: '/dashboard/users/$userId',
+  USER_TRANSACTIONS: '/dashboard/users/transaction-history/$userId',
   NOTIFICATIONS: '/dashboard/notifications',
   MANAGE_ADMINS: '/dashboard/manage-admins',
   TESTIMONIALS: '/dashboard/testimonials',
