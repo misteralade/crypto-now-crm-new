@@ -26,12 +26,10 @@ const UserDetails = () => {
     handleResetUserPassword,
     openEditModal,
     closeEditModal,
-    handleEditFieldChange,
     handleUpdateUserProfile,
     isEditModalOpen,
-    editFirstName,
-    editLastName,
     isUpdatingProfile,
+    editModalInitialValues,
   } = useUserDetailsPage();
 
   const goBack = () => {
@@ -91,10 +89,8 @@ const UserDetails = () => {
             <EditUserModal
               open={isEditModalOpen}
               onClose={closeEditModal}
-              onConfirm={handleUpdateUserProfile}
-              firstName={editFirstName}
-              lastName={editLastName}
-              handleFieldChange={handleEditFieldChange}
+              onSubmit={handleUpdateUserProfile}
+              initialValues={editModalInitialValues}
               loading={isUpdatingProfile}
             />
           </Fragment>

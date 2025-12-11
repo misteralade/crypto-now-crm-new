@@ -5,6 +5,7 @@ import {setSelectedUserDetailId, setSelectedUserStatus, clearSelectedUserStatus,
 import {useUserQuery} from "../../queries/user.query";
 import {ROUTES} from "../../util/constants.util.ts";
 import type { UserStatusVariant } from "../../types/global.types";
+import type { AdminUserProfileUpdateRequestType } from "../../schemas/user.schema";
 
 export const useUserDetailsPage = () => {
   const dispatch = useDispatch();
@@ -20,8 +21,6 @@ export const useUserDetailsPage = () => {
   } = useUserQuery();
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editFirstName, setEditFirstName] = useState('');
-  const [editLastName, setEditLastName] = useState('');
   
   const { userId } = useParams({ from: '/dashboard/users/$userId' })
   
@@ -30,13 +29,6 @@ export const useUserDetailsPage = () => {
       dispatch(setSelectedUserDetailId(userId));
     }
   }, [userId, dispatch]);
-
-  useEffect(() => {
-    if (userProfile?.profile) {
-      setEditFirstName(userProfile.profile.firstName || '');
-      setEditLastName(userProfile.profile.lastName || '');
-    }
-  }, [userProfile]);
 
   const handleNavigateToTransactionHistory = () => {
     if (userId) {
@@ -70,37 +62,32 @@ export const useUserDetailsPage = () => {
   }
 
   const openEditModal = () => {
-    if (userProfile?.profile) {
-      setEditFirstName(userProfile.profile.firstName || '');
-      setEditLastName(userProfile.profile.lastName || '');
-      setIsEditModalOpen(true);
-    }
+    setIsEditModalOpen(true);
   }
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
   }
 
-  const handleEditFieldChange = (field: 'firstName' | 'lastName', value: string) => {
-    if (field === 'firstName') {
-      setEditFirstName(value);
-    } else {
-      setEditLastName(value);
-    }
-  }
-
-  const handleUpdateUserProfile = async () => {
-    if (!userId || !editFirstName.trim() || !editLastName.trim()) return;
+  const handleUpdateUserProfile = async (values: Omit<AdminUserProfileUpdateRequestType, 'id'>) => {
+    if (!userId) return;
     
     dispatch(setSelectedUserDetailId(userId));
-    const response = await adminUpdateUserProfileMutation.mutateAsync({
-      firstName: editFirstName.trim(),
-      lastName: editLastName.trim(),
-    });
+    const response = await adminUpdateUserProfileMutation.mutateAsync(values);
     
     if (response && response.success) {
       dispatch(clearSelectedUserDetailId());
       closeEditModal();
+    }
+  }
+
+  const getEditModalInitialValues = () => {
+    const profile = userProfileSummary?.user?.profile || userProfile?.profile;
+    return {
+      firstName: profile?.firstName || '',
+      lastName: profile?.lastName || '',
+      phoneNumber: profile?.phoneNumber || null,
+      dob: profile?.dateOfBirth ? new Date(profile.dateOfBirth) : null,
     }
   }
 
@@ -112,9 +99,8 @@ export const useUserDetailsPage = () => {
     userProfileSummary,
     loadingUserProfileSummary,
     isEditModalOpen,
-    editFirstName,
-    editLastName,
     isUpdatingProfile: adminUpdateUserProfileMutation.isPending,
+    editModalInitialValues: getEditModalInitialValues(),
 
     // ⚙️ Functions
     handleNavigateToTransactionHistory,
@@ -122,7 +108,6 @@ export const useUserDetailsPage = () => {
     handleResetUserPassword,
     openEditModal,
     closeEditModal,
-    handleEditFieldChange,
     handleUpdateUserProfile,
   };
 };

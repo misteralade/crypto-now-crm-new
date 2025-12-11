@@ -2,6 +2,7 @@ import z from 'zod'
 import {
   BasicSearchQuerySchema,
   EmailSchema,
+  IdRequestSchema,
   IsoDateStringSchema,
   PasswordSchema,
 } from './common.schema'
@@ -50,6 +51,14 @@ export const AdminSearchUserRequestSchema = BasicSearchQuerySchema.extend({
   includeNotifications: z.coerce.boolean().default(false).optional().describe("Include user notifications"),
 })
 
+export const AdminUserProfileUpdateRequestSchema = IdRequestSchema.extend({
+  firstName: z.coerce.string().max(255).optional(),
+  lastName: z.coerce.string().max(255).optional(),
+  phoneNumber: z.coerce.string().max(255).optional(),
+  dob: IsoDateStringSchema.describe("Date of birth").optional().transform(val => val === "" ? undefined : val),
+});
+
 export type UserSignupRequestType = z.infer<typeof UserSignupRequestSchema>;
 export type PasswordResetUpdateRequestType = z.infer<typeof PasswordResetUpdateRequestSchema>;
 export type AdminSearchUserRequestType = z.infer<typeof AdminSearchUserRequestSchema>;
+export type AdminUserProfileUpdateRequestType = z.infer<typeof AdminUserProfileUpdateRequestSchema>;

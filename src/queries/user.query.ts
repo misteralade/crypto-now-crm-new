@@ -158,7 +158,7 @@ export const useUserQuery = () => {
 
   const adminUpdateUserProfileMutation = useMutation({
     mutationKey: [QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE],
-    mutationFn: async (payload: { firstName: string; lastName: string }) => {
+    mutationFn: async (payload: Omit<import('../schemas/user.schema').AdminUserProfileUpdateRequestType, 'id'>) => {
       toast.loading(`Updating user profile...`, {
         toastId: QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE,
       })
@@ -175,6 +175,9 @@ export const useUserQuery = () => {
       // Invalidate and refetch user profile after mutation
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.USER.ADMIN_RETRIEVE_USER_PROFILE],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER.GET_USER_PROFILE_SUMMARY],
       })
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.USER.ADMIN_SEARCH_USERS],
