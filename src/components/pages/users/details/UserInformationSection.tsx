@@ -18,6 +18,10 @@ const UserInformationSection = ({
   onEditUser,
   onResetPassword,
 }: UserInformationSectionProps) => {
+console.log({
+  user,
+})
+
   return (
     <div className="bg-white rounded-lg p-6 mb-6">
       <div className="flex items-center justify-between mb-6">
@@ -74,7 +78,11 @@ const UserInformationSection = ({
             Status
           </label>
           <div className="py-2">
-            <UserStatusBadge status={user?.status as UserStatusVariant} />
+            {user?.status ? (
+              <UserStatusBadge status={user.status as UserStatusVariant} />
+            ) : (
+              <span className="text-sm text-[#667085]">—</span>
+            )}
           </div>
         </div>
 

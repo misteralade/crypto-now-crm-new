@@ -363,6 +363,16 @@ export const TableStatus: FC<{
 export const UserStatusBadge: FC<{
   status: UserStatusVariant
 }> = ({ status }) => {
+  // Guard against undefined/null status
+  if (!status || typeof status !== 'string') {
+    return (
+      <span className="inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+        <span className="h-2 w-2 rounded-full bg-gray-400" />
+        Unknown
+      </span>
+    )
+  }
+
   const variants: Record<UserStatusVariant, string> = {
     ACTIVE: 'bg-green-100 text-green-700',
     PENDING: 'bg-[#FDF2E7] text-[#F2994A]',
@@ -379,11 +389,16 @@ export const UserStatusBadge: FC<{
     DELETED: 'bg-gray-400',
   }
 
+  // Ensure status is a valid UserStatusVariant
+  const normalizedStatus = status.toUpperCase() as UserStatusVariant
+  const variant = variants[normalizedStatus] || variants.DELETED
+  const dotColor = dotColors[normalizedStatus] || dotColors.DELETED
+
   return (
     <span
-      className={`inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${variants[status]}`}
+      className={`inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${variant}`}
     >
-      <span className={`h-2 w-2 rounded-full ${dotColors[status]}`} />
+      <span className={`h-2 w-2 rounded-full ${dotColor}`} />
       {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
     </span>
   )

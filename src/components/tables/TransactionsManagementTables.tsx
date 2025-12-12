@@ -225,7 +225,7 @@ export const TransactionsManagementColumn = (
             ? 'bg-orange-100 text-orange-800' 
             : 'bg-green-100 text-green-800'
         }`}>
-          {value}
+          {value == "Anonymous" ? "Guest" : "Registered"}
         </span>
       )
     },
