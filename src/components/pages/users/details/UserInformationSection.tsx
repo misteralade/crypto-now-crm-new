@@ -74,7 +74,11 @@ const UserInformationSection = ({
             Status
           </label>
           <div className="py-2">
-            <UserStatusBadge status={user?.status as UserStatusVariant} />
+            {user?.status ? (
+              <UserStatusBadge status={user.status as UserStatusVariant} />
+            ) : (
+              <span className="text-sm text-[#667085]">—</span>
+            )}
           </div>
         </div>
 
