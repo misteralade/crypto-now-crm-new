@@ -28,7 +28,9 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
   const totalSells = !loading && data?.transactionSummary ? data.transactionSummary.reduce((acc, item) => acc + Number(item.fiatReceivedFromSelling), 0) : 0;
 
   const navigateToTransactionHistory = () => {
-    navigate({ to: `${ROUTES.USERS}/${data?.user.id}` })
+    if (data?.user.id) {
+      navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', data.user.id)}` })
+    }
   }
 
   return (

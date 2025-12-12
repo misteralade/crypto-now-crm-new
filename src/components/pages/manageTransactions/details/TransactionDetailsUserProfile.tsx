@@ -1,5 +1,7 @@
 import {Fragment} from "react";
-import AvatarImage from '../../../../assets/img/avatar.webp';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import Logo from '../../../../assets/img/logo.svg';
 import {ClickableDetails} from "../../../global/CopyDetails.tsx";
 import {ROUTES} from "../../../../util/constants.util.ts";
 
@@ -32,9 +34,16 @@ const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, pho
         </div>
         <div className="space-y-4">
           <img
-            src={profileImageUrl || AvatarImage}
+            src={profileImageUrl && profileImageUrl.trim() ? profileImageUrl : Logo}
             alt="User avatar"
-            className="w-20 h-20 rounded-full mx-auto"
+            className="w-20 h-20 rounded-full mx-auto object-cover"
+            onError={(e) => {
+              // Fallback to logo if image fails to load
+              const target = e.target as HTMLImageElement;
+              if (target.src !== Logo) {
+                target.src = Logo;
+              }
+            }}
           />
           
           <div className="space-y-3">

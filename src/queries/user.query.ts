@@ -73,7 +73,7 @@ export const useUserQuery = () => {
         return null
       },
       enabled:
-        !!matchRoute({ to: ROUTES.USERS }) &&
+        (!!matchRoute({ to: ROUTES.USERS }) || !!matchRoute({ to: ROUTES.USERS_DETAILS })) &&
         !!(store.getState() as RootState).user.details.userId,
   });
 
@@ -96,7 +96,7 @@ export const useUserQuery = () => {
         return null
       },
       enabled:
-        !!matchRoute({ to: ROUTES.USERS_DETAILS }) &&
+        (!!matchRoute({ to: ROUTES.USERS_DETAILS }) || !!matchRoute({ to: ROUTES.USER_TRANSACTIONS })) &&
         !!(store.getState() as RootState).user.details.userId,
   });
 
@@ -156,6 +156,42 @@ export const useUserQuery = () => {
     },
   })
 
+  const adminUpdateUserProfileMutation = useMutation({
+    mutationKey: [QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE],
+    mutationFn: async (payload: Omit<import('../schemas/user.schema').AdminUserProfileUpdateRequestType, 'id'>) => {
+      toast.loading(`Updating user profile...`, {
+        toastId: QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE,
+      })
+      const rootState = store.getState() as RootState
+      const userId = rootState.user.details.userId
+
+      if (!userId) return null
+
+      return userServiceApi.adminUpdateUserProfile(userId, payload)
+    },
+    onSuccess: (res) => {
+      toast.dismiss(QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE)
+      toast.success('User profile updated successfully.')
+      // Invalidate and refetch user profile after mutation
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER.ADMIN_RETRIEVE_USER_PROFILE],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER.GET_USER_PROFILE_SUMMARY],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER.ADMIN_SEARCH_USERS],
+      })
+      return res
+    },
+    onError: () => {
+      toast.dismiss(QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE)
+      toast.error('Failed to update user profile. Please try again.', {
+        toastId: QUERY_KEYS.USER.ADMIN_UPDATE_USER_PROFILE,
+      })
+    },
+  })
+
   return {
     // 🧩 Values
     weeklyUserSummary,
@@ -170,5 +206,6 @@ export const useUserQuery = () => {
     // Mutations
     patchUserStatusMutation,
     adminResetPasswordMutation,
+    adminUpdateUserProfileMutation,
   }
 }

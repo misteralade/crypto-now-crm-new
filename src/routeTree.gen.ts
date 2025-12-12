@@ -25,6 +25,7 @@ import { Route as DashboardTransactionsIdRouteImport } from './routes/dashboard/
 import { Route as DashboardDisputesIdRouteImport } from './routes/dashboard/disputes/$id'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
+import { Route as DashboardUsersTransactionHistoryUserIdRouteImport } from './routes/dashboard/users/transaction-history/$userId'
 import { Route as DashboardDisputesEditIdRouteImport } from './routes/dashboard/disputes/edit/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -111,6 +112,12 @@ const DashboardCoinManagementCoinIdRoute =
     path: '/dashboard/coin-management/$coinId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardUsersTransactionHistoryUserIdRoute =
+  DashboardUsersTransactionHistoryUserIdRouteImport.update({
+    id: '/dashboard/users/transaction-history/$userId',
+    path: '/dashboard/users/transaction-history/$userId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardDisputesEditIdRoute = DashboardDisputesEditIdRouteImport.update({
   id: '/dashboard/disputes/edit/$id',
   path: '/dashboard/disputes/edit/$id',
@@ -135,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -174,6 +183,7 @@ export interface FileRoutesById {
   '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/dashboard/transactions'
     | '/dashboard/users'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/dashboard/transactions'
     | '/dashboard/users'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   id:
     | '__root__'
     | '/'
@@ -233,6 +245,7 @@ export interface FileRouteTypes {
     | '/dashboard/transactions/'
     | '/dashboard/users/'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -253,6 +266,7 @@ export interface RootRouteChildren {
   DashboardTransactionsIndexRoute: typeof DashboardTransactionsIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
   DashboardDisputesEditIdRoute: typeof DashboardDisputesEditIdRoute
+  DashboardUsersTransactionHistoryUserIdRoute: typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -369,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCoinManagementCoinIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/users/transaction-history/$userId': {
+      id: '/dashboard/users/transaction-history/$userId'
+      path: '/dashboard/users/transaction-history/$userId'
+      fullPath: '/dashboard/users/transaction-history/$userId'
+      preLoaderRoute: typeof DashboardUsersTransactionHistoryUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/disputes/edit/$id': {
       id: '/dashboard/disputes/edit/$id'
       path: '/dashboard/disputes/edit/$id'
@@ -397,6 +418,8 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardTransactionsIndexRoute: DashboardTransactionsIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,
   DashboardDisputesEditIdRoute: DashboardDisputesEditIdRoute,
+  DashboardUsersTransactionHistoryUserIdRoute:
+    DashboardUsersTransactionHistoryUserIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

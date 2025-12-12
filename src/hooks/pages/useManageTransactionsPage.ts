@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import {useTransactionQuery} from "../../queries/transaction.query";
@@ -22,6 +22,14 @@ import type {AxiosServerError} from "../../types/response.payload.types";
 
 export const useManageTransactionsPage = () => {
   const dispatch = useDispatch()
+  
+  // Ensure userId is always undefined for manage transactions page
+  useEffect(() => {
+    dispatch(setSearchTransactionsField({
+      field: 'userId',
+      value: undefined,
+    }))
+  }, [dispatch])
   const {
     // Queries
     searchTransactions,
@@ -50,6 +58,7 @@ export const useManageTransactionsPage = () => {
     dispatch(setSearchTransactions({
       ...searchTransactionsInitialState,
       size: size,
+      userId: undefined, // Explicitly ensure userId is not set
     }))
   }
   

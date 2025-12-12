@@ -100,6 +100,7 @@ export type SearchTransactionsResponse = {
   userBankAccount?: UserBankAccountResponsePayload;
   userCryptoWallet?: UserCryptoWalletResponsePayload;
   processor?: AdminResponsePayload;
+  dispute?: DisputeDetailsResponse;
 }
 
 export type WeeklyTransactionVolume = {

@@ -60,6 +60,66 @@ export const searchTransactionsInitialState: SearchTransactionsRequestType = {
   }
 }
 
+export const searchUserTransactionHistoryInitialState: SearchTransactionsRequestType = {
+  // Common Search Fields
+  id: undefined,
+  searchField: undefined,
+  searchQuery: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
+  createdAtFrom: undefined,
+  createdAtTo: undefined,
+
+  sessionId: undefined,
+  userId: undefined, // Will be set when user is selected
+  cryptoCurrencyId: undefined,
+  exchangeRateId: undefined,
+  type: undefined,
+  amountCrypto: undefined,
+  amountFiat: undefined,
+  cryptoToStableRate: undefined,
+  stableToCryptoRate: undefined,
+  currency: undefined,
+  status: undefined,
+  priority: undefined,
+  userBankAccountId: undefined,
+  adminBankAccountId: undefined,
+  userCryptoWalletId: undefined,
+  bankTransferReference: undefined,
+  receiptImageUrl: undefined,
+  adminCryptoWalletId: undefined,
+  cryptoTxHash: undefined,
+  adminNotes: undefined,
+  userNotes: undefined,
+  internalNotes: undefined,
+  failureReason: undefined,
+  processedBy: undefined,
+  processedAt: undefined,
+  rate: undefined,
+
+  // USD amount filter
+  minUsdAmount: undefined,
+  maxUsdAmount: undefined,
+
+  // Include Relations
+  includeUser: false,
+  includeCryptoCurrency: true,
+  includeExchangeRate: false,
+  includeAdminBankAccount: false,
+  includeAdminCryptoWallet: false,
+  includeUserBankAccount: false,
+  includeUserCryptoWallet: false,
+  includeProcessedBy: false,
+
+  // BasicSearchQuerySchema fields
+  page: 1,
+  size: 10,
+  sortModel: {
+    colId: 'createdAt',
+    orderBy: 'DESC',
+  }
+}
+
 export const updateTransactionInitialState: UpdateTransactionStatusRequestType = {
   adminNotes: undefined,
   adminPaymentReceiptUrl: undefined,

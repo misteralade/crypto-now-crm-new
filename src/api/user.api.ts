@@ -1,5 +1,5 @@
 import {axiosGetRequestHandler, axiosPatchRequestHandler, axiosPostRequestHandler} from "./index";
-import type {AdminSearchUserRequestType} from "../schemas/user.schema";
+import type {AdminSearchUserRequestType, AdminUserProfileUpdateRequestType} from "../schemas/user.schema";
 import type {
   AdminSearchUsersAPIResponse, BaseApiResponse,
   GetDashboardUserStatsSummaryAPIResponse,
@@ -42,6 +42,10 @@ class UserServiceApi {
 
   async adminRetrieveUserProfile(userId: string) {
     return await axiosGetRequestHandler(`/user/admin/${userId}/profile`) as GetUserProfileAPIResponse;
+  }
+
+  async adminUpdateUserProfile(userId: string, payload: Omit<AdminUserProfileUpdateRequestType, 'id'>) {
+    return await axiosPatchRequestHandler(`/user/admin/${userId}/profile/update`, payload) as BaseApiResponse<null>;
   }
 }
 

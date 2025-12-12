@@ -208,6 +208,29 @@ export const TransactionsManagementColumn = (
     },
   },
   {
+    key: 'isAnonymous',
+    header: (
+      <Fragment>
+        <div className="py-3 text-left text-sm font-medium text-gray-500">
+          <span className="flex items-center gap-2">
+            <span>User Type</span>
+          </span>
+        </div>
+      </Fragment>
+    ),
+    render: (value) => {
+      return (
+        <span className={`text-sm text-[14px] px-3 py-1 rounded-full inline-flex items-center ${
+          value === 'Anonymous' 
+            ? 'bg-orange-100 text-orange-800' 
+            : 'bg-green-100 text-green-800'
+        }`}>
+          {value}
+        </span>
+      )
+    },
+  },
+  {
     key: 'action',
     header: (
       <Fragment>
@@ -246,6 +269,7 @@ export const TransactionsManagementDataRow = (
       amount: `$${convertToMillify(Number(item.usdAmount))}`,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       status: item.status,
+      isAnonymous: item?.email ? 'Anonymous' : 'Registered',
     })
 
     return

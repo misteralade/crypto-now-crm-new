@@ -31,24 +31,27 @@ const Users = () => {
     handleChangeCreatedAtTo,
     handleResetFilters,
     handleStatusFilterChange,
-    handleViewUserDetails,
     handleCloseDetails,
     handleUpdateUserStatus,
     handleResetUserPassword,
     handlePageSizeChange,
     handlePageChange,
     handleSearchChange,
+    handleNavigateToUserDetails,
+    handleNavigateToTransactionHistory,
   } = useUsersPage();
 
   const columns = useMemo(
     () =>
       AdminSearchUserColumn(
-        handleViewUserDetails,
+        handleNavigateToUserDetails,
+        handleNavigateToTransactionHistory,
         handleUpdateUserStatus,
         handleResetUserPassword,
       ),
     [
-      handleViewUserDetails,
+      handleNavigateToUserDetails,
+      handleNavigateToTransactionHistory,
       handleUpdateUserStatus,
       handleResetUserPassword,
     ],
