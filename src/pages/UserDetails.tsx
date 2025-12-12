@@ -66,7 +66,7 @@ const UserDetails = () => {
 
             {/* User Information Section */}
             <UserInformationSection
-              user={userProfileSummary?.user || userProfile || undefined}
+              user={userProfile || userProfileSummary?.user || undefined}
               onNavigateToTransactionHistory={handleNavigateToTransactionHistory}
               onUpdateUserStatus={handleUpdateUserStatus}
               onEditUser={openEditModal}
