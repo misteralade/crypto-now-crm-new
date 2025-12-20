@@ -36,10 +36,62 @@ const DisputeMessage = ({ loading, messages, sendMessageMutation }: DisputeMessa
   const [uploadedAttachments, setUploadedAttachments] = useState<MessageAttachment[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inactivityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   
-  // Scroll to bottom of messages
+  // Scroll to bottom after 2 minutes of inactivity
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const resetInactivityTimer = () => {
+      // Clear existing timer
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+      
+      // Set new timer for 2 minutes (120 seconds)
+      inactivityTimeoutRef.current = setTimeout(() => {
+        scrollToBottom();
+      }, 120000); // 120 seconds = 2 minutes
+    };
+
+    // Track user activity events
+    const handleActivity = () => {
+      resetInactivityTimer();
+    };
+
+    // Initial timer setup
+    resetInactivityTimer();
+
+    // Add event listeners for user activity
+    const messagesContainer = messagesContainerRef.current;
+    if (messagesContainer) {
+      messagesContainer.addEventListener('scroll', handleActivity);
+      messagesContainer.addEventListener('mousemove', handleActivity);
+      messagesContainer.addEventListener('mousedown', handleActivity);
+      messagesContainer.addEventListener('touchstart', handleActivity);
+    }
+
+    // Track keyboard activity on the document
+    document.addEventListener('keydown', handleActivity);
+    document.addEventListener('mousemove', handleActivity);
+
+    // Cleanup
+    return () => {
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+      if (messagesContainer) {
+        messagesContainer.removeEventListener('scroll', handleActivity);
+        messagesContainer.removeEventListener('mousemove', handleActivity);
+        messagesContainer.removeEventListener('mousedown', handleActivity);
+        messagesContainer.removeEventListener('touchstart', handleActivity);
+      }
+      document.removeEventListener('keydown', handleActivity);
+      document.removeEventListener('mousemove', handleActivity);
+    };
   }, [messages]);
   
   // Get image dimensions
@@ -239,7 +291,7 @@ const DisputeMessage = ({ loading, messages, sendMessageMutation }: DisputeMessa
           </div>
           
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
