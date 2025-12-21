@@ -173,10 +173,6 @@ export const TransactionsManagementColumn = (
         <div className="py-3 text-left text-sm font-medium text-gray-500">
           <span className="flex items-center gap-2">
             <span>Date</span>
-            <ChevronDown
-              className="text-gray-400"
-              onClick={() => handleSortBy('createdAt')}
-            />
           </span>
         </div>
       </Fragment>
