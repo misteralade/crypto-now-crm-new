@@ -45,6 +45,7 @@ export const ROUTES = {
 }
 
 export const CRYPTO_NETWORK_OPTIONS = [
+  { value: undefined, label: 'Select Network' },
   { value: CRYPTO_NETWORK.BTC, label: 'Bitcoin' },
   { value: CRYPTO_NETWORK.ERC20, label: 'ERC-20 (Ethereum)' },
   { value: CRYPTO_NETWORK.TRC20, label: 'TRC-20 (Tron)' },
