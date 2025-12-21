@@ -47,6 +47,7 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
             valueClass="text-[18px]"
             // @ts-ignore
             options={CRYPTO_NETWORK_OPTIONS}
+            defaultChecked
             onChange={(e) => onChangeInputField("network", e.target.value as CreateSupportedCryptoAndAdminWalletRequestType["network"])}
           />
         </div>

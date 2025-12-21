@@ -59,6 +59,7 @@ const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChang
             value={network}
             // @ts-ignore
             options={CRYPTO_NETWORK_OPTIONS}
+            defaultValue={network}
             disabled
           />
         </div>
