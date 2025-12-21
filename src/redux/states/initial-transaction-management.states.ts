@@ -55,7 +55,7 @@ export const searchTransactionsInitialState: SearchTransactionsRequestType = {
   page: 1,
   size: 10,
   sortModel: {
-    colId: 'createdAt',
+    colId: 'updatedAt',
     orderBy: 'DESC',
   }
 }
@@ -115,7 +115,7 @@ export const searchUserTransactionHistoryInitialState: SearchTransactionsRequest
   page: 1,
   size: 10,
   sortModel: {
-    colId: 'createdAt',
+    colId: 'updatedAt',
     orderBy: 'DESC',
   }
 }
