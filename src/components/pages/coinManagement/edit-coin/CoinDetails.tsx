@@ -58,10 +58,8 @@ const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChang
             id="network"
             label="Network"
             valueClass="text-[18px]"
-            value={selectedNetwork}
             // @ts-ignore
             options={CRYPTO_NETWORK_OPTIONS}
-            defaultValue={selectedNetwork}
             onChange={(e) => {
               setSelectedNetwork(e.target.value);
               onChangeInputField('network', e.target.value as EditSupportedCryptoAndAdminWalletRequestType['network']);
@@ -101,10 +99,9 @@ const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChang
       <div>
         <LabeledPillInput
           label="Deposit wallet address"
-          placeholder="Enter deposit wallet address"
           valueClass="text-[18px] text-[#9A9A9A]"
           id="walletAddress"
-          value={selectedWalletAddress}
+          placeholder={selectedWalletAddress || 'Enter deposit wallet address'}
           onChange={(e) => {
             setSelectedWalletAddress(e.target.value);
             onChangeInputField('walletAddress', e.target.value);
