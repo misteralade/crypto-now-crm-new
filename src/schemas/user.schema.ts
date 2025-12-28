@@ -23,9 +23,12 @@ export const UserSignupRequestSchema = z.object({
 });
 
 export const PasswordResetUpdateRequestSchema = z.object({
-  token: z.coerce.string(),
+  token: z.coerce.string().min(1, "Token is required"),
   password: PasswordSchema,
   confirmPassword: PasswordSchema,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords must match",
+  path: ["confirmPassword"],
 });
 
 export const AdminSearchUserRequestSchema = BasicSearchQuerySchema.extend({
