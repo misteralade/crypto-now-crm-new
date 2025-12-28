@@ -20,7 +20,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
           <LabeledPillInput
             id="buyRate"
             onChange={(e) => onChangeInputField("buyRate", Number(e.target.value))}
-            label="Rate to Sell to User (USD) - Buy Rate"
+            label="Rate to Sell to User (USD) - Sell Rate"
             type="number"
             min={0.001}
             max={NUMBERS.ONE_BILLION}
@@ -35,7 +35,7 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
           <LabeledPillInput
             id="sellRate"
             onChange={(e) => onChangeInputField("sellRate", Number(e.target.value))}
-            label="Rate to Buy from User (USD) - Sell Rate"
+            label="Rate to Buy from User (USD) - Buy Rate"
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"

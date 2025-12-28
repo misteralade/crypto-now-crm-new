@@ -39,7 +39,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
               setBuyRate(Number(e.target.value))
               onChangeInputField("buyRate", Number(e.target.value))
             }}
-            label="Rate to Sell to User (USD) - Buy Rate"
+            label="Rate to Sell to User (USD) - Sell Rate"
             type="number"
             min={1}
             max={NUMBERS.ONE_BILLION}
@@ -57,7 +57,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
               setSellRate(Number(e.target.value))
               onChangeInputField("sellRate", Number(e.target.value))
             }}
-            label="Rate to Buy from User (USD) - Sell Rate"
+            label="Rate to Buy from User (USD) - Buy Rate"
             min={500}
             max={NUMBERS.ONE_BILLION}
             type="number"
