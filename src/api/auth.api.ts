@@ -1,4 +1,4 @@
-import {axiosGetRequestHandler, axiosPostRequestHandler} from "./index";
+import {axiosGetRequestHandler, axiosPostRequestHandler, axiosPatchRequestHandler} from "./index";
 import type {BaseApiResponse} from "../types/response.payload.types";
 
 class AuthServiceApi {
@@ -21,6 +21,14 @@ class AuthServiceApi {
   
   async pingAdmin() {
     return await axiosGetRequestHandler('/admin/ping') as BaseApiResponse<null>;
+  }
+
+  async requestPasswordReset(email: string): Promise<BaseApiResponse<null>> {
+    return await axiosGetRequestHandler("/admin/auth/password-reset/request", { email }) as BaseApiResponse<null>;
+  }
+
+  async confirmPasswordReset(payload: { token: string; password: string; confirmPassword: string }): Promise<BaseApiResponse<null>> {
+    return await axiosPatchRequestHandler("/admin/auth/password-reset/confirm", payload) as BaseApiResponse<null>;
   }
 }
 

@@ -77,7 +77,8 @@ const ManageTransactions = () => {
       handleSelectAllTransactionIds,
       selectedTransactionIds,
     ],
-  )
+  );
+
   const data = useMemo(
     () =>
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -85,7 +86,7 @@ const ManageTransactions = () => {
         !loadingSearchTransactions ? searchTransactions?.transactions : [],
       ) || [],
     [searchTransactions?.transactions, loadingSearchTransactions],
-  )
+  );
 
   return (
     <AuthenticatedLayout>

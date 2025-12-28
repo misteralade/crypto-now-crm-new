@@ -26,6 +26,8 @@ export const LOCAL_STORAGE_KEYS = {
 
 export const ROUTES = {
   LOGIN: '/',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   TRANSACTIONS: '/dashboard/transactions',
   TRANSACTIONS_DETAILS: '/dashboard/transactions/$id',

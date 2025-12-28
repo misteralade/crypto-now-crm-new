@@ -170,9 +170,13 @@ export const TransactionsManagementColumn = (
     key: 'date',
     header: (
       <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
+        <div 
+        className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer"
+        onClick={() => handleSortBy('createdAt')}
+        >
           <span className="flex items-center gap-2">
             <span>Date</span>
+            <ChevronDown className="text-gray-400 ml-4" onClick={() => handleSortBy('createdAt')} />
           </span>
         </div>
       </Fragment>
@@ -187,7 +191,7 @@ export const TransactionsManagementColumn = (
     key: 'status',
     header: (
       <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
+        <div className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer" onClick={() => handleSortBy('status')}>
           <span className="flex items-center gap-2">
             <span>Status</span>
             <ChevronDown
@@ -225,6 +229,24 @@ export const TransactionsManagementColumn = (
         </span>
       )
     },
+  },
+  {
+    key: "updatedAt",
+    header: (
+      <Fragment>
+        <div className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer" onClick={() => handleSortBy('updatedAt')}>
+          <span className="flex items-center gap-2">
+            <span>Last Updated</span>
+            <ChevronDown className="text-gray-400 ml-4" onClick={() => handleSortBy('updatedAt')} />
+          </span>
+        </div>
+      </Fragment>
+    ),
+    render: (value) => (
+      <Fragment>
+        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+      </Fragment>
+    ),
   },
   {
     key: 'action',
@@ -266,6 +288,7 @@ export const TransactionsManagementDataRow = (
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       status: item.status,
       isAnonymous: item?.email ? 'Anonymous' : 'Registered',
+      updatedAt: momentClient.formatToNormalisedDateAndTime(item.updatedAt),
     })
 
     return
