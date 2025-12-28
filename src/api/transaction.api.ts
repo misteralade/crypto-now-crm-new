@@ -84,7 +84,7 @@ class TransactionServiceApi {
     )) as BaseApiResponse<null>
   }
 
-  async adminUploadTransactionReceipt(formData: FormData) {
+  async adminUploadTransactionReceipt(formData: FormData, sessionId: string) {
     return (await axiosPostRequestHandler(
       '/upload/admin/transaction/payment-receipt-upload',
       formData,
@@ -92,12 +92,22 @@ class TransactionServiceApi {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        params: {
+          sessionId,
+        },
       },
     )) as UploadAPIResponse
   }
   
   async adminGetTransactionDetails(sessionId: string) {
     return await axiosGetRequestHandler(`/transaction/admin/details/${sessionId}`) as GetTransactionDetailsAPIResponse
+  }
+  
+  async adminLockTransaction(sessionId: string) {
+    return (await axiosPostRequestHandler(
+      `/transaction/admin/${sessionId}/lock`,
+      {},
+    )) as BaseApiResponse<{ lockExpiresAt: string }>
   }
   
   async uploadDisputeAttachment(formData: FormData) {

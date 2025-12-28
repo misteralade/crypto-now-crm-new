@@ -1,5 +1,6 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import {useTransactionQuery} from "../../queries/transaction.query";
 import {
   clearTransactionDetailSessionId,
@@ -17,9 +18,18 @@ import type {
   UpdateTransactionStatusRequestType
 } from "../../schemas/transaction.schema";
 import type {RootState} from "../../store";
+import type {AxiosServerError} from "../../types/response.payload.types";
 
 export const useManageTransactionsPage = () => {
   const dispatch = useDispatch()
+  
+  // Ensure userId is always undefined for manage transactions page
+  useEffect(() => {
+    dispatch(setSearchTransactionsField({
+      field: 'userId',
+      value: undefined,
+    }))
+  }, [dispatch])
   const {
     // Queries
     searchTransactions,
@@ -30,6 +40,7 @@ export const useManageTransactionsPage = () => {
     // Mutations
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
+    adminLockTransactionMutation,
   } = useTransactionQuery();
   
   const { allSupportedCrypto, loadingAllSupportedCrypto } = useCryptoQuery();
@@ -47,6 +58,7 @@ export const useManageTransactionsPage = () => {
     dispatch(setSearchTransactions({
       ...searchTransactionsInitialState,
       size: size,
+      userId: undefined, // Explicitly ensure userId is not set
     }))
   }
   
@@ -78,15 +90,36 @@ export const useManageTransactionsPage = () => {
     })
   }
 
-  const handleShowTransactionDetails = (sessionId?: string) => {
-    // If sessionId is present, then update the state
-    if (sessionId) {
-      dispatch(setTransactionDetailSessionId(sessionId));
-      toggleShowTransactionDetails()
-    } else {
-      // If sessionId is not present, then just toggle the state and clear the redux
+  const handleShowTransactionDetails = async (sessionId?: string) => {
+    // If sessionId is not present, then just toggle the state and clear the redux
+    if (!sessionId) {
       dispatch(clearTransactionDetailSessionId())
       toggleShowTransactionDetails()
+      return
+    }
+
+    // If sessionId is present, try to lock the transaction first
+    try {
+      await adminLockTransactionMutation.mutateAsync(sessionId)
+      // Lock successful, open the sidebar
+      dispatch(setTransactionDetailSessionId(sessionId))
+      toggleShowTransactionDetails()
+    } catch (error) {
+      console.log({
+        error
+      })
+      // Handle lock error
+      const axiosError = error as AxiosServerError
+      const errorMessage = axiosError.response?.data?.error?.message || 'Failed to lock transaction'
+      
+      // Show error message
+      toast.error(errorMessage)
+      
+      // Ensure sidebar is closed and clear sessionId
+      if (showTransactionDetails) {
+        toggleShowTransactionDetails()
+      }
+      dispatch(clearTransactionDetailSessionId())
     }
   }
 
@@ -104,13 +137,16 @@ export const useManageTransactionsPage = () => {
   const handleTransactionReceiptUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
-    const url = await adminUploadTransactionReceiptMutation.mutateAsync(formData);
+    const result = await adminUploadTransactionReceiptMutation.mutateAsync(formData);
+    
+    // Store url in Redux for saving (this is what gets sent to the backend)
     dispatch(setTransactionDetailUpdateField({
       field: "adminPaymentReceiptUrl",
-      value: url,
+      value: result?.url || '',
     }))
 
-    return url || '';
+    // Return signedUrl for preview
+    return result?.signedUrl || '';
   }
 
   const toggleShowTransactionDetails = () => setShowTransactionDetails(!showTransactionDetails)

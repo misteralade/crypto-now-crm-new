@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTestimonialsRouteImport } from './routes/dashboard/testimonials'
@@ -25,8 +27,19 @@ import { Route as DashboardTransactionsIdRouteImport } from './routes/dashboard/
 import { Route as DashboardDisputesIdRouteImport } from './routes/dashboard/disputes/$id'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
+import { Route as DashboardUsersTransactionHistoryUserIdRouteImport } from './routes/dashboard/users/transaction-history/$userId'
 import { Route as DashboardDisputesEditIdRouteImport } from './routes/dashboard/disputes/edit/$id'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -111,6 +124,12 @@ const DashboardCoinManagementCoinIdRoute =
     path: '/dashboard/coin-management/$coinId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardUsersTransactionHistoryUserIdRoute =
+  DashboardUsersTransactionHistoryUserIdRouteImport.update({
+    id: '/dashboard/users/transaction-history/$userId',
+    path: '/dashboard/users/transaction-history/$userId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardDisputesEditIdRoute = DashboardDisputesEditIdRouteImport.update({
   id: '/dashboard/disputes/edit/$id',
   path: '/dashboard/disputes/edit/$id',
@@ -119,6 +138,8 @@ const DashboardDisputesEditIdRoute = DashboardDisputesEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
@@ -135,9 +156,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
@@ -154,10 +178,13 @@ export interface FileRoutesByTo {
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
@@ -174,11 +201,14 @@ export interface FileRoutesById {
   '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
+  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
+    | '/reset-password'
     | '/dashboard/audit-trails'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
@@ -195,9 +225,12 @@ export interface FileRouteTypes {
     | '/dashboard/transactions'
     | '/dashboard/users'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
+    | '/reset-password'
     | '/dashboard/audit-trails'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
@@ -214,9 +247,12 @@ export interface FileRouteTypes {
     | '/dashboard/transactions'
     | '/dashboard/users'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   id:
     | '__root__'
     | '/'
+    | '/forgot-password'
+    | '/reset-password'
     | '/dashboard/audit-trails'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
@@ -233,10 +269,13 @@ export interface FileRouteTypes {
     | '/dashboard/transactions/'
     | '/dashboard/users/'
     | '/dashboard/disputes/edit/$id'
+    | '/dashboard/users/transaction-history/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
   DashboardManageAdminsRoute: typeof DashboardManageAdminsRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
@@ -253,10 +292,25 @@ export interface RootRouteChildren {
   DashboardTransactionsIndexRoute: typeof DashboardTransactionsIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
   DashboardDisputesEditIdRoute: typeof DashboardDisputesEditIdRoute
+  DashboardUsersTransactionHistoryUserIdRoute: typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -369,6 +423,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCoinManagementCoinIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/users/transaction-history/$userId': {
+      id: '/dashboard/users/transaction-history/$userId'
+      path: '/dashboard/users/transaction-history/$userId'
+      fullPath: '/dashboard/users/transaction-history/$userId'
+      preLoaderRoute: typeof DashboardUsersTransactionHistoryUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/disputes/edit/$id': {
       id: '/dashboard/disputes/edit/$id'
       path: '/dashboard/disputes/edit/$id'
@@ -381,6 +442,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
   DashboardManageAdminsRoute: DashboardManageAdminsRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
@@ -397,6 +460,8 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardTransactionsIndexRoute: DashboardTransactionsIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,
   DashboardDisputesEditIdRoute: DashboardDisputesEditIdRoute,
+  DashboardUsersTransactionHistoryUserIdRoute:
+    DashboardUsersTransactionHistoryUserIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -69,6 +69,9 @@ export type SearchTransactionsResponse = {
   status: TransactionStatus;
   email: string | undefined;
   priority: TransactionPriority;
+  transactionActivities: TransactionActivities[];
+
+
   userBankAccountId: string;
   adminBankAccountId: string;
   userCryptoWalletId: string;
@@ -85,6 +88,7 @@ export type SearchTransactionsResponse = {
   usdAmount: number;
   createdAt: Date;
   updatedAt: Date;
+  
 
   // Relations
   user?: UserResponsePayload;
@@ -96,6 +100,7 @@ export type SearchTransactionsResponse = {
   userBankAccount?: UserBankAccountResponsePayload;
   userCryptoWallet?: UserCryptoWalletResponsePayload;
   processor?: AdminResponsePayload;
+  dispute?: DisputeDetailsResponse;
 }
 
 export type WeeklyTransactionVolume = {
@@ -103,6 +108,15 @@ export type WeeklyTransactionVolume = {
   totalUsdVolume: string;
   transactionCount: string;
 };
+
+export type TransactionActivities = {
+  id: string;
+  transactionId: string;
+  adminId: string;
+  action: string;
+  message: string;
+  createdAt: Date;
+}
 
 export type WeeklyTransactionVolumeTrend = {
   totalFiatVolume: string;
@@ -288,7 +302,7 @@ export type UserCryptoWalletResponsePayload = {
 // End Crypto
 
 // Start Upload
-export type UploadAPIResponse = BaseApiResponse<{ url: string }>;
+export type UploadAPIResponse = BaseApiResponse<{ url: string; signedUrl: string }>;
 // End Upload
 
 // Start Exchange Rate

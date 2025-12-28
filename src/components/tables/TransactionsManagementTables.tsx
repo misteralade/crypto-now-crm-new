@@ -127,7 +127,7 @@ export const TransactionsManagementColumn = (
       <Fragment>
         <div className="py-3 text-left text-sm font-medium text-gray-500">
           <span className="flex items-center gap-2">
-            <span>Transaction ID</span>
+            <span>Session ID</span>
           </span>
         </div>
       </Fragment>
@@ -170,13 +170,13 @@ export const TransactionsManagementColumn = (
     key: 'date',
     header: (
       <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
+        <div 
+        className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer"
+        onClick={() => handleSortBy('createdAt')}
+        >
           <span className="flex items-center gap-2">
             <span>Date</span>
-            <ChevronDown
-              className="text-gray-400"
-              onClick={() => handleSortBy('createdAt')}
-            />
+            <ChevronDown className="text-gray-400 ml-4" onClick={() => handleSortBy('createdAt')} />
           </span>
         </div>
       </Fragment>
@@ -191,7 +191,7 @@ export const TransactionsManagementColumn = (
     key: 'status',
     header: (
       <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
+        <div className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer" onClick={() => handleSortBy('status')}>
           <span className="flex items-center gap-2">
             <span>Status</span>
             <ChevronDown
@@ -206,6 +206,47 @@ export const TransactionsManagementColumn = (
       const { displayText, variant } = mapTransactionStatus(value)
       return <TableStatus status={displayText} variant={variant} />
     },
+  },
+  {
+    key: 'isAnonymous',
+    header: (
+      <Fragment>
+        <div className="py-3 text-left text-sm font-medium text-gray-500">
+          <span className="flex items-center gap-2">
+            <span>User Type</span>
+          </span>
+        </div>
+      </Fragment>
+    ),
+    render: (value) => {
+      return (
+        <span className={`text-sm text-[14px] px-3 py-1 rounded-full inline-flex items-center ${
+          value === 'Anonymous' 
+            ? 'bg-orange-100 text-orange-800' 
+            : 'bg-green-100 text-green-800'
+        }`}>
+          {value == "Anonymous" ? "Guest" : "Registered"}
+        </span>
+      )
+    },
+  },
+  {
+    key: "updatedAt",
+    header: (
+      <Fragment>
+        <div className="py-3 text-left text-sm font-medium text-gray-500 hover:cursor-pointer" onClick={() => handleSortBy('updatedAt')}>
+          <span className="flex items-center gap-2">
+            <span>Last Updated</span>
+            <ChevronDown className="text-gray-400 ml-4" onClick={() => handleSortBy('updatedAt')} />
+          </span>
+        </div>
+      </Fragment>
+    ),
+    render: (value) => (
+      <Fragment>
+        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+      </Fragment>
+    ),
   },
   {
     key: 'action',
@@ -246,6 +287,8 @@ export const TransactionsManagementDataRow = (
       amount: `$${convertToMillify(Number(item.usdAmount))}`,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       status: item.status,
+      isAnonymous: item?.email ? 'Anonymous' : 'Registered',
+      updatedAt: momentClient.formatToNormalisedDateAndTime(item.updatedAt),
     })
 
     return

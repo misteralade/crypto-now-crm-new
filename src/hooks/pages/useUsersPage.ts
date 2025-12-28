@@ -1,5 +1,6 @@
 import {useMemo, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useNavigate} from "@tanstack/react-router";
 import {useUserQuery} from "../../queries/user.query";
 import {
   clearSearchUsers,
@@ -14,10 +15,11 @@ import {adminSearchUsersInitialState} from "../../redux/states/initial-users-man
 import type {AdminSearchUserRequestType} from "../../schemas/user.schema";
 import type {UserStatusVariant} from "../../types/global.types";
 import {debounce} from "../../util/debouce.util.ts";
-import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
+import {TIME_IN_MILLISECONDS, ROUTES} from "../../util/constants.util.ts";
 
 export const useUsersPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     adminSearchUsers,
     loadingAdminSearchUsers,
@@ -81,8 +83,18 @@ export const useUsersPage = () => {
     };
   }, [dispatch]);
 
+  const handleNavigateToUserDetails = (userId: string) => {
+    // Navigate to user details page
+    navigate({ to: `${ROUTES.USERS_DETAILS.replace('$userId', userId)}` })
+  }
+
+  const handleNavigateToTransactionHistory = (userId: string) => {
+    // Navigate to transaction history page
+    navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', userId)}` })
+  }
+
   const handleViewUserDetails = (userId: string) => {
-    // Route to user details page
+    // Keep for backward compatibility - opens sidebar
     dispatch(setSelectedUserDetailId(userId))
     toggleDetails()
   }
@@ -155,5 +167,7 @@ export const useUsersPage = () => {
     handlePageSizeChange,
     handlePageChange,
     handleSearchChange,
+    handleNavigateToUserDetails,
+    handleNavigateToTransactionHistory,
   }
 }

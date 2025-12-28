@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
-import { searchTransactionsInitialState } from '../redux/states/initial-transaction-management.states'
 import { QUERY_KEYS } from './querries.keys'
 import type {RootState} from '../store';
 import type {
@@ -135,6 +134,8 @@ export const useTransactionQuery = () => {
   const transactionCount = weeklyTransactionCount
   const loadingTransactionCount = loadingWeeklyTransactionCount
 
+  const searchUserTransactionHistory = useSelector((state: RootState) => state.transactionManagement.search.userTransactionHistory);
+
   const { data: searchTransactions, isLoading: loadingSearchTransactions } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchTransaction],
     queryFn: async () => {
@@ -150,7 +151,26 @@ export const useTransactionQuery = () => {
 
       return null;
     },
-    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction,
+    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction && !matchRoute({ to: ROUTES.USER_TRANSACTIONS }),
+    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
+  });
+
+  const { data: searchUserTransactions, isLoading: loadingSearchUserTransactions } = useQuery({
+    queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchUserTransactionHistory],
+    queryFn: async () => {
+      const payload = (store.getState() as RootState).transactionManagement.search.userTransactionHistory
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!payload) return null;
+
+      const { data, success } = await transactionServiceApi.searchTransactions(payload);
+
+      if (success) {
+        return data;
+      }
+
+      return null;
+    },
+    enabled: !!matchRoute({ to: ROUTES.USER_TRANSACTIONS }) && !!searchUserTransactionHistory,
     refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
@@ -166,23 +186,11 @@ export const useTransactionQuery = () => {
 
         if (!sessionId) return null
 
-        // Build Payload
-        const searchTransactionPayload = {
-          ...searchTransactionsInitialState,
-          includeExchangeRate: true,
-          includeCryptoCurrency: true,
-          includeUserBankAccount: true,
-          includeUserCryptoWallet: true,
-          sessionId,
-        }
-
         const { data, success } =
-          await transactionServiceApi.searchTransactions(
-            searchTransactionPayload,
-          )
+          await transactionServiceApi.adminGetTransactionDetails(sessionId)
 
         if (success) {
-          return data.transactions[0] as SearchTransactionsResponse | undefined
+          return data as SearchTransactionsResponse | undefined
         }
 
         return null
@@ -255,19 +263,37 @@ export const useTransactionQuery = () => {
   const adminUploadTransactionReceiptMutation = useMutation({
     mutationFn: async (formData: FormData) => {
       toast.loading('Uploading transaction receipt...')
+      const sessionId = (store.getState() as RootState).transactionManagement.details.transactionSessionId
+      
+      if (!sessionId) {
+        toast.dismiss()
+        throw new Error('Transaction session ID is required')
+      }
+      
       const { data } =
-        await transactionServiceApi.adminUploadTransactionReceipt(formData)
-      return data.url
+        await transactionServiceApi.adminUploadTransactionReceipt(formData, sessionId)
+      return { url: data.url, signedUrl: data.signedUrl }
     },
     onError: (error: AxiosServerError) => {
       const { response } = error
       toast.dismiss()
       toast.error(response?.data.error.message || 'Failed to upload transaction reciept.')
     },
-    onSuccess: (url: string | undefined) => {
+    onSuccess: (result: { url: string; signedUrl: string } | undefined) => {
       toast.dismiss()
       toast.success('Successfully uploaded transaction receipt')
-      return url
+      return result
+    },
+  })
+
+  const adminLockTransactionMutation = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { success, data } = await transactionServiceApi.adminLockTransaction(sessionId)
+      return { success, data }
+    },
+    onError: (error: AxiosServerError) => {
+      // Error handling will be done in the component
+      throw error
     },
   })
 
@@ -285,6 +311,8 @@ export const useTransactionQuery = () => {
     loadingUsersWithTopTransactionVolume,
     searchTransactions,
     loadingSearchTransactions,
+    searchUserTransactions,
+    loadingSearchUserTransactions,
     transactionDetail,
     loadingTransactionDetails,
     transactionInfo,
@@ -293,5 +321,6 @@ export const useTransactionQuery = () => {
     // Mutation
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
+    adminLockTransactionMutation,
   }
 }

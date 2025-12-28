@@ -2,6 +2,7 @@ import z from 'zod'
 import {
   BasicSearchQuerySchema,
   EmailSchema,
+  IdRequestSchema,
   IsoDateStringSchema,
   PasswordSchema,
 } from './common.schema'
@@ -22,9 +23,12 @@ export const UserSignupRequestSchema = z.object({
 });
 
 export const PasswordResetUpdateRequestSchema = z.object({
-  token: z.coerce.string(),
+  token: z.coerce.string().min(1, "Token is required"),
   password: PasswordSchema,
   confirmPassword: PasswordSchema,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords must match",
+  path: ["confirmPassword"],
 });
 
 export const AdminSearchUserRequestSchema = BasicSearchQuerySchema.extend({
@@ -50,6 +54,14 @@ export const AdminSearchUserRequestSchema = BasicSearchQuerySchema.extend({
   includeNotifications: z.coerce.boolean().default(false).optional().describe("Include user notifications"),
 })
 
+export const AdminUserProfileUpdateRequestSchema = IdRequestSchema.extend({
+  firstName: z.coerce.string().max(255).optional(),
+  lastName: z.coerce.string().max(255).optional(),
+  phoneNumber: z.coerce.string().max(255).optional(),
+  dob: IsoDateStringSchema.describe("Date of birth").optional().transform(val => val === "" ? undefined : val),
+});
+
 export type UserSignupRequestType = z.infer<typeof UserSignupRequestSchema>;
 export type PasswordResetUpdateRequestType = z.infer<typeof PasswordResetUpdateRequestSchema>;
 export type AdminSearchUserRequestType = z.infer<typeof AdminSearchUserRequestSchema>;
+export type AdminUserProfileUpdateRequestType = z.infer<typeof AdminUserProfileUpdateRequestSchema>;

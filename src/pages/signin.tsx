@@ -1,7 +1,9 @@
 import {Fragment} from "react";
+import { Link } from '@tanstack/react-router'
 import AuthLayout from '../layout/AuthLayout'
 import {useSignInPage} from "../hooks/pages/useSignInPage";
 import CustomButton from "../components/global/Button";
+import { ROUTES } from '../util/constants.util'
 
 const Signin = () => {
   const {
@@ -113,12 +115,12 @@ const Signin = () => {
 
             {/* Forgot Password Link */}
             <div className="flex justify-end mt-3">
-              <a
-                href="/forgot-password"
+              <Link
+                to={ROUTES.FORGOT_PASSWORD}
                 className="text-[14px] text-[#6B7280] hover:text-[#1E1B4B] underline transition-colors duration-200"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
 

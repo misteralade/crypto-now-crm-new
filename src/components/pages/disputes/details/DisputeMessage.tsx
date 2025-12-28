@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import type { AttachmentType, DisputeMessageResponse, MessageAttachment } from "../../../../types/response.payload.types.ts";
 import { useUploadQuery } from "../../../../queries/upload.query.ts";
 import {formatFileSize, getFileType} from "../../../../util/index.util.ts";
-import { ATTACHMENT_TYPE } from "../../../../util/constants.util.ts";
+import { ATTACHMENT_TYPE, TIME_IN_MILLISECONDS } from "../../../../util/constants.util.ts";
 import { LoadingSpinner } from "../../../global/LoadingSpinner.tsx";
 import {setDisputeAttachments, setDisputeMessageText} from "../../../../redux/dispute.slice.ts";
 
@@ -36,10 +36,46 @@ const DisputeMessage = ({ loading, messages, sendMessageMutation }: DisputeMessa
   const [uploadedAttachments, setUploadedAttachments] = useState<MessageAttachment[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Scroll to bottom of messages
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const lastActivityTimeRef = useRef<number>(Date.now());
+
+  // Track user activity (mouse movement, scroll, and touch events)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messagesContainer = messagesContainerRef.current;
+    if (!messagesContainer) return;
+
+    const handleActivity = () => {
+      lastActivityTimeRef.current = Date.now();
+    };
+
+    // Listen for mouse movement
+    messagesContainer.addEventListener('mousemove', handleActivity, { passive: true });
+    // Listen for mouse wheel scroll
+    messagesContainer.addEventListener('wheel', handleActivity, { passive: true });
+    // Listen for touch scroll (mobile)
+    messagesContainer.addEventListener('touchmove', handleActivity, { passive: true });
+    // Listen for scroll events (covers all scroll types)
+    messagesContainer.addEventListener('scroll', handleActivity, { passive: true });
+
+    return () => {
+      messagesContainer.removeEventListener('mousemove', handleActivity);
+      messagesContainer.removeEventListener('wheel', handleActivity);
+      messagesContainer.removeEventListener('touchmove', handleActivity);
+      messagesContainer.removeEventListener('scroll', handleActivity);
+    };
+  }, []);
+
+  // Auto-scroll to bottom only if user has been idle for 120 seconds
+  useEffect(() => {
+    // Only check when messages change (new message arrives)
+    if (messages.length === 0) return;
+
+    const timeSinceLastActivity = Date.now() - lastActivityTimeRef.current;
+
+    // Only auto-scroll if user has been inactive for 120 seconds
+    if (timeSinceLastActivity >= TIME_IN_MILLISECONDS.TWO_MINUTES) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
   
   // Get image dimensions
@@ -239,7 +275,7 @@ const DisputeMessage = ({ loading, messages, sendMessageMutation }: DisputeMessa
           </div>
           
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

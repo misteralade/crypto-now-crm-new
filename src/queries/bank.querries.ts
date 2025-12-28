@@ -118,8 +118,12 @@ export const useBankQuery = () => {
     onSuccess: ({ message, success }) => {
       toast.dismiss();
       toast.success(message || "Bank account created successfully.");
+      // Invalidate both queries to refresh the bank list
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.BANK.PLATFORM_BANK_ACCOUNTS, QUERY_KEYS.BANK.SEARCHED_SUPPORTED_BANKS]
+        queryKey: [QUERY_KEYS.BANK.PLATFORM_BANK_ACCOUNTS]
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.BANK.SEARCHED_SUPPORTED_BANKS]
       });
       return success;
     },

@@ -16,7 +16,8 @@ const ManageFiat = () => {
     loadingSearchedSupportedBanks,
 
     // ⚙️ Functions
-    toggleBankModal,
+    handleOpenBankModal,
+    handleCloseBankModal,
     handleMakeDefault,
     handleDeleteBank,
     handleCreateBankField,
@@ -62,7 +63,7 @@ const ManageFiat = () => {
           
           <section
             className="rounded-2xl border border-[#ECECEC] bg-white shadow-sm flex items-center justify-center p-4 cursor-pointer hover:bg-[#FAFAFA]"
-            onClick={toggleBankModal}
+            onClick={handleOpenBankModal}
           >
             <div className="flex flex-col justify-center items-center h-full py-10 w-full">
               <div className="border border-[#ECECEC] rounded-full p-4 hover:bg-[#ECECEC]">
@@ -93,7 +94,7 @@ const ManageFiat = () => {
             !loadingPlatformSupportedBanks ? platformSupportedBanks : []
           }
           handleCreateBankField={handleCreateBankField}
-          onClose={toggleBankModal}
+          onClose={handleCloseBankModal}
           onConfirm={handleAdminCreateBank}
         />
       </div>

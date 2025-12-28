@@ -73,6 +73,8 @@ export const EditSupportedCryptoAndAdminWalletRequestSchema = z.object({
   websiteUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's official website").optional(),
   whitepaperUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's whitepaper").optional(),
   additionalInfo: z.record(z.any()).optional().describe("Optional additional information as key-value pairs").optional(),
+  walletAddress: z.string().min(1).max(255).describe("Public address of the cryptocurrency wallet").optional(),
+  network: CryptoNetworkType.describe(`The blockchain network of the cryptocurrency wallet, e.g., 'ETHEREUM', 'BITCOIN'`).optional(),
 
   // Common
   isActive: z.boolean().default(true).describe("Indicates if the cryptocurrency is active").optional(),

@@ -15,6 +15,8 @@ interface EditCoinDetailsProps {
 
 const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChangeInputField }: EditCoinDetailsProps) => {
   const [isActive, setIsActive] = useState(active);
+  const [selectedNetwork, setSelectedNetwork] = useState(network);
+  const [selectedWalletAddress, setSelectedWalletAddress] = useState(walletAddress);
 
   return (
     <div className="mb-8">
@@ -56,10 +58,15 @@ const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChang
             id="network"
             label="Network"
             valueClass="text-[18px]"
-            value={network}
+            value={selectedNetwork}
             // @ts-ignore
             options={CRYPTO_NETWORK_OPTIONS}
-            disabled
+            defaultValue={selectedNetwork}
+            onChange={(e) => {
+              setSelectedNetwork(e.target.value);
+              onChangeInputField('network', e.target.value as EditSupportedCryptoAndAdminWalletRequestType['network']);
+            }}
+            disabled={!selectedNetwork}
           />
         </div>
 
@@ -97,8 +104,12 @@ const EditCoinDetails = ({ name, symbol, network, active, walletAddress, onChang
           placeholder="Enter deposit wallet address"
           valueClass="text-[18px] text-[#9A9A9A]"
           id="walletAddress"
-          disabled
-          value={walletAddress}
+          value={selectedWalletAddress}
+          onChange={(e) => {
+            setSelectedWalletAddress(e.target.value);
+            onChangeInputField('walletAddress', e.target.value);
+          }}
+          disabled={!selectedNetwork}
         />
       </div>
     </div>

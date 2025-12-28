@@ -39,7 +39,7 @@ const OptionalFields = ({ onChangeInputField }: OptionalFieldsProps) => {
         <div>
           <LabeledPillInput
             id="whitepaperUrl"
-            onChange={(e) => onChangeInputField("whitepaperUrl", Number(e.target.value))}
+            onChange={(e) => onChangeInputField("whitepaperUrl", e.target.value)}
             label="Whitepaper URL"
             type="text"
             min={0.001}
@@ -53,7 +53,7 @@ const OptionalFields = ({ onChangeInputField }: OptionalFieldsProps) => {
         <div className="mb-6">
           <LabeledPillInput
             id="websiteUrl"
-            onChange={(e) => onChangeInputField("websiteUrl", Number(e.target.value))}
+            onChange={(e) => onChangeInputField("websiteUrl", e.target.value)}
             label="Website URL"
             max={NUMBERS.FIVE_HUNDRED}
             type="text"
@@ -65,7 +65,7 @@ const OptionalFields = ({ onChangeInputField }: OptionalFieldsProps) => {
         <div>
           <LabeledPillInput
             id="description"
-            onChange={(e) => onChangeInputField("description", Number(e.target.value))}
+            onChange={(e) => onChangeInputField("description", e.target.value)}
             label="Description"
             max={NUMBERS.FIVE_HUNDRED}
             type="text"

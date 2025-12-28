@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react'
+import {Fragment, useState, useEffect} from 'react'
 import { Upload, X } from 'lucide-react'
 import {useDispatch} from "react-redux";
 import { convertToMillify } from '../../../util/index.util.ts'
@@ -10,10 +10,8 @@ import {
   transactionStatusStyles,
 } from '../../../util/constants.util.ts'
 import {setTransactionDetailUpdateField} from "../../../redux/transaction-management.slice";
-import { store} from "../../../store";
 import CustomerAccountDetails from './CustomerAccountDetails.tsx'
 import type {TransactionStatusType} from "../../../schemas/enum.schema";
-import type {RootState} from "../../../store";
 import type { SearchTransactionsResponse } from '../../../types/response.payload.types'
 import type { UpdateTransactionStatusRequestType } from '../../../schemas/transaction.schema'
 import type {ChangeEvent} from 'react';
@@ -41,11 +39,26 @@ const TransactionDetailsDrawer = ({
 }: TransactionDetailsDrawerProps) => {
   const dispatch = useDispatch();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
   const [showCustomerDetails, setShowCustomerDetails] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<TransactionStatusType | undefined>(undefined);
-
-  const previewUrl = (store.getState() as RootState).transactionManagement.details.update.adminPaymentReceiptUrl;
+  
+  // Reset showCustomerDetails when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      setShowCustomerDetails(false);
+      setSelectedStatus(undefined);
+      setUploadedFile(null);
+      setPreviewUrl(undefined);
+    }
+  }, [isOpen]);
+  
   if (!isOpen || !transaction) return null
+
+  // Check if wallet/bank details are available
+  const hasWalletDetails = transaction.type === 'BUY' 
+    ? !!transaction.userCryptoWallet 
+    : !!transaction.userBankAccount;
 
   // Get the exchange rate to the local currency - 1 USDT = 800 NGN
   const getExchangeRate = (
@@ -95,8 +108,9 @@ const TransactionDetailsDrawer = ({
       return
     }
 
-    await handleTransactionReceiptUpload(file)
+    const signedUrl = await handleTransactionReceiptUpload(file)
     setUploadedFile(file)
+    setPreviewUrl(signedUrl)
   }
 
   const removeFile = () => {
@@ -105,10 +119,7 @@ const TransactionDetailsDrawer = ({
       value: undefined,
     }))
     setUploadedFile(null)
-    dispatch(setTransactionDetailUpdateField({
-      field: 'adminPaymentReceiptUrl',
-      value: undefined,
-    }))
+    setPreviewUrl(undefined)
   }
 
   return (
@@ -253,16 +264,45 @@ const TransactionDetailsDrawer = ({
             </div>
           </section>
 
+          {/* Activity Log */}
+          {transaction.transactionActivities.length > 0 && (
+            <Fragment>
+              <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6">
+                <h3 className="text-[14px] font-semibold text-[#828282]">
+                  Activity Log
+                </h3>
+
+                <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
+                  {transaction.transactionActivities.map((activity) => (
+                    <div key={activity.id}>
+                      {activity.action.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} - {activity.message}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+
           {/* Customer Account Details fetch + panel */}
           <section>
             {!showCustomerDetails && (
               <button
-                className="px-6 py-4 text-sm md:text-lg font-semibold border border-[#03034D] rounded-full text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]"
-                onClick={() => setShowCustomerDetails(true)}
+                className={`px-6 py-4 text-sm md:text-lg font-semibold border rounded-full ${
+                  hasWalletDetails
+                    ? 'border-[#03034D] text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]'
+                    : 'border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50'
+                }`}
+                onClick={() => hasWalletDetails && setShowCustomerDetails(true)}
+                disabled={!hasWalletDetails}
               >
                 {transaction.type === 'BUY'
-                  ? 'View Wallet Details'
-                  : 'View Bank Details'}
+                  ? hasWalletDetails
+                    ? 'View Wallet Details'
+                    : 'Wallet Details Not Available'
+                  : hasWalletDetails
+                    ? 'View Bank Details'
+                    : 'Bank Details Not Available'}
               </button>
             )}
 
@@ -333,7 +373,7 @@ const TransactionDetailsDrawer = ({
                               text={
                                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                                 transaction.userBankAccount
-                                  ? transaction.userBankAccount.userId
+                                  ? transaction.userBankAccount.accountNumber
                                   : 'N/A'
                               }
                               className="!max-w-[200px] !h-[25px]"
@@ -346,13 +386,6 @@ const TransactionDetailsDrawer = ({
                   )}
                 </div>
               </Fragment>
-            )}
-
-            {!showCustomerDetails && (
-              <div className="text-[#828282] text-base text-justify lg:text-lg mt-6">
-                NO DETAILS HAS BEEN PROVIDED YET, YOU’LL BE NOTIFIED WHEN THE
-                DETAILS HAVE BEEN UPLOADED BY THE USER
-              </div>
             )}
 
             {/* Admin Upload transaction receipt */}
@@ -383,7 +416,8 @@ const TransactionDetailsDrawer = ({
                   </label>
 
                   {/* File Preview */}
-                  {uploadedFile && (
+                  {uploadedFile ? (
+                    // Show uploaded file preview (takes priority)
                     <div className="relative group">
                       {previewUrl ? (
                         // Image preview
@@ -426,7 +460,46 @@ const TransactionDetailsDrawer = ({
                         </div>
                       )}
                     </div>
-                  )}
+                  ) : transaction.adminPaymentReceiptUrl ? (
+                    // Show admin transaction receipt when no file is uploaded
+                    <div className="relative group">
+                      {transaction.adminPaymentReceiptUrl.toLowerCase().endsWith('.pdf') ? (
+                        // PDF preview
+                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
+                              <span className="text-red-600 font-semibold text-xs">PDF</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-[#0E0F0C]">Admin Payment Receipt</p>
+                              <p className="text-xs text-[#828282]">
+                                <a
+                                  href={transaction.adminPaymentReceiptUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[#03034D] hover:underline"
+                                >
+                                  View receipt
+                                </a>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        // Image preview
+                        <div className="relative">
+                          <img
+                            src={transaction.adminPaymentReceiptUrl}
+                            alt="Admin payment receipt"
+                            className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          />
+                          <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                            Admin Payment Receipt
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </section>
