@@ -1,10 +1,11 @@
-import { Fragment, useState, FormEvent } from 'react'
+import { Fragment, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import AuthLayout from '../layout/AuthLayout'
 import CustomButton from '../components/global/Button'
 import { authServiceApi } from '../api/auth.api'
 import { ROUTES } from '../util/constants.util'
 import { EmailSchema } from '../schemas/common.schema'
+import type { FormEvent } from 'react'
 
 const ForgotPassword = () => {
   const navigate = useNavigate()

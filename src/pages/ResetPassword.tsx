@@ -11,10 +11,8 @@ import { PasswordResetUpdateRequestSchema } from '../schemas/user.schema'
 import type { PasswordResetUpdateRequestType } from '../schemas/user.schema'
 
 const ResetPassword = () => {
-  const navigate = useNavigate()
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  const { token } = useSearch({ from: '/reset-password' })
+  const navigate = useNavigate();
+  const { token } = useSearch({ from: '/reset-password' }) as { token: string }
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState('')
