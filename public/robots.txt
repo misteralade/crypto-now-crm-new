@@ -1,0 +1,11 @@
+# robots.txt for CryptoNow CRM
+
+User-agent: *
+Allow: /
+Disallow: /dashboard/manage-admins
+Disallow: /dashboard/audit-trails
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Sitemap
+Sitemap: https://cryptonow-crm.com/sitemap.xml
