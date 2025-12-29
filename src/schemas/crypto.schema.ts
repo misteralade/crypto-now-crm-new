@@ -41,8 +41,8 @@ export const CreateSupportedCryptoAndAdminWalletRequestSchema = z.object({
   minTradeAmountForAnonymous: z.coerce.number().min(0).optional().describe("Optional minimum trade amount in USD for anonymous users"),
   buyRate: z.coerce.number().min(0).optional().describe("Optional buy rate for the cryptocurrency").optional(),
   sellRate: z.coerce.number().min(0).optional().describe("Optional sell rate for the cryptocurrency").optional(),
-  websiteUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's official website"),
-  whitepaperUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's whitepaper"),
+  websiteUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's official website").transform((val) => val === '' ? undefined : val),
+  whitepaperUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's whitepaper").transform((val) => val === '' ? undefined : val),
   additionalInfo: z.record(z.any()).optional().describe("Optional additional information as key-value pairs"),
   
   // Wallet 
