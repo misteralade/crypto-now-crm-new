@@ -6,6 +6,7 @@ import { store} from "../store";
 import { ROUTES } from '../util/constants.util.ts'
 import { cryptoServiceApi } from '../api/crypto.api.js'
 import { QUERY_KEYS } from './querries.keys.js'
+import { cleanUrlFields } from '../util/url.util'
 import type {AxiosServerError} from "../types/response.payload.types";
 import type {RootState} from "../store";
 
@@ -88,8 +89,11 @@ export const useCryptoQuery = () => {
        
       if (!payload) throw new Error("Missing payload to create new coin.")
 
+      // Clean invalid URL fields before sending
+      const cleanedPayload = cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl'])
+
       toast.loading("Creating new coin...");
-      const { message, success } = await cryptoServiceApi.createSupportedCryptoAndAdminWallet(payload);
+      const { message, success } = await cryptoServiceApi.createSupportedCryptoAndAdminWallet(cleanedPayload);
       if (!success) {
         throw new Error(message);
       }
@@ -118,7 +122,11 @@ export const useCryptoQuery = () => {
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!payload) throw new Error("Missing payload to update coin.")
-      const { message, success } = await cryptoServiceApi.adminUpdateSupportedCryptoAndAdminWallet(cryptoId, payload);
+      
+      // Clean invalid URL fields before sending
+      const cleanedPayload = cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl'])
+      
+      const { message, success } = await cryptoServiceApi.adminUpdateSupportedCryptoAndAdminWallet(cryptoId, cleanedPayload);
       if (!success) {
         throw new Error(message);
       }
