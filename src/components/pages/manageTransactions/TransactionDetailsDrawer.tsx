@@ -79,6 +79,19 @@ const TransactionDetailsDrawer = ({
     )
   }
 
+  const getStatusDisplayText = (status: string) => {
+    if (status === 'AWAITING_CRYPTO') {
+      return 'Awaiting Bank Details'
+    }
+    if (status === 'AWAITING_PAYMENT') {
+      return 'Awaiting Wallet Details'
+    }
+    return status
+      .replaceAll('_', ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase())
+  }
+
   const buyStatuses = [
     'AWAITING_PAYMENT',
     'PAYMENT_RECEIVED',
@@ -312,7 +325,7 @@ const TransactionDetailsDrawer = ({
                   <h3 className="text-[14px] font-semibold text-[#828282]">
                     {transaction.type === 'BUY'
                       ? 'WALLET DETAILS'
-                      : 'CUSTOMER DETAILS'}
+                      : 'BANK DETAILS'}
                   </h3>
                   {transaction.type === 'BUY' ? (
                     <Fragment>
@@ -532,11 +545,7 @@ const TransactionDetailsDrawer = ({
                         }
                         disabled={isCurrent}
                       >
-                        {transactionStatus
-                          .replaceAll('_', ' ')
-                          .toLowerCase()
-                          .replace(/\b\w/g, c => c.toUpperCase())
-                        }
+                        {getStatusDisplayText(transactionStatus)}
                       </button>
                     </Fragment>
                   )
