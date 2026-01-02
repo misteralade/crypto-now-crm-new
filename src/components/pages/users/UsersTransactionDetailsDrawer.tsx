@@ -56,7 +56,7 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
           >
             <div className="flex items-center justify-between px-6 pt-8 pb-4">
               <h3 className="text-lg font-semibold text-[#0E0F0C]">
-                Transaction details
+                Transaction Details
               </h3>
               <button onClick={onClose} className="">
                 <X size={18} />
