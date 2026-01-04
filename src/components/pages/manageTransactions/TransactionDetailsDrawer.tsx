@@ -288,7 +288,7 @@ const TransactionDetailsDrawer = ({
                 <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
                   {transaction.transactionActivities.map((activity) => (
                     <div key={activity.id}>
-                      {activity.action.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} - {activity.message}
+                      {activity.action.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} - {activity.message} {momentClient.formatToNormalisedDateAndTime(activity.createdAt)}
                     </div>
                   ))}
                 </div>
