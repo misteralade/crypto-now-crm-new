@@ -145,16 +145,16 @@ export interface FileRoutesByFullPath {
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
   '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
-  '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
-  '/dashboard/disputes': typeof DashboardDisputesIndexRoute
-  '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
-  '/dashboard/users': typeof DashboardUsersIndexRoute
+  '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
+  '/dashboard/disputes/': typeof DashboardDisputesIndexRoute
+  '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
+  '/dashboard/users/': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
   '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
@@ -214,16 +214,16 @@ export interface FileRouteTypes {
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
     | '/dashboard/testimonials'
-    | '/dashboard'
+    | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
     | '/dashboard/disputes/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
-    | '/dashboard/coin-management'
-    | '/dashboard/disputes'
-    | '/dashboard/transactions'
-    | '/dashboard/users'
+    | '/dashboard/coin-management/'
+    | '/dashboard/disputes/'
+    | '/dashboard/transactions/'
+    | '/dashboard/users/'
     | '/dashboard/disputes/edit/$id'
     | '/dashboard/users/transaction-history/$userId'
   fileRoutesByTo: FileRoutesByTo
@@ -321,7 +321,7 @@ declare module '@tanstack/react-router' {
     '/dashboard/': {
       id: '/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
+      fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -363,28 +363,28 @@ declare module '@tanstack/react-router' {
     '/dashboard/users/': {
       id: '/dashboard/users/'
       path: '/dashboard/users'
-      fullPath: '/dashboard/users'
+      fullPath: '/dashboard/users/'
       preLoaderRoute: typeof DashboardUsersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/transactions/': {
       id: '/dashboard/transactions/'
       path: '/dashboard/transactions'
-      fullPath: '/dashboard/transactions'
+      fullPath: '/dashboard/transactions/'
       preLoaderRoute: typeof DashboardTransactionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/disputes/': {
       id: '/dashboard/disputes/'
       path: '/dashboard/disputes'
-      fullPath: '/dashboard/disputes'
+      fullPath: '/dashboard/disputes/'
       preLoaderRoute: typeof DashboardDisputesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/coin-management/': {
       id: '/dashboard/coin-management/'
       path: '/dashboard/coin-management'
-      fullPath: '/dashboard/coin-management'
+      fullPath: '/dashboard/coin-management/'
       preLoaderRoute: typeof DashboardCoinManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
