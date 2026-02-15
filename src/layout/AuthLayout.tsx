@@ -1,13 +1,14 @@
-import {Fragment } from 'react'
-import {Link} from "@tanstack/react-router";
+import { Fragment } from "react";
+import { Link } from "@tanstack/react-router";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import Logo from '../assets/img/logo.png';
+import Logo from "../assets/img/logo.png";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import AuthBg from "../assets/img/auth/auth-bg.webp";
-import type {ReactNode} from 'react';
+import type { ReactNode } from "react";
 
+// trigger PR
 interface AuthLayoutProps {
   children: ReactNode;
   layoutType: number;
@@ -59,6 +60,6 @@ const AuthLayout = ({ children, layoutType }: AuthLayoutProps) => {
       </div>
     </Fragment>
   );
-}
+};
 
 export default AuthLayout;
