@@ -8,7 +8,7 @@ import Logo from "../assets/img/logo.png";
 import AuthBg from "../assets/img/auth/auth-bg.webp";
 import type { ReactNode } from "react";
 
-// trigger PR
+// trigger PRe
 interface AuthLayoutProps {
   children: ReactNode;
   layoutType: number;
