@@ -1,6 +1,6 @@
 import {Fragment, useState, useEffect} from 'react'
 import { Upload, X } from 'lucide-react'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { convertToMillify } from '../../../util/index.util.ts'
 import momentClient from '../../../util/moment'
 import CopyDetails from '../../global/CopyDetails'
@@ -16,6 +16,7 @@ import type { SearchTransactionsResponse } from '../../../types/response.payload
 import type { UpdateTransactionStatusRequestType } from '../../../schemas/transaction.schema'
 import type {ChangeEvent} from 'react';
 import LabeledPillInput from '../../global/LabeledPillInput';
+import type { RootState } from '../../../store';
 
 interface TransactionDetailsDrawerProps {
   isOpen: boolean;
@@ -38,11 +39,19 @@ const TransactionDetailsDrawer = ({
   handleTransactionReceiptUpload,
 }: TransactionDetailsDrawerProps) => {
   const dispatch = useDispatch();
+  const updatePayload = useSelector((state: RootState) => state.transactionManagement.details.update);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
   const [showCustomerDetails, setShowCustomerDetails] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<TransactionStatusType | undefined>(undefined);
-  
+
+  // Pre-fill update form from server when drawer opens so existing note is shown
+  useEffect(() => {
+    if (isOpen && transaction) {
+      dispatch(setTransactionDetailUpdateField({ field: 'adminNotes', value: transaction.adminNotes ?? '' }));
+    }
+  }, [dispatch, isOpen, transaction?.sessionId, transaction?.adminNotes]);
+
   // Reset showCustomerDetails when drawer closes
   useEffect(() => {
     if (!isOpen) {
@@ -559,6 +568,7 @@ const TransactionDetailsDrawer = ({
             <LabeledPillInput
               label="Transaction note (Optional)"
               placeholder="Add a note"
+              value={updatePayload?.adminNotes ?? transaction?.adminNotes ?? ''}
               valueClass="text-[18px] px-[16px] text-[#000] placeholder:text-[#9A9A9A]"
               labelClass="text-[14px] font-medium text-[#454745]"
               onChange={(e) =>
