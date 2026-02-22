@@ -12,10 +12,11 @@ interface TransactionDisputeInfoProps {
   cryptoCurrency: string;
   fiatAmount: string;
   fiatCurrency: string;
-  rate: string;
+  /** Explicit rate e.g. "1 BTC = $ 100,000" */
+  exchangeRateDisplay: string;
 }
 
-const TransactionDisputeInfo = ({sessionId, transactionType, status, cryptoAmount, cryptoCurrency, fiatCurrency, fiatAmount, rate }: TransactionDisputeInfoProps) => {
+const TransactionDisputeInfo = ({sessionId, transactionType, status, cryptoAmount, cryptoCurrency, fiatCurrency, fiatAmount, exchangeRateDisplay }: TransactionDisputeInfoProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -63,7 +64,7 @@ const TransactionDisputeInfo = ({sessionId, transactionType, status, cryptoAmoun
           <div>
             <p className="text-xs text-gray-500 mb-1">Exchange Rate</p>
             <p className="text-sm font-medium text-gray-900">
-              {formatNumber(rate)}
+              {exchangeRateDisplay}
             </p>
           </div>
         </div>

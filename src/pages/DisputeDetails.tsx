@@ -7,6 +7,7 @@ import DisputeInformation from "../components/pages/disputes/details/DisputeInfo
 import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";
 import DisputeMessage from "../components/pages/disputes/details/DisputeMessage.tsx";
 import {getDisputeStatusColor} from "../util/dispute.constants.util.ts";
+import { convertToMillify } from "../util/index.util.ts";
 
 const DisputeDetails = () => {
   const {
@@ -96,7 +97,26 @@ const DisputeDetails = () => {
                       cryptoCurrency={disputeDetails.transaction?.cryptocurrency?.symbol || ''}
                       fiatAmount={disputeDetails.transaction?.amountFiat || ''}
                       fiatCurrency={disputeDetails.transaction?.currency || ''}
-                      rate={disputeDetails.transaction?.stableToFiatRate || ''}
+                      exchangeRateDisplay={(() => {
+                        const tx = disputeDetails.transaction;
+                        if (!tx?.cryptocurrency?.symbol) return '—';
+                        const symbol = tx.cryptocurrency.symbol;
+                        const amountCrypto = Number(tx.amountCrypto);
+                        const currency = tx.currency;
+                        if (amountCrypto <= 0) return '—';
+                        if (tx.exchangeRate) {
+                          const rate = Number(tx.exchangeRate.rate);
+                          const platformRate = Number(tx.exchangeRate.platformRate);
+                          return currency === 'USD'
+                            ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
+                            : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`;
+                        }
+                        const effective = currency === 'USD'
+                          ? Number(tx.amountFiat) / amountCrypto
+                          : Number(tx.amountFiatNGN || 0) / amountCrypto;
+                        const fiatSym = currency === 'USD' ? '$' : '₦';
+                        return `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`;
+                      })()}
                     />
                     
                     <DisputeInformation

@@ -10,7 +10,8 @@ interface TransactionDetailsProps {
   cryptoSymbol: string;
   fiatAmount: string;
   currency: string;
-  rate: string;
+  /** Explicit rate e.g. "1 BTC = $ 100,000" */
+  exchangeRateDisplay: string;
   walletAddress: string;
   walletNetwork: string;
   accountName: string;
@@ -18,7 +19,7 @@ interface TransactionDetailsProps {
   bankName: string;
 }
 
-const TransactionDetails = ({ sessionId, type, status, cryptoAmount, cryptoSymbol, currency, fiatAmount, rate, walletAddress, walletNetwork, accountName, accountNumber, bankName }: TransactionDetailsProps) => {
+const TransactionDetails = ({ sessionId, type, status, cryptoAmount, cryptoSymbol, currency, fiatAmount, exchangeRateDisplay, walletAddress, walletNetwork, accountName, accountNumber, bankName }: TransactionDetailsProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -65,7 +66,7 @@ const TransactionDetails = ({ sessionId, type, status, cryptoAmount, cryptoSymbo
           <div>
             <p className="text-xs text-gray-500 mb-1">Exchange Rate</p>
             <p className="text-sm font-medium text-gray-900">
-              {formatNumber(rate)}
+              {exchangeRateDisplay}
             </p>
           </div>
           

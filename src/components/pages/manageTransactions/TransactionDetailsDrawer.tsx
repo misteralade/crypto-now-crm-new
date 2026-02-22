@@ -69,12 +69,27 @@ const TransactionDetailsDrawer = ({
     ? !!transaction.userCryptoWallet 
     : !!transaction.userBankAccount;
 
-  // Get the exchange rate to the local currency - 1 USDT = 800 NGN
-  const getExchangeRate = (
-    platformRate: number,
-    cryptoValueInPoint: number,
-  ) => {
-    return convertToMillify(platformRate * cryptoValueInPoint, 2)
+  // Explicit rate: 1 crypto = fiat (variable by transaction currency)
+  const getExchangeRateDisplay = (): string => {
+    const symbol = transaction.cryptocurrency?.symbol ?? ''
+    if (!symbol) return '—'
+    const currency = transaction.currency
+    if (transaction.exchangeRate) {
+      const rate = Number(transaction.exchangeRate.rate)
+      const platformRate = Number(transaction.exchangeRate.platformRate)
+      if (currency === 'USD') {
+        return `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
+      }
+      return `1 ${symbol} = ₦ ${convertToMillify(platformRate * rate, 2)}`
+    }
+    const amountCrypto = Number(transaction.amountCrypto)
+    if (amountCrypto <= 0) return '—'
+    if (currency === 'USD') {
+      const val = Number(transaction.amountFiat) / amountCrypto
+      return `1 ${symbol} = $ ${convertToMillify(val, 2)}`
+    }
+    const val = Number(transaction.amountFiatNGN || 0) / amountCrypto
+    return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`
   }
 
   const getStatusColorObject = (status: string) => {
@@ -234,13 +249,9 @@ const TransactionDetailsDrawer = ({
 
               {/* Exchange Rate */}
               <section className="flex justify-between items-center">
-                <div className="text-[#828282] text-[16px]">Rate</div>
+                <div className="text-[#828282] text-[16px]">Exchange Rate</div>
                 <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
-                  1 {transaction.cryptocurrency ? transaction.cryptocurrency.symbol : ''} ={' ₦ '}
-                  {getExchangeRate(
-                    Math.floor(Number(transaction.exchangeRate ? transaction.exchangeRate.platformRate : '0')),
-                    Number(transaction.exchangeRate ? transaction.exchangeRate.rate : '0'),
-                  )}
+                  {getExchangeRateDisplay()}
                 </div>
               </section>
 

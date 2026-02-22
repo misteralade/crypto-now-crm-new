@@ -14,6 +14,7 @@ import CopyDetails from "../components/global/CopyDetails.tsx";
 import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
+import { convertToMillify } from "../util/index.util.ts";
 
 const TransactionDetails = () => {
   const {
@@ -61,8 +62,19 @@ const TransactionDetails = () => {
                   amountCrypto={Number(transaction.amountCrypto)}
                   symbol={transaction.cryptocurrency?.symbol || 'CRYPTO'}
                   currency={transaction.currency}
+                  amountFiat={Number(transaction.amountFiat || 0)}
                   amountFiatNGN={Number(transaction.amountFiatNGN || 0)}
-                  stableToFiatRate={Number(transaction.stableToFiatRate)}
+                  exchangeRateDisplay={
+                    transaction.exchangeRate && Number(transaction.amountCrypto) > 0
+                      ? transaction.currency === 'USD'
+                        ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${convertToMillify(Number(transaction.exchangeRate.rate), 2)}`
+                        : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${convertToMillify(Number(transaction.exchangeRate.rate) * Number(transaction.exchangeRate.platformRate), 2)}`
+                      : Number(transaction.amountCrypto) > 0
+                        ? transaction.currency === 'USD'
+                          ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${convertToMillify(Number(transaction.amountFiat) / Number(transaction.amountCrypto), 2)}`
+                          : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${convertToMillify(Number(transaction.amountFiatNGN || 0) / Number(transaction.amountCrypto), 2)}`
+                        : '—'
+                  }
                   status={transaction.status}
                 />
                 
