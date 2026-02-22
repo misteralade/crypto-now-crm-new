@@ -439,12 +439,31 @@ export const UserTransactionsManagementDataRow = (
   }
 
   data.map((item: SearchTransactionsResponse) => {
+    const symbol = item.cryptocurrency?.symbol ?? 'CRYPTO'
+    const amountCrypto = Number(item.amountCrypto)
+    const currency = item.currency
+    let rateDisplay = '—'
+    if (amountCrypto > 0) {
+      if (item.exchangeRate) {
+        const rate = Number(item.exchangeRate.rate)
+        const platformRate = Number(item.exchangeRate.platformRate)
+        rateDisplay = currency === 'USD'
+          ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
+          : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`
+      } else {
+        const effective = currency === 'USD'
+          ? Number(item.amountFiat) / amountCrypto
+          : Number(item.amountFiatNGN || 0) / amountCrypto
+        const fiatSym = currency === 'USD' ? '$' : '₦'
+        rateDisplay = `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`
+      }
+    }
     rowItems.push({
       id: item.sessionId,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       type: `${item.type} ${item.cryptocurrency ? `- ${item.cryptocurrency.symbol}` : ''}`,
       amount: `$${convertToMillify(Number(item.usdAmount))}`,
-      rate: `${item.stableToFiatRate}`,
+      rate: rateDisplay,
       status: item.status,
     })
 

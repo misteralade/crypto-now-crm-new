@@ -7,12 +7,14 @@ interface TransactionOverviewProps {
   amountCrypto: number;
   symbol: string;
   currency: string;
+  amountFiat: number;
   amountFiatNGN: number;
-  stableToFiatRate: number;
   status: string;
+  /** Explicit rate string e.g. "1 BTC = $ 100,000" or "1 BTC = ₦ 140M" */
+  exchangeRateDisplay: string;
 }
 
-const TransactionOverview = ({ type, amountCrypto, symbol, amountFiatNGN, stableToFiatRate, status }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type, amountCrypto, symbol, amountFiat, amountFiatNGN, exchangeRateDisplay, status }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -33,9 +35,9 @@ const TransactionOverview = ({ type, amountCrypto, symbol, amountFiatNGN, stable
           </div>
           
           <div>
-            <p className="text-sm text-gray-500 mb-1 normal-case">{type} Rate</p>
-            <p className="text-2xl font-bold text-gray-900">
-              {formatNumber(stableToFiatRate)}
+            <p className="text-sm text-gray-500 mb-1 normal-case">Exchange Rate</p>
+            <p className="text-lg font-bold text-gray-900">
+              {exchangeRateDisplay}
             </p>
           </div>
           

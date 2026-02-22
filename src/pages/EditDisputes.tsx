@@ -10,6 +10,7 @@ import DisputeAdminNotes from "../components/pages/disputes/edit/DisputeAdminNot
 import TransactionDetails from "../components/pages/disputes/edit/TransactionDetails.tsx";
 import DisputeUserInformation from "../components/pages/disputes/edit/DisputeUserInformation.tsx";
 import DisputeStatusUpdateModal from "../components/pages/disputes/edit/modal/DisputeStatusUpdateModal.tsx";
+import { convertToMillify } from "../util/index.util.ts";
 
 const EditDisputes = () => {
   const {
@@ -186,7 +187,26 @@ const EditDisputes = () => {
                             cryptoSymbol={transactionDetails.cryptocurrency?.symbol || ''}
                             fiatAmount={transactionDetails.amountFiat}
                             currency={transactionDetails.currency}
-                            rate={transactionDetails.stableToFiatRate}
+                            exchangeRateDisplay={(() => {
+                              const tx = transactionDetails;
+                              if (!tx?.cryptocurrency?.symbol) return '—';
+                              const symbol = tx.cryptocurrency.symbol;
+                              const amountCrypto = Number(tx.amountCrypto);
+                              const currency = tx.currency;
+                              if (amountCrypto <= 0) return '—';
+                              if (tx.exchangeRate) {
+                                const rate = Number(tx.exchangeRate.rate);
+                                const platformRate = Number(tx.exchangeRate.platformRate);
+                                return currency === 'USD'
+                                  ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
+                                  : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`;
+                              }
+                              const effective = currency === 'USD'
+                                ? Number(tx.amountFiat) / amountCrypto
+                                : Number(tx.amountFiatNGN || 0) / amountCrypto;
+                              const fiatSym = currency === 'USD' ? '$' : '₦';
+                              return `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`;
+                            })()}
                             walletAddress={transactionDetails.userCryptoWallet?.walletAddress || ''}
                             walletNetwork={transactionDetails.userCryptoWallet?.network || ''}
                             accountName={transactionDetails.userBankAccount?.accountName || ''}
