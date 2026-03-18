@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { PillInput } from '../../ui/input'
 import { LabeledSelect } from '../../ui/select'
 import { Switch } from '../../ui/switch'
@@ -14,7 +15,24 @@ interface CreateAdminModalProps {
 }
 
 const CreateAdminModal = ({ open, roles, onClose, onCreate, handleCreateAdminFieldChange }: CreateAdminModalProps) => {
-  if (!open) return null
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null
 
   const rolesOptions = [
     { value: '', label: 'Select role' },
@@ -23,10 +41,10 @@ const CreateAdminModal = ({ open, roles, onClose, onCreate, handleCreateAdminFie
 
   return (
     <section className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`} onClick={onClose} />
 
       <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-[#ECECEC] max-h-[90vh] overflow-y-auto">
+        <div className={`w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-[#ECECEC]">
             <h2 className="text-[18px] font-semibold text-[#0E0F0C]">Create Admin</h2>
             <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#F5F5FF] transition-colors text-[#9A9A9A]">

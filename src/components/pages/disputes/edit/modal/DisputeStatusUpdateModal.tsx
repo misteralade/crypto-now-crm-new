@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {AlertCircle, CheckCircle, Clock, HelpCircle, Loader, X, Zap } from "lucide-react";
 import type {DisputeResolution, DisputeStatus} from "../../../../../types/dispute.types";
 import {DISPUTE_RESOLUTIONS, getDisputeStatusColor, getStatusMessage} from "../../../../../util/dispute.constants.util.ts";
@@ -16,6 +16,23 @@ interface DisputeStatusUpdateModalProps {
 }
 
 const DisputeStatusUpdateModal = ({ selectedStatus, statusNotes, selectedResolution, onClose, handleUpdateStatus, updateStatusNotes, handleSelectedResolution }: DisputeStatusUpdateModalProps) => {
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
+
+  useEffect(() => {
+    if (selectedStatus) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [selectedStatus, shouldRender])
+
   const getStatusIcon = (status: | 'OPEN' | 'UNDER_REVIEW' | 'AWAITING_EVIDENCE' | 'AWAITING_USER_RESPONSE' | 'AWAITING_ADMIN_RESPONSE' | 'ESCALATED' | 'RESOLVED' | 'REJECTED' | 'CLOSED') => {
     switch (status) {
       case "OPEN":
@@ -44,11 +61,13 @@ const DisputeStatusUpdateModal = ({ selectedStatus, statusNotes, selectedResolut
   const isResolutionRequired = (status: DisputeStatus): boolean => {
     return ['RESOLVED', 'REJECTED', 'CLOSED'].includes(status);
   };
+
+  if (!shouldRender) return null
   
   return (
     <Fragment>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}>
+        <div className={`bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">

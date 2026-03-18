@@ -1,4 +1,5 @@
 import { AlertTriangle, CheckCircle, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 interface ConfirmModalProps {
   open: boolean;
@@ -10,7 +11,24 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you sure you want to proceed?", confirmText = "Confirm" }: ConfirmModalProps) => {
-  if (!open) return null;
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null;
 
   const config = {
     delete: {
@@ -34,8 +52,8 @@ const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you
   }[actionType];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}>
+      <div className={`bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
         <div className={`w-14 h-14 rounded-full ${config.iconBg} flex items-center justify-center mx-auto mb-4`}>
           {config.icon}
         </div>

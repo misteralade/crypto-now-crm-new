@@ -117,7 +117,7 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
     <Fragment>
       <div ref={dropdownRef} className="relative">
         <fieldset
-          className={`relative rounded-xl border-[1.5px] transition-all duration-150 ${isOpen ? 'border-[#948EEE] ring-2 ring-[#D3D4F8]' : 'border-[#E4E7EC]'} px-4 py-3`}
+          className={`relative rounded-xl border-[1.5px] transition-all duration-150 ${isOpen ? 'border-[#948EEE] shadow-[0_0_0_3px_rgba(211,212,248,0.5)]' : 'border-[#E4E7EC]'} px-4 py-3`}
         >
           <legend className={`px-2 text-[13px] font-medium text-[#454745] leading-none ${labelClass}`}>{label}</legend>
           <div
@@ -151,7 +151,7 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                   onChange={(e) => { setSearchTerm(e.target.value); setHighlightedIndex(0); }}
                   onKeyDown={handleKeyDown}
                   placeholder={placeholder}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-[#E4E7EC] outline-none focus:border-[#948EEE] focus:ring-2 focus:ring-[#D3D4F8] text-[13px] transition-all"
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-[#E4E7EC] outline-none focus:border-[#948EEE] focus:shadow-[0_0_0_3px_rgba(211,212,248,0.5)] text-[13px] transition-all"
                 />
               </div>
             </div>

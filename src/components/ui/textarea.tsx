@@ -23,9 +23,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             'flex min-h-[80px] w-full rounded-xl border border-[#E4E7EC] bg-white px-3 py-2.5 text-[14px] text-[#101828]',
             'placeholder:text-[#98A2B3] resize-none',
             'outline-none transition-all duration-150',
-            'focus:border-[#948EEE] focus:ring-2 focus:ring-[#D3D4F8]',
+            'focus:border-[#948EEE] focus:shadow-[0_0_0_3px_rgba(211,212,248,0.5)]',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-red-400 focus:border-red-400 focus:ring-red-100',
+            error && 'border-red-400 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(254,202,202,0.5)]',
             className,
           )}
           {...props}
@@ -51,8 +51,8 @@ const PillTextarea = React.forwardRef<HTMLTextAreaElement, PillTextareaProps>(
         <fieldset
           className={cn(
             'rounded-xl border-[1.5px] border-[#E4E7EC] px-4 py-3 transition-all duration-150',
-            'focus-within:border-[#948EEE] focus-within:ring-2 focus-within:ring-[#D3D4F8]',
-            error && 'border-red-400 focus-within:border-red-400 focus-within:ring-red-100',
+            'focus-within:border-[#948EEE] focus-within:shadow-[0_0_0_3px_rgba(211,212,248,0.5)]',
+            error && 'border-red-400 focus-within:border-red-400 focus-within:shadow-[0_0_0_3px_rgba(254,202,202,0.5)]',
           )}
         >
           <legend className="px-2 text-[13px] font-medium text-[#454745] leading-none">

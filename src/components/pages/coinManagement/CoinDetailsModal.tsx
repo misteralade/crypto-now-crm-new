@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import {
   X,
   Globe,
@@ -69,7 +69,24 @@ const SectionHeader = ({ label }: { label: string }) => (
 )
 
 export const CoinDetailsModal = ({ coin, open, loading, onClose }: CoinDetailsModalProps) => {
-  if (!open) return null
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 250)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null
 
   const walletsByNetwork = coin?.adminCryptoWallets?.reduce<Record<string, AdminCryptoWalletResponsePayload[]>>(
     (acc, w) => {
@@ -85,12 +102,12 @@ export const CoinDetailsModal = ({ coin, open, loading, onClose }: CoinDetailsMo
     <Fragment>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 animate-[fadeIn_200ms_ease-out]"
+        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
         onClick={onClose}
       />
 
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-[520px] bg-white shadow-2xl flex flex-col overflow-hidden animate-[slideInRight_250ms_cubic-bezier(0.16,1,0.3,1)]">
+      <div className={`fixed inset-y-0 right-0 z-50 w-full max-w-[520px] bg-white shadow-2xl flex flex-col overflow-hidden ${isClosing ? 'animate-modal-slide-out' : 'animate-modal-slide-in'}`}>
         {/* Header */}
         <div className="flex items-center gap-3 px-6 py-4 border-b border-[#ECECEC] bg-white sticky top-0">
           {loading ? (

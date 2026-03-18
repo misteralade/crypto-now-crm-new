@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
 import type {AdminPermissionResponsePayload} from "../../../types/response.payload.types";
@@ -16,7 +16,24 @@ interface CreateAdminModalProps {
 }
 
 const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onClose, onCreate, handleSelectPermission, handleRoleName, handleRoleDescription }: CreateAdminModalProps) => {
-  if (!open) return null
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null
 
   const cleanUpPermission = (permission: string) => {
     return permission.toLowerCase()
@@ -37,12 +54,12 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
         aria-modal="true"
       >
         <div
-          className="absolute py-[53px] inset-0 bg-black/20"
+          className={`absolute py-[53px] inset-0 bg-black/20 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
           onClick={onClose}
         />
 
         <div className="absolute inset-0 grid place-items-center">
-          <div className="w-4xl bg-white rounded-2xl shadow-sm border px-4 py-4 border-[#ECECEC] max-h-[90vh] overflow-y-auto">
+          <div className={`w-4xl bg-white rounded-2xl shadow-sm border px-4 py-4 border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
               <div className="flex-1 text-center text-[24px] leading-7 font-bold">
                 Create Role

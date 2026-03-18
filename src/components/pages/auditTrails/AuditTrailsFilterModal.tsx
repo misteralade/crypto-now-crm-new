@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Calendar } from 'lucide-react'
 
 // 🔧 Reusable select dropdown
@@ -77,15 +77,32 @@ export default function AuditTrailsFilterModal({
   handleSelectedUserType,
   handleSelectedDeviceType,
 }: AuditTrailsFilterModalProps) {
-  if (!isOpen) return null
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(isOpen)
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen, shouldRender])
+
+  if (!shouldRender) return null
 
   const fromRef = useRef<HTMLInputElement>(null)
   const toRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-lg w-[440px] p-6">
+      <div className={`absolute inset-0 bg-black/40 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`} onClick={onClose} />
+      <div className={`relative bg-white rounded-xl shadow-lg w-[440px] p-6 ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
         <style>{`
           .custom-date::-webkit-calendar-picker-indicator { display: none; }
           .custom-date::-webkit-datetime-edit { color: inherit; }

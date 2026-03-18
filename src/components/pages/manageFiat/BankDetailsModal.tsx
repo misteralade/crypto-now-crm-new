@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
 import { useSelector } from 'react-redux'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
 import { MFLabeledPillSearchSelect } from '../../global/LabeledPillSelect'
@@ -19,6 +19,8 @@ interface BankDetailsModalProps {
 
 const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCreateBankField }: BankDetailsModalProps) => {
   const payload = useSelector((state: RootState) => state.fiat.bank.createBank)
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
   
   const bankOptions = useMemo(() => {
     return supportedBanks && supportedBanks.length
@@ -30,22 +32,36 @@ const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCrea
   }, [supportedBanks])
   
   useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+  
+  useEffect(() => {
     if (open && bankOptions[0]?.value) {
       handleCreateBankField('bankId', bankOptions[0].value)
     }
   }, [open, bankOptions, handleCreateBankField]);
   
-  if (!open) return null
+  if (!shouldRender) return null
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
       <div
-        className="absolute inset-0 bg-black/30 transition-opacity opacity-100"
+        className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
         onClick={onClose}
       />
 
       <div className="absolute inset-0 grid place-items-center">
-        <div className="w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC]">
+        <div className={`w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC] ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           <div className="px-6 pt-6 pb-2 text-center text-2xl font-medium">
             Bank Details
           </div>

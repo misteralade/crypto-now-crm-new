@@ -10,7 +10,9 @@ import type {
 } from '../schemas/crypto.schema.js'
 import type {
   BaseApiResponse, GetAllSupportedCryptoAPIResponse, GetSupportedCryptoAPIResponse,
-  SearchSupportedCryptoAPIResponse, UploadAPIResponse
+  SearchSupportedCryptoAPIResponse, UploadAPIResponse,
+  AdminGetUserCustodialWalletsAPIResponse,
+  AdminGenerateUserCustodialWalletsAPIResponse,
 } from "../types/response.payload.types";
 
 class CryptoServiceApi {
@@ -61,6 +63,16 @@ class CryptoServiceApi {
   
   async adminDeleteSupportedCrypto(cryptoId: string) {
     return await axiosDeleteRequestHandler(`/crypto/admin/supported-crypto/${cryptoId}`) as BaseApiResponse<null>;
+  }
+
+  // Fetch a user's custodial (deposit) wallets (Admin only).
+  async adminGetUserCustodialWallets(userId: string) {
+    return await axiosGetRequestHandler(`/custodial-wallet/admin/${userId}`) as AdminGetUserCustodialWalletsAPIResponse;
+  }
+
+  // Generate all missing custodial (deposit) wallets for a user (Admin only).
+  async adminGenerateUserCustodialWallets(userId: string) {
+    return await axiosPostRequestHandler(`/custodial-wallet/admin/${userId}/generate/all`, {}) as AdminGenerateUserCustodialWalletsAPIResponse;
   }
 }
 

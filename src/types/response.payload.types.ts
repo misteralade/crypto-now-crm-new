@@ -300,6 +300,23 @@ export type UserCryptoWalletResponsePayload = {
   isVerified: boolean;
   createdAt: Date;
 }
+
+export type CustodialWalletResponsePayload = {
+  id: string;
+  userId: string;
+  cryptocurrencyId: string;
+  network: string;
+  walletAddress: string;
+  derivationIndex: number;
+  derivationPath: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type AdminGetUserCustodialWalletsAPIResponse = BaseApiResponse<Array<CustodialWalletResponsePayload>>
+
+export type AdminGenerateUserCustodialWalletsAPIResponse = BaseApiResponse<Array<CustodialWalletResponsePayload>>
 // End Crypto
 
 // Start Upload

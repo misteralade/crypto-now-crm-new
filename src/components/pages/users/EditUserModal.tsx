@@ -1,7 +1,7 @@
 import { X, Calendar } from 'lucide-react'
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import MFLabeledPillInput from '../../global/LabeledPillInput'
 import { AdminUserProfileUpdateRequestSchema } from '../../../schemas/user.schema'
 import type { AdminUserProfileUpdateRequestType } from '../../../schemas/user.schema'
@@ -28,8 +28,24 @@ const EditUserModal = ({
   loading = false
 }: EditUserModalProps) => {
   const dobRef = useRef<HTMLInputElement>(null)
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
 
-  if (!open) return null
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null
 
   const defaultValues: Omit<AdminUserProfileUpdateRequestType, 'id'> = {
     firstName: initialValues?.firstName || '',
@@ -41,12 +57,12 @@ const EditUserModal = ({
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
       <div
-        className="absolute inset-0 bg-black/30 transition-opacity opacity-100"
+        className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
         onClick={onClose}
       />
 
       <div className="absolute inset-0 grid place-items-center">
-        <div className="w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC] max-h-[90vh] overflow-y-auto">
+        <div className={`w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           <div className="px-6 pt-6 pb-2 flex items-start justify-between">
             <div className="flex-1 text-center text-2xl font-medium">
               Edit User
@@ -121,8 +137,8 @@ const EditUserModal = ({
 
                   {/* Date of Birth */}
                   <div>
-                    <fieldset className="rounded-full border-[1.5px] border-[#E4E7EC] px-[16px] py-[12px]">
-                      <legend className="px-3 font-medium text-[14px] font-medium leading-[24px] text-[#454745]">
+                    <fieldset className="rounded-full border-[1.5px] border-[#E4E7EC] px-[16px] py-[12px] transition-all duration-150 focus-within:border-[#948EEE] focus-within:shadow-[0_0_0_3px_rgba(211,212,248,0.5)]">
+                      <legend className="px-3 font-medium text-[14px] leading-[24px] text-[#454745]">
                         Date of Birth
                       </legend>
                       <div className="relative">

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { userStatusOptions } from "../../../util/constants.util.ts"
 import { DateInput } from '../../ui/date-input'
@@ -17,6 +17,23 @@ export interface FilterModalProps {
 }
 
 const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, onClose, onReset, handleChangeCreatedAtFrom, handleChangeCreatedAtTo, handleStatusFilterChange }: FilterModalProps) => {
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -24,13 +41,13 @@ const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, onClose, onReset, 
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
-  if (!open) return null
+  if (!shouldRender) return null
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/30 transition-opacity" onClick={onClose} />
+      <div className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`} onClick={onClose} />
       <div className="absolute inset-0 grid place-items-center">
-        <div className="py-5 px-6 w-full max-w-[442px] rounded-2xl bg-white shadow-xl border border-[#ECECEC]">
+        <div className={`py-5 px-6 w-full max-w-[442px] rounded-2xl bg-white shadow-xl border border-[#ECECEC] ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           <div className="flex items-center justify-between mb-4">
             <span className="text-[14px] font-semibold text-[#0E0F0C]">Filter Users</span>
             <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-lg hover:bg-[#F5F5FF] transition-colors text-[#9A9A9A]">

@@ -36,9 +36,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               'flex h-10 w-full rounded-xl border border-[#E4E7EC] bg-white px-3 py-2 text-[14px] text-[#101828]',
               'placeholder:text-[#98A2B3]',
               'outline-none transition-all duration-150',
-              'focus:border-[#948EEE] focus:ring-2 focus:ring-[#D3D4F8]',
+              'focus:border-[#948EEE] focus:shadow-[0_0_0_3px_rgba(211,212,248,0.5)]',
               'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#F9F9F9]',
-              error && 'border-red-400 focus:border-red-400 focus:ring-red-100',
+              error && 'border-red-400 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(254,202,202,0.5)]',
               icon && 'pl-9',
               iconRight && 'pr-9',
               className,
@@ -75,8 +75,8 @@ const PillInput = React.forwardRef<HTMLInputElement, PillInputProps>(
         <fieldset
           className={cn(
             'rounded-xl border-[1.5px] border-[#E4E7EC] px-4 py-3 transition-all duration-150',
-            'focus-within:border-[#948EEE] focus-within:ring-2 focus-within:ring-[#D3D4F8]',
-            error && 'border-red-400 focus-within:border-red-400 focus-within:ring-red-100',
+            'focus-within:border-[#948EEE] focus-within:shadow-[0_0_0_3px_rgba(211,212,248,0.5)]',
+            error && 'border-red-400 focus-within:border-red-400 focus-within:shadow-[0_0_0_3px_rgba(254,202,202,0.5)]',
             props.disabled && 'opacity-50 bg-[#F9F9F9]',
           )}
         >

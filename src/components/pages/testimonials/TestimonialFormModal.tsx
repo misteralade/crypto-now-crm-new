@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { PillInput } from '../../ui/input';
@@ -23,7 +24,24 @@ const contentTypeOptions = [
 ];
 
 const TestimonialFormModal = ({ open, mode, initialValues, onClose, onSubmit }: TestimonialFormModalProps) => {
-  if (!open) return null;
+  const [isClosing, setIsClosing] = useState(false)
+  const [shouldRender, setShouldRender] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setIsClosing(false)
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, shouldRender])
+
+  if (!shouldRender) return null;
 
   const defaultValues: CreateTestimonialRequestType = {
     contentLink: initialValues?.contentLink || '',
@@ -35,10 +53,10 @@ const TestimonialFormModal = ({ open, mode, initialValues, onClose, onSubmit }: 
 
   return (
     <section className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`} onClick={onClose} />
 
       <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl border border-[#ECECEC] max-h-[90vh] overflow-y-auto">
+        <div className={`w-full max-w-xl bg-white rounded-2xl shadow-xl border border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
           <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-[#ECECEC]">
             <h2 className="text-[18px] font-semibold text-[#0E0F0C]">
               {mode === 'create' ? 'Create Testimonial' : 'Edit Testimonial'}
