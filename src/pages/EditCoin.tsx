@@ -50,9 +50,9 @@ const EditCoin = () => {
                 onChangeInputField={handleEditCoinInputChange}
                 name={adminCryptoDetails?.name || ''}
                 symbol={adminCryptoDetails?.symbol || ''}
-                network={adminCryptoDetails?.adminCryptoWallets && adminCryptoDetails?.adminCryptoWallets.length > 0 ? adminCryptoDetails?.adminCryptoWallets[0].network : ''}
+                networks={adminCryptoDetails?.networks ?? []}
                 active={adminCryptoDetails?.isActive || false}
-                walletAddress={adminCryptoDetails?.adminCryptoWallets && adminCryptoDetails?.adminCryptoWallets.length > 0 ? adminCryptoDetails?.adminCryptoWallets[0].walletAddress : ''}
+                adminCryptoWallets={adminCryptoDetails?.adminCryptoWallets ?? []}
               />
 
               <EditTradeLimits

@@ -278,6 +278,7 @@ export type SearchSupportedCryptoData = {
   isActive: boolean;
   websiteUrl: string;
   whitepaperUrl: string;
+  networks: string[];
   adminCryptoWallets: Array<AdminCryptoWalletResponsePayload>;
 };
 
@@ -596,3 +597,43 @@ export type GetTestimonialsAPIResponse = BaseApiResponse<{
 
 export type GetTestimonialDetailsAPIResponse = BaseApiResponse<TestimonialResponsePayload>;
 // End Testimonial
+
+// Start KYC Tier Limits
+export type KycTierLimitResponsePayload = {
+  id: string;
+  kycTier: 'NONE' | 'TIER_1' | 'TIER_2';
+  currencyCode: string;
+  minTransactionAmount: string;
+  maxTransactionAmount: string;
+  dailyLimit: string;
+  monthlyLimit: string;
+  maxPayoutAttempts: number;
+  requiredConfirmationsBTC: number;
+  requiredConfirmationsSOL: number;
+  requiredConfirmationsTRC20: number;
+  isActive: boolean;
+  updatedBy: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type GetAllKycTierLimitsAPIResponse = BaseApiResponse<KycTierLimitResponsePayload[]>;
+export type CreateKycTierLimitAPIResponse = BaseApiResponse<null>;
+// End KYC Tier Limits
+
+// Start Supported Currency
+export type SupportedCurrencyResponsePayload = {
+  id: string;
+  name: string;
+  code: string;
+  description: string | null;
+  isActive: boolean;
+  logoUrl: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  additionalInfo: Record<string, any> | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type GetAllCurrenciesAPIResponse = BaseApiResponse<SupportedCurrencyResponsePayload[]>;
+// End Supported Currency

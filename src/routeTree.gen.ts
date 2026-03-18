@@ -14,9 +14,11 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTestimonialsRouteImport } from './routes/dashboard/testimonials'
+import { Route as DashboardSupportedCurrenciesRouteImport } from './routes/dashboard/supported-currencies'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
 import { Route as DashboardManageAdminsRouteImport } from './routes/dashboard/manage-admins'
+import { Route as DashboardKycTierLimitsRouteImport } from './routes/dashboard/kyc-tier-limits'
 import { Route as DashboardAuditTrailsRouteImport } from './routes/dashboard/audit-trails'
 import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
 import { Route as DashboardTransactionsIndexRouteImport } from './routes/dashboard/transactions/index'
@@ -55,6 +57,12 @@ const DashboardTestimonialsRoute = DashboardTestimonialsRouteImport.update({
   path: '/dashboard/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardSupportedCurrenciesRoute =
+  DashboardSupportedCurrenciesRouteImport.update({
+    id: '/dashboard/supported-currencies',
+    path: '/dashboard/supported-currencies',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
   id: '/dashboard/notifications',
   path: '/dashboard/notifications',
@@ -68,6 +76,11 @@ const DashboardManageFiatRoute = DashboardManageFiatRouteImport.update({
 const DashboardManageAdminsRoute = DashboardManageAdminsRouteImport.update({
   id: '/dashboard/manage-admins',
   path: '/dashboard/manage-admins',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardKycTierLimitsRoute = DashboardKycTierLimitsRouteImport.update({
+  id: '/dashboard/kyc-tier-limits',
+  path: '/dashboard/kyc-tier-limits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAuditTrailsRoute = DashboardAuditTrailsRouteImport.update({
@@ -141,9 +154,11 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
+  '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -163,9 +178,11 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
+  '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -186,9 +203,11 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
+  '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRoute
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
@@ -210,9 +229,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/dashboard/audit-trails'
+    | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
@@ -232,9 +253,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/dashboard/audit-trails'
+    | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard'
     | '/dashboard/coin-management/$coinId'
@@ -254,9 +277,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/dashboard/audit-trails'
+    | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard/'
     | '/dashboard/coin-management/$coinId'
@@ -277,9 +302,11 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
+  DashboardKycTierLimitsRoute: typeof DashboardKycTierLimitsRoute
   DashboardManageAdminsRoute: typeof DashboardManageAdminsRoute
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardSupportedCurrenciesRoute: typeof DashboardSupportedCurrenciesRoute
   DashboardTestimonialsRoute: typeof DashboardTestimonialsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
@@ -332,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/supported-currencies': {
+      id: '/dashboard/supported-currencies'
+      path: '/dashboard/supported-currencies'
+      fullPath: '/dashboard/supported-currencies'
+      preLoaderRoute: typeof DashboardSupportedCurrenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/notifications': {
       id: '/dashboard/notifications'
       path: '/dashboard/notifications'
@@ -351,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/manage-admins'
       fullPath: '/dashboard/manage-admins'
       preLoaderRoute: typeof DashboardManageAdminsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/kyc-tier-limits': {
+      id: '/dashboard/kyc-tier-limits'
+      path: '/dashboard/kyc-tier-limits'
+      fullPath: '/dashboard/kyc-tier-limits'
+      preLoaderRoute: typeof DashboardKycTierLimitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/audit-trails': {
@@ -445,9 +486,11 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
+  DashboardKycTierLimitsRoute: DashboardKycTierLimitsRoute,
   DashboardManageAdminsRoute: DashboardManageAdminsRoute,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardSupportedCurrenciesRoute: DashboardSupportedCurrenciesRoute,
   DashboardTestimonialsRoute: DashboardTestimonialsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,

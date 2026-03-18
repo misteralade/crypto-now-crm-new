@@ -45,6 +45,8 @@ export const ROUTES = {
   NOTIFICATIONS: '/dashboard/notifications',
   MANAGE_ADMINS: '/dashboard/manage-admins',
   TESTIMONIALS: '/dashboard/testimonials',
+  KYC_TIER_LIMITS: '/dashboard/kyc-tier-limits',
+  SUPPORTED_CURRENCIES: '/dashboard/supported-currencies',
 }
 
 export const CRYPTO_NETWORK_OPTIONS = [

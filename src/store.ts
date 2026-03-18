@@ -20,6 +20,8 @@ import notificationSlice from './redux/notification.slice';
 import adminSlice from './redux/admin.slice';
 import disputeSlice from './redux/dispute.slice.ts';
 import testimonialSlice from './redux/testimonial.slice';
+import kycTierLimitSlice from './redux/kyc-tier-limit.slice';
+import currencySlice from './redux/currency.slice';
 import { BASIC } from './config/index.config'
 // (To persist to localStorage instead: import storage from 'redux-persist/lib/storage')
 
@@ -34,6 +36,8 @@ const rootReducer = combineReducers({
   admin: adminSlice,
   dispute: disputeSlice,
   testimonial: testimonialSlice,
+  kycTierLimit: kycTierLimitSlice,
+  currency: currencySlice,
 })
 
 const persistConfig = {
@@ -50,6 +54,8 @@ const persistConfig = {
     'admin',
     'dispute',
     'testimonial',
+    'kycTierLimit',
+    'currency',
   ],
 }
 

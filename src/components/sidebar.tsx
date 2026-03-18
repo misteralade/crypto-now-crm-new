@@ -71,6 +71,28 @@ const navItems = [
     ),
   },
   {
+    path: ROUTES.KYC_TIER_LIMITS,
+    label: 'KYC Tier Limits',
+    icon: (props: { className?: string }) => (
+      <img
+        src="/icons/user.svg"
+        alt="KYC Tier Limits"
+        className={`${props.className ?? ''} w-5 h-5`}
+      />
+    ),
+  },
+  {
+    path: ROUTES.SUPPORTED_CURRENCIES,
+    label: 'Currencies',
+    icon: (props: { className?: string }) => (
+      <img
+        src="/icons/naira.svg"
+        alt="Currencies"
+        className={`${props.className ?? ''} w-5 h-5`}
+      />
+    ),
+  },
+  {
     path: ROUTES.TESTIMONIALS,
     label: 'Testimonials',
     icon: (props: { className?: string }) => (

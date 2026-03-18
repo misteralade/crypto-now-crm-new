@@ -34,7 +34,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div>
           <LabeledPillInput
             id="buyRate"
-            placeholder={String(buyRate)}
+            placeholder="e.g. 1500"
+            value={buyRate || ''}
             onChange={(e) => {
               setBuyRate(Number(e.target.value))
               onChangeInputField("buyRate", Number(e.target.value))
@@ -52,7 +53,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div className="mb-6">
           <LabeledPillInput
             id="sellRate"
-            placeholder={String(sellRate)}
+            placeholder="e.g. 1400"
+            value={sellRate || ''}
             onChange={(e) => {
               setSellRate(Number(e.target.value))
               onChangeInputField("sellRate", Number(e.target.value))
@@ -72,7 +74,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div>
           <LabeledPillInput
             id="minTradeAmount"
-            placeholder={formatNumber(minTradeAmount)}
+            placeholder="e.g. 100"
+            value={minTradeAmount || ''}
             onChange={(e) => {
               setMinTradeAmount(Number(e.target.value))
               onChangeInputField("minTransactionLimit", Number(e.target.value))
@@ -90,7 +93,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div className="mb-6">
           <LabeledPillInput
             id="maxTradeAmount"
-            placeholder={formatNumber(maxTradeAmount)}
+            placeholder="e.g. 1000000"
+            value={maxTradeAmount || ''}
             onChange={(e) => {
               setMaxTradeAmount(Number(e.target.value))
               onChangeInputField("maxTransactionLimit", Number(e.target.value))
@@ -110,7 +114,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div>
           <LabeledPillInput
             id="minTransactionAmountForAnonymousUsers"
-            placeholder={formatNumber(minTradeAmountForAnonymous)}
+            placeholder="e.g. 100"
+            value={minTradeAmountForAnonymous || ''}
             onChange={(e) => {
               setMinTradeAmountForAnonymous(Number(e.target.value))
               onChangeInputField("minTradeAmountForAnonymous", Number(e.target.value))
@@ -129,7 +134,8 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <div>
           <LabeledPillInput
             id="maxTransactionAmountForAnonymousUsers"
-            placeholder={formatNumber(maxTradeAmountForAnonymous)}
+            placeholder="e.g. 1000000"
+            value={maxTradeAmountForAnonymous || ''}
             onChange={(e) => {
               setMaxTradeAmountForAnonymous(Number(e.target.value))
               onChangeInputField("maxTradeAmountForAnonymous", Number(e.target.value))
