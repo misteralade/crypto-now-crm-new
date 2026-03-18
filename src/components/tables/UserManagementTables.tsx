@@ -1,10 +1,71 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import { MoreVertical } from 'lucide-react'
 import CopyDetails from '../global/CopyDetails'
-import momentClient from '../../util/moment'
 import { UserStatusBadge } from '../table'
 import type { AdminSearchUsersResponsePayload } from '../../types/response.payload.types'
 import type {UserStatusVariant} from "../../types/global.types";
 import type { TableColumn } from '../table'
+
+const ActionsMenu = ({
+  row,
+  handleNavigateToUserDetails,
+  handleNavigateToTransactionHistory,
+  handleUpdateUserStatus,
+  handleResetUserPassword,
+}: {
+  row: any
+  handleNavigateToUserDetails: (userId: string) => void
+  handleNavigateToTransactionHistory: (userId: string) => void
+  handleUpdateUserStatus: (userId: string, status: UserStatusVariant) => void
+  handleResetUserPassword: (userId: string) => void
+}) => {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const isActive = row.status?.toLowerCase() === 'active'
+
+  return (
+    <div ref={ref} className="relative inline-block" onClick={(e) => e.stopPropagation()}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v) }}
+        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+      >
+        <MoreVertical className="w-4 h-4 text-[#667085]" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-50 mt-1 w-44 bg-white rounded-2xl shadow-lg border border-[#ECECEC] py-1 overflow-hidden">
+          <button
+            onClick={(e) => { e.stopPropagation(); handleNavigateToTransactionHistory(row.id); setOpen(false) }}
+            className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-[#0066CC] hover:bg-[#E6F5FF] transition-colors"
+          >
+            View Transactions
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleUpdateUserStatus(row.id, isActive ? 'SUSPENDED' : 'ACTIVE'); setOpen(false) }}
+            className={`w-full text-left px-4 py-2.5 text-[13px] font-medium ${isActive ? 'text-[#EB5757] hover:bg-[#FEE2E2]' : 'text-[#F2994A] hover:bg-[#FEF3C7]'} transition-colors`}
+          >
+            {isActive ? 'Suspend User' : 'Activate User'}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleResetUserPassword(row.id); setOpen(false) }}
+            className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-[#948EEE] hover:bg-[#F5F5FF] transition-colors"
+          >
+            Reset Password
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // Start Admin View Users Table Columns
 export const AdminSearchUserColumn = (
@@ -19,8 +80,8 @@ export const AdminSearchUserColumn = (
     className: 'font-medium text-gray-900',
     render: (value) => (
       <Fragment>
-        <div className="text-[12px] text-[#667085]">
-          <CopyDetails text={value} className="font-medium !text-[#667085] !w-[120px]" iconClassName="!h-8 !w-8" />
+        <div className="text-[13px] text-[#101828]">
+          <CopyDetails text={value} className="font-medium !w-[110px]" iconClassName="!h-7 !w-7" />
         </div>
       </Fragment>
     ),
@@ -61,41 +122,29 @@ export const AdminSearchUserColumn = (
     key: 'lastLogin',
     header: 'Last Login',
     render: (value) => (
-      <div className="text-[12px] text-[#667085] whitespace-nowrap">
-        {value ? momentClient.formatToShortDateAndTime(value) : <span className="text-[#9A9A9A]">Never</span>}
+      <div className="text-[13px] text-[#667085]">
+        {value ? (
+          <div className="flex flex-col">
+            <span className="font-medium text-[#101828]">{new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            <span className="text-[11px] text-[#9A9A9A]">{new Date(value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+          </div>
+        ) : (
+          <span className="text-[#9A9A9A]">Never</span>
+        )}
       </div>
     ),
   },
   {
     key: 'action',
-    header: 'Action',
+    header: 'Actions',
     render: (_, row) => (
-      <div className="flex items-center justify-start gap-2 whitespace-nowrap">
-        <button
-          className="px-3 py-1.5 rounded-full bg-[#F5F5FF] cursor-pointer hover:bg-[#E6E6FE] text-[#03034D] text-[12px] font-medium transition-colors"
-          onClick={(e) => { e.stopPropagation(); handleNavigateToUserDetails(row.id) }}
-        >
-          View
-        </button>
-        <button
-          className="px-3 py-1.5 rounded-full bg-[#EFF6FF] cursor-pointer hover:bg-[#DBEAFE] text-[#2563EB] text-[12px] font-medium transition-colors"
-          onClick={(e) => { e.stopPropagation(); handleNavigateToTransactionHistory(row.id) }}
-        >
-          Transactions
-        </button>
-        <button
-          className={`px-3 py-1.5 rounded-full text-[12px] cursor-pointer hover:opacity-80 font-medium transition-all ${row.status === 'Active' ? 'bg-[#FEF2F2] text-[#DC2626]' : 'bg-[#FEF3C7] text-[#D97706]'}`}
-          onClick={(e) => { e.stopPropagation(); handleUpdateUserStatus(row.id, row.status.toLowerCase() === 'active' ? 'SUSPENDED' : 'ACTIVE') }}
-        >
-          {row.status.toLowerCase() === 'active' ? 'Suspend' : 'Activate'}
-        </button>
-        <button
-          className="px-3 py-1.5 rounded-full bg-[#F5F5FF] cursor-pointer hover:bg-[#EAE9FC] text-[#948EEE] text-[12px] font-medium transition-colors"
-          onClick={(e) => { e.stopPropagation(); handleResetUserPassword(row.id) }}
-        >
-          Reset Password
-        </button>
-      </div>
+      <ActionsMenu
+        row={row}
+        handleNavigateToUserDetails={handleNavigateToUserDetails}
+        handleNavigateToTransactionHistory={handleNavigateToTransactionHistory}
+        handleUpdateUserStatus={handleUpdateUserStatus}
+        handleResetUserPassword={handleResetUserPassword}
+      />
     ),
   },
 ]

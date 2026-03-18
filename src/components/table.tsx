@@ -395,27 +395,27 @@ export const UserStatusBadge: FC<{
   // Guard against undefined/null status
   if (!status || typeof status !== 'string') {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-full bg-[#F2F4F7] text-[#6C778B]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#6C778B]" />
+      <span className="inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+        <span className="h-2 w-2 rounded-full bg-gray-400" />
         Unknown
       </span>
     )
   }
 
   const variants: Record<UserStatusVariant, string> = {
-    ACTIVE: 'bg-[#ECFDF3] text-[#037847]',
-    PENDING: 'bg-[#FEF3C7] text-[#D97706]',
-    SUSPENDED: 'bg-[#FEF3C7] text-[#B45309]',
-    BANNED: 'bg-[#FEE2E2] text-[#DC2626]',
-    DELETED: 'bg-[#F2F4F7] text-[#6C778B]',
+    ACTIVE: 'bg-green-100 text-green-700',
+    PENDING: 'bg-[#FDF2E7] text-[#F2994A]',
+    SUSPENDED: 'bg-[#FEF3C7] text-[#B45309]', // yellowish orange tone
+    BANNED: 'bg-red-100 text-red-700',
+    DELETED: 'bg-gray-100 text-gray-600',
   }
 
   const dotColors: Record<UserStatusVariant, string> = {
-    ACTIVE: 'bg-[#14BA6D]',
-    PENDING: 'bg-[#F59E0B]',
-    SUSPENDED: 'bg-[#D97706]',
-    BANNED: 'bg-[#DC2626]',
-    DELETED: 'bg-[#6C778B]',
+    ACTIVE: 'bg-green-500',
+    PENDING: 'bg-[#F2994A]',
+    SUSPENDED: 'bg-yellow-500',
+    BANNED: 'bg-red-500',
+    DELETED: 'bg-gray-400',
   }
 
   // Ensure status is a valid UserStatusVariant
@@ -425,9 +425,9 @@ export const UserStatusBadge: FC<{
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-full ${variant}`}
+      className={`inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${variant}`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
+      <span className={`h-2 w-2 rounded-full ${dotColor}`} />
       {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
     </span>
   )

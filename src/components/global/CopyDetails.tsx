@@ -10,8 +10,7 @@ interface CopyDetailsProps {
 
 const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
     const [response, setResponse] = useState<string>("");
-    const handleCopy = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handleCopy = () => {
         navigator.clipboard.writeText(text)
             .then(() => {
                 setResponse("Copied!");
@@ -24,31 +23,24 @@ const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
     };
     return (
       <div
-        className={`flex gap-2 items-center relative max-w-[400px] ${className}`}
+        className={`flex gap-2 items-center relative max-w-[400px] w-3/4 md:w-fit ${className}`}
       >
-        <code
-          className={`font-mono text-[12px] text-[#667085] overflow-hidden whitespace-nowrap text-ellipsis`}
+        <p
+          className={`text-black overflow-hidden whitespace-nowrap text-ellipsis`}
         >
           {text}
-        </code>
+        </p>
 
-        <button
+        <Copy
+          className={`text-purple-600 hover:cursor-pointer h-18 w-1 ${iconClassName}`}
           onClick={handleCopy}
-          className="p-1 rounded-lg hover:bg-[#F5F5FF] transition-colors flex-shrink-0"
-          aria-label="Copy to clipboard"
-        >
-          <Copy
-            className={`text-[#948EEE] hover:text-[#03034D] h-3.5 w-3.5 ${iconClassName}`}
-          />
-        </button>
+        />
 
-        {response && (
-          <span
-            className={`text-[#037847] text-[11px] font-medium absolute -top-5 right-0 bg-[#ECFDF3] px-2 py-0.5 rounded-full transition-all duration-300`}
-          >
-            {response}
-          </span>
-        )}
+        <p
+          className={`text-accent2 text-sm absolute -top-5 right-0 transition-all duration-500`}
+        >
+          {response}
+        </p>
       </div>
     )
 }

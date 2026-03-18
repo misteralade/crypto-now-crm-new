@@ -15,6 +15,7 @@ import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
 import { convertToMillify } from "../util/index.util.ts";
+import { ArrowLeft } from "lucide-react";
 
 const TransactionDetails = () => {
   const {
@@ -32,21 +33,15 @@ const TransactionDetails = () => {
       <div className="p-6 mx-auto">
         <PageHeader title="Transaction Details" />
         
-        <div className="bg-white py-4 lg:py-5 mb-6 mt-5">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-            {/* Left: Empty */}
-            <div className="flex w-full lg:w-auto items-center gap-2"/>
-            
-            {/* Right: All Transactions */}
-            <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-              <button
-                onClick={goBack}
-                className="px-4 py-2 text-sm bg-[#03034D] text-white rounded-full hover:opacity-90 cursor-pointer"
-              >
-                All Transactions
-              </button>
-            </div>
-          </div>
+        <div className="mt-5 mb-6 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#ECECEC] shadow-sm hover:bg-[#F5F5FF] transition-colors"
+          >
+            <ArrowLeft className="w-4.5 h-4.5 text-[#03034D]" style={{ width: 18, height: 18 }} />
+          </button>
         </div>
         
         {loadingTransactionInfo ? (

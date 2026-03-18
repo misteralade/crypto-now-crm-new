@@ -64,9 +64,10 @@ const Users = () => {
     <AuthenticatedLayout>
       <PageHeader title="User Management" subtitle="Search, view, and manage all platform users" />
 
-      <div className="p-4 md:p-6 mx-auto">
+      <div className="p-6 mx-auto">
+
         {/* Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 mt-4 mb-2">
           <SearchInput
             placeholder="Search users..."
             value={searchQuery}
@@ -74,7 +75,7 @@ const Users = () => {
             containerClassName="flex-1 sm:max-w-[280px]"
           />
           <button
-            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white shadow-sm"
             onClick={toggleFilter}
           >
             <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
@@ -82,9 +83,14 @@ const Users = () => {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="mt-4 space-y-4">
           <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
-            <Table data={data} columns={columns} loading={loadingAdminSearchUsers} />
+            <Table 
+              data={data} 
+              columns={columns} 
+              loading={loadingAdminSearchUsers}
+              onRowClick={(row) => handleNavigateToUserDetails(row.id)}
+            />
           </div>
 
           <TableFooter

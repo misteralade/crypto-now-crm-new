@@ -20,7 +20,11 @@ export const useTransactionDetailsPage = () => {
   
   const goBack = () => {
     dispatch(clearTransactionDetailSessionId());
-    navigate({to: ROUTES.TRANSACTIONS})
+    if (window.history.length > 1) {
+      window.history.back()
+      return
+    }
+    navigate({ to: ROUTES.TRANSACTIONS })
   }
   
   return {
