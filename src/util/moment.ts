@@ -43,6 +43,16 @@ class MomentClient {
   }
 
   /**
+   * Formats a Date object to a short date and time string
+   * @param: date - The Date object to format
+   * @return: string - The formatted date string in "MMM DD, YYYY h:mm A" format
+   * @example: "Mar 18, 2026 3:55 PM"
+   */
+  formatToShortDateAndTime(date: Date): string {
+    return moment(date).format("MMM DD, YYYY h:mm A");
+  }
+
+  /**
    * Converts a Date object to an ISO string with time set to the start or end of the day
    * @param value - The Date object to convert
    * @param startOfDay - If true, sets time to start of the day (00:00:00); if false, sets to end of the day (23:59:59)

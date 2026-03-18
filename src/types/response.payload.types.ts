@@ -79,6 +79,7 @@ export type SearchTransactionsResponse = {
   receiptImageUrl: string;
   adminCryptoWalletId: string;
   cryptoTxHash: string;
+  depositAddress?: string | null;
   adminNotes: string;
   userNotes: string;
   internalNotes: string;

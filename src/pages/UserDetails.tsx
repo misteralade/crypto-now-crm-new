@@ -10,11 +10,15 @@ import EditUserModal from "../components/pages/users/EditUserModal.tsx";
 import UserInformationSection from "../components/pages/users/details/UserInformationSection.tsx";
 import BankDetailsSection from "../components/pages/users/details/BankDetailsSection.tsx";
 import TransactionSummarySection from "../components/pages/users/details/TransactionSummarySection.tsx";
+import CustodialWalletsSection from "../components/pages/users/details/CustodialWalletsSection.tsx";
+import { useCryptoQuery } from "../queries/crypto.querries.ts";
 
 const UserDetails = () => {
   const navigate = useNavigate();
+  const { allSupportedCrypto } = useCryptoQuery();
   const {
     // 🧩 Values
+    userId,
     userProfile,
     loadingUserProfile,
     userProfileSummary,
@@ -78,6 +82,9 @@ const UserDetails = () => {
               bankDetails={userProfileSummary?.bankDetails}
               loading={loadingUserProfileSummary}
             />
+
+            {/* Custodial Wallets Section */}
+            <CustodialWalletsSection userId={userId} supportedCryptos={allSupportedCrypto} />
 
             {/* Transaction Summary Section */}
             <TransactionSummarySection

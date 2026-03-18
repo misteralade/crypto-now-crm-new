@@ -197,7 +197,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon
-              const isActive = currentPath === item.path || currentPath.startsWith(item.path + '/')
+              const isActive = item.path === ROUTES.DASHBOARD 
+                ? currentPath === item.path 
+                : currentPath === item.path || currentPath.startsWith(item.path + '/')
 
               return (
                 <Link

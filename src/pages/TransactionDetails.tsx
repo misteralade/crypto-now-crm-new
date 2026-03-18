@@ -123,6 +123,23 @@ const TransactionDetails = () => {
                     walletAddress={transaction?.adminCryptoWallet?.walletAddress || ''}
                   />
                 )}
+
+                {/* Custodial Deposit Address (Sell) */}
+                {transaction.type === "SELL" && transaction.depositAddress ? (
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Deposit Address</h2>
+                    <div>
+                      <p className="text-sm text-gray-500 mb-2">User deposit address (custodial)</p>
+                      <div className="flex items-center gap-2">
+                        <CopyDetails
+                          text={transaction.depositAddress}
+                          className="!max-w-[700px]"
+                          iconClassName="!w-8 !h-8"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 
                 {/* Bank Transfer Reference */}
                 {transaction.bankTransferReference && (

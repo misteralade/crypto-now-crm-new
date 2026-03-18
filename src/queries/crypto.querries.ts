@@ -14,7 +14,6 @@ export const useCryptoQuery = () => {
   const queryClient = useQueryClient();
   const matchRoute = useMatchRoute();
   const search = useSelector((state: RootState) => state.coinManagement.search.supportedCrypto);
-  const selectedUserId = useSelector((state: RootState) => state.userManagement.selectedUserId);
 
   const { data: supportedCrypto, isLoading: loadingSupportedCrypto } = useQuery({
     queryKey: [QUERY_KEYS.CRYPTO.SEARCH_SUPPORTED_CRYPTO_CURRENCIES, search],
@@ -177,38 +176,6 @@ export const useCryptoQuery = () => {
     },
   })
 
-  const { data: userCustodialWallets, isLoading: loadingUserCustodialWallets } = useQuery({
-    queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_USER_CUSTODIAL_WALLETS, selectedUserId],
-    queryFn: async () => {
-      if (!selectedUserId) return null;
-      const { data, success } = await cryptoServiceApi.adminGetUserCustodialWallets(selectedUserId);
-      return success ? data : null;
-    },
-    enabled: !!(matchRoute({ to: ROUTES.USERS_DETAILS })) && !!selectedUserId,
-  });
-
-  const generateUserCustodialWalletsMutation = useMutation({
-    mutationKey: [QUERY_KEYS.CRYPTO.ADMIN_GENERATE_USER_CUSTODIAL_WALLETS, selectedUserId],
-    mutationFn: async () => {
-      if (!selectedUserId) throw new Error("Missing user ID.");
-      toast.loading("Generating custodial wallets...");
-      const { data, message, success } = await cryptoServiceApi.adminGenerateUserCustodialWallets(selectedUserId);
-      if (!success) throw new Error(message);
-      return data;
-    },
-    onSuccess: async () => {
-      toast.dismiss();
-      toast.success("Custodial wallets generated.");
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_USER_CUSTODIAL_WALLETS],
-      });
-    },
-    onError: (error: Error) => {
-      toast.dismiss();
-      toast.error(error.message || "Failed to generate custodial wallets.");
-    },
-  });
-
   return {
     // 🧩 Values
     supportedCrypto,
@@ -217,14 +184,51 @@ export const useCryptoQuery = () => {
     loadingAllSupportedCrypto,
     adminCryptoDetails,
     loadingAdminCryptoDetails,
-    userCustodialWallets,
-    loadingUserCustodialWallets,
     
     // Mutations
     uploadCryptoLogoIconMutation,
     createCryptoCurrencyMutation,
     updateCryptoCurrencyMutation,
     adminDeleteCryptoCurrencyMutation,
-    generateUserCustodialWalletsMutation,
   };
+};
+
+// Query a specific user's custodial (deposit) wallets (Admin only).
+export const useAdminUserCustodialWalletsQuery = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_USER_CUSTODIAL_WALLETS, userId],
+    queryFn: async () => {
+      if (!userId) return null;
+      const { data, success } = await cryptoServiceApi.adminGetUserCustodialWallets(userId);
+      return success ? data : null;
+    },
+    enabled: !!userId,
+  });
+};
+
+// Generate all missing custodial wallets for a user (Admin only).
+export const useAdminGenerateUserCustodialWalletsMutation = (userId: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: [QUERY_KEYS.CRYPTO.ADMIN_GENERATE_USER_CUSTODIAL_WALLETS, userId],
+    mutationFn: async () => {
+      if (!userId) throw new Error("Missing user ID.");
+      toast.loading("Generating custodial wallets...");
+      const { data, message, success } = await cryptoServiceApi.adminGenerateUserCustodialWallets(userId);
+      if (!success) throw new Error(message);
+      return data;
+    },
+    onSuccess: async () => {
+      toast.dismiss();
+      toast.success("Custodial wallets generated.");
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_USER_CUSTODIAL_WALLETS, userId],
+      });
+    },
+    onError: (error: Error) => {
+      toast.dismiss();
+      toast.error(error.message || "Failed to generate custodial wallets.");
+    },
+  });
 };
