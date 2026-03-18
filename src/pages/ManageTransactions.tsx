@@ -90,7 +90,7 @@ const ManageTransactions = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 mx-auto bg-white">
+      <div className="p-6 mx-auto">
         {/* header */}
         <PageHeader title="Manage Transactions" />
         
@@ -103,8 +103,10 @@ const ManageTransactions = () => {
         />
         
         {/* Transactions Table */}
-        <Table data={data} columns={columns} loading={loadingSearchTransactions} />
-        
+        <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden mb-4">
+          <Table data={data} columns={columns} loading={loadingSearchTransactions} />
+        </div>
+
         <TableFooter
           currentPage={searchTransactions?.page || 1}
           totalPages={searchTransactions?.totalPages || 1}

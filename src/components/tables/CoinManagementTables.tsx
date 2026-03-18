@@ -72,9 +72,9 @@ const ActionsMenu = ({
   }, [])
 
   return (
-    <div ref={ref} className="relative inline-block">
+    <div ref={ref} className="relative inline-block" onClick={(e) => e.stopPropagation()}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v) }}
         className="p-2 rounded-full hover:bg-gray-100 transition-colors"
       >
         <MoreVertical className="w-4 h-4 text-[#667085]" />
@@ -83,19 +83,19 @@ const ActionsMenu = ({
       {open && (
         <div className="absolute right-0 z-50 mt-1 w-40 bg-white rounded-2xl shadow-lg border border-[#ECECEC] py-1 overflow-hidden">
           <button
-            onClick={() => { onEditClick(row.id); setOpen(false) }}
+            onClick={(e) => { e.stopPropagation(); onEditClick(row.id); setOpen(false) }}
             className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-[#03034D] hover:bg-[#D3D4F8] transition-colors"
           >
             Edit
           </button>
           <button
-            onClick={() => { onDisableCoin(row.id, row.status); setOpen(false) }}
+            onClick={(e) => { e.stopPropagation(); onDisableCoin(row.id, row.status); setOpen(false) }}
             className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-[#B45309] hover:bg-[#FEF3C7] transition-colors"
           >
             {row.status ? 'Deactivate' : 'Activate'}
           </button>
           <button
-            onClick={() => { handleDeleteCryptoCurrency(row.id); setOpen(false) }}
+            onClick={(e) => { e.stopPropagation(); handleDeleteCryptoCurrency(row.id); setOpen(false) }}
             className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-[#EF4444] hover:bg-[#FEE2E2] transition-colors"
           >
             Delete

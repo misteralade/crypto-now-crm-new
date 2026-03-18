@@ -14,7 +14,7 @@ interface TransactionOverviewProps {
   exchangeRateDisplay: string;
 }
 
-const TransactionOverview = ({ type, amountCrypto, symbol, amountFiat, amountFiatNGN, exchangeRateDisplay, status }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type: _type, amountCrypto, symbol, amountFiat: _amountFiat, amountFiatNGN, exchangeRateDisplay, status }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">

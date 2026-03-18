@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchInput } from '../../ui/search-input'
 
 interface ControlsProps {
   onAddCoin: () => void
@@ -8,32 +8,22 @@ interface ControlsProps {
 
 const CoinManagementControls = ({ onAddCoin, searchValue, onSearchChange }: ControlsProps) => {
   return (
-    <div className="bg-white py-4 lg:py-5 mb-6 mt-5">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        {/* Left: search */}
-        <div className="flex w-full lg:w-auto items-center gap-2">
-          <div className="relative flex-1 lg:flex-none">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search coin"
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full md:w-[280px] pl-10 pr-4 h-11 border border-[#D9D9D9] rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-            />
-          </div>
-        </div>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 mt-4 mb-2">
+      {/* Left: search */}
+      <SearchInput
+        placeholder="Search coin..."
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+        containerClassName="flex-1 sm:max-w-[280px]"
+      />
 
-        {/* Right: add coin button */}
-        <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-          <button
-            onClick={onAddCoin}
-            className="px-4 py-2 text-sm bg-[#03034D] text-white rounded-full hover:opacity-90 cursor-pointer"
-          >
-            Add new coin
-          </button>
-        </div>
-      </div>
+      {/* Right: add coin button */}
+      <button
+        onClick={onAddCoin}
+        className="px-5 py-2.5 text-[14px] font-medium bg-[#03034D] text-white rounded-full hover:bg-[#050568] active:scale-[0.98] transition-all cursor-pointer shadow-sm whitespace-nowrap"
+      >
+        + Add New Coin
+      </button>
     </div>
   )
 }

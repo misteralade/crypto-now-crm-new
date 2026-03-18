@@ -42,26 +42,26 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   }
   
   return (
-    <div className="min-h-screen font-[DM Sans]]">
-      <div className="flex">
+    <div className="min-h-screen bg-[#F5F5FF]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/30 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0">
           {!sidebarOpen && (
             <button
               aria-label="Open sidebar"
-              className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md border border-[#ECECEC] bg-white shadow"
+              className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-lg border border-[#ECECEC] bg-white shadow-sm"
               onClick={() => setSidebarOpen(true)}
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-5 h-5 text-[#03034D]" />
             </button>
           )}
-          <main className="">
+          <main className="flex-1">
             {children}
           </main>
         </div>

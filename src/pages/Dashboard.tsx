@@ -9,6 +9,9 @@ import ShortSummaryCard from '../components/global/ShortSummaryCard';
 import {PieGraph, VolumeTrend} from '../components/pages/dashboard/graphComponents';
 import Table from "../components/table.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import { TrendingUp, Hash, Users, UserCheck } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { SummaryCardSkeleton } from '../components/global/Skeleton';
 
 const Dashboard = () => {
   const {
@@ -41,92 +44,78 @@ const Dashboard = () => {
     [usersWithTopTransactionVolume, loadingUsersWithTopTransactionVolume],
   )
   
+  const timelineLabels: Record<string, string> = {
+    week: 'This Week',
+    month: 'This Month',
+    year: 'This Year',
+    all: 'All Time',
+  }
+
   return (
     <AuthenticatedLayout>
-      <div className="p-6 min-h-screen container">
-        <PageHeader title="Overview" />
-        
-        <div className="p-4 w-full flex items-center justify-between">
-          <h1 className="text-[32px] font-medium leading-[100%] text-[#0E0F0C]">
-            Admin reports and analytics
+      <PageHeader title="Overview" subtitle="Admin reports and analytics" />
+
+      <div className="p-6 space-y-6">
+        {/* Timeline + heading row */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-[26px] font-semibold text-[#0E0F0C] tracking-tight">
+            Reports &amp; Analytics
           </h1>
-          
-          <div className="w-full max-w-sm min-w-[200px]">
-            <label className="block mb-1 text-sm text-slate-800">
-              Timeline Selection
-            </label>
-            
-            <div className="relative">
-              <select
-                onChange={(e) =>
-                  handleSelectedTimelineChange(e.target.value as TimelineFilter)
-                }
-                value={selectedTimeline}
-                className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-lg pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
-              >
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-                <option value="all">All Time</option>
-              </select>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.2"
-                stroke="currentColor"
-                className="h-5 w-5 ml-1 absolute top-2.5 right-2.5 text-slate-700"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                />
-              </svg>
-            </div>
-          </div>
+
+          <Select value={selectedTimeline} onValueChange={(v) => handleSelectedTimelineChange(v as TimelineFilter)}>
+            <SelectTrigger className="w-[140px] rounded-xl border-[#ECECEC] shadow-sm text-[14px] font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
+              <SelectItem value="year">This Year</SelectItem>
+              <SelectItem value="all">All Time</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[16px] mb-8 mt-6">
-          <ShortSummaryCard
-            title="Total Transaction Volume"
-            value={
-              !loadingTransactionVolume
-                ? `₦${convertToMillify(Number(transactionVolume?.totalFiatVolume))}`
-                : 'Loading...'
-            }
-            time={`This ${selectedTimeline}`}
-          />
-          
-          <ShortSummaryCard
-            title="Number of transactions"
-            value={numberOfTransactionsDisplay}
-            time={`This ${selectedTimeline}`}
-          />
-          
-          <ShortSummaryCard
-            title="New Users"
-            value={
-              !loadingWeeklyUserSummary
-                ? `${Number(Number(weeklyUserSummary?.newUsersCount).toFixed(2)).toLocaleString()}`
-                : 'Loading...'
-            }
-            time={`This ${selectedTimeline}`}
-          />
-          
-          <ShortSummaryCard
-            title="Active users"
-            value={
-              !loadingWeeklyUserSummary
-                ? `${Number(Number(weeklyUserSummary?.activeUsersCount).toFixed(2)).toLocaleString()}`
-                : 'Loading...'
-            }
-            time={`This ${selectedTimeline}`}
-          />
+
+        {/* Metric cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {loadingTransactionVolume ? <SummaryCardSkeleton /> : (
+            <ShortSummaryCard
+              title="Total Volume"
+              value={`₦${convertToMillify(Number(transactionVolume?.totalFiatVolume))}`}
+              time={timelineLabels[selectedTimeline] || ''}
+              icon={<TrendingUp className="w-4 h-4" />}
+            />
+          )}
+
+          {loadingTransactionCount ? <SummaryCardSkeleton /> : (
+            <ShortSummaryCard
+              title="Transactions"
+              value={numberOfTransactionsDisplay}
+              time={timelineLabels[selectedTimeline] || ''}
+              icon={<Hash className="w-4 h-4" />}
+            />
+          )}
+
+          {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
+            <ShortSummaryCard
+              title="New Users"
+              value={`${Number(Number(weeklyUserSummary?.newUsersCount).toFixed(2)).toLocaleString()}`}
+              time={timelineLabels[selectedTimeline] || ''}
+              icon={<Users className="w-4 h-4" />}
+            />
+          )}
+
+          {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
+            <ShortSummaryCard
+              title="Active Users"
+              value={`${Number(Number(weeklyUserSummary?.activeUsersCount).toFixed(2)).toLocaleString()}`}
+              time={timelineLabels[selectedTimeline] || ''}
+              icon={<UserCheck className="w-4 h-4" />}
+            />
+          )}
         </div>
-        
-        {/* Graph table */}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <VolumeTrend
               loading={loadingTransactionVolumeTrend}
@@ -140,12 +129,11 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        
-        <div className="mt-6">
-          <div className="mb-4">
-            <h3 className="text-[24px] font-medium">High Value transactions</h3>
-          </div>
-          <div className="space-y-4">
+
+        {/* High value transactions */}
+        <div>
+          <h3 className="text-[18px] font-semibold text-[#0E0F0C] mb-4">High Value Transactions</h3>
+          <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
             <Table data={data} columns={columns} loading={loadingUsersWithTopTransactionVolume} />
           </div>
         </div>

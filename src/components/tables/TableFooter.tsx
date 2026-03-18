@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
 interface TableFooterProps {
   currentPage: number;
@@ -43,62 +43,63 @@ const TableFooter = ({ currentPage, totalPages, pageSize, totalItems, onPageChan
     return pages
   }
 
-  const handlePageSizeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const newSize = e.target.value === 'all' ? totalItems : Number(e.target.value)
+  const handlePageSizeChange = (value: string) => {
+    const newSize = value === 'all' ? totalItems : Number(value)
     onPageSizeChange(newSize)
-    onPageChange(1) // Reset to first page when page size changes
+    onPageChange(1)
   }
 
   const startItem = (currentPage - 1) * pageSize + 1
   const endItem = Math.min(currentPage * pageSize, totalItems)
 
   return (
-    <div className="flex items-center justify-between w-full mt-4">
-      {/* Left side - Items per page selector */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-[#667085]">Show</span>
-        <select
-          value={pageSize === totalItems ? 'all' : pageSize}
-          onChange={handlePageSizeChange}
-          className="px-3 py-2 border border-[#ECECEC] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#03034D] cursor-pointer"
-        >
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value="all">All</option>
-        </select>
-        <span className="text-sm text-[#667085]">
-          {startItem}-{endItem} of {totalItems}
+    <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-3 px-1">
+      {/* Left side - Items per page + count */}
+      <div className="flex items-center gap-2.5">
+        <span className="text-[13px] text-[#9A9A9A]">Show</span>
+        <Select value={pageSize === totalItems ? 'all' : String(pageSize)} onValueChange={handlePageSizeChange}>
+          <SelectTrigger className="h-8 w-[72px] rounded-full border-[#ECECEC] text-[13px] text-[#454745] px-3">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="20">20</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+            <SelectItem value="all">All</SelectItem>
+          </SelectContent>
+        </Select>
+        <span className="text-[13px] text-[#9A9A9A]">
+          Showing {startItem}–{endItem} of <span className="font-semibold text-[#454745]">{totalItems}</span>
         </span>
       </div>
 
-      {/* Right side - Pagination controls */}
-      <div className="flex items-center gap-2">
+      {/* Right side - Pagination */}
+      <div className="flex items-center gap-1.5">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`flex items-center gap-1 px-3 py-2 text-sm transition-colors ${
+          className={`px-3 py-1.5 text-[13px] font-medium rounded-full transition-colors ${
             currentPage === 1
-              ? 'text-[#CCCCCC] cursor-not-allowed'
-              : 'text-black hover:text-[#03034D]'
-          } hover:cursor-pointer`}
+              ? 'text-[#D1D5DB] cursor-not-allowed'
+              : 'text-[#454745] hover:bg-[#F5F5FF] cursor-pointer'
+          }`}
         >
-          Prev
+          ← Prev
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {getVisiblePages().map((page, index) => (
             page === '...' ? (
-              <span key={`${index}-${page}`} className="px-2 text-[#CCCCCC]">...</span>
+              <span key={`${index}-ellipsis`} className="px-1 text-[#9A9A9A] text-[13px]">···</span>
             ) : (
               <button
                 key={page}
                 onClick={() => onPageChange(page as number)}
-                className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+                className={`w-8 h-8 rounded-full text-[13px] font-semibold transition-all cursor-pointer ${
                   currentPage === page
-                    ? 'bg-[#03034D] text-white'
-                    : 'border border-[#ECECEC] text-[#667085] hover:border-[#03034D]'
+                    ? 'bg-[#03034D] text-white shadow-sm'
+                    : 'text-[#9A9A9A] hover:bg-[#F5F5FF] hover:text-[#03034D]'
                 }`}
               >
                 {page}
@@ -110,13 +111,13 @@ const TableFooter = ({ currentPage, totalPages, pageSize, totalItems, onPageChan
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`flex items-center gap-1 px-3 py-2 text-sm transition-colors ${
+          className={`px-3 py-1.5 text-[13px] font-medium rounded-full transition-colors ${
             currentPage === totalPages
-              ? 'text-[#CCCCCC] cursor-not-allowed'
-              : 'text-black hover:text-[#03034D]'
-          } hover:cursor-pointer`}
+              ? 'text-[#D1D5DB] cursor-not-allowed'
+              : 'text-[#454745] hover:bg-[#F5F5FF] cursor-pointer'
+          }`}
         >
-          Next
+          Next →
         </button>
       </div>
     </div>

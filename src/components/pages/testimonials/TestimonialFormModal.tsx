@@ -1,9 +1,10 @@
 import { X } from 'lucide-react';
 import { Formik, Form } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import MFLabeledPillInput from '../../global/LabeledPillInput';
-import MFLabeledPillSelect from '../../global/LabeledPillSelect';
-import MFLabeledPillTextarea from '../../global/LabeledPillTextarea';
+import { PillInput } from '../../ui/input';
+import { LabeledSelect } from '../../ui/select';
+import { PillTextarea } from '../../ui/textarea';
+import { Switch } from '../../ui/switch';
 import { CreateTestimonialRequestSchema } from '../../../schemas/testimonial.schema';
 import type { CreateTestimonialRequestType } from '../../../schemas/testimonial.schema';
 
@@ -15,20 +16,14 @@ interface TestimonialFormModalProps {
   onSubmit: (values: CreateTestimonialRequestType) => void;
 }
 
-const TestimonialFormModal = ({ 
-  open, 
-  mode, 
-  initialValues, 
-  onClose, 
-  onSubmit 
-}: TestimonialFormModalProps) => {
-  if (!open) return null;
+const contentTypeOptions = [
+  { value: 'VIDEO', label: 'Video' },
+  { value: 'IMAGE', label: 'Image' },
+  { value: 'TEXT', label: 'Text' },
+];
 
-  const contentTypeOptions = [
-    { value: 'VIDEO', label: 'Video' },
-    { value: 'IMAGE', label: 'Image' },
-    { value: 'TEXT', label: 'Text' },
-  ];
+const TestimonialFormModal = ({ open, mode, initialValues, onClose, onSubmit }: TestimonialFormModalProps) => {
+  if (!open) return null;
 
   const defaultValues: CreateTestimonialRequestType = {
     contentLink: initialValues?.contentLink || '',
@@ -39,124 +34,97 @@ const TestimonialFormModal = ({
   };
 
   return (
-    <section
-      className="fixed inset-0 z-50 overflow-y-auto"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div
-        className="absolute py-[53px] inset-0 bg-black/20"
-        onClick={onClose}
-      />
+    <section className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
 
-      <div className="absolute inset-0 grid place-items-center">
-        <div className="w-4xl bg-white rounded-2xl shadow-sm border px-4 py-4 border-[#ECECEC] max-h-[90vh] overflow-y-auto">
-          <div className="px-6 pt-6 pb-2 flex items-start justify-between">
-            <div className="flex-1 text-center text-[24px] leading-7 font-medium">
+      <div className="absolute inset-0 grid place-items-center p-4">
+        <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl border border-[#ECECEC] max-h-[90vh] overflow-y-auto">
+          <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-[#ECECEC]">
+            <h2 className="text-[18px] font-semibold text-[#0E0F0C]">
               {mode === 'create' ? 'Create Testimonial' : 'Edit Testimonial'}
-            </div>
-            <button
-              onClick={onClose}
-              className="-mt-6 -mr-1 px-2 py-1 text-[#0E0F0C] cursor-pointer"
-            >
-              <X size={20} />
+            </h2>
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#F5F5FF] transition-colors text-[#9A9A9A]">
+              <X size={18} />
             </button>
           </div>
 
           <Formik
             initialValues={defaultValues}
             validationSchema={toFormikValidationSchema(CreateTestimonialRequestSchema as any)}
-            onSubmit={(values) => {
-              onSubmit(values);
-            }}
+            onSubmit={(values) => onSubmit(values)}
             enableReinitialize
           >
             {({ values, setFieldValue, errors, touched }) => (
               <Form>
-                <div className="px-6 space-y-[32px] mt-4">
-                  {/* Content Link */}
+                <div className="px-6 py-5 space-y-5">
                   <div>
-                    <MFLabeledPillInput
+                    <PillInput
                       label="Content Link *"
                       placeholder="https://example.com/content"
                       value={values.contentLink}
                       onChange={(e) => setFieldValue('contentLink', e.target.value)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                     />
                     {errors.contentLink && touched.contentLink && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.contentLink}</p>
+                      <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.contentLink}</p>
                     )}
                   </div>
 
-                  {/* Name */}
                   <div>
-                    <MFLabeledPillInput
+                    <PillInput
                       label="Name (Optional)"
                       placeholder="e.g. John Doe"
                       value={values.name || ''}
                       onChange={(e) => setFieldValue('name', e.target.value || undefined)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                     />
                     {errors.name && touched.name && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.name}</p>
+                      <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.name}</p>
                     )}
                   </div>
 
-                  {/* Description */}
                   <div>
-                    <MFLabeledPillTextarea
+                    <PillTextarea
                       label="Description (Optional)"
                       placeholder="Enter testimonial description..."
                       value={values.description || ''}
                       onChange={(e) => setFieldValue('description', e.target.value || undefined)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                       rows={4}
                     />
                     {errors.description && touched.description && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.description}</p>
+                      <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.description}</p>
                     )}
                   </div>
 
-                  {/* Content Type */}
                   <div>
-                    <MFLabeledPillSelect
+                    <LabeledSelect
                       label="Content Type"
                       value={values.contentType}
-                      onChange={(e) => setFieldValue('contentType', e.target.value)}
+                      onValueChange={(v) => setFieldValue('contentType', v)}
                       options={contentTypeOptions}
                     />
                     {errors.contentType && touched.contentType && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.contentType}</p>
+                      <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.contentType}</p>
                     )}
                   </div>
 
-                  {/* Is Published */}
-                  <div className="flex items-center gap-3">
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        id="isPublished"
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={values.isPublished}
-                        onChange={(e) => setFieldValue('isPublished', e.target.checked)}
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-gray-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#7c7c97] peer-checked:after:bg-[#03034D]"></div>
-                    </label>
-                    <span className="text-[16px] font-semibold text-[#454745]">Publish Testimonial</span>
-                  </div>
+                  <Switch
+                    id="isPublished"
+                    label="Publish Testimonial"
+                    checked={values.isPublished}
+                    onCheckedChange={(checked) => setFieldValue('isPublished', checked)}
+                  />
                 </div>
 
-                <div className="px-6 pb-6 flex mt-6 md:mt-[50px] flex-col md:flex-row items-center justify-center gap-6">
+                <div className="px-6 pb-6 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-[#ECECEC] pt-4">
                   <button
                     type="button"
-                    className="text-[#03034D] hover:bg-[#FF8B5A] rounded-full hover:text-white px-10 py-3 text-base font-semibold w-full hover:cursor-pointer md:w-fit"
+                    className="text-[#03034D] font-medium text-[14px] px-6 py-2.5 rounded-full border border-[#ECECEC] hover:bg-[#F5F5FF] transition-colors w-full sm:w-auto"
                     onClick={onClose}
                   >
-                    Go back
+                    Cancel
                   </button>
                   <button
                     type="submit"
-                    className="rounded-full bg-[#03034D] hover:bg-[#FF8B5A] text-white px-10 py-3 text-base font-semibold w-full hover:cursor-pointer md:w-fit"
+                    className="rounded-full bg-[#03034D] hover:bg-[#050568] active:scale-[0.98] text-white px-6 py-2.5 text-[14px] font-medium w-full sm:w-auto transition-all"
                   >
                     {mode === 'create' ? 'Create Testimonial' : 'Update Testimonial'}
                   </button>
@@ -171,4 +139,3 @@ const TestimonialFormModal = ({
 };
 
 export default TestimonialFormModal;
-

@@ -10,6 +10,7 @@ import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import CoinManagementControls from "../components/pages/coinManagement/CoinManagementControls.tsx";
 import ConfirmModal from "../components/global/ConfirmModal.tsx";
+import CoinDetailsModal from "../components/pages/coinManagement/CoinDetailsModal.tsx";
 
 const CoinManagement = () => {
   const {
@@ -19,7 +20,7 @@ const CoinManagement = () => {
     loadingSupportedCrypto,
     pageSize,
     deleteCoinModal,
-
+    selectedCoin,
 
     // ⚙️ Functions
     openAddCoin,
@@ -27,6 +28,8 @@ const CoinManagement = () => {
     handlePageSizeChange,
     handlePageChange,
     handleViewCoinDetails,
+    handleOpenCoinDetails,
+    handleCloseCoinDetails,
     handleDisableCoin,
     handleDeleteCryptoCurrency,
     toggleDeleteCoinModal,
@@ -57,19 +60,24 @@ const CoinManagement = () => {
           onSearchChange={handleCoinSearchChange}
         />
         
-        <div className="mt-6">
-          <div className="space-y-4">
-            <Table data={data} columns={columns} loading={loadingSupportedCrypto} />
-            
-            <TableFooter
-              currentPage={supportedCrypto?.page || 1}
-              totalPages={supportedCrypto?.totalPages || 1}
-              pageSize={pageSize}
-              totalItems={supportedCrypto?.count || 100}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
+        <div className="mt-4 space-y-4">
+          <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
+            <Table
+              data={data}
+              columns={columns}
+              loading={loadingSupportedCrypto}
+              onRowClick={(row) => handleOpenCoinDetails(row.id)}
             />
           </div>
+
+          <TableFooter
+            currentPage={supportedCrypto?.page || 1}
+            totalPages={supportedCrypto?.totalPages || 1}
+            pageSize={pageSize}
+            totalItems={supportedCrypto?.count || 100}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </div>
       </div>
       
@@ -80,6 +88,12 @@ const CoinManagement = () => {
         onConfirm={handleConfirmDeleteCryptoCurrency}
         message="Are you sure you want to delete this coin?"
         confirmText="Delete Coin"
+      />
+
+      <CoinDetailsModal
+        coin={selectedCoin}
+        open={selectedCoin !== null}
+        onClose={handleCloseCoinDetails}
       />
     </AuthenticatedLayout>
   )

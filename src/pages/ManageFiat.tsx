@@ -3,7 +3,7 @@ import { useManageFiatPage } from '../hooks/pages/useManageFiatPage'
 import AccountCard from "../components/pages/manageFiat/AccountCard.tsx";
 import BankDetailsModal from "../components/pages/manageFiat/BankDetailsModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
-import {Search} from "lucide-react";
+import { SearchInput } from '../components/ui/search-input'
 
 const ManageFiat = () => {
   const {
@@ -35,16 +35,13 @@ const ManageFiat = () => {
             Account Numbers
           </div>
           
-          <div className="relative items-center flex-1 lg:flex-none">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search Bank"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full md:w-[280px] pl-10 pr-4 h-11 border border-[#D9D9D9] rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-            />
-          </div>
+          <SearchInput
+            placeholder="Search Bank"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            containerClassName="flex-1 lg:flex-none"
+            className="md:w-[280px]"
+          />
         </div>
         
         {/* cards */}

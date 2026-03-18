@@ -1,4 +1,6 @@
-import { ChevronDown, Search } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
+import { SearchInput } from '../../ui/search-input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
 import {useMatchRoute} from "@tanstack/react-router";
 import {ROUTES} from "../../../util/constants.util.ts";
 
@@ -16,45 +18,44 @@ const ManageTransactionsControls = ({ onOpenFilter, onApplyAction, searchValue, 
   const isTransactionHistory = matchRoute({ to: ROUTES.USER_TRANSACTIONS })
 
   return (
-    <div className="bg-white p-2 mt-5 mb-8 flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full mt-4 mb-6 gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 w-full">
         {/* Left: search + filter */}
         <div className="flex w-full lg:w-auto items-center gap-2">
-          <div className="relative flex-1 lg:flex-none">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search transaction"
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full md:w-[280px] pl-10 pr-4 h-[44px] border border-[#D9D9D9] rounded-[100px] focus:ring focus:ring-purple-500 focus:border-transparent outline-none"
-            />
-          </div>
+          <SearchInput
+            placeholder="Search transaction..."
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            containerClassName="flex-1 lg:flex-none"
+            className="md:w-[280px]"
+          />
           <button
             onClick={onOpenFilter}
-            className="inline-flex cursor-pointer hover:border-[#03034D] items-center justify-center gap-2 h-10 px-4 border border-[#D9D9D9] rounded-full transition-colors"
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
           >
-            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4" />
-            <span className="text-sm font-semibold text-[#454745]">Filter</span>
+            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
+            <span className="text-[14px] font-medium text-[#454745]">Filter</span>
           </button>
         </div>
 
         {/* Right: bulk action + apply */}
         {matchRoute({ to: ROUTES.TRANSACTIONS }) && (
           <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-          <span className="hidden md:inline text-sm text-gray-500">
-            Bulk action:
-          </span>
-            <select className="h-10 border border-gray-200 rounded-full px-3 text-sm w-full md:w-auto">
-              <option>Select option</option>
-              <option>Export</option>
-              <option>Delete</option>
-            </select>
+            <span className="hidden md:inline text-[13px] text-[#9A9A9A] font-medium">Bulk action:</span>
+            <Select>
+              <SelectTrigger className="h-10 rounded-full border-[#ECECEC] text-[14px] text-[#454745] w-full md:w-auto">
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="export">Export</SelectItem>
+                <SelectItem value="delete">Delete</SelectItem>
+              </SelectContent>
+            </Select>
             <button
               onClick={onApplyAction}
-              className="px-4 py-[10px] whitespace-nowrap bg-[#03034D] cursor-pointer text-white text-sm rounded-full hover:opacity-80 transition-colors w-full md:w-auto"
+              className="px-5 py-2 whitespace-nowrap bg-[#03034D] cursor-pointer text-white text-[14px] font-medium rounded-full hover:bg-[#050568] transition-colors w-full md:w-auto"
             >
-              Apply action
+              Apply
             </button>
           </div>
         )}

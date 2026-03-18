@@ -1,5 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 @import 'tailwindcss';
+
+:root {
+  --color-primary: #03034D;
+  --color-primary-hover: #050568;
+  --color-accent: #948EEE;
+  --color-accent-light: #D3D4F8;
+  --color-accent-mid: #575AE5;
+  --color-danger: #EB5757;
+  --color-success: #037847;
+  --color-success-bg: #ECFDF3;
+  --color-warning: #F2994A;
+  --color-border: #ECECEC;
+  --color-border-input: #E4E7EC;
+  --color-bg-light: #F8F8FF;
+  --color-bg-page: #F5F5FF;
+  --color-text-primary: #0E0F0C;
+  --color-text-secondary: #454745;
+  --color-text-muted: #9A9A9A;
+  --color-text-placeholder: #98A2B3;
+}
 
 @layer base {
   html,
@@ -13,17 +33,75 @@
       Roboto,
       'Helvetica Neue',
       Arial;
+    background-color: #F5F5FF;
+    color: #0E0F0C;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Override Vite/default dark mode */
+  :root {
+    color-scheme: light;
+    color: #0E0F0C;
+    background-color: #F5F5FF;
+  }
+
+  /* Reset browser button defaults that may conflict with Tailwind classes */
+  button, [type='button'], [type='submit'], [type='reset'] {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    background-image: none;
+    border: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
   }
 }
 
 @layer components {
   .icon-base {
-    color: #858585; /* inactive color */
+    color: #858585;
     transition: color 0.2s ease-in-out;
   }
 
   .icon-active {
-    color: #323232; /* active color */
+    color: #03034D;
+  }
+
+  /* Card styles */
+  .cn-card {
+    background: #ffffff;
+    border: 1px solid #ECECEC;
+    border-radius: 16px;
+  }
+
+  /* Page section heading */
+  .cn-section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0E0F0C;
+    margin-bottom: 24px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D3D4F8;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #948EEE;
   }
 }
 

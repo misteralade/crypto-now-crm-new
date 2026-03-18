@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
 import {Link, useNavigate, useRouterState} from '@tanstack/react-router'
-import { History, LogOut } from 'lucide-react'
+import { History, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import logo from '../assets/img/logo.svg'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import sidebar from '../assets/img/Vector.svg'
 import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants.util.ts'
 
 function useMediaQuery(query: string) {
@@ -33,7 +30,7 @@ const navItems = [
       <img
         src="/icons/overview-icon.svg"
         alt="Overview"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -44,7 +41,7 @@ const navItems = [
       <img
         src="/icons/transaction.svg"
         alt="Transaction"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -55,7 +52,7 @@ const navItems = [
       <img
         src="/icons/btc.svg"
         alt="BTC"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -66,7 +63,7 @@ const navItems = [
       <img
         src="/icons/naira.svg"
         alt="Naira"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -77,7 +74,7 @@ const navItems = [
       <img
         src="/icons/user.svg"
         alt="KYC Tier Limits"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -88,7 +85,7 @@ const navItems = [
       <img
         src="/icons/naira.svg"
         alt="Currencies"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -99,7 +96,7 @@ const navItems = [
       <img
         src="/icons/testimonial.svg"
         alt="Testimonial"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -110,7 +107,7 @@ const navItems = [
       <img
         src="/icons/dispute.svg"
         alt="Dispute"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -121,7 +118,7 @@ const navItems = [
       <img
         src="/icons/notification.svg"
         alt="Notification"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -137,7 +134,7 @@ const navItems = [
       <img
         src="/icons/user.svg"
         alt="User"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -148,7 +145,7 @@ const navItems = [
       <img
         src="/icons/admin.svg"
         alt="Manage Admins"
-        className={`${props.className ?? ''} w-5 h-5`}
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
   },
@@ -174,7 +171,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 w-[302px] z-50 bg-[#F6F6F6] transform transition-transform duration-300 ease-in-out
+        className={`fixed inset-y-0 left-0 w-[272px] z-50 bg-[#03034D] transform transition-transform duration-300 ease-in-out flex flex-col
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:sticky lg:top-0 lg:translate-x-0 lg:z-0 lg:h-screen`}
         role={isDesktop ? undefined : 'dialog'}
@@ -183,25 +180,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       >
         <div className="flex flex-col h-full w-full overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between p-6">
-            <img src={logo} alt="Company Logo" className="h-8 object-contain" />
+          <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <img src={logo} alt="CryptoNow" className="h-7 object-contain brightness-[5]" />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-1 rounded-md bg-[#D3D4F8] transition-transform"
+              className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white"
             >
-              <img
-                src={sidebar}
-                alt="Toggle sidebar"
-                className={`w-5 h-5 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
-              />
+              {isOpen
+                ? <ChevronLeft className="w-4 h-4" />
+                : <ChevronRight className="w-4 h-4" />
+              }
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon
-              const isActive = currentPath === item.path
+              const isActive = currentPath === item.path || currentPath.startsWith(item.path + '/')
 
               return (
                 <Link
@@ -210,29 +206,32 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   onClick={() => {
                     if (!isDesktop) setIsOpen(false)
                   }}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-[#D3D4F8] text-[#323232] hover:bg-[#CFCFF4]'
-                      : 'text-[#858585] hover:bg-gray-100 hover:text-[#323232]'
+                      ? 'bg-white/15 text-white'
+                      : 'text-white/55 hover:bg-white/8 hover:text-white/90'
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 ${isActive ? 'text-[#323232]' : 'text-[#858585]'}`}
+                    className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-white/55'}`}
                   />
-                  <span className="text-[18px]">{item.label}</span>
+                  <span className="text-[14.5px] font-medium tracking-[-0.01em]">{item.label}</span>
+                  {isActive && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#948EEE]" />
+                  )}
                 </Link>
               )
             })}
           </nav>
 
           {/* Logout */}
-          <div className="p-4 mt-auto">
+          <div className="px-3 py-4 border-t border-white/10">
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[#EB5757] transition-colors w-full hover:bg-[#FDECEC] hover:cursor-pointer "
+              className="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-medium text-[#FF8B8B] hover:bg-red-500/15 hover:text-red-300 transition-colors w-full cursor-pointer"
             >
-              <LogOut size={20} />
-              <span>Logout</span>
+              <LogOut size={18} className="flex-shrink-0" />
+              <span className="text-[14.5px]">Logout</span>
             </button>
           </div>
         </div>

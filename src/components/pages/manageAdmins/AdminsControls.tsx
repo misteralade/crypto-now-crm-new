@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchInput } from '../../ui/search-input'
 
 interface AdminsControlsProps {
   onOpenFilter: () => void;
@@ -10,41 +10,35 @@ interface AdminsControlsProps {
 
 const AdminsControls = ({ onOpenFilter, searchValue, onSearchChange, onOpenCreate, onOpenCreateRole }: AdminsControlsProps) => {
   return (
-    <div className="bg-white py-4 lg:py-5 mb-6">
+    <div className="py-4 mb-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        {/* Left: search + filter */}
         <div className="flex w-full lg:w-auto items-center gap-2">
-          <div className="relative flex-1 lg:flex-none">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A9A] h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search admins"
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full md:w-[280px] pl-10 pr-4 h-10 border text-[#0E0F0C] placeholder:text-[#9A9A9A] border-[#D9D9D9] rounded-full focus:ring-2 focus:border-transparent text-sm"
-            />
-          </div>
+          <SearchInput
+            placeholder="Search admins"
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            containerClassName="flex-1 lg:flex-none"
+            className="md:w-[280px]"
+          />
           <button
             onClick={onOpenFilter}
-            className="inline-flex cursor-pointer hover:border-[#03034D] items-center justify-center gap-2 h-10 px-4 border border-[#D9D9D9] rounded-full transition-colors"
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
           >
-            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4" />
-            <span className="text-sm font-semibold text-[#454745]">Filter</span>
+            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
+            <span className="text-[14px] font-medium text-[#454745]">Filter</span>
           </button>
         </div>
 
-        {/* Right: Create new dispute button */}
         <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
           <button
             onClick={onOpenCreate}
-            className="px-4 py-2 rounded-full bg-[#03034D] text-white text-sm hover:opacity-90 w-full md:w-auto cursor-pointer"
+            className="px-5 py-2.5 rounded-full bg-[#03034D] text-white text-[14px] font-medium hover:bg-[#050568] active:scale-[0.98] transition-all w-full md:w-auto cursor-pointer"
           >
             Add new admin
           </button>
-
           <button
             onClick={onOpenCreateRole}
-            className="px-4 py-2 rounded-full bg-[#03034D] text-white text-sm hover:opacity-90 w-full md:w-auto cursor-pointer"
+            className="px-5 py-2.5 rounded-full bg-white border border-[#ECECEC] text-[#03034D] text-[14px] font-medium hover:bg-[#F5F5FF] transition-colors w-full md:w-auto cursor-pointer"
           >
             Add New Role
           </button>

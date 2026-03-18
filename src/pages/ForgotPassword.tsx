@@ -6,6 +6,7 @@ import { authServiceApi } from '../api/auth.api'
 import { ROUTES } from '../util/constants.util'
 import { EmailSchema } from '../schemas/common.schema'
 import type { FormEvent } from 'react'
+import { PillInput } from '../components/ui/input'
 
 const ForgotPassword = () => {
   const navigate = useNavigate()
@@ -68,25 +69,17 @@ const ForgotPassword = () => {
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Field */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-[14px] font-medium text-[#374151] mb-2"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-[52px] px-4 py-3 border-[1.5px] border-[#E5E7EB] rounded-[26px] focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition-all duration-200 text-[16px] placeholder-[#9CA3AF]"
-              placeholder="jonas@gmail.com"
-              disabled={isLoading}
-              autoFocus
-            />
-          </div>
+          <PillInput
+            label="Email address"
+            id="email"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="jonas@gmail.com"
+            disabled={isLoading}
+            autoFocus
+          />
 
           {/* Submit Button */}
           <div className="pt-2">

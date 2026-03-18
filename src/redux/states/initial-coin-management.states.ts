@@ -24,7 +24,7 @@ export const searchSupportedCryptoInitialState: SearchSupportedCryptoWalletReque
   includeAdmin: false,
   includePlatformExchange: false,
   includeTransactions: false,
-  includeAdminCryptoWallets: false,
+  includeAdminCryptoWallets: true,
   includeExchangeRates: false,
   includeUserCryptoWallets: false,
 
@@ -51,13 +51,9 @@ export const createSupportedCryptoAndWalletInitialState: CreateSupportedCryptoAn
   whitepaperUrl: undefined,
   additionalInfo: undefined,
 
-  // Wallet
-  walletAddress: '',
-  walletLabel: undefined,
-  walletType: "BOTH",
-  network: undefined,
-  isPrimary: true,
-  isVerified: true,
+  // Networks & Wallets
+  networks: [],
+  wallets: [],
 
   // Common
   isActive: true,

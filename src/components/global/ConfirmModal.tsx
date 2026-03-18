@@ -1,3 +1,5 @@
+import { AlertTriangle, CheckCircle, Trash2 } from 'lucide-react'
+
 interface ConfirmModalProps {
   open: boolean;
   actionType: 'delete' | 'proceed' | 'confirm';
@@ -9,28 +11,49 @@ interface ConfirmModalProps {
 
 const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you sure you want to proceed?", confirmText = "Confirm" }: ConfirmModalProps) => {
   if (!open) return null;
-  
+
+  const config = {
+    delete: {
+      icon: <Trash2 className="w-6 h-6 text-[#EB5757]" />,
+      iconBg: 'bg-[#FEF2F2]',
+      title: 'Confirm Delete',
+      btnClass: 'bg-[#EB5757] hover:bg-red-600 text-white',
+    },
+    proceed: {
+      icon: <AlertTriangle className="w-6 h-6 text-[#F2994A]" />,
+      iconBg: 'bg-[#FFF7ED]',
+      title: 'Confirm Action',
+      btnClass: 'bg-[#03034D] hover:bg-[#050568] text-white',
+    },
+    confirm: {
+      icon: <CheckCircle className="w-6 h-6 text-[#037847]" />,
+      iconBg: 'bg-[#ECFDF3]',
+      title: 'Confirm',
+      btnClass: 'bg-[#037847] hover:bg-green-700 text-white',
+    },
+  }[actionType];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-6 text-center">
-        {/* Title */}
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Confirm Action</h2>
-        
-        {/* Message */}
-        <p className="text-gray-600 mb-8">{message || 'Are you sure you want to proceed?'}</p>
-        
-        {/* Actions */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+        <div className={`w-14 h-14 rounded-full ${config.iconBg} flex items-center justify-center mx-auto mb-4`}>
+          {config.icon}
+        </div>
+
+        <h2 className="text-[18px] font-semibold text-[#0E0F0C] mb-2">{config.title}</h2>
+        <p className="text-[14px] text-[#9A9A9A] mb-6 leading-relaxed">{message}</p>
+
+        <div className="flex items-center justify-center gap-3">
           <button
             onClick={onClose}
-            className="w-full md:w-auto px-6 py-3 rounded-full font-medium border border-gray-300 text-gray-800 transition hover:bg-gray-100 hover:cursor-pointer"
+            className="flex-1 px-5 py-2.5 rounded-full text-[14px] font-medium border border-[#ECECEC] text-[#454745] hover:bg-[#F5F5FF] transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          
+
           <button
             onClick={onConfirm}
-            className={`w-full md:w-auto px-6 py-3 rounded-full font-semibold text-white transition ${actionType === 'delete' ? 'bg-[#EF4444]' : actionType === 'proceed' ? 'bg-[#3B82F6]' : 'bg-[#10B981]'} hover:bg-delete-dark hover:cursor-pointer`}
+            className={`flex-1 px-5 py-2.5 rounded-full text-[14px] font-semibold transition-colors cursor-pointer ${config.btnClass}`}
           >
             {confirmText || 'Proceed'}
           </button>

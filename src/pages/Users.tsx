@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Search } from 'lucide-react'
+import { SearchInput } from '../components/ui/search-input'
 import {useUsersPage} from "../hooks/pages/useUsersPage";
 import {AdminSearchUserColumn, AdminSearchUserDataRow} from "../components/tables/UserManagementTables";
 import Table from "../components/table";
@@ -7,9 +7,7 @@ import TableFooter from "../components/tables/TableFooter";
 import UsersFilterModal from "../components/pages/users/UsersFilterModal.tsx";
 import UserTransactionDetailsDrawer from "../components/pages/users/UsersTransactionDetailsDrawer.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
-
-// Asset Imports
-import AvatarIcon from '../assets/img/avatar.webp'
+import PageHeader from '../components/global/pageHeader';
 
 const Users = () => {
   const {
@@ -64,62 +62,39 @@ const Users = () => {
 
   return (
     <AuthenticatedLayout>
+      <PageHeader title="User Management" subtitle="Search, view, and manage all platform users" />
+
       <div className="p-4 md:p-6 mx-auto">
-        {/* Header */}
-        <div className="mb-6 flex justify-between items-center">
-          <h2 className="text-lg font-semibold">User Management</h2>
-          <div className="flex items-center space-x-3">
-            <span className="text-red-500 font-medium">Admin</span>
-            <div className="rounded-full h-8 w-8 overflow-hidden">
-              <img
-                src={AvatarIcon}
-                alt="Admin avatar"
-                className="h-8 w-8 object-cover"
-              />
-            </div>
-          </div>
-        </div>
-        
         {/* Controls */}
-        <div className="bg-white mb-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-            <div className="flex w-full lg:w-auto items-center gap-2">
-              <div className="relative flex-1 lg:flex-none">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A9A] h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search User"
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="w-full md:w-[280px] pl-10 pr-4 h-10 border text-[#0E0F0C] placeholder:text-[#9A9A9A] border-[#D9D9D9] rounded-full focus:ring-2 focus:border-transparent text-sm"
-                />
-              </div>
-              <button
-                className="inline-flex cursor-pointer hover:border-[#03034D] items-center justify-center gap-2 h-10 px-4 border border-[#D9D9D9] rounded-full transition-colors"
-                onClick={toggleFilter}
-              >
-                <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4" />
-                <span className="text-sm font-semibold text-[#454745]">
-                Filter
-              </span>
-              </button>
-            </div>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2 mb-5">
+          <SearchInput
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            containerClassName="flex-1 sm:max-w-[280px]"
+          />
+          <button
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
+            onClick={toggleFilter}
+          >
+            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
+            <span className="text-[14px] font-medium text-[#454745]">Filter</span>
+          </button>
         </div>
-        
-        <div className="mt-6">
-          <div className="space-y-4">
+
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
             <Table data={data} columns={columns} loading={loadingAdminSearchUsers} />
-            
-            <TableFooter
-              currentPage={adminSearchUsers?.page || 1}
-              totalPages={adminSearchUsers?.totalPages || 1}
-              pageSize={pageSize}
-              totalItems={adminSearchUsers?.count || 100}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-            />
           </div>
+
+          <TableFooter
+            currentPage={adminSearchUsers?.page || 1}
+            totalPages={adminSearchUsers?.totalPages || 1}
+            pageSize={pageSize}
+            totalItems={adminSearchUsers?.count || 100}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </div>
         
         {/* Drawers / Modals */}

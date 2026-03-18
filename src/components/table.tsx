@@ -1,6 +1,5 @@
 import { useState, type ChangeEvent, type FC, type ReactNode } from 'react'
 import { ExternalLink } from 'lucide-react'
-import {LoadingSpinner} from "./global/LoadingSpinner";
 import type {UserStatusVariant} from "../types/global.types.ts";
 
 // ============================================================================
@@ -97,10 +96,10 @@ export default function Table<T = any>({
   emptyTitle,
   emptySubtitle,
   loading,
-  theadClassName = 'bg-gray-50 border-b border-gray-200',
+  theadClassName = 'bg-[#F8F8FF] border-b border-[#ECECEC]',
   headerRowClassName = '',
   headerCellClassName = '',
-  bodyClassName = 'divide-y divide-gray-200',
+  bodyClassName = 'divide-y divide-[#F5F5FF]',
   rowClassName = '',
   cellClassNameResolver,
 }: TableProps<T>) {
@@ -123,14 +122,44 @@ export default function Table<T = any>({
   }
 
   // ========================================================================
-  // Render Loading Spinner - Show the table headers
+  // Render Skeleton Loader
   // ========================================================================
   if (loading) {
     return (
-      <div
-        className={`bg-white rounded-xl shadow-sm border border-gray-100 min-h-[40vh] flex items-center justify-center`}
-      >
-        <LoadingSpinner size="lg" message="Loading Table Data..." />
+      <div className={`bg-white rounded-2xl overflow-hidden ${className}`}>
+        <div className="overflow-x-auto">
+          <table className={`w-full ${tableClassName}`}>
+            <thead className="bg-[#F8F8FF] border-b border-[#ECECEC]">
+              <tr>
+                {selectable && <th className="px-4 py-3 w-10"><div className="h-4 w-4 rounded bg-[#ECECEC] animate-pulse" /></th>}
+                {columns.map((col) => (
+                  <th key={col.key} className="px-4 py-3 text-left">
+                    <div className="h-3 rounded-full bg-[#ECECEC] animate-pulse" style={{ width: `${Math.floor(Math.random() * 40) + 40}%` }} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#F5F5FF]">
+              {Array.from({ length: 6 }).map((_, rowIdx) => (
+                <tr key={rowIdx}>
+                  {selectable && <td className="px-4 py-4"><div className="h-4 w-4 rounded bg-[#F0F0FF] animate-pulse" /></td>}
+                  {columns.map((col, colIdx) => (
+                    <td key={col.key} className="px-4 py-4">
+                      <div
+                        className="h-3.5 rounded-full animate-pulse"
+                        style={{
+                          width: colIdx === 0 ? '60%' : colIdx === 1 ? '80%' : `${Math.floor(Math.random() * 30) + 30}%`,
+                          backgroundColor: rowIdx % 2 === 0 ? '#F0F0FF' : '#F5F5FF',
+                          animationDelay: `${rowIdx * 80}ms`,
+                        }}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }
@@ -142,7 +171,7 @@ export default function Table<T = any>({
   if (data.length === 0) {
     return (
       <div
-        className={`bg-white rounded-xl shadow-sm border border-gray-100 ${className}`}
+        className={`bg-white rounded-2xl border border-[#ECECEC] ${className}`}
       >
         <div className="p-12 text-center">
           {emptyIllustrationSrc ? (
@@ -178,7 +207,7 @@ export default function Table<T = any>({
   // ========================================================================
 
   return (
-    <div className={`bg-white ${className}`}>
+    <div className={`bg-white rounded-2xl ${className}`}>
       <div className="overflow-x-auto">
         <table className={`w-full ${tableClassName}`}>
           <thead className={theadClassName}>
@@ -209,7 +238,7 @@ export default function Table<T = any>({
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-4 py-3 text-left text-sm font-medium text-gray-500 ${headerCellClassName} ${column.headerClassName || ''}`}
+                  className={`px-4 py-3 text-left text-[12px] font-semibold text-[#9A9A9A] uppercase tracking-wide ${headerCellClassName} ${column.headerClassName || ''}`}
                 >
                   {column.header}
                 </th>
@@ -220,7 +249,7 @@ export default function Table<T = any>({
             {data.map((row, index) => (
               <tr
                 key={index}
-                className={`transition-colors ${onRowClick ? 'cursor-pointer' : ''} ${rowClassName}`}
+                className={`transition-colors hover:bg-[#F8F8FF] ${onRowClick ? 'cursor-pointer' : ''} ${rowClassName}`}
                 onClick={() => onRowClick?.(row)}
               >
                 {selectable && (
