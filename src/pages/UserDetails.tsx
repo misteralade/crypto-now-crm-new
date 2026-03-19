@@ -53,8 +53,18 @@ const UserDetails = () => {
           <Fragment>
             <div className="flex items-center justify-between w-full mt-10">
               <div className="text-lg text-[#858585] font-medium flex items-center gap-2">
-                All Users / {userProfileSummary?.user?.profile?.firstName || userProfile?.profile?.firstName}{' '}
-                {userProfileSummary?.user?.profile?.lastName || userProfile?.profile?.lastName}
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="text-[#03034D] hover:underline hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#03034D] rounded-sm"
+                >
+                  All Users
+                </button>
+                <span className="text-[#C4C4C4]">/</span>
+                <span>
+                  {userProfileSummary?.user?.profile?.firstName || userProfile?.profile?.firstName}{' '}
+                  {userProfileSummary?.user?.profile?.lastName || userProfile?.profile?.lastName}
+                </span>
               </div>
 
               <div className="flex items-center gap-2">

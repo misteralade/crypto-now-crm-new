@@ -55,7 +55,7 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
           {!sidebarOpen && (
             <button
               aria-label="Open sidebar"
-              className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-lg border border-[#ECECEC] bg-white shadow-sm"
+              className="lg:hidden fixed top-20 sm:top-6 left-4 z-30 p-2 rounded-lg border border-[#ECECEC] bg-white shadow-sm"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-5 h-5 text-[#03034D]" />

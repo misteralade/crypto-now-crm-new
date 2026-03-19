@@ -181,7 +181,17 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         <div className="flex flex-col h-full w-full overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
-            <img src={logo} alt="CryptoNow" className="h-7 object-contain brightness-[5]" />
+            <Link
+              to={ROUTES.DASHBOARD}
+              aria-label="Go to dashboard"
+              className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/80 focus-visible:ring-offset-[#03034D] rounded-md"
+              onClick={() => {
+                // Close sidebar on mobile when navigating with the logo
+                if (!isDesktop) setIsOpen(false)
+              }}
+            >
+              <img src={logo} alt="CryptoNow" className="h-7 object-contain brightness-[5]" />
+            </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white"
