@@ -11,6 +11,7 @@ import UserInformationSection from "../components/pages/users/details/UserInform
 import BankDetailsSection from "../components/pages/users/details/BankDetailsSection.tsx";
 import TransactionSummarySection from "../components/pages/users/details/TransactionSummarySection.tsx";
 import CustodialWalletsSection from "../components/pages/users/details/CustodialWalletsSection.tsx";
+import ExternalWalletsSection from "../components/pages/users/details/ExternalWalletsSection.tsx";
 import { useCryptoQuery } from "../queries/crypto.querries.ts";
 
 const UserDetails = () => {
@@ -95,6 +96,9 @@ const UserDetails = () => {
 
             {/* Custodial Wallets Section */}
             <CustodialWalletsSection userId={userId} supportedCryptos={allSupportedCrypto} />
+
+            {/* External Wallets Section */}
+            <ExternalWalletsSection userId={userId} />
 
             {/* Transaction Summary Section */}
             <TransactionSummarySection

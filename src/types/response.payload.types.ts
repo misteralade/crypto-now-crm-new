@@ -296,10 +296,16 @@ export type UserCryptoWalletResponsePayload = {
   id: string;
   userId: string;
   walletAddress: string;
+  walletLabel?: string | null;
   network: string;
   isPrimary: boolean;
   isVerified: boolean;
   createdAt: Date;
+  cryptocurrency?: {
+    id?: string;
+    symbol?: string;
+    name?: string;
+  };
 }
 
 export type CustodialWalletResponsePayload = {
@@ -316,6 +322,8 @@ export type CustodialWalletResponsePayload = {
 }
 
 export type AdminGetUserCustodialWalletsAPIResponse = BaseApiResponse<Array<CustodialWalletResponsePayload>>
+
+export type AdminGetUserCryptoWalletsAPIResponse = BaseApiResponse<Array<UserCryptoWalletResponsePayload>>
 
 export type AdminGenerateUserCustodialWalletsAPIResponse = BaseApiResponse<Array<CustodialWalletResponsePayload>>
 // End Crypto
