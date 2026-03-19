@@ -7,6 +7,7 @@ import type { SearchSupportedCryptoData } from "../../types/response.payload.typ
 import type { TableColumn } from '../table'
 
 export const IsStableCoinColumn = ({ status }: { status: string }) => {
+  // Renders the Yes/No stable-coin indicator chip for the table.
   const isActive = status.toLowerCase() === 'true'
 
   return (
@@ -34,6 +35,7 @@ export const IsStableCoinColumn = ({ status }: { status: string }) => {
 }
 
 const NetworkTags = ({ networks }: { networks: string[] }) => {
+  // Renders the networks as compact tag chips inside the table cell.
   if (!networks || networks.length === 0) return <span className="text-[11px] text-[#9A9A9A]">—</span>
   return (
     <div className="flex flex-wrap gap-1">
@@ -125,7 +127,7 @@ export const SearchSupportedCryptoColumn = (
               className="w-8 h-8 rounded-full object-cover"
             />
           </div>
-          <div className="px-4 py-3 text-left text-sm font-medium text-gray-500 bg-[#FCFCFD]">
+          <div className="text-left text-sm font-medium text-gray-500">
             <span className="flex items-center gap-2">
               <span className="font-medium text-[12px] text-[#667085]">
                 {value}
@@ -172,11 +174,9 @@ export const SearchSupportedCryptoColumn = (
     className: 'font-medium text-gray-900',
     render: (value) => (
       <Fragment>
-        <div className="px-4 py-3 text-left text-sm font-medium text-gray-500 bg-[#FCFCFD]">
-            <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
-              <span>{value}</span>
-            </span>
-        </div>
+        <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
+          <span>{value}</span>
+        </span>
       </Fragment>
     ),
   },
@@ -186,11 +186,9 @@ export const SearchSupportedCryptoColumn = (
     className: 'font-medium text-gray-900',
     render: (value) => (
       <Fragment>
-        <div className="px-4 py-3 text-left text-sm font-medium text-gray-500 bg-[#FCFCFD]">
-            <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
-              <span>{value}</span>
-            </span>
-        </div>
+        <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
+          <span>{value}</span>
+        </span>
       </Fragment>
     ),
   },
@@ -200,11 +198,9 @@ export const SearchSupportedCryptoColumn = (
     className: 'font-medium text-gray-900',
     render: (value) => (
       <Fragment>
-        <div className="px-4 py-3 text-left text-sm font-medium text-gray-500 bg-[#FCFCFD]">
-          <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
-            <span>{value}</span>
-          </span>
-        </div>
+        <span className="font-medium text-[12px] text-[#667085] flex items-center gap-2">
+          <span>{value}</span>
+        </span>
       </Fragment>
     ),
   },
