@@ -104,6 +104,10 @@ export const TRANSACTION_STATUS_OPTIONS = [
     value: TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
     label: 'Payment Account Confirmed',
   },
+  { value: TRANSACTION_STATUS.DEPOSIT_DETECTED, label: 'Deposit Detected' },
+  { value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED, label: 'Deposit Confirmed' },
+  { value: TRANSACTION_STATUS.PAYOUT_INITIATED, label: 'Payout Initiated' },
+  { value: TRANSACTION_STATUS.PAYOUT_FAILED, label: 'Payout Failed' },
 ]
 
 export const ALLOWED_ADMIN_TRANSACTION_STATUS = [

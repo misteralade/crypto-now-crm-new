@@ -192,6 +192,42 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Refund is being processed',
     isActionable: false,
   },
+  DEPOSIT_DETECTED: {
+    category: StatusCategory.AWAITING,
+    bgColor: 'bg-sky-50',
+    textColor: 'text-sky-700',
+    dotColor: 'bg-sky-500',
+    displayName: 'Deposit Detected',
+    description: 'Blockchain deposit seen, awaiting confirmations',
+    isActionable: false,
+  },
+  DEPOSIT_CONFIRMED: {
+    category: StatusCategory.IN_PROGRESS,
+    bgColor: 'bg-blue-50',
+    textColor: 'text-blue-700',
+    dotColor: 'bg-blue-500',
+    displayName: 'Deposit Confirmed',
+    description: 'Required confirmations reached, triggering payout',
+    isActionable: false,
+  },
+  PAYOUT_INITIATED: {
+    category: StatusCategory.IN_PROGRESS,
+    bgColor: 'bg-indigo-50',
+    textColor: 'text-indigo-700',
+    dotColor: 'bg-indigo-500',
+    displayName: 'Payout Initiated',
+    description: 'NGN payout instruction sent to fiat rail',
+    isActionable: false,
+  },
+  PAYOUT_FAILED: {
+    category: StatusCategory.FAILED,
+    bgColor: 'bg-red-50',
+    textColor: 'text-red-700',
+    dotColor: 'bg-red-500',
+    displayName: 'Payout Failed',
+    description: 'Payout attempt failed, will retry',
+    isActionable: true,
+  },
 };
 
 // Utility functions
