@@ -5,20 +5,16 @@ import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import {useDisputeDetailsPage} from "../hooks/pages/useDisputeDetailsPage.ts";
 import DisputeInformation from "../components/pages/disputes/details/DisputeInformation.tsx";
 import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";
-import DisputeMessage from "../components/pages/disputes/details/DisputeMessage.tsx";
 import {getDisputeStatusColor} from "../util/dispute.constants.util.ts";
 import { convertToMillify } from "../util/index.util.ts";
 
 const DisputeDetails = () => {
   const {
     // 🧩 Values
-    disputeMessages,
-    loadingDisputeMessages,
     disputeDetails,
     loadingDisputeDetails,
     
     // ⚙️ Functions
-    adminSendDisputeMutation,
     goBack,
   } = useDisputeDetailsPage();
   
@@ -87,7 +83,7 @@ const DisputeDetails = () => {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Left Column - Transaction & Dispute Info */}
-                  <div className="lg:col-span-1 space-y-6">
+                  <div className="lg:col-span-3 space-y-6">
                     {/* Transaction Details */}
                     <TransactionDisputeInfo
                       sessionId={disputeDetails.transaction?.sessionId || ''}
@@ -125,15 +121,6 @@ const DisputeDetails = () => {
                       updatedAt={disputeDetails.updatedAt}
                       attachments={disputeDetails.attachments}
                       adminNotes={disputeDetails?.resolutionNotes || ''}
-                    />
-                  </div>
-                  
-                  {/* Right Column - Dispute Messages */}
-                  <div className="lg:col-span-2">
-                    <DisputeMessage
-                      loading={loadingDisputeMessages}
-                      messages={disputeMessages || []}
-                      sendMessageMutation={adminSendDisputeMutation}
                     />
                   </div>
                 </div>

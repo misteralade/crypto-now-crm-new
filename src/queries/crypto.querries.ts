@@ -206,19 +206,6 @@ export const useAdminUserCustodialWalletsQuery = (userId: string | undefined) =>
   });
 };
 
-// Query a specific user's external (receiving) crypto wallets (Admin only).
-export const useAdminUserCryptoWalletsQuery = (userId: string | undefined) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_USER_CRYPTO_WALLETS, userId],
-    queryFn: async () => {
-      if (!userId) return null;
-      const { data, success } = await cryptoServiceApi.adminGetUserCryptoWallets(userId);
-      return success ? data : null;
-    },
-    enabled: !!userId,
-  });
-};
-
 // Generate all missing custodial wallets for a user (Admin only).
 export const useAdminGenerateUserCustodialWalletsMutation = (userId: string | undefined) => {
   const queryClient = useQueryClient();
