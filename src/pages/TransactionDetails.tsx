@@ -247,9 +247,9 @@ const TransactionDetails = () => {
                     </div>
                     
                     <div>
-                      <p className="text-gray-500 mb-1">Exchange Rate ID</p>
+                      <p className="text-gray-500 mb-1">Rate Snapshot</p>
                       <div className="flex items-center gap-1">
-                        <CopyDetails text={transaction.exchangeRateId} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
+                        <CopyDetails text={transaction.rateSnapshot ? JSON.stringify(transaction.rateSnapshot) : '—'} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
                       </div>
                     </div>
                   </div>

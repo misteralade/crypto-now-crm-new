@@ -13,7 +13,6 @@ export const searchTransactionsInitialState: SearchTransactionsRequestType = {
   sessionId: undefined,
   userId: undefined,
   cryptoCurrencyId: undefined,
-  exchangeRateId: undefined,
   type: undefined,
   amountCrypto: undefined,
   amountFiat: undefined,
@@ -73,7 +72,6 @@ export const searchUserTransactionHistoryInitialState: SearchTransactionsRequest
   sessionId: undefined,
   userId: undefined, // Will be set when user is selected
   cryptoCurrencyId: undefined,
-  exchangeRateId: undefined,
   type: undefined,
   amountCrypto: undefined,
   amountFiat: undefined,

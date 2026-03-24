@@ -57,7 +57,7 @@ export type SearchTransactionsResponse = {
   userId: string;
   sessionId: string;
   cryptocurrencyId: string;
-  exchangeRateId: string;
+  rateSnapshot: Record<string, any> | null;
   type: TransactionAction;
   amountCrypto: string;
   amountFiat: string;
@@ -352,7 +352,6 @@ export type ExchangeRateResponsePayload = {
   platformRate: string;
   rate: string;
   action: string;
-  validUntil: Date;
   createdAt: Date;
 }
 // End Exchange Rate
