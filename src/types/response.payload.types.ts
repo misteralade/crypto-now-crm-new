@@ -626,7 +626,7 @@ export type GetTestimonialDetailsAPIResponse = BaseApiResponse<TestimonialRespon
 // Start KYC Tier Limits
 export type KycTierLimitResponsePayload = {
   id: string;
-  kycTier: 'NONE' | 'TIER_1' | 'TIER_2';
+  kycTier: 'GUEST' | 'VERIFIED';
   currencyCode: string;
   minTransactionAmount: string;
   maxTransactionAmount: string;

@@ -79,6 +79,17 @@ const navItems = [
     ),
   },
   {
+    path: ROUTES.KYC_SESSIONS,
+    label: 'KYC Sessions',
+    icon: (props: { className?: string }) => (
+      <img
+        src="/icons/user.svg"
+        alt="KYC Sessions"
+        className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
+      />
+    ),
+  },
+  {
     path: ROUTES.SUPPORTED_CURRENCIES,
     label: 'Currencies',
     icon: (props: { className?: string }) => (

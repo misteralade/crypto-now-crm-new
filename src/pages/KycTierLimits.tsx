@@ -22,17 +22,15 @@ import type { KycTierLimitResponsePayload } from '../types/response.payload.type
 import type { KycTierType } from '../schemas/kyc.schema';
 
 const TIER_DISPLAY: Record<string, string> = {
-  NONE: 'Unverified',
-  TIER_1: 'Basic KYC',
-  TIER_2: 'Full KYC',
+  GUEST: 'Guest (Unverified)',
+  VERIFIED: 'Verified (KYC passed)',
 };
 
-const TIERS: KycTierType[] = ['NONE', 'TIER_1', 'TIER_2'];
+const TIERS: KycTierType[] = ['GUEST', 'VERIFIED'];
 
 const tierOptions = [
-  { value: 'NONE', label: 'Unverified (NONE)' },
-  { value: 'TIER_1', label: 'Basic KYC (TIER_1)' },
-  { value: 'TIER_2', label: 'Full KYC (TIER_2)' },
+  { value: 'GUEST', label: 'Guest — unverified users' },
+  { value: 'VERIFIED', label: 'Verified — KYC-approved users' },
 ];
 
 const boolOptions = [

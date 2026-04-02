@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const KycTierSchema = z.enum(['NONE', 'TIER_1', 'TIER_2']);
+const KycTierSchema = z.enum(['GUEST', 'VERIFIED']);
 
 export const CreateKycTierLimitRequestSchema = z.object({
   kycTier: KycTierSchema,

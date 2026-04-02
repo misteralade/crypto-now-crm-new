@@ -47,6 +47,8 @@ export const ROUTES = {
   TESTIMONIALS: '/dashboard/testimonials',
   KYC_TIER_LIMITS: '/dashboard/kyc-tier-limits',
   SUPPORTED_CURRENCIES: '/dashboard/supported-currencies',
+  KYC_SESSIONS: '/dashboard/kyc-sessions',
+  KYC_SESSION_DETAIL: '/dashboard/kyc-sessions/$id',
 }
 
 export const CRYPTO_NETWORK_OPTIONS = [

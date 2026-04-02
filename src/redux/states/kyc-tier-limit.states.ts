@@ -1,7 +1,7 @@
 import type { CreateKycTierLimitRequestType, UpdateKycTierLimitRequestType } from "../../schemas/kyc.schema";
 
 export const createKycTierLimitInitialState: CreateKycTierLimitRequestType = {
-  kycTier: 'NONE',
+  kycTier: 'GUEST',
   currencyCode: '',
   minTransactionAmount: 0,
   maxTransactionAmount: 0,
