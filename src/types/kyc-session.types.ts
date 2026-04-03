@@ -1,29 +1,31 @@
 import type { BaseApiResponse } from "./response.payload.types";
-import type {
-  KycSessionStep,
-  KycVerificationResult,
-  KycNinBvnType,
-  KycIdType,
-} from "./kyc.types";
 
-export type {
-  KycSessionStep,
-  KycVerificationResult,
-  KycNinBvnType,
-  KycIdType,
-} from "./kyc.types";
+export type KycSessionStep =
+  | "Not Started"
+  | "submitted"
+  | "In Progress"
+  | "In Review"
+  | "Resubmitted"
+  | "Approved"
+  | "Declined"
+  | "Expired"
+  | "Abandoned"
+  | "archived";
+
+export type KycVerificationResult =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "error";
+export type KycNinBvnType = "none" | "nin" | "bvn";
+export type KycIdType = "national_id" | "drivers_license" | "passport";
+
 export type AdminKycSessionPayload = {
   id: string;
   userId: string;
   currentStep: KycSessionStep;
   selectedIdType: KycIdType | null;
-  hasSelectedIdType: boolean;
-  hasCompletedFrontUpload: boolean;
-  hasCompletedBackUpload: boolean;
-  hasCompletedSelfieCapture: boolean;
   hasSubmitted: boolean;
-  hasCompletedDocumentVerification: boolean;
-  hasCompletedFaceMatching: boolean;
   documentVerificationStatus: KycVerificationResult;
   faceMatchStatus: KycVerificationResult;
   ninBvnType: KycNinBvnType | null;
