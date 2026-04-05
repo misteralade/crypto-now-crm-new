@@ -1,22 +1,22 @@
-import {Fragment, useState, useEffect} from 'react'
-import { Upload, X } from 'lucide-react'
-import {useDispatch, useSelector} from "react-redux";
-import { convertToMillify } from '../../../util/index.util.ts'
-import momentClient from '../../../util/moment'
-import CopyDetails from '../../global/CopyDetails'
-import { StatusBadge } from '../../global/StatusBadge'
+import { Fragment, useState, useEffect } from "react";
+import { Upload, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { convertToMillify } from "../../../util/index.util.ts";
+import momentClient from "../../../util/moment";
+import CopyDetails from "../../global/CopyDetails";
+import { StatusBadge } from "../../global/StatusBadge";
 import {
   ALLOWED_ADMIN_TRANSACTION_STATUS,
   transactionStatusStyles,
-} from '../../../util/constants.util.ts'
-import {setTransactionDetailUpdateField} from "../../../redux/transaction-management.slice";
-import CustomerAccountDetails from './CustomerAccountDetails.tsx'
-import type {TransactionStatusType} from "../../../schemas/enum.schema";
-import type { SearchTransactionsResponse } from '../../../types/response.payload.types'
-import type { UpdateTransactionStatusRequestType } from '../../../schemas/transaction.schema'
-import type {ChangeEvent} from 'react';
-import LabeledPillInput from '../../global/LabeledPillInput';
-import type { RootState } from '../../../store';
+} from "../../../util/constants.util.ts";
+import { setTransactionDetailUpdateField } from "../../../redux/transaction-management.slice";
+import CustomerAccountDetails from "./CustomerAccountDetails.tsx";
+import type { TransactionStatusType } from "../../../schemas/enum.schema";
+import type { SearchTransactionsResponse } from "../../../types/response.payload.types";
+import type { UpdateTransactionStatusRequestType } from "../../../schemas/transaction.schema";
+import type { ChangeEvent } from "react";
+import LabeledPillInput from "../../global/LabeledPillInput";
+import type { RootState } from "../../../store";
 
 interface TransactionDetailsDrawerProps {
   isOpen: boolean;
@@ -24,7 +24,7 @@ interface TransactionDetailsDrawerProps {
   transaction?: SearchTransactionsResponse | undefined | null;
   handleTransactionUpdateField: (
     field: keyof UpdateTransactionStatusRequestType,
-    value: any,
+    value: any
   ) => void;
   handleTransactionUpdate: () => void;
   handleTransactionReceiptUpload: (file: File) => Promise<string>;
@@ -39,16 +39,25 @@ const TransactionDetailsDrawer = ({
   handleTransactionReceiptUpload,
 }: TransactionDetailsDrawerProps) => {
   const dispatch = useDispatch();
-  const updatePayload = useSelector((state: RootState) => state.transactionManagement.details.update);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
-  const [showCustomerDetails, setShowCustomerDetails] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<TransactionStatusType | undefined>(undefined);
+  const updatePayload = useSelector(
+    (state: RootState) => state.transactionManagement.details.update
+  );
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+  const [showCustomerDetails, setShowCustomerDetails] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<
+    TransactionStatusType | undefined
+  >(undefined);
 
   // Pre-fill update form from server when drawer opens so existing note is shown
   useEffect(() => {
     if (isOpen && transaction) {
-      dispatch(setTransactionDetailUpdateField({ field: 'adminNotes', value: transaction.adminNotes ?? '' }));
+      dispatch(
+        setTransactionDetailUpdateField({
+          field: "adminNotes",
+          value: transaction.adminNotes ?? "",
+        })
+      );
     }
   }, [dispatch, isOpen, transaction?.sessionId, transaction?.adminNotes]);
 
@@ -61,103 +70,111 @@ const TransactionDetailsDrawer = ({
       setPreviewUrl(undefined);
     }
   }, [isOpen]);
-  
-  if (!isOpen || !transaction) return null
+
+  if (!isOpen || !transaction) return null;
 
   // Check if wallet/bank details are available
-  const hasWalletDetails = transaction.type === 'BUY' 
-    ? !!transaction.userCryptoWallet 
-    : !!transaction.userBankAccount;
+  const hasWalletDetails =
+    transaction.type === "BUY"
+      ? !!transaction.userCryptoWallet
+      : !!transaction.userBankAccount;
 
   // Explicit rate: 1 crypto = fiat (variable by transaction currency)
   const getExchangeRateDisplay = (): string => {
-    const symbol = transaction.cryptocurrency?.symbol ?? ''
-    if (!symbol) return '—'
-    const currency = transaction.currency
+    const symbol = transaction.cryptocurrency?.symbol ?? "";
+    if (!symbol) return "—";
+    const currency = transaction.currency;
     if (transaction.exchangeRate) {
-      const rate = Number(transaction.exchangeRate.rate)
-      const platformRate = Number(transaction.exchangeRate.platformRate)
-      if (currency === 'USD') {
-        return `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
+      const rate = Number(transaction.exchangeRate.rate);
+      const platformRate = Number(transaction.exchangeRate.platformRate);
+      if (currency === "USD") {
+        return `1 ${symbol} = $ ${convertToMillify(rate, 2)}`;
       }
-      return `1 ${symbol} = ₦ ${convertToMillify(platformRate * rate, 2)}`
+      return `1 ${symbol} = ₦ ${convertToMillify(platformRate * rate, 2)}`;
     }
-    const amountCrypto = Number(transaction.amountCrypto)
-    if (amountCrypto <= 0) return '—'
-    if (currency === 'USD') {
-      const val = Number(transaction.amountFiat) / amountCrypto
-      return `1 ${symbol} = $ ${convertToMillify(val, 2)}`
+    const amountCrypto = Number(transaction.amountCrypto);
+    if (amountCrypto <= 0) return "—";
+    if (currency === "USD") {
+      const val = Number(transaction.amountFiat) / amountCrypto;
+      return `1 ${symbol} = $ ${convertToMillify(val, 2)}`;
     }
-    const val = Number(transaction.amountFiatNGN || 0) / amountCrypto
-    return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`
-  }
+    const val = Number(transaction.amountFiatNGN || 0) / amountCrypto;
+    return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`;
+  };
 
   const getStatusColorObject = (status: string) => {
     return (
       transactionStatusStyles[status.toUpperCase()] ?? {
         text: status,
-        bg: 'bg-gray-50',
-        dot: 'bg-gray-400',
-        textColor: 'text-gray-700',
+        bg: "bg-gray-50",
+        dot: "bg-gray-400",
+        textColor: "text-gray-700",
       }
-    )
-  }
+    );
+  };
 
   const getStatusDisplayText = (status: string) => {
-    if (status === 'AWAITING_CRYPTO') {
-      return 'Awaiting Bank Details'
+    if (status === "AWAITING_CRYPTO") {
+      return "Awaiting Bank Details";
     }
-    if (status === 'AWAITING_PAYMENT') {
-      return 'Awaiting Wallet Details'
+    if (status === "AWAITING_PAYMENT") {
+      return "Awaiting Wallet Details";
     }
     return status
-      .replaceAll('_', ' ')
+      .replaceAll("_", " ")
       .toLowerCase()
-      .replace(/\b\w/g, c => c.toUpperCase())
-  }
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
 
   const buyStatuses = [
-    'AWAITING_PAYMENT',
-    'PAYMENT_RECEIVED',
-    'PAYMENT_CONFIRMED',
-  ]
+    "AWAITING_PAYMENT",
+    "PAYMENT_RECEIVED",
+    "PAYMENT_CONFIRMED",
+  ];
   const sellStatuses = [
-    'AWAITING_CRYPTO',
-    'CRYPTO_RECEIVED',
-    'CRYPTO_CONFIRMED',
-  ]
-  const hideStatuses = transaction.type === 'BUY' ? sellStatuses : buyStatuses;
+    "AWAITING_CRYPTO",
+    "CRYPTO_RECEIVED",
+    "CRYPTO_CONFIRMED",
+  ];
+  const hideStatuses = transaction.type === "BUY" ? sellStatuses : buyStatuses;
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Validate file type
-    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf']
+    const validTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "application/pdf",
+    ];
     if (!validTypes.includes(file.type)) {
-      alert('Please upload only PNG, JPG, JPEG, or PDF files')
-      return
+      alert("Please upload only PNG, JPG, JPEG, or PDF files");
+      return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB')
-      return
+      alert("File size must be less than 5MB");
+      return;
     }
 
-    const signedUrl = await handleTransactionReceiptUpload(file)
-    setUploadedFile(file)
-    setPreviewUrl(signedUrl)
-  }
+    const signedUrl = await handleTransactionReceiptUpload(file);
+    setUploadedFile(file);
+    setPreviewUrl(signedUrl);
+  };
 
   const removeFile = () => {
-    dispatch(setTransactionDetailUpdateField({
-      field: "adminPaymentReceiptUrl",
-      value: undefined,
-    }))
-    setUploadedFile(null)
-    setPreviewUrl(undefined)
-  }
+    dispatch(
+      setTransactionDetailUpdateField({
+        field: "adminPaymentReceiptUrl",
+        value: undefined,
+      })
+    );
+    setUploadedFile(null);
+    setPreviewUrl(undefined);
+  };
 
   return (
     <div className="fixed inset-0 z-40">
@@ -206,21 +223,23 @@ const TransactionDetailsDrawer = ({
               <section className="flex justify-between items-center">
                 <div className="text-[#828282] text-[16px]">Amount</div>
                 <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
-                  {transaction.type === 'BUY' ? (
+                  {transaction.type === "BUY" ? (
                     <Fragment>
                       ₦ {Number(transaction.amountFiatNGN).toLocaleString()}
                     </Fragment>
                   ) : (
                     <Fragment>
-                      {transaction.amountCrypto}{' '}
-                      {transaction.cryptocurrency ? transaction.cryptocurrency.symbol : ''}
+                      {transaction.amountCrypto}{" "}
+                      {transaction.cryptocurrency
+                        ? transaction.cryptocurrency.symbol
+                        : ""}
                     </Fragment>
                   )}
                 </div>
               </section>
 
               {/* Transaction Hash if Sell order */}
-              {transaction.type === 'SELL' && transaction.cryptoTxHash && (
+              {transaction.type === "SELL" && transaction.cryptoTxHash && (
                 <Fragment>
                   <section className="flex justify-between items-center">
                     <div className="text-[#828282] text-[16px]">
@@ -242,7 +261,7 @@ const TransactionDetailsDrawer = ({
                 <div className="text-[#828282] text-[16px]">Date</div>
                 <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
                   {momentClient.formatToNormalisedDateAndTime(
-                    transaction.createdAt,
+                    transaction.createdAt
                   )}
                 </div>
               </section>
@@ -261,16 +280,18 @@ const TransactionDetailsDrawer = ({
                   User will receive
                 </div>
                 <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
-                  {transaction.type === 'BUY' ? (
+                  {transaction.type === "BUY" ? (
                     <Fragment>
-                      {transaction.amountCrypto}{' '}
-                      {transaction.cryptocurrency ? transaction.cryptocurrency.symbol : ''}{' '}
+                      {transaction.amountCrypto}{" "}
+                      {transaction.cryptocurrency
+                        ? transaction.cryptocurrency.symbol
+                        : ""}{" "}
                       (₦ {convertToMillify(Number(transaction.amountFiatNGN))})
                     </Fragment>
                   ) : (
                     <Fragment>
-                      ₦ {Number(transaction.amountFiatNGN).toLocaleString()}{' '}
-                      (${convertToMillify(Number(transaction.usdAmount))})
+                      ₦ {Number(transaction.amountFiatNGN).toLocaleString()} ($
+                      {convertToMillify(Number(transaction.usdAmount))})
                     </Fragment>
                   )}
                 </div>
@@ -308,7 +329,14 @@ const TransactionDetailsDrawer = ({
                 <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
                   {transaction.transactionActivities.map((activity) => (
                     <div key={activity.id}>
-                      {activity.action.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} - {activity.message} {momentClient.formatToNormalisedDateAndTime(activity.createdAt)}
+                      {activity.action
+                        .replaceAll("_", " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}{" "}
+                      - {activity.message}{" "}
+                      {momentClient.formatToNormalisedDateAndTime(
+                        activity.createdAt
+                      )}
                     </div>
                   ))}
                 </div>
@@ -316,26 +344,25 @@ const TransactionDetailsDrawer = ({
             </Fragment>
           )}
 
-
           {/* Customer Account Details fetch + panel */}
           <section>
             {!showCustomerDetails && (
               <button
                 className={`px-6 py-4 text-sm md:text-lg font-semibold border rounded-full ${
                   hasWalletDetails
-                    ? 'border-[#03034D] text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]'
-                    : 'border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50'
+                    ? "border-[#03034D] text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]"
+                    : "border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50"
                 }`}
                 onClick={() => hasWalletDetails && setShowCustomerDetails(true)}
                 disabled={!hasWalletDetails}
               >
-                {transaction.type === 'BUY'
+                {transaction.type === "BUY"
                   ? hasWalletDetails
-                    ? 'View Wallet Details'
-                    : 'Wallet Details Not Available'
+                    ? "View Wallet Details"
+                    : "Wallet Details Not Available"
                   : hasWalletDetails
-                    ? 'View Bank Details'
-                    : 'Bank Details Not Available'}
+                  ? "View Bank Details"
+                  : "Bank Details Not Available"}
               </button>
             )}
 
@@ -343,30 +370,30 @@ const TransactionDetailsDrawer = ({
               <Fragment>
                 <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6">
                   <h3 className="text-[14px] font-semibold text-[#828282]">
-                    {transaction.type === 'BUY'
-                      ? 'WALLET DETAILS'
-                      : 'BANK DETAILS'}
+                    {transaction.type === "BUY"
+                      ? "WALLET DETAILS"
+                      : "BANK DETAILS"}
                   </h3>
-                  {transaction.type === 'BUY' ? (
+                  {transaction.type === "BUY" ? (
                     <Fragment>
                       <CustomerAccountDetails
                         address={
                           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                           transaction.userCryptoWallet
                             ? transaction.userCryptoWallet.walletAddress
-                            : 'N/A'
+                            : "N/A"
                         }
                         coinType={
                           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                           transaction.cryptocurrency
                             ? transaction.cryptocurrency.symbol
-                            : 'N/A'
+                            : "N/A"
                         }
                         networkType={
                           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                           transaction.userCryptoWallet
                             ? transaction.userCryptoWallet.network
-                            : 'N/A'
+                            : "N/A"
                         }
                       />
                     </Fragment>
@@ -381,7 +408,7 @@ const TransactionDetailsDrawer = ({
                             {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                             {transaction.userBankAccount
                               ? transaction.userBankAccount.accountName
-                              : 'N/A'}
+                              : "N/A"}
                           </div>
                         </div>
 
@@ -393,7 +420,7 @@ const TransactionDetailsDrawer = ({
                             {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                             {transaction.userBankAccount
                               ? transaction.userBankAccount.bankName
-                              : 'N/A'}
+                              : "N/A"}
                           </div>
                         </div>
 
@@ -407,7 +434,7 @@ const TransactionDetailsDrawer = ({
                                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                                 transaction.userBankAccount
                                   ? transaction.userBankAccount.accountNumber
-                                  : 'N/A'
+                                  : "N/A"
                               }
                               className="!max-w-[200px] !h-[25px]"
                               iconClassName="!w-8 !h-8"
@@ -475,10 +502,14 @@ const TransactionDetailsDrawer = ({
                         <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
-                              <span className="text-red-600 font-semibold text-xs">PDF</span>
+                              <span className="text-red-600 font-semibold text-xs">
+                                PDF
+                              </span>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-[#0E0F0C]">{uploadedFile.name}</p>
+                              <p className="text-sm font-medium text-[#0E0F0C]">
+                                {uploadedFile.name}
+                              </p>
                               <p className="text-xs text-[#828282]">
                                 {(uploadedFile.size / 1024).toFixed(2)} KB
                               </p>
@@ -496,15 +527,21 @@ const TransactionDetailsDrawer = ({
                   ) : transaction.adminPaymentReceiptUrl ? (
                     // Show admin transaction receipt when no file is uploaded
                     <div className="relative group">
-                      {transaction.adminPaymentReceiptUrl.toLowerCase().endsWith('.pdf') ? (
+                      {transaction.adminPaymentReceiptUrl
+                        .toLowerCase()
+                        .endsWith(".pdf") ? (
                         // PDF preview
                         <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
-                              <span className="text-red-600 font-semibold text-xs">PDF</span>
+                              <span className="text-red-600 font-semibold text-xs">
+                                PDF
+                              </span>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-[#0E0F0C]">Admin Payment Receipt</p>
+                              <p className="text-sm font-medium text-[#0E0F0C]">
+                                Admin Payment Receipt
+                              </p>
                               <p className="text-xs text-[#828282]">
                                 <a
                                   href={transaction.adminPaymentReceiptUrl}
@@ -543,24 +580,41 @@ const TransactionDetailsDrawer = ({
               </div>
               <div className="flex flex-wrap gap-6">
                 {ALLOWED_ADMIN_TRANSACTION_STATUS.filter(
-                  (s: string | undefined) => s !== undefined,
+                  (s: string | undefined) => s !== undefined
                 ).map((transactionStatus) => {
                   const hideStatus = hideStatuses.includes(transactionStatus);
-                  const isCurrent = transaction.status === transactionStatus
+                  const isCurrent = transaction.status === transactionStatus;
 
                   return (
                     <Fragment>
                       <button
                         key={transactionStatus}
-                        className={`px-5 py-2 rounded-full normal-case ${getStatusColorObject(transactionStatus).bg} text-sm font-semibold ${getStatusColorObject(transactionStatus).textColor} hover:opacity-80 hover:cursor-pointer ${hideStatus ? 'hidden' : ''} ${isCurrent ? 'cursor-not-allowed opacity-60 hover:cursor-progress' : ''} ${selectedStatus === transactionStatus ? 'ring-2 ring-offset-2 ring-[#03034D]' : ''}`}
+                        className={`px-5 py-2 rounded-full normal-case ${
+                          getStatusColorObject(transactionStatus).bg
+                        } text-sm font-semibold ${
+                          getStatusColorObject(transactionStatus).textColor
+                        } hover:opacity-80 hover:cursor-pointer ${
+                          hideStatus ? "hidden" : ""
+                        } ${
+                          isCurrent
+                            ? "cursor-not-allowed opacity-60 hover:cursor-progress"
+                            : ""
+                        } ${
+                          selectedStatus === transactionStatus
+                            ? "ring-2 ring-offset-2 ring-[#03034D]"
+                            : ""
+                        }`}
                         type="button"
                         value={transactionStatus}
                         onClick={
                           !isCurrent
                             ? () => {
-                              handleTransactionUpdateField('status', transactionStatus)
-                              setSelectedStatus(transactionStatus)
-                            }
+                                handleTransactionUpdateField(
+                                  "status",
+                                  transactionStatus
+                                );
+                                setSelectedStatus(transactionStatus);
+                              }
                             : undefined
                         }
                         disabled={isCurrent}
@@ -568,7 +622,7 @@ const TransactionDetailsDrawer = ({
                         {getStatusDisplayText(transactionStatus)}
                       </button>
                     </Fragment>
-                  )
+                  );
                 })}
               </div>
             </section>
@@ -579,9 +633,9 @@ const TransactionDetailsDrawer = ({
             <LabeledPillInput
               label="Transaction note (Optional)"
               placeholder="Add a note"
-              value={updatePayload?.adminNotes ?? transaction?.adminNotes ?? ''}
+              value={updatePayload?.adminNotes ?? transaction?.adminNotes ?? ""}
               onChange={(e) =>
-                handleTransactionUpdateField('adminNotes', e.target.value)
+                handleTransactionUpdateField("adminNotes", e.target.value)
               }
             />
           </section>
@@ -597,7 +651,7 @@ const TransactionDetailsDrawer = ({
         </div>
       </aside>
     </div>
-  )
-}
+  );
+};
 
-export default TransactionDetailsDrawer
+export default TransactionDetailsDrawer;

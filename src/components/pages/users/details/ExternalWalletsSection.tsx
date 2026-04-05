@@ -50,9 +50,13 @@ const sortWallets = (wallets: any[]) => {
 };
 
 const ExternalWalletsSection = ({ userId }: ExternalWalletsSectionProps) => {
-  const { data: wallets, isLoading } = useAdminUserCustodialWalletsQuery(userId);
+  const { data: wallets, isLoading } =
+    useAdminUserCustodialWalletsQuery(userId);
 
-  const sortedWallets = useMemo(() => (wallets ? sortWallets(wallets) : []), [wallets]);
+  const sortedWallets = useMemo(
+    () => (wallets ? sortWallets(wallets) : []),
+    [wallets]
+  );
 
   if (isLoading) return <WalletSkeleton />;
 
@@ -60,15 +64,20 @@ const ExternalWalletsSection = ({ userId }: ExternalWalletsSectionProps) => {
     <div className="bg-white rounded-lg p-6 mb-6">
       <div className="flex items-start sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-[#0E0F0C]">External Receiving Wallets</h2>
+          <h2 className="text-xl font-semibold text-[#0E0F0C]">
+            External Receiving Wallets
+          </h2>
           <p className="text-sm text-[#667085] mt-1">
-            These are the crypto addresses the user added for receiving BUY payouts.
+            These are the crypto addresses the user added for receiving BUY
+            payouts.
           </p>
         </div>
       </div>
 
       {!sortedWallets || sortedWallets.length === 0 ? (
-        <div className="text-center py-8 text-[#667085]">No external wallets yet.</div>
+        <div className="text-center py-8 text-[#667085]">
+          No external wallets yet.
+        </div>
       ) : (
         <div className="space-y-3">
           {sortedWallets.map((wallet) => {
@@ -83,7 +92,9 @@ const ExternalWalletsSection = ({ userId }: ExternalWalletsSectionProps) => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="font-medium text-[#0E0F0C] truncate">{title}</div>
+                      <div className="font-medium text-[#0E0F0C] truncate">
+                        {title}
+                      </div>
                       <span className="text-[12px] px-2 py-1 rounded-full bg-[#F2F4F7] text-[#344054]">
                         {wallet.network}
                       </span>
@@ -123,4 +134,3 @@ const ExternalWalletsSection = ({ userId }: ExternalWalletsSectionProps) => {
 };
 
 export default ExternalWalletsSection;
-

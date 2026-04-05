@@ -134,13 +134,17 @@ export const CoinDetailsModal = ({
     <Fragment>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 ${isClosing ? "animate-modal-backdrop-out" : "animate-modal-backdrop-in"}`}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 ${
+          isClosing ? "animate-modal-backdrop-out" : "animate-modal-backdrop-in"
+        }`}
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 w-full max-w-[520px] bg-white shadow-2xl flex flex-col overflow-hidden ${isClosing ? "animate-modal-slide-out" : "animate-modal-slide-in"}`}
+        className={`fixed inset-y-0 right-0 z-50 w-full max-w-[520px] bg-white shadow-2xl flex flex-col overflow-hidden ${
+          isClosing ? "animate-modal-slide-out" : "animate-modal-slide-in"
+        }`}
       >
         {/* Header */}
         <div className="flex items-center gap-3 px-6 py-4 border-b border-[#ECECEC] bg-white sticky top-0">
@@ -184,7 +188,9 @@ export const CoinDetailsModal = ({
                     }`}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${coin?.isActive ? "bg-[#14BA6D]" : "bg-[#6C778B]"}`}
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        coin?.isActive ? "bg-[#14BA6D]" : "bg-[#6C778B]"
+                      }`}
                     />
                     {coin?.isActive ? "Active" : "Inactive"}
                   </span>
@@ -278,7 +284,9 @@ export const CoinDetailsModal = ({
                   label="Anonymous — Min"
                   value={
                     coin.minTradeAmountForAnonymous
-                      ? `$${Number(coin.minTradeAmountForAnonymous).toLocaleString()}`
+                      ? `$${Number(
+                          coin.minTradeAmountForAnonymous
+                        ).toLocaleString()}`
                       : "—"
                   }
                 />
@@ -286,7 +294,9 @@ export const CoinDetailsModal = ({
                   label="Anonymous — Max"
                   value={
                     coin.maxTradeAmountForAnonymous
-                      ? `$${Number(coin.maxTradeAmountForAnonymous).toLocaleString()}`
+                      ? `$${Number(
+                          coin.maxTradeAmountForAnonymous
+                        ).toLocaleString()}`
                       : "—"
                   }
                 />
@@ -334,7 +344,7 @@ export const CoinDetailsModal = ({
                           ))}
                         </div>
                       </div>
-                    ),
+                    )
                   )}
                 </div>
               ) : (

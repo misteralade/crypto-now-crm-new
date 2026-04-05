@@ -1,68 +1,76 @@
-import { X, Calendar } from 'lucide-react'
-import { Formik, Form } from 'formik'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { useRef, useEffect, useState } from 'react'
-import MFLabeledPillInput from '../../global/LabeledPillInput'
-import { AdminUserProfileUpdateRequestSchema } from '../../../schemas/user.schema'
-import type { AdminUserProfileUpdateRequestType } from '../../../schemas/user.schema'
-import momentClient from '../../../util/moment'
+import { X, Calendar } from "lucide-react";
+import { Formik, Form } from "formik";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { useRef, useEffect, useState } from "react";
+import MFLabeledPillInput from "../../global/LabeledPillInput";
+import { AdminUserProfileUpdateRequestSchema } from "../../../schemas/user.schema";
+import type { AdminUserProfileUpdateRequestType } from "../../../schemas/user.schema";
+import momentClient from "../../../util/moment";
 
 interface EditUserModalProps {
-  open: boolean
-  onClose: () => void
-  onSubmit: (values: Omit<AdminUserProfileUpdateRequestType, 'id'>) => void
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (values: Omit<AdminUserProfileUpdateRequestType, "id">) => void;
   initialValues?: {
-    firstName?: string
-    lastName?: string
-    phoneNumber?: string | null
-    dob?: Date | null
-  }
-  loading?: boolean
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string | null;
+    dob?: Date | null;
+  };
+  loading?: boolean;
 }
 
-const EditUserModal = ({ 
-  open, 
-  onClose, 
+const EditUserModal = ({
+  open,
+  onClose,
   onSubmit,
   initialValues,
-  loading = false
+  loading = false,
 }: EditUserModalProps) => {
-  const dobRef = useRef<HTMLInputElement>(null)
-  const [isClosing, setIsClosing] = useState(false)
-  const [shouldRender, setShouldRender] = useState(open)
+  const dobRef = useRef<HTMLInputElement>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(open);
 
   useEffect(() => {
     if (open) {
-      setShouldRender(true)
-      setIsClosing(false)
+      setShouldRender(true);
+      setIsClosing(false);
     } else if (shouldRender) {
-      setIsClosing(true)
+      setIsClosing(true);
       const timer = setTimeout(() => {
-        setShouldRender(false)
-        setIsClosing(false)
-      }, 200)
-      return () => clearTimeout(timer)
+        setShouldRender(false);
+        setIsClosing(false);
+      }, 200);
+      return () => clearTimeout(timer);
     }
-  }, [open, shouldRender])
+  }, [open, shouldRender]);
 
-  if (!shouldRender) return null
+  if (!shouldRender) return null;
 
-  const defaultValues: Omit<AdminUserProfileUpdateRequestType, 'id'> = {
-    firstName: initialValues?.firstName || '',
-    lastName: initialValues?.lastName || '',
-    phoneNumber: initialValues?.phoneNumber || '',
-    dob: initialValues?.dob ? initialValues.dob.toISOString().split('T')[0] : '',
-  }
+  const defaultValues: Omit<AdminUserProfileUpdateRequestType, "id"> = {
+    firstName: initialValues?.firstName || "",
+    lastName: initialValues?.lastName || "",
+    phoneNumber: initialValues?.phoneNumber || "",
+    dob: initialValues?.dob
+      ? initialValues.dob.toISOString().split("T")[0]
+      : "",
+  };
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
       <div
-        className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
+        className={`absolute inset-0 bg-black/30 ${
+          isClosing ? "animate-modal-backdrop-out" : "animate-modal-backdrop-in"
+        }`}
         onClick={onClose}
       />
 
       <div className="absolute inset-0 grid place-items-center">
-        <div className={`w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
+        <div
+          className={`w-full max-w-[464px] bg-white rounded-2xl shadow-sm border border-[#ECECEC] max-h-[90vh] overflow-y-auto ${
+            isClosing ? "animate-modal-content-out" : "animate-modal-content-in"
+          }`}
+        >
           <div className="px-6 pt-6 pb-2 flex items-start justify-between">
             <div className="flex-1 text-center text-2xl font-medium">
               Edit User
@@ -77,16 +85,20 @@ const EditUserModal = ({
 
           <Formik
             initialValues={defaultValues}
-            validationSchema={toFormikValidationSchema(AdminUserProfileUpdateRequestSchema.omit({ id: true }) as any)}
+            validationSchema={toFormikValidationSchema(
+              AdminUserProfileUpdateRequestSchema.omit({ id: true }) as any
+            )}
             onSubmit={(values) => {
               // Transform the date string to ISO format if provided
-              const payload: Omit<AdminUserProfileUpdateRequestType, 'id'> = {
+              const payload: Omit<AdminUserProfileUpdateRequestType, "id"> = {
                 firstName: values.firstName || undefined,
                 lastName: values.lastName || undefined,
                 phoneNumber: values.phoneNumber || undefined,
-                dob: values.dob ? momentClient.toISOStringFromDate(new Date(values.dob)) : undefined,
-              }
-              onSubmit(payload)
+                dob: values.dob
+                  ? momentClient.toISOStringFromDate(new Date(values.dob))
+                  : undefined,
+              };
+              onSubmit(payload);
             }}
             enableReinitialize
           >
@@ -98,11 +110,15 @@ const EditUserModal = ({
                     <MFLabeledPillInput
                       label="First Name"
                       placeholder="e.g John"
-                      value={values.firstName || ''}
-                      onChange={(e) => setFieldValue('firstName', e.target.value)}
+                      value={values.firstName || ""}
+                      onChange={(e) =>
+                        setFieldValue("firstName", e.target.value)
+                      }
                     />
                     {errors.firstName && touched.firstName && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.firstName as string}</p>
+                      <p className="text-red-500 text-sm mt-1 ml-4">
+                        {errors.firstName as string}
+                      </p>
                     )}
                   </div>
 
@@ -111,11 +127,15 @@ const EditUserModal = ({
                     <MFLabeledPillInput
                       label="Last Name"
                       placeholder="e.g Doe"
-                      value={values.lastName || ''}
-                      onChange={(e) => setFieldValue('lastName', e.target.value)}
+                      value={values.lastName || ""}
+                      onChange={(e) =>
+                        setFieldValue("lastName", e.target.value)
+                      }
                     />
                     {errors.lastName && touched.lastName && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.lastName as string}</p>
+                      <p className="text-red-500 text-sm mt-1 ml-4">
+                        {errors.lastName as string}
+                      </p>
                     )}
                   </div>
 
@@ -124,11 +144,18 @@ const EditUserModal = ({
                     <MFLabeledPillInput
                       label="Phone Number"
                       placeholder="e.g +1234567890"
-                      value={values.phoneNumber || ''}
-                      onChange={(e) => setFieldValue('phoneNumber', e.target.value || undefined)}
+                      value={values.phoneNumber || ""}
+                      onChange={(e) =>
+                        setFieldValue(
+                          "phoneNumber",
+                          e.target.value || undefined
+                        )
+                      }
                     />
                     {errors.phoneNumber && touched.phoneNumber && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.phoneNumber as string}</p>
+                      <p className="text-red-500 text-sm mt-1 ml-4">
+                        {errors.phoneNumber as string}
+                      </p>
                     )}
                   </div>
 
@@ -147,16 +174,21 @@ const EditUserModal = ({
                         <input
                           ref={dobRef}
                           type="date"
-                          value={values.dob || ''}
-                          onChange={(e) => setFieldValue('dob', e.target.value || undefined)}
-                          className={`custom-date ${!values.dob ? 'empty' : ''} w-full border-0 text-sm text-[#101828] bg-transparent outline-none px-0 py-2 pr-12 focus:outline-none`}
+                          value={values.dob || ""}
+                          onChange={(e) =>
+                            setFieldValue("dob", e.target.value || undefined)
+                          }
+                          className={`custom-date ${
+                            !values.dob ? "empty" : ""
+                          } w-full border-0 text-sm text-[#101828] bg-transparent outline-none px-0 py-2 pr-12 focus:outline-none`}
                         />
                         <button
                           type="button"
                           aria-label="Open date picker"
                           onClick={() => {
-                            if (dobRef.current?.showPicker) dobRef.current.showPicker()
-                            else dobRef.current?.focus()
+                            if (dobRef.current?.showPicker)
+                              dobRef.current.showPicker();
+                            else dobRef.current?.focus();
                           }}
                           className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-gray-400"
                         >
@@ -165,7 +197,9 @@ const EditUserModal = ({
                       </div>
                     </fieldset>
                     {errors.dob && touched.dob && (
-                      <p className="text-red-500 text-sm mt-1 ml-4">{errors.dob as string}</p>
+                      <p className="text-red-500 text-sm mt-1 ml-4">
+                        {errors.dob as string}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -184,7 +218,7 @@ const EditUserModal = ({
                     className="rounded-full bg-[#03034D] text-white px-12 py-4 text-lg font-semibold w-full hover:bg-[#FF8B5A] hover:cursor-pointer md:w-fit transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loading || isSubmitting}
                   >
-                    {loading || isSubmitting ? 'Updating...' : 'Update User'}
+                    {loading || isSubmitting ? "Updating..." : "Update User"}
                   </button>
                 </div>
               </Form>
@@ -193,7 +227,7 @@ const EditUserModal = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default EditUserModal;

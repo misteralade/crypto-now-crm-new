@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useState } from 'react'
-import { X } from 'lucide-react'
-import MFLabeledPillInput from '../../global/LabeledPillInput'
-import type {AdminPermissionResponsePayload} from "../../../types/response.payload.types";
+import { Fragment, useEffect, useState } from "react";
+import { X } from "lucide-react";
+import MFLabeledPillInput from "../../global/LabeledPillInput";
+import type { AdminPermissionResponsePayload } from "../../../types/response.payload.types";
 import MFLabeledPillTextarea from "../../global/LabeledPillTextarea";
 
 interface CreateAdminModalProps {
@@ -15,36 +15,46 @@ interface CreateAdminModalProps {
   handleRoleDescription: (value: string) => void;
 }
 
-const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onClose, onCreate, handleSelectPermission, handleRoleName, handleRoleDescription }: CreateAdminModalProps) => {
-  const [isClosing, setIsClosing] = useState(false)
-  const [shouldRender, setShouldRender] = useState(open)
+const CreateNewPermissionsModal = ({
+  open,
+  permissions,
+  selectedPermissions,
+  onClose,
+  onCreate,
+  handleSelectPermission,
+  handleRoleName,
+  handleRoleDescription,
+}: CreateAdminModalProps) => {
+  const [isClosing, setIsClosing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(open);
 
   useEffect(() => {
     if (open) {
-      setShouldRender(true)
-      setIsClosing(false)
+      setShouldRender(true);
+      setIsClosing(false);
     } else if (shouldRender) {
-      setIsClosing(true)
+      setIsClosing(true);
       const timer = setTimeout(() => {
-        setShouldRender(false)
-        setIsClosing(false)
-      }, 200)
-      return () => clearTimeout(timer)
+        setShouldRender(false);
+        setIsClosing(false);
+      }, 200);
+      return () => clearTimeout(timer);
     }
-  }, [open, shouldRender])
+  }, [open, shouldRender]);
 
-  if (!shouldRender) return null
+  if (!shouldRender) return null;
 
   const cleanUpPermission = (permission: string) => {
-    return permission.toLowerCase()
-      .split('_')
+    return permission
+      .toLowerCase()
+      .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
-  
+      .join(" ");
+  };
+
   const permissionIsSelected = (permission: string): boolean => {
     return selectedPermissions.includes(permission);
-  }
+  };
 
   return (
     <Fragment>
@@ -54,12 +64,22 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
         aria-modal="true"
       >
         <div
-          className={`absolute py-[53px] inset-0 bg-black/20 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}
+          className={`absolute py-[53px] inset-0 bg-black/20 ${
+            isClosing
+              ? "animate-modal-backdrop-out"
+              : "animate-modal-backdrop-in"
+          }`}
           onClick={onClose}
         />
 
         <div className="absolute inset-0 grid place-items-center">
-          <div className={`w-4xl bg-white rounded-2xl shadow-sm border px-4 py-4 border-[#ECECEC] max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
+          <div
+            className={`w-4xl bg-white rounded-2xl shadow-sm border px-4 py-4 border-[#ECECEC] max-h-[90vh] overflow-y-auto ${
+              isClosing
+                ? "animate-modal-content-out"
+                : "animate-modal-content-in"
+            }`}
+          >
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
               <div className="flex-1 text-center text-[24px] leading-7 font-bold">
                 Create Role
@@ -91,28 +111,40 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
                   Assign Permission
                 </div>
                 <div className="mt-2 space-y-4 grid grid-cols-2 gap-x-8 gap-y-4 max-h-96 overflow-y-auto">
-                  {permissions.map((permission: AdminPermissionResponsePayload, index: number) => (
-                    <div key={`${permission.id}-${index}`} className="flex items-center justify-between">
-                      <span className="text-[#0E0F0C] font-semibold md:text-md">{cleanUpPermission(permission.code)}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectPermission(permission.id)}
-                        className={
-                          'relative inline-flex h-6 w-11 items-center rounded-full transition-colors ' +
-                          (permissionIsSelected(permission.id) ? 'bg-[#03034d6a]' : 'bg-[#556ff11e]')
-                        }
+                  {permissions.map(
+                    (
+                      permission: AdminPermissionResponsePayload,
+                      index: number
+                    ) => (
+                      <div
+                        key={`${permission.id}-${index}`}
+                        className="flex items-center justify-between"
                       >
-                      <span
-                        className={
-                          'inline-block h-5 w-5 transform rounded-full transition-transform ' +
-                          (permissionIsSelected(permission.id)
-                            ? 'bg-[#03034D] translate-x-5'
-                            : 'bg-[#BBC5CB] translate-x-1')
-                        }
-                      />
-                      </button>
-                    </div>
-                  ))}
+                        <span className="text-[#0E0F0C] font-semibold md:text-md">
+                          {cleanUpPermission(permission.code)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectPermission(permission.id)}
+                          className={
+                            "relative inline-flex h-6 w-11 items-center rounded-full transition-colors " +
+                            (permissionIsSelected(permission.id)
+                              ? "bg-[#03034d6a]"
+                              : "bg-[#556ff11e]")
+                          }
+                        >
+                          <span
+                            className={
+                              "inline-block h-5 w-5 transform rounded-full transition-transform " +
+                              (permissionIsSelected(permission.id)
+                                ? "bg-[#03034D] translate-x-5"
+                                : "bg-[#BBC5CB] translate-x-1")
+                            }
+                          />
+                        </button>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -135,8 +167,7 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
         </div>
       </section>
     </Fragment>
-  )
-}
-
+  );
+};
 
 export default CreateNewPermissionsModal;
