@@ -580,8 +580,6 @@ const TransactionDetailsDrawer = ({
               label="Transaction note (Optional)"
               placeholder="Add a note"
               value={updatePayload?.adminNotes ?? transaction?.adminNotes ?? ''}
-              valueClass="text-[18px] px-[16px] text-[#000] placeholder:text-[#9A9A9A]"
-              labelClass="text-[14px] font-medium text-[#454745]"
               onChange={(e) =>
                 handleTransactionUpdateField('adminNotes', e.target.value)
               }

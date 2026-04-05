@@ -1,48 +1,50 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useSearch } from '@tanstack/react-router'
-import { authServiceApi } from '../../api/auth.api'
-import { ROUTES } from '../../util/constants.util.ts'
-import type { FormEvent } from 'react'
-import type { AuthAPIResponse } from '../../types/response.payload.types'
+import { useEffect, useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { authServiceApi } from "../../api/auth.api";
+import { ROUTES } from "../../util/constants.util.ts";
+import type { FormEvent } from "react";
+import type { AuthAPIResponse } from "../../types/response.payload.types";
 
 export const useSignInPage = () => {
   const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
-  const { email: queryEmail, password: queryPassword } = useSearch({ from: '/' })
+  const { email: queryEmail, password: queryPassword } = useSearch({
+    from: "/",
+  });
 
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     pingAdminUser();
   }, []);
-  
+
   useEffect(() => {
     setEmail(queryEmail);
     setPassword(queryPassword);
   }, [queryEmail, queryPassword]);
-  
+
   const pingAdminUser = async () => {
     const { success } = await authServiceApi.pingAdmin();
-    
+
     if (success) {
-      navigate({ to: ROUTES.DASHBOARD })
+      navigate({ to: ROUTES.DASHBOARD });
     }
-  }
-  
+  };
+
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
     if (!email || !password) {
-      setError('Please fill in all fields')
-      setIsLoading(false)
-      return
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -50,22 +52,22 @@ export const useSignInPage = () => {
         email,
         password,
         keepLoggedIn,
-      })
+      });
 
       if (!success) {
-        setError(message || 'Login failed. Please check your credentials.')
+        setError(message || "Login failed. Please check your credentials.");
       } else {
-        navigate({ to: ROUTES.DASHBOARD })
+        navigate({ to: ROUTES.DASHBOARD });
       }
     } catch (error: any) {
       setError(
         error.response.data.message ||
-          'Login failed. Please check your credentials.',
-      )
+          "Login failed. Please check your credentials."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return {
     // 🧩 Values
@@ -82,5 +84,5 @@ export const useSignInPage = () => {
     setPassword,
     setShowPassword,
     setKeepLoggedIn,
-  }
-}
+  };
+};

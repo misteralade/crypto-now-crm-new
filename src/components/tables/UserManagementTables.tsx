@@ -8,13 +8,11 @@ import type { TableColumn } from '../table'
 
 const ActionsMenu = ({
   row,
-  handleNavigateToUserDetails,
   handleNavigateToTransactionHistory,
   handleUpdateUserStatus,
   handleResetUserPassword,
 }: {
   row: any
-  handleNavigateToUserDetails: (userId: string) => void
   handleNavigateToTransactionHistory: (userId: string) => void
   handleUpdateUserStatus: (userId: string, status: UserStatusVariant) => void
   handleResetUserPassword: (userId: string) => void
@@ -69,7 +67,6 @@ const ActionsMenu = ({
 
 // Start Admin View Users Table Columns
 export const AdminSearchUserColumn = (
-  handleNavigateToUserDetails: (userId: string) => void,
   handleNavigateToTransactionHistory: (userId: string) => void,
   handleUpdateUserStatus: (userId: string, status: UserStatusVariant) => void,
   handleResetUserPassword: (userId: string) => void,
@@ -140,7 +137,6 @@ export const AdminSearchUserColumn = (
     render: (_, row) => (
       <ActionsMenu
         row={row}
-        handleNavigateToUserDetails={handleNavigateToUserDetails}
         handleNavigateToTransactionHistory={handleNavigateToTransactionHistory}
         handleUpdateUserStatus={handleUpdateUserStatus}
         handleResetUserPassword={handleResetUserPassword}

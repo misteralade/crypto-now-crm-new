@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { toast } from "react-toastify";
-import { useAdminUserCryptoWalletsQuery } from "../../../../queries/crypto.querries";
-import type { UserCryptoWalletResponsePayload } from "../../../../types/response.payload.types";
+import { useAdminUserCustodialWalletsQuery } from "../../../../queries/crypto.querries";
 
 interface ExternalWalletsSectionProps {
   userId: string | undefined;
@@ -41,7 +40,7 @@ const WalletSkeleton = () => {
 };
 
 // Sort wallets by network then address for stable UI.
-const sortWallets = (wallets: UserCryptoWalletResponsePayload[]) => {
+const sortWallets = (wallets: any[]) => {
   return [...wallets].sort((a, b) => {
     // Sort deterministically using network first, then address.
     const netCmp = (a.network || "").localeCompare(b.network || "");
@@ -51,7 +50,7 @@ const sortWallets = (wallets: UserCryptoWalletResponsePayload[]) => {
 };
 
 const ExternalWalletsSection = ({ userId }: ExternalWalletsSectionProps) => {
-  const { data: wallets, isLoading } = useAdminUserCryptoWalletsQuery(userId);
+  const { data: wallets, isLoading } = useAdminUserCustodialWalletsQuery(userId);
 
   const sortedWallets = useMemo(() => (wallets ? sortWallets(wallets) : []), [wallets]);
 

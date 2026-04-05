@@ -100,7 +100,6 @@ const EditUserModal = ({
                       placeholder="e.g John"
                       value={values.firstName || ''}
                       onChange={(e) => setFieldValue('firstName', e.target.value)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                     />
                     {errors.firstName && touched.firstName && (
                       <p className="text-red-500 text-sm mt-1 ml-4">{errors.firstName as string}</p>
@@ -114,7 +113,6 @@ const EditUserModal = ({
                       placeholder="e.g Doe"
                       value={values.lastName || ''}
                       onChange={(e) => setFieldValue('lastName', e.target.value)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                     />
                     {errors.lastName && touched.lastName && (
                       <p className="text-red-500 text-sm mt-1 ml-4">{errors.lastName as string}</p>
@@ -128,7 +126,6 @@ const EditUserModal = ({
                       placeholder="e.g +1234567890"
                       value={values.phoneNumber || ''}
                       onChange={(e) => setFieldValue('phoneNumber', e.target.value || undefined)}
-                      valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
                     />
                     {errors.phoneNumber && touched.phoneNumber && (
                       <p className="text-red-500 text-sm mt-1 ml-4">{errors.phoneNumber as string}</p>

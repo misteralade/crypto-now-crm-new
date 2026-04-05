@@ -15,15 +15,15 @@ import type { KycSessionStep } from "../types/kyc-session.types";
 import { ROUTES } from "../util/constants.util";
 
 const STEP_LABELS: Record<KycSessionStep, string> = {
-  not_started: "Not Started",
-  id_type_selected: "ID Selected",
-  front_uploaded: "Front Uploaded",
-  back_uploaded: "Back Uploaded",
-  selfie_uploaded: "Selfie Uploaded",
+  "Not Started": "Not Started",
   submitted: "Submitted",
-  processing: "Processing",
-  verified: "Verified",
-  failed: "Failed",
+  "In Progress": "In Progress",
+  "In Review": "In Review",
+  Resubmitted: "Resubmitted",
+  Approved: "Approved",
+  Declined: "Declined",
+  Expired: "Expired",
+  Abandoned: "Abandoned",
   archived: "Archived",
 };
 
@@ -31,47 +31,47 @@ const STEP_STYLES: Record<
   KycSessionStep,
   { bg: string; dot: string; textColor: string }
 > = {
-  not_started: {
+  "Not Started": {
     bg: "bg-gray-100",
     dot: "bg-gray-400",
     textColor: "text-gray-600",
-  },
-  id_type_selected: {
-    bg: "bg-blue-50",
-    dot: "bg-blue-400",
-    textColor: "text-blue-600",
-  },
-  front_uploaded: {
-    bg: "bg-blue-50",
-    dot: "bg-blue-400",
-    textColor: "text-blue-600",
-  },
-  back_uploaded: {
-    bg: "bg-blue-50",
-    dot: "bg-blue-400",
-    textColor: "text-blue-600",
-  },
-  selfie_uploaded: {
-    bg: "bg-blue-50",
-    dot: "bg-blue-400",
-    textColor: "text-blue-600",
   },
   submitted: {
     bg: "bg-yellow-50",
     dot: "bg-yellow-400",
     textColor: "text-yellow-600",
   },
-  processing: {
+  "In Progress": {
     bg: "bg-yellow-50",
     dot: "bg-yellow-500",
     textColor: "text-yellow-600",
   },
-  verified: {
+  "In Review": {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  Resubmitted: {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  Approved: {
     bg: "bg-green-50",
     dot: "bg-green-500",
     textColor: "text-green-600",
   },
-  failed: { bg: "bg-red-50", dot: "bg-red-400", textColor: "text-red-600" },
+  Declined: { bg: "bg-red-50", dot: "bg-red-400", textColor: "text-red-600" },
+  Expired: {
+    bg: "bg-gray-100",
+    dot: "bg-gray-400",
+    textColor: "text-gray-500",
+  },
+  Abandoned: {
+    bg: "bg-gray-100",
+    dot: "bg-gray-400",
+    textColor: "text-gray-500",
+  },
   archived: {
     bg: "bg-gray-100",
     dot: "bg-gray-400",
@@ -84,16 +84,16 @@ const STATUS_FILTER_OPTIONS: {
   label: string;
 }[] = [
   { value: undefined, label: "All Statuses" },
-  { value: "processing", label: "Processing" },
-  { value: "failed", label: "Failed" },
-  { value: "verified", label: "Verified" },
+  { value: "In Progress", label: "In Progress" },
+  { value: "Declined", label: "Declined" },
+  { value: "Approved", label: "Approved" },
   { value: "submitted", label: "Submitted" },
-  { value: "not_started", label: "Not Started" },
+  { value: "Not Started", label: "Not Started" },
   { value: "archived", label: "Archived" },
 ];
 
 function KycStepBadge({ step }: { step: KycSessionStep }) {
-  const style = STEP_STYLES[step] ?? STEP_STYLES.not_started;
+  const style = STEP_STYLES[step] ?? STEP_STYLES["Not Started"];
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${style.bg} ${style.textColor}`}

@@ -28,15 +28,15 @@ import type { KycSessionStep } from "../types/kyc-session.types";
 import { ROUTES } from "../util/constants.util";
 
 const STEP_LABELS: Record<KycSessionStep, string> = {
-  not_started: "Not Started",
-  id_type_selected: "ID Selected",
-  front_uploaded: "Front Uploaded",
-  back_uploaded: "Back Uploaded",
-  selfie_uploaded: "Selfie Uploaded",
+  "Not Started": "Not Started",
   submitted: "Submitted",
-  processing: "Processing",
-  verified: "Verified",
-  failed: "Failed",
+  "In Progress": "In Progress",
+  "In Review": "In Review",
+  Resubmitted: "Resubmitted",
+  Approved: "Approved",
+  Declined: "Declined",
+  Expired: "Expired",
+  Abandoned: "Abandoned",
   archived: "Archived",
 };
 

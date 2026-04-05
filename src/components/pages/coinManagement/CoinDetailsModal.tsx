@@ -33,11 +33,7 @@ const WalletCard = ({
 }: {
   wallet: AdminCryptoWalletResponsePayload;
 }) => {
-  const isActive =
-    wallet.isActive === true ||
-    wallet.isActive === "true" ||
-    wallet.isActive === 1 ||
-    wallet.isActive === "1";
+  const isActive = Boolean(wallet.isActive);
 
   return (
     <div className="bg-[#F8F8FF] rounded-xl p-3 border border-[#ECECEC]">

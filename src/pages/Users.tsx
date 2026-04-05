@@ -42,13 +42,11 @@ const Users = () => {
   const columns = useMemo(
     () =>
       AdminSearchUserColumn(
-        handleNavigateToUserDetails,
         handleNavigateToTransactionHistory,
         handleUpdateUserStatus,
         handleResetUserPassword,
       ),
     [
-      handleNavigateToUserDetails,
       handleNavigateToTransactionHistory,
       handleUpdateUserStatus,
       handleResetUserPassword,

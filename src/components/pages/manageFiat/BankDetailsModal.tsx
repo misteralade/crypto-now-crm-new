@@ -81,7 +81,6 @@ const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCrea
               onChange={(e) =>
                 handleCreateBankField('accountHolderName', e.target.value)
               }
-              valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
             />
 
             <MFLabeledPillInput
@@ -92,7 +91,6 @@ const BankDetailsModal = ({ open, onClose, onConfirm, supportedBanks, handleCrea
                 handleCreateBankField('accountNumber', e.target.value)
               }
               inputMode="numeric"
-              valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
             />
           </div>
 

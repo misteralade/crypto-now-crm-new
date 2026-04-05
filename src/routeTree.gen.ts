@@ -22,10 +22,12 @@ import { Route as DashboardKycTierLimitsRouteImport } from './routes/dashboard/k
 import { Route as DashboardAuditTrailsRouteImport } from './routes/dashboard/audit-trails'
 import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
 import { Route as DashboardTransactionsIndexRouteImport } from './routes/dashboard/transactions/index'
+import { Route as DashboardKycSessionsIndexRouteImport } from './routes/dashboard/kyc-sessions/index'
 import { Route as DashboardDisputesIndexRouteImport } from './routes/dashboard/disputes/index'
 import { Route as DashboardCoinManagementIndexRouteImport } from './routes/dashboard/coin-management/index'
 import { Route as DashboardUsersUserIdRouteImport } from './routes/dashboard/users/$userId'
 import { Route as DashboardTransactionsIdRouteImport } from './routes/dashboard/transactions/$id'
+import { Route as DashboardKycSessionsIdRouteImport } from './routes/dashboard/kyc-sessions/$id'
 import { Route as DashboardDisputesIdRouteImport } from './routes/dashboard/disputes/$id'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
@@ -99,6 +101,12 @@ const DashboardTransactionsIndexRoute =
     path: '/dashboard/transactions/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardKycSessionsIndexRoute =
+  DashboardKycSessionsIndexRouteImport.update({
+    id: '/dashboard/kyc-sessions/',
+    path: '/dashboard/kyc-sessions/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardDisputesIndexRoute = DashboardDisputesIndexRouteImport.update({
   id: '/dashboard/disputes/',
   path: '/dashboard/disputes/',
@@ -118,6 +126,11 @@ const DashboardUsersUserIdRoute = DashboardUsersUserIdRouteImport.update({
 const DashboardTransactionsIdRoute = DashboardTransactionsIdRouteImport.update({
   id: '/dashboard/transactions/$id',
   path: '/dashboard/transactions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardKycSessionsIdRoute = DashboardKycSessionsIdRouteImport.update({
+  id: '/dashboard/kyc-sessions/$id',
+  path: '/dashboard/kyc-sessions/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardDisputesIdRoute = DashboardDisputesIdRouteImport.update({
@@ -164,10 +177,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
   '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
+  '/dashboard/kyc-sessions/$id': typeof DashboardKycSessionsIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
   '/dashboard/disputes/': typeof DashboardDisputesIndexRoute
+  '/dashboard/kyc-sessions/': typeof DashboardKycSessionsIndexRoute
   '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
@@ -188,10 +203,12 @@ export interface FileRoutesByTo {
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
   '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
+  '/dashboard/kyc-sessions/$id': typeof DashboardKycSessionsIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management': typeof DashboardCoinManagementIndexRoute
   '/dashboard/disputes': typeof DashboardDisputesIndexRoute
+  '/dashboard/kyc-sessions': typeof DashboardKycSessionsIndexRoute
   '/dashboard/transactions': typeof DashboardTransactionsIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
@@ -213,10 +230,12 @@ export interface FileRoutesById {
   '/dashboard/coin-management/$coinId': typeof DashboardCoinManagementCoinIdRoute
   '/dashboard/coin-management/add-coin': typeof DashboardCoinManagementAddCoinRoute
   '/dashboard/disputes/$id': typeof DashboardDisputesIdRoute
+  '/dashboard/kyc-sessions/$id': typeof DashboardKycSessionsIdRoute
   '/dashboard/transactions/$id': typeof DashboardTransactionsIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/coin-management/': typeof DashboardCoinManagementIndexRoute
   '/dashboard/disputes/': typeof DashboardDisputesIndexRoute
+  '/dashboard/kyc-sessions/': typeof DashboardKycSessionsIndexRoute
   '/dashboard/transactions/': typeof DashboardTransactionsIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
@@ -239,10 +258,12 @@ export interface FileRouteTypes {
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
     | '/dashboard/disputes/$id'
+    | '/dashboard/kyc-sessions/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management/'
     | '/dashboard/disputes/'
+    | '/dashboard/kyc-sessions/'
     | '/dashboard/transactions/'
     | '/dashboard/users/'
     | '/dashboard/disputes/edit/$id'
@@ -263,10 +284,12 @@ export interface FileRouteTypes {
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
     | '/dashboard/disputes/$id'
+    | '/dashboard/kyc-sessions/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management'
     | '/dashboard/disputes'
+    | '/dashboard/kyc-sessions'
     | '/dashboard/transactions'
     | '/dashboard/users'
     | '/dashboard/disputes/edit/$id'
@@ -287,10 +310,12 @@ export interface FileRouteTypes {
     | '/dashboard/coin-management/$coinId'
     | '/dashboard/coin-management/add-coin'
     | '/dashboard/disputes/$id'
+    | '/dashboard/kyc-sessions/$id'
     | '/dashboard/transactions/$id'
     | '/dashboard/users/$userId'
     | '/dashboard/coin-management/'
     | '/dashboard/disputes/'
+    | '/dashboard/kyc-sessions/'
     | '/dashboard/transactions/'
     | '/dashboard/users/'
     | '/dashboard/disputes/edit/$id'
@@ -312,10 +337,12 @@ export interface RootRouteChildren {
   DashboardCoinManagementCoinIdRoute: typeof DashboardCoinManagementCoinIdRoute
   DashboardCoinManagementAddCoinRoute: typeof DashboardCoinManagementAddCoinRoute
   DashboardDisputesIdRoute: typeof DashboardDisputesIdRoute
+  DashboardKycSessionsIdRoute: typeof DashboardKycSessionsIdRoute
   DashboardTransactionsIdRoute: typeof DashboardTransactionsIdRoute
   DashboardUsersUserIdRoute: typeof DashboardUsersUserIdRoute
   DashboardCoinManagementIndexRoute: typeof DashboardCoinManagementIndexRoute
   DashboardDisputesIndexRoute: typeof DashboardDisputesIndexRoute
+  DashboardKycSessionsIndexRoute: typeof DashboardKycSessionsIndexRoute
   DashboardTransactionsIndexRoute: typeof DashboardTransactionsIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
   DashboardDisputesEditIdRoute: typeof DashboardDisputesEditIdRoute
@@ -415,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTransactionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/kyc-sessions/': {
+      id: '/dashboard/kyc-sessions/'
+      path: '/dashboard/kyc-sessions'
+      fullPath: '/dashboard/kyc-sessions/'
+      preLoaderRoute: typeof DashboardKycSessionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/disputes/': {
       id: '/dashboard/disputes/'
       path: '/dashboard/disputes'
@@ -441,6 +475,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/transactions/$id'
       fullPath: '/dashboard/transactions/$id'
       preLoaderRoute: typeof DashboardTransactionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/kyc-sessions/$id': {
+      id: '/dashboard/kyc-sessions/$id'
+      path: '/dashboard/kyc-sessions/$id'
+      fullPath: '/dashboard/kyc-sessions/$id'
+      preLoaderRoute: typeof DashboardKycSessionsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/disputes/$id': {
@@ -496,10 +537,12 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardCoinManagementCoinIdRoute: DashboardCoinManagementCoinIdRoute,
   DashboardCoinManagementAddCoinRoute: DashboardCoinManagementAddCoinRoute,
   DashboardDisputesIdRoute: DashboardDisputesIdRoute,
+  DashboardKycSessionsIdRoute: DashboardKycSessionsIdRoute,
   DashboardTransactionsIdRoute: DashboardTransactionsIdRoute,
   DashboardUsersUserIdRoute: DashboardUsersUserIdRoute,
   DashboardCoinManagementIndexRoute: DashboardCoinManagementIndexRoute,
   DashboardDisputesIndexRoute: DashboardDisputesIndexRoute,
+  DashboardKycSessionsIndexRoute: DashboardKycSessionsIndexRoute,
   DashboardTransactionsIndexRoute: DashboardTransactionsIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,
   DashboardDisputesEditIdRoute: DashboardDisputesEditIdRoute,

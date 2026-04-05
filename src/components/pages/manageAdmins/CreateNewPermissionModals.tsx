@@ -77,7 +77,6 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
                 label="Name"
                 placeholder="Transaction Manager"
                 onChange={(e) => handleRoleName(e.target.value)}
-                valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
               />
 
               <MFLabeledPillTextarea
@@ -85,7 +84,6 @@ const CreateNewPermissionsModal = ({ open, permissions, selectedPermissions, onC
                 placeholder="Transaction Manager"
                 rows={5}
                 onChange={(e) => handleRoleDescription(e.target.value)}
-                valueClass="text-[18px] placeholder:text-[#9A9A9A] text-black"
               />
 
               <div className="pt-2">
