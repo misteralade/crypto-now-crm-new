@@ -1,81 +1,127 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from '@tanstack/react-router'
-import { Search, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react'
-import AuthenticatedLayout from '../layout/AuthenticatedLayout'
-import PageHeader from '../components/global/pageHeader'
-import { useKycSessionQuery } from '../queries/kyc-session.querries'
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "@tanstack/react-router";
+import { Search, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
+import AuthenticatedLayout from "../layout/AuthenticatedLayout";
+import PageHeader from "../components/global/pageHeader";
+import { useKycSessionQuery } from "../queries/kyc-session.querries";
 import {
   setKycSessionPage,
   setKycSessionStatusFilter,
   setKycSessionUserIdFilter,
-} from '../redux/kyc-session.slice'
-import type { RootState } from '../store'
-import type { KycSessionStep } from '../types/kyc-session.types'
-import { ROUTES } from '../util/constants.util'
+} from "../redux/kyc-session.slice";
+import type { RootState } from "../store";
+import type { KycSessionStep } from "../types/kyc-session.types";
+import { ROUTES } from "../util/constants.util";
 
 const STEP_LABELS: Record<KycSessionStep, string> = {
-  not_started: 'Not Started',
-  id_type_selected: 'ID Selected',
-  front_uploaded: 'Front Uploaded',
-  back_uploaded: 'Back Uploaded',
-  selfie_uploaded: 'Selfie Uploaded',
-  submitted: 'Submitted',
-  processing: 'Processing',
-  verified: 'Verified',
-  failed: 'Failed',
-  archived: 'Archived',
-}
+  not_started: "Not Started",
+  id_type_selected: "ID Selected",
+  front_uploaded: "Front Uploaded",
+  back_uploaded: "Back Uploaded",
+  selfie_uploaded: "Selfie Uploaded",
+  submitted: "Submitted",
+  processing: "Processing",
+  verified: "Verified",
+  failed: "Failed",
+  archived: "Archived",
+};
 
-const STEP_STYLES: Record<KycSessionStep, { bg: string; dot: string; textColor: string }> = {
-  not_started: { bg: 'bg-gray-100', dot: 'bg-gray-400', textColor: 'text-gray-600' },
-  id_type_selected: { bg: 'bg-blue-50', dot: 'bg-blue-400', textColor: 'text-blue-600' },
-  front_uploaded: { bg: 'bg-blue-50', dot: 'bg-blue-400', textColor: 'text-blue-600' },
-  back_uploaded: { bg: 'bg-blue-50', dot: 'bg-blue-400', textColor: 'text-blue-600' },
-  selfie_uploaded: { bg: 'bg-blue-50', dot: 'bg-blue-400', textColor: 'text-blue-600' },
-  submitted: { bg: 'bg-yellow-50', dot: 'bg-yellow-400', textColor: 'text-yellow-600' },
-  processing: { bg: 'bg-yellow-50', dot: 'bg-yellow-500', textColor: 'text-yellow-600' },
-  verified: { bg: 'bg-green-50', dot: 'bg-green-500', textColor: 'text-green-600' },
-  failed: { bg: 'bg-red-50', dot: 'bg-red-400', textColor: 'text-red-600' },
-  archived: { bg: 'bg-gray-100', dot: 'bg-gray-400', textColor: 'text-gray-500' },
-}
+const STEP_STYLES: Record<
+  KycSessionStep,
+  { bg: string; dot: string; textColor: string }
+> = {
+  not_started: {
+    bg: "bg-gray-100",
+    dot: "bg-gray-400",
+    textColor: "text-gray-600",
+  },
+  id_type_selected: {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  front_uploaded: {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  back_uploaded: {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  selfie_uploaded: {
+    bg: "bg-blue-50",
+    dot: "bg-blue-400",
+    textColor: "text-blue-600",
+  },
+  submitted: {
+    bg: "bg-yellow-50",
+    dot: "bg-yellow-400",
+    textColor: "text-yellow-600",
+  },
+  processing: {
+    bg: "bg-yellow-50",
+    dot: "bg-yellow-500",
+    textColor: "text-yellow-600",
+  },
+  verified: {
+    bg: "bg-green-50",
+    dot: "bg-green-500",
+    textColor: "text-green-600",
+  },
+  failed: { bg: "bg-red-50", dot: "bg-red-400", textColor: "text-red-600" },
+  archived: {
+    bg: "bg-gray-100",
+    dot: "bg-gray-400",
+    textColor: "text-gray-500",
+  },
+};
 
-const STATUS_FILTER_OPTIONS: { value: KycSessionStep | undefined; label: string }[] = [
-  { value: undefined, label: 'All Statuses' },
-  { value: 'processing', label: 'Processing' },
-  { value: 'failed', label: 'Failed' },
-  { value: 'verified', label: 'Verified' },
-  { value: 'submitted', label: 'Submitted' },
-  { value: 'not_started', label: 'Not Started' },
-  { value: 'archived', label: 'Archived' },
-]
+const STATUS_FILTER_OPTIONS: {
+  value: KycSessionStep | undefined;
+  label: string;
+}[] = [
+  { value: undefined, label: "All Statuses" },
+  { value: "processing", label: "Processing" },
+  { value: "failed", label: "Failed" },
+  { value: "verified", label: "Verified" },
+  { value: "submitted", label: "Submitted" },
+  { value: "not_started", label: "Not Started" },
+  { value: "archived", label: "Archived" },
+];
 
 function KycStepBadge({ step }: { step: KycSessionStep }) {
-  const style = STEP_STYLES[step] ?? STEP_STYLES.not_started
+  const style = STEP_STYLES[step] ?? STEP_STYLES.not_started;
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${style.bg} ${style.textColor}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${style.bg} ${style.textColor}`}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
       {STEP_LABELS[step]}
     </span>
-  )
+  );
 }
 
 const KycSessions = () => {
-  const dispatch = useDispatch()
-  const { page, limit, statusFilter, userIdFilter } = useSelector((s: RootState) => s.kycSession.list)
-  const [searchInput, setSearchInput] = useState(userIdFilter)
+  const dispatch = useDispatch();
+  const { page, limit, statusFilter, userIdFilter } = useSelector(
+    (s: RootState) => s.kycSession.list
+  );
+  const [searchInput, setSearchInput] = useState(userIdFilter);
 
-  const { useAdminGetSessions } = useKycSessionQuery()
+  const { useAdminGetSessions } = useKycSessionQuery();
   const { data, isLoading } = useAdminGetSessions({
     page,
     limit,
     status: statusFilter,
     userId: userIdFilter || undefined,
-  })
+  });
 
   function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    dispatch(setKycSessionUserIdFilter(searchInput.trim()))
+    e.preventDefault();
+    dispatch(setKycSessionUserIdFilter(searchInput.trim()));
   }
 
   return (
@@ -108,14 +154,18 @@ const KycSessions = () => {
           </form>
 
           <select
-            value={statusFilter ?? ''}
+            value={statusFilter ?? ""}
             onChange={(e) =>
-              dispatch(setKycSessionStatusFilter((e.target.value as KycSessionStep) || undefined))
+              dispatch(
+                setKycSessionStatusFilter(
+                  (e.target.value as KycSessionStep) || undefined
+                )
+              )
             }
             className="px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03034D]/20 bg-white"
           >
             {STATUS_FILTER_OPTIONS.map((opt) => (
-              <option key={opt.label} value={opt.value ?? ''}>
+              <option key={opt.label} value={opt.value ?? ""}>
                 {opt.label}
               </option>
             ))}
@@ -128,77 +178,115 @@ const KycSessions = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">User</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Doc Result</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Face Result</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Retries</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Created</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    User
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Doc Result
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Face Result
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Retries
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Created
+                  </th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {isLoading && (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-gray-400 text-sm">
+                    <td
+                      colSpan={7}
+                      className="py-12 text-center text-gray-400 text-sm"
+                    >
                       Loading…
                     </td>
                   </tr>
                 )}
-                {!isLoading && (!data?.sessions || data.sessions.length === 0) && (
-                  <tr>
-                    <td colSpan={7} className="py-12 text-center text-gray-400 text-sm">
-                      <div className="flex flex-col items-center gap-2">
-                        <ShieldCheck className="w-8 h-8 text-gray-300" />
-                        <p>No KYC sessions found</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
+                {!isLoading &&
+                  (!data?.sessions || data.sessions.length === 0) && (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="py-12 text-center text-gray-400 text-sm"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <ShieldCheck className="w-8 h-8 text-gray-300" />
+                          <p>No KYC sessions found</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 {data?.sessions?.map((session) => (
-                  <tr key={session.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={session.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-4 py-3">
                       <div>
                         <p className="font-medium text-gray-900 text-xs">
                           {session.user?.profile
                             ? `${session.user.profile.firstName} ${session.user.profile.lastName}`
-                            : '—'}
+                            : "—"}
                         </p>
-                        <p className="text-gray-400 text-xs truncate max-w-[160px]">{session.user?.email ?? session.userId}</p>
+                        <p className="text-gray-400 text-xs truncate max-w-[160px]">
+                          {session.user?.email ?? session.userId}
+                        </p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <KycStepBadge step={session.currentStep} />
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs font-medium capitalize ${
-                        session.documentVerificationStatus === 'approved' ? 'text-green-600' :
-                        session.documentVerificationStatus === 'rejected' ? 'text-red-600' :
-                        session.documentVerificationStatus === 'error' ? 'text-orange-600' :
-                        'text-gray-400'
-                      }`}>
+                      <span
+                        className={`text-xs font-medium capitalize ${
+                          session.documentVerificationStatus === "approved"
+                            ? "text-green-600"
+                            : session.documentVerificationStatus === "rejected"
+                            ? "text-red-600"
+                            : session.documentVerificationStatus === "error"
+                            ? "text-orange-600"
+                            : "text-gray-400"
+                        }`}
+                      >
                         {session.documentVerificationStatus}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs font-medium capitalize ${
-                        session.faceMatchStatus === 'approved' ? 'text-green-600' :
-                        session.faceMatchStatus === 'rejected' ? 'text-red-600' :
-                        session.faceMatchStatus === 'error' ? 'text-orange-600' :
-                        'text-gray-400'
-                      }`}>
+                      <span
+                        className={`text-xs font-medium capitalize ${
+                          session.faceMatchStatus === "approved"
+                            ? "text-green-600"
+                            : session.faceMatchStatus === "rejected"
+                            ? "text-red-600"
+                            : session.faceMatchStatus === "error"
+                            ? "text-orange-600"
+                            : "text-gray-400"
+                        }`}
+                      >
                         {session.faceMatchStatus}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
-                      {session.retryCount} / {session.maxRetries}
+                      {session.identityVerificationAttempts} (left{" "}
+                      {session.identityVerificationAttemptsRemaining})
                     </td>
                     <td className="px-4 py-3 text-gray-400 text-xs">
                       {new Date(session.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">
                       <Link
-                        to={ROUTES.KYC_SESSION_DETAIL.replace('$id', session.id)}
+                        to={ROUTES.KYC_SESSION_DETAIL.replace(
+                          "$id",
+                          session.id
+                        )}
                         className="text-xs font-medium text-[#03034D] hover:underline"
                       >
                         View
@@ -237,7 +325,7 @@ const KycSessions = () => {
         </div>
       </div>
     </AuthenticatedLayout>
-  )
-}
+  );
+};
 
-export default KycSessions
+export default KycSessions;

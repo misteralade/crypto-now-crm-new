@@ -17,7 +17,7 @@ export type KycVerificationResult =
   | "approved"
   | "rejected"
   | "error";
-export type KycNinBvnType = "none" | "nin" | "bvn";
+
 export type KycIdType = "national_id" | "drivers_license" | "passport";
 
 export type AdminKycSessionPayload = {
@@ -28,11 +28,12 @@ export type AdminKycSessionPayload = {
   hasSubmitted: boolean;
   documentVerificationStatus: KycVerificationResult;
   faceMatchStatus: KycVerificationResult;
-  ninBvnType: KycNinBvnType | null;
-  ninBvnMasked: string | null;
+  ninMasked: string | null;
+  ninVerificationAttempts: number;
+  ninVerificationAttemptsRemaining: number;
+  identityVerificationAttempts: number;
+  identityVerificationAttemptsRemaining: number;
   failureReason: string | null;
-  retryCount: number;
-  maxRetries: number;
   submittedAt: string | null;
   verifiedAt: string | null;
   createdAt: string;
