@@ -81,6 +81,7 @@ export default function Treasury() {
   const inProgress = sweeps.filter(s => s.status === 'IN_PROGRESS' || s.status === 'PENDING').length;
 
   function handleRowClick(sweep: SweepRequest) {
+    // @ts-ignore
     void navigate({ to: '/dashboard/treasury/$sweepId', params: { sweepId: sweep.id } });
   }
 
