@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSweepQuery } from '../../../queries/sweep.querries.ts';
+import { useCryptoQuery } from '../../../queries/crypto.querries.ts';
 import { toast } from 'react-toastify';
 import LabeledPillSelect from '../../global/LabeledPillSelect.tsx';
 import { useNavigate } from '@tanstack/react-router';
@@ -17,13 +18,6 @@ const NETWORK_OPTIONS = [
   { label: 'Ethereum (ERC-20)', value: 'ERC20' },
 ];
 
-const CRYPTO_OPTIONS = [
-  { label: 'Bitcoin (BTC)', value: 'btc' },
-  { label: 'USDT', value: 'usdt' },
-  { label: 'USDC', value: 'usdc' },
-  { label: 'Solana (SOL)', value: 'sol' },
-];
-
 function getErrorMessage(error: unknown) {
   if (error instanceof Error && error.message) return error.message;
   return 'Failed to initiate sweep';
@@ -32,10 +26,26 @@ function getErrorMessage(error: unknown) {
 export default function SweepConfigModal({ open, onClose }: SweepConfigModalProps) {
   const navigate = useNavigate();
   const { useSweepPreview, initiateSweepMutation } = useSweepQuery();
+  const { allSupportedCrypto } = useCryptoQuery();
 
   const [network, setNetwork] = useState('');
   const [cryptocurrencyId, setCryptocurrencyId] = useState('');
   const [previewRequested, setPreviewRequested] = useState(false);
+
+  const cryptoOptions = useMemo(() => {
+    if (!allSupportedCrypto || !network) return [];
+    return allSupportedCrypto
+      .filter((crypto) => crypto.isActive && crypto.networks.includes(network))
+      .map((crypto) => ({
+        value: crypto.id,
+        label: `${crypto.name} (${crypto.symbol.toUpperCase()})`,
+      }));
+  }, [allSupportedCrypto, network]);
+
+  const selectedCrypto = useMemo(
+    () => allSupportedCrypto?.find((crypto) => crypto.id === cryptocurrencyId),
+    [allSupportedCrypto, cryptocurrencyId],
+  );
 
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
@@ -79,6 +89,7 @@ export default function SweepConfigModal({ open, onClose }: SweepConfigModalProp
 
   const resetPreviewAndSetNetwork = (value: string) => {
     setNetwork(value);
+    setCryptocurrencyId('');
     setPreviewRequested(false);
   };
 
@@ -124,7 +135,8 @@ export default function SweepConfigModal({ open, onClose }: SweepConfigModalProp
               label="Select Cryptocurrency"
               value={cryptocurrencyId}
               onValueChange={resetPreviewAndSetCrypto}
-              options={CRYPTO_OPTIONS}
+              options={cryptoOptions}
+              disabled={!network || cryptoOptions.length === 0}
             />
           </div>
 
@@ -143,7 +155,7 @@ export default function SweepConfigModal({ open, onClose }: SweepConfigModalProp
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[#667085]">Estimated amount</span>
                 <span className="font-semibold text-[--color-text-primary]">
-                  {previewData.estimatedAmount.toFixed(6)} {cryptocurrencyId.toUpperCase()}
+                  {previewData.estimatedAmount.toFixed(6)} {selectedCrypto?.symbol.toUpperCase() ?? ''}
                 </span>
               </div>
               <div className="border-t border-[#ECEFFD] pt-2">
