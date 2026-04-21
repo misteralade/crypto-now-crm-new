@@ -77,7 +77,7 @@ export default function Treasury() {
 
   const { data: historyData, isLoading } = useSweepHistory(filters);
 
-  const sweeps = historyData?.data ?? [];
+  const sweeps = useMemo(() => historyData?.data ?? [], [historyData]);
   const totalPages = useMemo(
     () => (historyData && filters.size ? Math.ceil(historyData.total / filters.size) : 1),
     [filters.size, historyData],
