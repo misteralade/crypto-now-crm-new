@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSweepQuery } from '../../../queries/sweep.querries.ts';
 import { toast } from 'react-toastify';
 import LabeledPillSelect from '../../global/LabeledPillSelect.tsx';
-import Button from '../../global/Button.tsx';
 import { useNavigate } from '@tanstack/react-router';
 import { LoadingSpinner } from '../../global/LoadingSpinner.tsx';
 
@@ -25,17 +24,25 @@ const CRYPTO_OPTIONS = [
   { label: 'Solana (SOL)', value: 'sol' },
 ];
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) return error.message;
+  return 'Failed to initiate sweep';
+}
+
 export default function SweepConfigModal({ open, onClose }: SweepConfigModalProps) {
   const navigate = useNavigate();
   const { useSweepPreview, initiateSweepMutation } = useSweepQuery();
 
   const [network, setNetwork] = useState('');
   const [cryptocurrencyId, setCryptocurrencyId] = useState('');
-  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [previewRequested, setPreviewRequested] = useState(false);
+
+  const canPreview = Boolean(network && cryptocurrencyId);
+  const showPreview = previewRequested && canPreview;
 
   // When both network and crypto selected, show preview
   const { data: previewData, isLoading: isPreviewLoading, error: previewError } = useSweepPreview(
-    isPreviewing && network && cryptocurrencyId ? { network, cryptocurrencyId } : null
+    showPreview ? { network, cryptocurrencyId } : null
   );
 
   if (!open) return null;
@@ -45,7 +52,7 @@ export default function SweepConfigModal({ open, onClose }: SweepConfigModalProp
       toast.error('Please select both network and cryptocurrency');
       return;
     }
-    setIsPreviewing(true);
+    setPreviewRequested(true);
   };
 
   const handleInitiate = async () => {
@@ -61,111 +68,123 @@ export default function SweepConfigModal({ open, onClose }: SweepConfigModalProp
         void navigate({
           to: '/dashboard/treasury/$sweepId',
           params: { sweepId: result.data.sweepId }
-        } as any);
+        });
+      } else {
+        toast.error(result.message || 'Sweep request was not accepted');
       }
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to initiate sweep');
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error));
     }
   };
 
+  const resetPreviewAndSetNetwork = (value: string) => {
+    setNetwork(value);
+    setPreviewRequested(false);
+  };
+
+  const resetPreviewAndSetCrypto = (value: string) => {
+    setCryptocurrencyId(value);
+    setPreviewRequested(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-[--color-border] flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[--color-text-primary]">Initiate Sweep</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-modal-backdrop-in">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-[#E4E7EC] bg-white shadow-2xl animate-modal-content-in">
+        <div className="flex items-center justify-between border-b border-[--color-border] px-6 py-4">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#667085]">Step-by-step flow</p>
+            <h2 className="text-lg font-semibold text-[--color-text-primary]">Initiate Treasury Sweep</h2>
+          </div>
+          <button onClick={onClose} className="rounded-lg p-1 transition-colors hover:bg-gray-100">
+            <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-6">
+        <div className="space-y-5 p-6">
+          <div className="grid grid-cols-2 gap-2 rounded-xl bg-[--color-bg-light] p-2">
+            <div className={`rounded-lg px-3 py-2 text-xs font-semibold ${!previewRequested ? 'bg-white text-[#03034D] shadow-sm' : 'text-[#667085]'}`}>
+              1. Configure
+            </div>
+            <div className={`rounded-lg px-3 py-2 text-xs font-semibold ${previewRequested ? 'bg-white text-[#03034D] shadow-sm' : 'text-[#667085]'}`}>
+              2. Review & Confirm
+            </div>
+          </div>
+
           <div className="space-y-4">
             <LabeledPillSelect
               label="Select Network"
               value={network}
-              onValueChange={(val) => {
-                setNetwork(val);
-                setIsPreviewing(false);
-              }}
+              onValueChange={resetPreviewAndSetNetwork}
               options={NETWORK_OPTIONS}
             />
 
             <LabeledPillSelect
               label="Select Cryptocurrency"
               value={cryptocurrencyId}
-              onValueChange={(val) => {
-                setCryptocurrencyId(val);
-                setIsPreviewing(false);
-              }}
+              onValueChange={resetPreviewAndSetCrypto}
               options={CRYPTO_OPTIONS}
             />
           </div>
 
-          {isPreviewing && isPreviewLoading && (
+          {showPreview && isPreviewLoading && (
             <div className="flex justify-center py-4">
               <LoadingSpinner />
             </div>
           )}
 
-          {isPreviewing && previewData && (
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Wallets to sweep:</span>
-                <span className="font-bold">{previewData.totalWallets}</span>
+          {showPreview && previewData && (
+            <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-gradient-to-br from-[#F8F8FF] to-white p-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#667085]">Wallets eligible</span>
+                <span className="font-semibold text-[--color-text-primary]">{previewData.totalWallets}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Estimated Total:</span>
-                <span className="font-bold">{previewData.estimatedAmount.toFixed(6)} {network}</span>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#667085]">Estimated amount</span>
+                <span className="font-semibold text-[--color-text-primary]">
+                  {previewData.estimatedAmount.toFixed(6)} {cryptocurrencyId.toUpperCase()}
+                </span>
               </div>
-              <div className="pt-2 border-t border-gray-200">
-                <p className="text-[10px] text-gray-400 italic">
-                  * Funds will be sent to admin wallet: {previewData.targetAdminWallet.address.slice(0, 10)}...
+              <div className="border-t border-[#ECEFFD] pt-2">
+                <p className="text-xs text-[#667085]">Destination wallet</p>
+                <p className="mt-1 break-all font-mono text-[11px] text-[#03034D]">
+                  {previewData.targetAdminWallet.address}
                 </p>
               </div>
             </div>
           )}
 
           {previewError && (
-            <div className="bg-red-50 p-3 rounded-lg border border-red-100 text-xs text-red-600">
+            <div className="rounded-lg border border-red-100 bg-red-50 p-3 text-xs text-red-600">
               {previewError.message}
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-[--color-border] bg-gray-50 flex gap-3">
-          <div className="flex-1">
-            <Button
-              variant="button"
-              buttonText="Cancel"
-              className="w-full !bg-white !text-[#03034D] border border-[#E4E7EC] hover:!bg-gray-50"
-              onClick={onClose}
-            />
-          </div>
-          {!isPreviewing || !previewData ? (
-            <div className="flex-1">
-              <Button
-                variant="button"
-                buttonText={isPreviewLoading ? "Loading..." : "Preview Sweep"}
-                className="w-full"
-                disabled={!network || !cryptocurrencyId || isPreviewLoading}
-                onClick={handlePreview}
-              />
-            </div>
+        <div className="flex gap-3 border-t border-[--color-border] bg-[#FBFBFF] px-6 py-4">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-[#E4E7EC] bg-white px-4 py-2.5 text-sm font-semibold text-[#03034D] transition-colors hover:bg-[#F8F8FF]"
+          >
+            Cancel
+          </button>
+          {!showPreview || !previewData ? (
+            <button
+              onClick={handlePreview}
+              disabled={!canPreview || isPreviewLoading}
+              className="flex-1 rounded-xl bg-[#03034D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isPreviewLoading ? 'Loading Preview...' : 'Preview Sweep'}
+            </button>
           ) : (
-            <div className="flex-1">
-              <Button
-                variant="button"
-                buttonText="Confirm & Start"
-                className="w-full"
-                disabled={initiateSweepMutation.isPending}
-                onClick={handleInitiate}
-              />
-            </div>
+            <button
+              onClick={handleInitiate}
+              disabled={initiateSweepMutation.isPending}
+              className="flex-1 rounded-xl bg-[#03034D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {initiateSweepMutation.isPending ? 'Starting...' : 'Confirm & Start'}
+            </button>
           )}
         </div>
       </div>

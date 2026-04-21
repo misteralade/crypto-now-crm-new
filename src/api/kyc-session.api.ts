@@ -29,7 +29,7 @@ class KycSessionServiceApi {
     status?: KycSessionStep
     userId?: string
   }): Promise<GetAdminKycSessionsApiResponse> {
-    return axiosGetRequestHandler('/kyc/admin/sessions', params) as Promise<GetAdminKycSessionsApiResponse>
+    return axiosPostRequestHandler('/kyc/admin/sessions', {}, { params }) as Promise<GetAdminKycSessionsApiResponse>
   }
 
   async adminGetSessionDetail(id: string): Promise<GetAdminKycSessionDetailApiResponse> {

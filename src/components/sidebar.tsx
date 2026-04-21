@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {Link, useNavigate, useRouterState} from '@tanstack/react-router'
-import { History, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import { History, LogOut, ChevronLeft, ChevronRight, Wallet } from 'lucide-react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import logo from '../assets/img/logo.svg'
@@ -66,6 +66,11 @@ const navItems = [
         className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
+  },
+  {
+    path: ROUTES.TREASURY,
+    label: 'Treasury',
+    icon: Wallet,
   },
   {
     path: ROUTES.KYC_TIER_LIMITS,
