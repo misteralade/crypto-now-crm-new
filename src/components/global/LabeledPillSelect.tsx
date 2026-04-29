@@ -42,7 +42,7 @@ export default function MFLabeledPillSelect({ label, options, value, onChange, o
 
 // Named export: search-capable select (kept custom)
 interface MFLabeledPillSearchSelectProps {
-  options: Array<{ value: string; label: string }>;
+  options: Array<{ value: string; label: string; logoUrl?: string }>;
   label: string;
   placeholder?: string;
   valueClass?: string;
@@ -129,7 +129,12 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
             aria-expanded={isOpen}
             aria-haspopup="listbox"
           >
-            <span className={!displayValue ? 'text-[#9A9A9A]' : ''}>{displayValue || placeholder}</span>
+            <div className="flex items-center gap-2">
+              {selectedOption?.logoUrl && (
+                <img src={selectedOption.logoUrl} alt="" className="w-5 h-5 rounded-full object-contain" />
+              )}
+              <span className={!displayValue ? 'text-[#9A9A9A]' : ''}>{displayValue || placeholder}</span>
+            </div>
             <div className="flex items-center gap-2">
               {displayValue && (
                 <X className="w-4 h-4 text-[#9A9A9A] hover:text-[#101828] transition-colors" onClick={clearSelection} />
@@ -161,13 +166,16 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                   <div
                     key={opt.value}
                     onClick={() => handleSelect(opt.value)}
-                    className={`px-4 py-2.5 cursor-pointer text-[13px] transition-colors rounded-lg mx-1 my-0.5 ${
+                    className={`px-4 py-2.5 cursor-pointer text-[13px] transition-colors rounded-lg mx-1 my-0.5 flex items-center gap-3 ${
                       opt.value === selectedItem ? 'bg-[#F5F5FF] text-[#03034D] font-medium' : 'text-[#101828] hover:bg-[#F5F5FF]'
                     } ${index === highlightedIndex ? 'bg-[#F5F5FF]' : ''}`}
                     role="option"
                     aria-selected={opt.value === selectedItem}
                   >
-                    {opt.label}
+                    {opt.logoUrl && (
+                      <img src={opt.logoUrl} alt="" className="w-5 h-5 rounded-full object-contain" />
+                    )}
+                    <span>{opt.label}</span>
                   </div>
                 ))
               ) : (

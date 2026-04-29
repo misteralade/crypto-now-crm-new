@@ -28,13 +28,25 @@ const BankDetailsSection = ({ bankDetails, loading = false }: BankDetailsSection
         <div className="space-y-4">
           {bankDetails.map((bank, index) => (
             <Fragment key={`${bank.id}-${index}`}>
-              <div className={`p-4 border rounded-lg ${index === 0 ? 'border-t' : ''} ${index === bankDetails.length - 1 ? 'border-y' : 'border-t'}`}>
+              <div className={`p-4 border rounded-lg relative ${index === 0 ? 'border-t' : ''} ${index === bankDetails.length - 1 ? 'border-y' : 'border-t'} ${bank.isDeleted ? 'bg-red-50/30 border-red-100' : ''}`}>
+                <div className="flex justify-end gap-2 absolute top-4 right-4">
+                  {bank.isDefault && (
+                    <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-blue-100 text-blue-700 border border-blue-200">
+                      Default
+                    </span>
+                  )}
+                  {bank.isDeleted && (
+                    <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-red-100 text-red-700 border border-red-200">
+                      Deleted
+                    </span>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#667085] mb-2">
                       Account Name
                     </label>
-                    <div className="text-[#0E0F0C] font-medium">
+                    <div className={`font-medium ${bank.isDeleted ? 'text-red-900' : 'text-[#0E0F0C]'}`}>
                       {bank.accountName}
                     </div>
                   </div>
@@ -43,7 +55,7 @@ const BankDetailsSection = ({ bankDetails, loading = false }: BankDetailsSection
                     <label className="block text-sm font-medium text-[#667085] mb-2">
                       Bank Name
                     </label>
-                    <div className="text-[#0E0F0C] font-medium">
+                    <div className={`font-medium ${bank.isDeleted ? 'text-red-900' : 'text-[#0E0F0C]'}`}>
                       {bank.bankName}
                     </div>
                   </div>
@@ -52,7 +64,7 @@ const BankDetailsSection = ({ bankDetails, loading = false }: BankDetailsSection
                     <label className="block text-sm font-medium text-[#667085] mb-2">
                       Account Number
                     </label>
-                    <div className="text-[#0E0F0C] font-medium">
+                    <div className={`font-medium ${bank.isDeleted ? 'text-red-900' : 'text-[#0E0F0C]'}`}>
                       {bank.accountNumber}
                     </div>
                   </div>

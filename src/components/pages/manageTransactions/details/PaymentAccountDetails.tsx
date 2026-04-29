@@ -7,6 +7,7 @@ interface PaymentAccountDetailsProps {
   accountName: string | undefined;
   accountNumber: string | undefined;
   bankName: string | undefined;
+  isDeleted?: boolean;
   hasCryptoWallet: boolean | null;
   walletAddress: string | undefined;
   network: string | undefined;
@@ -14,16 +15,23 @@ interface PaymentAccountDetailsProps {
   cryptoSymbol: string | undefined;
 }
 
-const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumber, bankName, hasCryptoWallet, walletAddress, network, cryptoName, cryptoSymbol }: PaymentAccountDetailsProps) => {
+const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumber, bankName, isDeleted, hasCryptoWallet, walletAddress, network, cryptoName, cryptoSymbol }: PaymentAccountDetailsProps) => {
   return (
     <Fragment>
       {type === 'SELL' && hasBankAccount ? (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">User Bank Account</h2>
+        <div className={`bg-white rounded-lg shadow-sm p-6 ${isDeleted ? 'bg-red-50/50' : ''}`}>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">User Bank Account</h2>
+            {isDeleted && (
+              <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-red-100 text-red-700 border border-red-200">
+                Deleted
+              </span>
+            )}
+          </div>
           <div className="space-y-3">
             <div>
               <p className="text-sm text-gray-500">Account Name</p>
-              <p className="text-base font-medium text-gray-900">{accountName}</p>
+              <p className={`text-base font-medium ${isDeleted ? 'text-red-900' : 'text-gray-900'}`}>{accountName}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Account Number</p>

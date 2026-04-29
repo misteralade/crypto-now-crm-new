@@ -89,6 +89,7 @@ const TransactionDetails = () => {
                   accountName={transaction.userBankAccount?.accountName}
                   accountNumber={transaction.userBankAccount?.accountNumber}
                   bankName={transaction.userBankAccount?.bankName}
+                  isDeleted={transaction.userBankAccount?.isDeleted}
                   hasCryptoWallet={transaction?.userCryptoWallet ? true : false}
                   walletAddress={transaction.userCryptoWallet?.walletAddress}
                   network={transaction.userCryptoWallet?.network}

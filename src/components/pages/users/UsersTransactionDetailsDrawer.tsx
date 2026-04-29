@@ -98,25 +98,37 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
                       ) => (
                         <Fragment key={`${bankDetail.accountNumber}-${index}`}>
                           <div
-                            className={`mt-4 gap-y-1 text-[14px] border-dotted ${index === 0 ? 'border-t' : ''} ${index === data.bankDetails.length - 1 ? 'border-y' : 'border-t'} py-4`}
+                            className={`mt-4 gap-y-1 text-[14px] border-dotted ${index === 0 ? 'border-t' : ''} ${index === data.bankDetails.length - 1 ? 'border-y' : 'border-t'} py-4 relative`}
                           >
+                            <div className="flex justify-end gap-1 mb-2">
+                              {bankDetail.isDefault && (
+                                <span className="px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider rounded-full bg-blue-100 text-blue-700 border border-blue-200">
+                                  Default
+                                </span>
+                              )}
+                              {bankDetail.isDeleted && (
+                                <span className="px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider rounded-full bg-red-100 text-red-700 border border-red-200">
+                                  Deleted
+                                </span>
+                              )}
+                            </div>
                             <div className="my-0.5 flex items-center justify-between text-[16px]">
                               <div className="text-[#667085]">Account name</div>
-                              <div className="text-[#101828] font-medium w-fit">
+                              <div className={`font-medium w-fit ${bankDetail.isDeleted ? 'text-red-700' : 'text-[#101828]'}`}>
                                 {bankDetail.accountName}
                               </div>
                             </div>
 
                             <div className="my-0.5 flex items-center justify-between text-[16px]">
                               <div className="text-[#667085]">Bank name</div>
-                              <div className="text-[#101828] font-medium w-fit">
+                              <div className={`font-medium w-fit ${bankDetail.isDeleted ? 'text-red-700' : 'text-[#101828]'}`}>
                                 {bankDetail.bankName}
                               </div>
                             </div>
 
                             <div className="my-0.5 flex items-center justify-between text-[16px]">
-                              <div className="text-[#667085]">Account name</div>
-                              <div className="text-[#101828] font-medium w-fit">
+                              <div className="text-[#667085]">Account number</div>
+                              <div className={`font-medium w-fit ${bankDetail.isDeleted ? 'text-red-700' : 'text-[#101828]'}`}>
                                 {bankDetail.accountNumber}
                               </div>
                             </div>

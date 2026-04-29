@@ -48,6 +48,10 @@ class BankServiceApi {
   async adminSearchSupportedBanks(payload: AdminSearchSupportedBankRequestType) {
     return await axiosPostRequestHandler(`/bank/admin/supported-bank/search`, payload) as SearchSupportedBanksAPIResponse;
   }
+
+  async lookupAccountName(accountNumber: string, bankId: string) {
+    return await axiosPostRequestHandler("/bank/bank/lookup", { accountNumber, bankId }) as BaseApiResponse<{ accountName: string }>;
+  }
 }
 
 export const bankServiceApi = BankServiceApi.getInstance();

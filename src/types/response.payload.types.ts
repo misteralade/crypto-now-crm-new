@@ -397,6 +397,8 @@ export type UserBankAccountResponsePayload = {
   bankLogo: string;
   accountName: string;
   accountNumber: string;
+  isDeleted: boolean;
+  isDefault: boolean;
   createdAt: Date;
 }
 // End Bank Accounts
