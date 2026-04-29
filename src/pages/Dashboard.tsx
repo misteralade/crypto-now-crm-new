@@ -13,6 +13,8 @@ import { TrendingUp, Hash, Users, UserCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SummaryCardSkeleton } from '../components/global/Skeleton';
 
+import PendingPayoutsCard from '../components/pages/dashboard/PendingPayoutsCard';
+
 const Dashboard = () => {
   const {
     // States
@@ -29,10 +31,13 @@ const Dashboard = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    retryingPayouts,
     
     // ⚙️ Functions
     handleSelectedTimelineChange,
     handleViewTransactionDetails,
+    handleRetryAllPendingPayouts,
+    handleViewPendingPayouts,
   } = useDashboardPage()
   
   const numberOfTransactionsDisplay = !loadingTransactionCount
@@ -76,7 +81,15 @@ const Dashboard = () => {
         </div>
 
         {/* Metric cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <PendingPayoutsCard 
+            count={weeklyUserSummary?.pendingPayoutsCount || 0}
+            loading={loadingWeeklyUserSummary}
+            onRetry={handleRetryAllPendingPayouts}
+            onView={handleViewPendingPayouts}
+            retrying={retryingPayouts}
+          />
+
           {loadingTransactionVolume ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Total Volume"

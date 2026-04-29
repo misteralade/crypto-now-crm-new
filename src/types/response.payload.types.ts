@@ -211,6 +211,7 @@ export type UserResponsePayload = {
 export type DashboardUserStatsSummary = {
   newUsersCount: number;
   activeUsersCount: number;
+  pendingPayoutsCount?: number;
 };
 
 export type SummarisedUserProfileResponsePayload = {

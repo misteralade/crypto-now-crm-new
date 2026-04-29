@@ -127,6 +127,13 @@ class TransactionServiceApi {
     
     throw new Error(response.message);
   }
+
+  async adminRetryPendingPayouts(sessionId?: string) {
+    return (await axiosPostRequestHandler(
+      '/transaction/admin/retry-pending-payouts',
+      { sessionId },
+    )) as BaseApiResponse<null>
+  }
 }
 
 export const transactionServiceApi = TransactionServiceApi.getInstance()

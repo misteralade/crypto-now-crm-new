@@ -22,6 +22,7 @@ export const useDashboardPage = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    adminRetryPendingPayoutsMutation,
   } = useTransactionQuery()
 
   const { weeklyUserSummary, loadingWeeklyUserSummary } = useUserQuery()
@@ -35,6 +36,17 @@ export const useDashboardPage = () => {
   }
   
   const handleViewTransactionDetails = (sessionId: string) => navigate( { to: `${ROUTES.TRANSACTIONS}/${sessionId}` })
+
+  const handleRetryAllPendingPayouts = () => {
+    adminRetryPendingPayoutsMutation.mutate(undefined);
+  }
+
+  const handleViewPendingPayouts = () => {
+    navigate({ 
+      to: ROUTES.TRANSACTIONS,
+      search: { status: 'PENDING_PAYOUT' } as any 
+    });
+  }
 
   return {
     // 🧩 Values
@@ -51,9 +63,12 @@ export const useDashboardPage = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    retryingPayouts: adminRetryPendingPayoutsMutation.isPending,
 
     // ⚙️ Functions
     handleSelectedTimelineChange,
     handleViewTransactionDetails,
+    handleRetryAllPendingPayouts,
+    handleViewPendingPayouts,
   }
 }

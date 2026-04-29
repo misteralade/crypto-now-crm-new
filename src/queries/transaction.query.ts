@@ -297,6 +297,28 @@ export const useTransactionQuery = () => {
     },
   })
 
+  const adminRetryPendingPayoutsMutation = useMutation({
+    mutationFn: async (sessionId?: string) => {
+      toast.loading('Processing payout retries...')
+      const { success, message } = await transactionServiceApi.adminRetryPendingPayouts(sessionId)
+      return { success, message }
+    },
+    onSuccess: (res) => {
+      toast.dismiss()
+      if (res?.success) {
+        toast.success(res.message)
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS] })
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER.GET_WEEKLY_USER_STATS_SUMMARY] })
+      } else {
+        toast.error(res?.message || 'Failed to retry payouts')
+      }
+    },
+    onError: (error: AxiosServerError) => {
+      toast.dismiss()
+      toast.error(error.response?.data.error.message || 'An unexpected error occurred')
+    },
+  })
+
   return {
     // 🧩 Values
     transactionVolume,
@@ -322,5 +344,6 @@ export const useTransactionQuery = () => {
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
     adminLockTransactionMutation,
+    adminRetryPendingPayoutsMutation,
   }
 }
