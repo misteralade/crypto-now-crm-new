@@ -53,6 +53,13 @@ class TransactionServiceApi {
     )) as GetTransactionCountAPIResponse
   }
 
+  async getAdminTransactionStats(queryParams?: Record<string, any>) {
+    return (await axiosGetRequestHandler(
+      '/transaction/admin/stats',
+      queryParams,
+    )) as BaseApiResponse<any>
+  }
+
   async getTransactionTypeByPercentage(queryParams?: Record<string, any>) {
     return (await axiosGetRequestHandler(
       '/transaction/transaction-type-percentage',

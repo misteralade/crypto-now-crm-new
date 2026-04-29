@@ -130,6 +130,20 @@ export const useTransactionQuery = () => {
       !!(store.getState() as RootState).dashboard.timelineFilter,
   });
 
+  const { data: adminTransactionStats, isLoading: loadingAdminTransactionStats } = useQuery({
+    queryKey: [
+      'GET_ADMIN_TRANSACTION_STATS',
+      (store.getState() as RootState).dashboard.timelineFilter,
+    ],
+    queryFn: async () => {
+      const timeline = (store.getState() as RootState).dashboard.timelineFilter || 'MONTH'
+      const { data, success } = await transactionServiceApi.getAdminTransactionStats({ timeline })
+      if (success) return data
+      return null
+    },
+    enabled: !!matchRoute({ to: ROUTES.TRANSACTIONS }),
+  })
+
   // Aliases expected by consumers
   const transactionCount = weeklyTransactionCount
   const loadingTransactionCount = loadingWeeklyTransactionCount
@@ -339,6 +353,8 @@ export const useTransactionQuery = () => {
     loadingTransactionDetails,
     transactionInfo,
     loadingTransactionInfo,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
     
     // Mutation
     adminUpdateTransactionMutation,
