@@ -331,7 +331,7 @@ export const TableAmount: FC<{
   amount: string | number
   currency?: string
 }> = ({ amount, currency = '₦' }) => (
-  <span className="font-medium text-[#667085]">
+  <span className="font-medium text-gray-600 tabular-nums whitespace-nowrap">
     {currency}
     {typeof amount === 'number' ? amount.toLocaleString() : amount}
   </span>
@@ -354,7 +354,7 @@ export const TableDate: FC<{
       .replace(',', ' -')
   }
 
-  return <span className="text-[#667085]">{formatDate(date)}</span>
+  return <span className="text-gray-600 whitespace-nowrap tabular-nums">{formatDate(date)}</span>
 }
 
 export const TableStatus: FC<{

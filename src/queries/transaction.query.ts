@@ -27,7 +27,6 @@ export const useTransactionQuery = () => {
       queryFn: async () => {
         const timeline = (store.getState() as RootState).dashboard
           .timelineFilter
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!timeline) return null
 
         const { data, success } =
@@ -51,7 +50,6 @@ export const useTransactionQuery = () => {
     ],
     queryFn: async () => {
       const timeline = (store.getState() as RootState).dashboard.timelineFilter
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!timeline) return null
 
       const { data, success } =
@@ -75,7 +73,6 @@ export const useTransactionQuery = () => {
     ],
     queryFn: async () => {
       const timeline = (store.getState() as RootState).dashboard.timelineFilter
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!timeline) return [] as Array<WeeklyTransactionVolumeTrend>
 
       const { data, success } =
@@ -95,7 +92,6 @@ export const useTransactionQuery = () => {
     ],
     queryFn: async () => {
       const timeline = (store.getState() as RootState).dashboard.timelineFilter
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!timeline) return [] as Array<UsersWithTopTransactionVolume>
 
       const { data, success } =
@@ -117,7 +113,6 @@ export const useTransactionQuery = () => {
     ],
     queryFn: async () => {
       const timeline = (store.getState() as RootState).dashboard.timelineFilter
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!timeline) return null
 
       const { data, success } =
@@ -154,7 +149,6 @@ export const useTransactionQuery = () => {
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchTransaction],
     queryFn: async () => {
       const payload = (store.getState() as RootState).transactionManagement.search.transactions
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!payload) return null;
 
       const { data, success } = await transactionServiceApi.searchTransactions(payload);
@@ -173,7 +167,6 @@ export const useTransactionQuery = () => {
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchUserTransactionHistory],
     queryFn: async () => {
       const payload = (store.getState() as RootState).transactionManagement.search.userTransactionHistory
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!payload) return null;
 
       const { data, success } = await transactionServiceApi.searchTransactions(payload);
@@ -241,7 +234,6 @@ export const useTransactionQuery = () => {
       const updatePayload = (store.getState() as RootState)
         .transactionManagement.details.update
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!updatePayload) {
         toast.dismiss()
         return null
@@ -253,7 +245,7 @@ export const useTransactionQuery = () => {
           updatePayload,
         )
 
-      return { success, message } as any
+      return { success, message }
     },
     onSuccess: (response) => {
       toast.dismiss()

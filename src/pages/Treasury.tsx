@@ -5,6 +5,7 @@ import PageHeader from '../components/global/pageHeader.tsx';
 import { useSweepQuery } from '../queries/sweep.querries.ts';
 import type { SweepHistoryParams, SweepRequest, SweepStatus } from '../api/sweep.api.ts';
 import SweepConfigModal from '../components/pages/treasury/SweepConfigModal.tsx';
+import Table, { type TableColumn } from '../components/table.tsx';
 
 const STATUS_MAP: Record<string, { label: string; classes: string }> = {
   COMPLETED: { label: 'Completed', classes: 'bg-[--color-success-bg] text-[--color-success] border border-emerald-200' },
@@ -26,24 +27,14 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function SkeletonRow() {
-  return (
-    <tr className="animate-pulse">
-      {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-        <td key={i} className="px-4 py-3.5">
-          <div className="h-3.5 bg-[--color-border] rounded w-24" />
-        </td>
-      ))}
-    </tr>
-  );
-}
+
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="cn-card p-5 md:p-6 flex flex-col gap-1.5 shadow-[0_8px_28px_-20px_rgba(3,3,77,0.35)]">
-      <p className="text-[11px] font-semibold text-[--color-text-muted] uppercase tracking-[0.08em]">{label}</p>
-      <p className="text-2xl md:text-[30px] font-semibold leading-none text-[--color-text-primary]">{value}</p>
-      {sub && <p className="text-xs text-[--color-text-muted]">{sub}</p>}
+    <div className="bg-white rounded-2xl p-5 md:p-6 flex flex-col gap-1.5 border border-gray-200">
+      <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-[0.08em]">{label}</p>
+      <p className="text-2xl md:text-[30px] font-semibold leading-none text-gray-900">{value}</p>
+      {sub && <p className="text-xs text-gray-500">{sub}</p>}
     </div>
   );
 }
@@ -101,6 +92,77 @@ export default function Treasury() {
     void navigate({ to: '/dashboard/treasury/$sweepId', params: { sweepId: sweep.id } });
   }
 
+  const columns: TableColumn<SweepRequest>[] = useMemo(() => [
+    {
+      key: 'network',
+      header: 'Network',
+      render: (value) => (
+        <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-mono text-[11px] font-semibold text-indigo-700">
+          {value}
+        </span>
+      ),
+    },
+    {
+      key: 'targetAddress',
+      header: 'Target Wallet',
+      render: (value) => (
+        <span className="font-mono text-xs text-gray-500 whitespace-nowrap" title={value}>
+          {formatWalletAddress(value)}
+        </span>
+      ),
+    },
+    {
+      key: 'wallets',
+      header: 'Wallets Processed',
+      render: (_, row) => (
+        <span className="whitespace-nowrap tabular-nums">
+          <span className="font-semibold text-gray-900">{row.totalWalletsSwept}</span>
+          <span className="text-gray-500"> / {row.totalWalletsFound}</span>
+        </span>
+      ),
+    },
+    {
+      key: 'actualTotalAmount',
+      header: 'Amount Swept',
+      render: (value) => (
+        <span className="font-semibold tabular-nums text-gray-900 whitespace-nowrap">
+          {Number(value).toFixed(6)}
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value) => <StatusBadge status={value} />,
+    },
+    {
+      key: 'createdAt',
+      header: 'Created',
+      render: (value) => (
+        <span className="text-xs text-gray-500 whitespace-nowrap">
+          {new Date(value).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      key: 'action',
+      header: '',
+      render: (_, row) => (
+        <Link
+          to="/dashboard/treasury/$sweepId"
+          params={{ sweepId: row.id }}
+          onClick={(event) => event.stopPropagation()}
+          className="inline-flex items-center gap-1 rounded-lg border border-transparent px-2.5 py-1.5 text-xs font-semibold text-indigo-600 transition-all hover:bg-indigo-50 hover:border-indigo-100"
+        >
+          Open
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      ),
+    },
+  ], []);
+
   function updateStatusFilter(value: string) {
     const statusValue = value === '' ? undefined : (value as SweepStatus);
     setFilters((prev) => ({ ...prev, status: statusValue, page: 1 }));
@@ -111,26 +173,23 @@ export default function Treasury() {
       <PageHeader title="Treasury Management" subtitle="Move custodial balances into admin treasury wallets" />
 
       <div className="p-6 mx-auto space-y-6">
-        <section className="relative overflow-hidden rounded-2xl border border-[#DDDFFC] bg-gradient-to-r from-[#EBECFF] via-[#F3F4FF] to-white p-6 md:p-7 shadow-[0_18px_40px_-28px_rgba(3,3,77,0.45)]">
-          <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-[#D9DBFF]/60 blur-2xl" />
-          <div className="pointer-events-none absolute bottom-0 right-0 h-32 w-32 translate-x-8 translate-y-8 rounded-full bg-[#575AE5]/10 blur-xl" />
-
+        <section className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 md:p-7 shadow-sm">
           <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl space-y-2">
-              <p className="inline-flex items-center rounded-full border border-[#D8DBFF] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#575AE5]">
+              <p className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-indigo-600">
                 Treasury Sweep
               </p>
-              <h2 className="text-[22px] md:text-[28px] leading-tight font-semibold text-[#0E0F0C]">
+              <h2 className="text-[22px] md:text-[28px] leading-tight font-semibold text-gray-900">
                 Sweep user wallet balances with full operational visibility
               </h2>
-              <p className="text-[14px] leading-relaxed text-[#4C4F5D]">
+              <p className="text-[14px] leading-relaxed text-gray-500">
                 Preview eligible wallets, confirm the transfer scope, and monitor each sweep run from a single control panel.
               </p>
             </div>
             <button
               id="btn-initiate-sweep"
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[--color-primary] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[--color-primary-hover] hover:shadow-[0_12px_25px_-18px_rgba(3,3,77,0.7)]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-700"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -185,89 +244,15 @@ export default function Treasury() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[--color-border] bg-[--color-bg-light]">
-                  {['Network', 'Target Wallet', 'Wallets Processed', 'Amount Swept', 'Status', 'Created', ''].map((header) => (
-                    <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[--color-text-muted] whitespace-nowrap">
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[--color-border]">
-                {isLoading ? (
-                  Array.from({ length: 6 }, (_, idx) => <SkeletonRow key={idx} />)
-                ) : sweeps.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-16 text-center">
-                      <div className="mx-auto max-w-sm space-y-2">
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#ECECFF]">
-                          <svg className="h-5 w-5 text-[#575AE5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
-                          </svg>
-                        </div>
-                        <p className="text-sm font-semibold text-[--color-text-primary]">No sweep history yet</p>
-                        <p className="text-xs text-[--color-text-muted]">Start your first treasury sweep to populate this table.</p>
-                        <button
-                          onClick={() => setModalOpen(true)}
-                          className="mt-2 inline-flex items-center gap-1 rounded-lg border border-[#D7DAFF] bg-white px-3 py-2 text-xs font-semibold text-[#575AE5] hover:bg-[#F6F6FF]"
-                        >
-                          Initiate Sweep
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  sweeps.map((sweep) => (
-                    <tr
-                      key={sweep.id}
-                      onClick={() => handleRowClick(sweep)}
-                      className="group cursor-pointer transition-colors hover:bg-[--color-bg-light]"
-                    >
-                      <td className="px-4 py-3.5">
-                        <span className="rounded-full bg-[--color-accent-light] px-2.5 py-1 font-mono text-[11px] font-semibold text-[--color-primary]">
-                          {sweep.network}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="font-mono text-xs text-[--color-text-secondary]" title={sweep.targetAddress}>
-                          {formatWalletAddress(sweep.targetAddress)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="font-semibold text-[--color-text-primary]">{sweep.totalWalletsSwept}</span>
-                        <span className="text-[--color-text-muted]"> / {sweep.totalWalletsFound}</span>
-                      </td>
-                      <td className="px-4 py-3.5 font-semibold tabular-nums text-[--color-text-primary]">
-                        {Number(sweep.actualTotalAmount).toFixed(6)}
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <StatusBadge status={sweep.status} />
-                      </td>
-                      <td className="px-4 py-3.5 text-xs text-[--color-text-muted] whitespace-nowrap">
-                        {new Date(sweep.createdAt).toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <Link
-                          to="/dashboard/treasury/$sweepId"
-                          params={{ sweepId: sweep.id }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                          }}
-                          className="inline-flex items-center gap-1 rounded-lg border border-transparent px-2.5 py-1.5 text-xs font-semibold text-[--color-primary] transition-all group-hover:border-[#D8DAFF] group-hover:bg-white"
-                        >
-                          Open
-                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+            <Table
+              data={sweeps}
+              columns={columns}
+              loading={isLoading}
+              onRowClick={handleRowClick}
+              emptyTitle="No sweep history yet"
+              emptyMessage="Start your first treasury sweep to populate this table."
+              emptyIllustrationSrc="/empty.svg"
+            />
           </div>
 
           {totalPages > 1 && (

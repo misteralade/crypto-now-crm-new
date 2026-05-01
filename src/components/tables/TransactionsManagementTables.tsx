@@ -151,7 +151,7 @@ export const TransactionsManagementColumn = (
         </span>
       </div>
     ),
-    render: (value) => <span className="py-3 text-sm text-[#667085]">{value}</span>,
+    render: (value) => <span className="py-3 text-sm text-gray-600 whitespace-nowrap">{value}</span>,
   },
   {
     key: 'amount',
@@ -163,7 +163,7 @@ export const TransactionsManagementColumn = (
       </div>
     ),
     render: (value) => (
-      <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+      <span className="py-3 text-sm text-[14px] text-gray-600 tabular-nums whitespace-nowrap">{value}</span>
     ),
   },
   {
@@ -183,7 +183,7 @@ export const TransactionsManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums">{value}</span>
       </Fragment>
     ),
   },
@@ -244,7 +244,7 @@ export const TransactionsManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums">{value}</span>
       </Fragment>
     ),
   },
@@ -333,7 +333,7 @@ export const UserTransactionsManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums">{value}</span>
       </Fragment>
     ),
   },
@@ -348,7 +348,7 @@ export const UserTransactionsManagementColumn = (
         </span>
       </div>
     ),
-    render: (value) => <span className="py-3 text-sm text-[#667085]">{value}</span>,
+    render: (value) => <span className="py-3 text-sm text-gray-600 whitespace-nowrap">{value}</span>,
   },
   {
     key: 'amount',
@@ -360,7 +360,7 @@ export const UserTransactionsManagementColumn = (
       </div>
     ),
     render: (value) => (
-      <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+      <span className="py-3 text-sm text-[14px] text-gray-600 tabular-nums whitespace-nowrap">{value}</span>
     ),
   },
   {
@@ -373,7 +373,7 @@ export const UserTransactionsManagementColumn = (
       </div>
     ),
     render: (value) => (
-      <span className="py-3 text-sm text-[14px] text-[#667085]">{value}</span>
+      <span className="py-3 text-sm text-[14px] text-gray-600 tabular-nums whitespace-nowrap">{value}</span>
     ),
   },
   {

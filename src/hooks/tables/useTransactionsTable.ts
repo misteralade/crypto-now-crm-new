@@ -21,12 +21,13 @@ export const useTransactionsTable = () => {
   const [maxAmountRange, setMaxAmountRange] = useState<number>()
   const [selectedCryptoId, setSelectedCryptoId] = useState<string>()
   const [selectedStatus, setSelectedStatus] = useState<TransactionStatus | "ALL">("ALL")
+  const [selectedPriority, setSelectedPriority] = useState<string | "ALL">("ALL")
 
   const toggleApplyAction = () => setShowApplyActionPanel(!showApplyActionPanel)
 
   const toggleApplyFilter = () => setShowFilter(!showFilter)
 
-  const handleSearchTransactionFieldUpdate = (field: keyof SearchTransactionsRequestType, value: any ) => {
+  const handleSearchTransactionFieldUpdate = (field: keyof SearchTransactionsRequestType, value: unknown ) => {
     dispatch(setSearchTransactionsField({
       field,
       value,
@@ -100,6 +101,15 @@ export const useTransactionsTable = () => {
   const handleSelectedStatus = (status: TransactionStatus | "ALL") => {
     setSelectedStatus(status)
     handleSearchTransactionFieldUpdate("status", status === "ALL" ? undefined : status)
+    setSelectedPriority("ALL")
+    handleSearchTransactionFieldUpdate("priority", undefined)
+  }
+
+  const handleSelectedPriority = (priority: string | "ALL") => {
+    setSelectedPriority(priority)
+    handleSearchTransactionFieldUpdate("priority", priority === "ALL" ? undefined : priority)
+    setSelectedStatus("ALL")
+    handleSearchTransactionFieldUpdate("status", undefined)
   }
   
   return {
@@ -114,6 +124,7 @@ export const useTransactionsTable = () => {
     maxAmountRange,
     selectedCryptoId,
     selectedStatus,
+    selectedPriority,
 
     // ⚙️ Functions
     toggleApplyAction,
@@ -128,6 +139,7 @@ export const useTransactionsTable = () => {
     handleMaxAmountRange,
     handleSelectedCryptoId,
     handleSelectedStatus,
+    handleSelectedPriority,
     handleViewTransactionDetails,
   }
 }

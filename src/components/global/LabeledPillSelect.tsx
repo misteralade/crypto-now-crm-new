@@ -117,7 +117,7 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
     <Fragment>
       <div ref={dropdownRef} className="relative">
         <fieldset
-          className={`relative rounded-xl border-[1.5px] transition-all duration-150 ${isOpen ? 'border-[#948EEE] shadow-[0_0_0_3px_rgba(211,212,248,0.5)]' : 'border-[#E4E7EC]'} px-4 py-3`}
+          className={`relative rounded-xl border transition-all duration-150 ${isOpen ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200'} px-4 py-3 bg-white`}
         >
           <legend className={`px-2 text-[13px] font-medium text-[#454745] leading-none ${labelClass}`}>{label}</legend>
           <div
@@ -145,8 +145,8 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
         </fieldset>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1.5 bg-white border border-[#ECECEC] rounded-xl shadow-lg max-h-[300px] overflow-hidden animate-in fade-in-0 zoom-in-95 slide-in-from-top-1 duration-150">
-            <div className="p-2 border-b border-[#ECECEC]">
+          <div className="absolute z-50 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-[300px] overflow-hidden animate-in fade-in-0 zoom-in-95 slide-in-from-top-1 duration-150">
+            <div className="p-2 border-b border-gray-100">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9A9A9A]" />
                 <input
@@ -156,7 +156,7 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                   onChange={(e) => { setSearchTerm(e.target.value); setHighlightedIndex(0); }}
                   onKeyDown={handleKeyDown}
                   placeholder={placeholder}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-[#E4E7EC] outline-none focus:border-[#948EEE] focus:shadow-[0_0_0_3px_rgba(211,212,248,0.5)] text-[13px] transition-all"
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-[13px] transition-all"
                 />
               </div>
             </div>
@@ -167,8 +167,8 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                     key={opt.value}
                     onClick={() => handleSelect(opt.value)}
                     className={`px-4 py-2.5 cursor-pointer text-[13px] transition-colors rounded-lg mx-1 my-0.5 flex items-center gap-3 ${
-                      opt.value === selectedItem ? 'bg-[#F5F5FF] text-[#03034D] font-medium' : 'text-[#101828] hover:bg-[#F5F5FF]'
-                    } ${index === highlightedIndex ? 'bg-[#F5F5FF]' : ''}`}
+                      opt.value === selectedItem ? 'bg-blue-50 text-blue-900 font-medium' : 'text-gray-900 hover:bg-gray-50'
+                    } ${index === highlightedIndex ? 'bg-gray-50' : ''}`}
                     role="option"
                     aria-selected={opt.value === selectedItem}
                   >
