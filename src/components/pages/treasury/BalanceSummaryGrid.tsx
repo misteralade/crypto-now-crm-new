@@ -10,13 +10,21 @@ const NETWORK_LABELS: Record<string, string> = {
   ERC20: "Ethereum (ERC-20)",
 };
 
-// Compact human-readable freshness label, e.g. "Updated 2m ago" or "Never refreshed".
+// Short absolute local time for cache freshness (year omitted when it matches the current year).
+function formatCachedAt(iso: string): string {
+  const m = moment(iso);
+  if (!m.isValid()) return "";
+  return m.isSame(moment(), "year")
+    ? m.format("D MMM HH:mm")
+    : m.format("D MMM YY HH:mm");
+}
+
+// Footer label for oldest balance refresh in this row.
 function formatRefreshedAt(value: string | null, walletCount: number) {
   if (walletCount === 0) return "No wallets yet";
   if (!value) return "Never refreshed";
-  const m = moment(value);
-  if (!m.isValid()) return "Never refreshed";
-  return `Updated ${m.fromNow()}`;
+  const label = formatCachedAt(value);
+  return label || "Never refreshed";
 }
 
 // Trim the displayed total to a sensible number of significant decimals per asset.
@@ -40,6 +48,10 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
   const networkLabel = NETWORK_LABELS[row.network] ?? row.network;
   const freshness = formatRefreshedAt(row.oldestRefreshedAt, row.walletCount);
   const everRefreshed = !!row.oldestRefreshedAt;
+  const freshnessTitle =
+    row.oldestRefreshedAt && moment(row.oldestRefreshedAt).isValid()
+      ? moment(row.oldestRefreshedAt).format("YYYY-MM-DD HH:mm:ss")
+      : undefined;
 
   return (
     <div className="group relative rounded-2xl border border-[#E4E7EC] bg-white p-5 transition-all hover:border-[#C7CAFB] hover:shadow-[0_8px_24px_-12px_rgba(3,3,77,0.18)]">
@@ -84,7 +96,7 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
 
       <div className="mt-5">
         <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#667085]">
-          Total Cached Balance
+          Total Balance
         </p>
         <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-[--color-text-primary]">
           {formatTotalBalance(row.symbol, row.totalBalance)}{" "}
@@ -94,8 +106,8 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
         </p>
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-[#F2F4F7] pt-3 text-xs">
-        <div className="flex items-center gap-1.5 text-[#667085]">
+      <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#F2F4F7] pt-3">
+        <div className="flex items-center gap-1.5 text-xs text-[#667085]">
           <svg
             className="h-3.5 w-3.5"
             fill="none"
@@ -114,17 +126,13 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
           </span>
         </div>
         <span
-          className={`flex items-center gap-1 ${everRefreshed ? "text-[#667085]" : "text-amber-600"}`}
-          title={
-            row.oldestRefreshedAt
-              ? new Date(row.oldestRefreshedAt).toLocaleString()
-              : undefined
-          }
+          className={`flex min-w-0 shrink items-center justify-end gap-1 text-[10px] font-medium tabular-nums leading-tight tracking-tight ${everRefreshed ? "text-[#667085]" : "text-amber-600"}`}
+          title={freshnessTitle}
         >
           {!everRefreshed && (
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
           )}
-          {freshness}
+          <span className="truncate">{freshness}</span>
         </span>
       </div>
 

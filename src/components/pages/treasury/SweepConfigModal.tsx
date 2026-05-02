@@ -49,16 +49,24 @@ function formatSuggestedSweepAmount(value: number, network: string): string {
   return s;
 }
 
-// Compact "Updated 5 minutes ago" string for the cached aggregate freshness hint.
+// Short absolute local time (year omitted when it matches the current year).
+function formatCacheTimestampLabel(iso: string): string {
+  const m = moment(iso);
+  if (!m.isValid()) return "";
+  return m.isSame(moment(), "year")
+    ? m.format("D MMM HH:mm")
+    : m.format("D MMM YY HH:mm");
+}
+
+// Cached aggregate freshness line for the sweep preview panel.
 function formatRefreshedAt(value: string | null, neverRefreshedCount: number) {
   if (!value) {
     return neverRefreshedCount > 0
       ? "Balances not yet refreshed"
       : "No balance data";
   }
-  const m = moment(value);
-  if (!m.isValid()) return "Balances not yet refreshed";
-  return `Balances as of ${m.fromNow()}`;
+  const ts = formatCacheTimestampLabel(value);
+  return ts ? `As of ${ts}` : "Balances not yet refreshed";
 }
 
 export default function SweepConfigModal({
@@ -328,13 +336,6 @@ export default function SweepConfigModal({
                   </span>
                 )}
               </div>
-              <p
-                className={`text-[11px] ${maxAmountInvalid ? "text-red-500" : "text-[#667085]"}`}
-              >
-                {maxAmountInvalid
-                  ? "Enter a positive number."
-                  : "Prefills from cached totals minus a small reserve on Bitcoin/Solana (native fees). Cleared field = no cap."}
-              </p>
             </div>
           </div>
 
@@ -372,7 +373,7 @@ export default function SweepConfigModal({
                   {previewData.targetAdminWallet.address}
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-[11px]">
+              <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-[10px] font-medium leading-tight text-[#667085]">
                 <span
                   className={
                     previewData.oldestRefreshedAt
@@ -381,7 +382,9 @@ export default function SweepConfigModal({
                   }
                   title={
                     previewData.oldestRefreshedAt
-                      ? new Date(previewData.oldestRefreshedAt).toLocaleString()
+                      ? moment(previewData.oldestRefreshedAt).format(
+                          "YYYY-MM-DD HH:mm:ss",
+                        )
                       : undefined
                   }
                 >
