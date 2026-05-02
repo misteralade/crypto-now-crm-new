@@ -15,6 +15,39 @@ export interface SweepPreviewData {
   totalWallets: number;
   estimatedAmount: number;
   filteredToSpecific: boolean;
+  /** ISO timestamp of the oldest cached balance across the eligible wallets */
+  oldestRefreshedAt: string | null;
+  /** Number of wallets in this scope that have never been reconciled from chain */
+  neverRefreshedCount: number;
+}
+
+// Per-asset row driving the Treasury summary grid.
+export interface BalanceSummaryRow {
+  cryptocurrencyId: string;
+  network: string;
+  symbol: string;
+  name: string;
+  walletCount: number;
+  totalBalance: number;
+  oldestRefreshedAt: string | null;
+  neverRefreshedCount: number;
+}
+
+// Result payload returned by POST /balances/refresh.
+export interface RefreshBalancesResult {
+  cryptocurrencyId: string;
+  network: string;
+  walletsConsidered: number;
+  refreshed: number;
+  failed: number;
+  totalBalance: number;
+  startedAt: string;
+  completedAt: string;
+}
+
+export interface RefreshBalancesParams {
+  cryptocurrencyId: string;
+  network: string;
 }
 
 export interface SweepWalletResult {
@@ -70,6 +103,8 @@ export interface InitiateSweepParams {
     dustThresholdOverride?: number;
     targetWalletAddresses?: string[];
     note?: string;
+    /** Stop sweeping (largest wallets first) once cumulative cachedBalance reaches this cap */
+    maxTotalAmount?: number;
   };
 }
 
@@ -114,6 +149,16 @@ class SweepServiceApi {
   /** Paginated history of all sweep requests */
   async getSweepHistory(params?: SweepHistoryParams) {
     return await axiosGetRequestHandler('/sweep/admin/sweep/history', params) as BaseApiResponse<SweepHistoryData>;
+  }
+
+  /** Per-asset cached balance grid for the Treasury page (DB-only, fast) */
+  async getBalanceSummary() {
+    return await axiosGetRequestHandler('/sweep/admin/balances/summary') as BaseApiResponse<BalanceSummaryRow[]>;
+  }
+
+  /** Trigger an admin reconciliation of cached balances for one (crypto+network) pair */
+  async refreshBalances(params: RefreshBalancesParams) {
+    return await axiosPostRequestHandler('/sweep/admin/balances/refresh', params) as BaseApiResponse<RefreshBalancesResult>;
   }
 }
 

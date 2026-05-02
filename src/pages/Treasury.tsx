@@ -9,6 +9,7 @@ import type {
   SweepStatus,
 } from "../api/sweep.api.ts";
 import SweepConfigModal from "../components/pages/treasury/SweepConfigModal.tsx";
+import BalanceSummaryGrid from "../components/pages/treasury/BalanceSummaryGrid.tsx";
 import Table, { type TableColumn } from "../components/table.tsx";
 
 const STATUS_MAP: Record<string, { label: string; classes: string }> = {
@@ -280,6 +281,8 @@ export default function Treasury() {
             </button>
           </div>
         </section>
+
+        <BalanceSummaryGrid />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <StatCard

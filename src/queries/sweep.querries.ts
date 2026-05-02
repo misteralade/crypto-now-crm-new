@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { sweepServiceApi, type SweepHistoryParams, type SweepPreviewParams, type InitiateSweepParams } from '../api/sweep.api.js';
+import {
+  sweepServiceApi,
+  type SweepHistoryParams,
+  type SweepPreviewParams,
+  type InitiateSweepParams,
+  type RefreshBalancesParams,
+} from '../api/sweep.api.js';
 import { QUERY_KEYS } from './querries.keys.js';
 import { toast } from 'react-toastify';
 
@@ -72,10 +78,48 @@ export const useSweepQuery = () => {
     },
   });
 
+  // ─── Cached Balance Summary (per-asset grid) ─────────────────────────────────
+  const useBalanceSummary = () => {
+    return useQuery({
+      queryKey: [QUERY_KEYS.SWEEP.BALANCE_SUMMARY],
+      queryFn: async () => {
+        const { data, success, message } = await sweepServiceApi.getBalanceSummary();
+        if (!success) throw new Error(message);
+        return data ?? [];
+      },
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    });
+  };
+
+  // ─── Manual Balance Refresh Mutation ─────────────────────────────────────────
+  const refreshBalancesMutation = useMutation({
+    mutationKey: [QUERY_KEYS.SWEEP.BALANCE_REFRESH],
+    mutationFn: async (params: RefreshBalancesParams) => {
+      return await sweepServiceApi.refreshBalances(params);
+    },
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        // Reflect new totals in the summary grid and the modal preview.
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SWEEP.BALANCE_SUMMARY] });
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SWEEP.PREVIEW] });
+        toast.success(message || 'Balances refreshed');
+      } else {
+        toast.error(message);
+      }
+    },
+    onError: (error: unknown) => {
+      const msg = error instanceof Error ? error.message : 'Failed to refresh balances';
+      toast.error(msg);
+    },
+  });
+
   return {
     useSweepPreview,
     useSweepHistory,
     useSweepStatus,
     initiateSweepMutation,
+    useBalanceSummary,
+    refreshBalancesMutation,
   };
 };

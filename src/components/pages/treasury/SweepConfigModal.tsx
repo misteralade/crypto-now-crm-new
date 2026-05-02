@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import moment from "moment";
 import { useSweepQuery } from "../../../queries/sweep.querries.ts";
 import { useCryptoQuery } from "../../../queries/crypto.querries.ts";
 import { toast } from "react-toastify";
@@ -18,9 +19,46 @@ const NETWORK_OPTIONS = [
   { label: "Ethereum (ERC-20)", value: "ERC20" },
 ];
 
+// Standardize error extraction across mutation paths.
 function getErrorMessage(error: unknown) {
   if (error instanceof Error && error.message) return error.message;
   return "Failed to initiate sweep";
+}
+
+// One conservative network-fee reserve (same units as the swept asset) subtracted from cached aggregate defaults.
+function defaultFeeReserveFromAggregate(network: string): number {
+  switch (network) {
+    case "BTC":
+      return 0.00003;
+    case "SOLANA":
+      // ~rent-exempt minimum + signature fee for one self-transfer–style sweep (order-of-magnitude with backend sweepSOL).
+      return 895_000 / 1e9;
+    default:
+      return 0;
+  }
+}
+
+// Formats a suggested sweep amount for the number input (trim trailing zeros).
+function formatSuggestedSweepAmount(value: number, network: string): string {
+  if (!Number.isFinite(value) || value <= 0) return "";
+  const decimals = network === "BTC" ? 8 : 6;
+  let s = value.toFixed(decimals);
+  while (s.includes(".") && (s.endsWith("0") || s.endsWith("."))) {
+    s = s.slice(0, -1);
+  }
+  return s;
+}
+
+// Compact "Updated 5 minutes ago" string for the cached aggregate freshness hint.
+function formatRefreshedAt(value: string | null, neverRefreshedCount: number) {
+  if (!value) {
+    return neverRefreshedCount > 0
+      ? "Balances not yet refreshed"
+      : "No balance data";
+  }
+  const m = moment(value);
+  if (!m.isValid()) return "Balances not yet refreshed";
+  return `Balances as of ${m.fromNow()}`;
 }
 
 export default function SweepConfigModal({
@@ -28,12 +66,31 @@ export default function SweepConfigModal({
   onClose,
 }: SweepConfigModalProps) {
   const navigate = useNavigate();
-  const { useSweepPreview, initiateSweepMutation } = useSweepQuery();
+  const {
+    useSweepPreview,
+    initiateSweepMutation,
+    refreshBalancesMutation,
+    useBalanceSummary,
+  } = useSweepQuery();
   const { allSupportedCrypto } = useCryptoQuery();
 
   const [network, setNetwork] = useState("");
   const [cryptocurrencyId, setCryptocurrencyId] = useState("");
   const [previewRequested, setPreviewRequested] = useState(false);
+  // Target sweep total (display units). Empty = no cap (sweep everything up to chain reality).
+  const [maxAmountInput, setMaxAmountInput] = useState("");
+  // When false, we keep syncing the default from balance summary / preview totals.
+  const [amountTouched, setAmountTouched] = useState(false);
+
+  const { data: balanceSummaryRows = [] } = useBalanceSummary();
+
+  const matchedSummaryRow = useMemo(
+    () =>
+      balanceSummaryRows.find(
+        (r) => r.network === network && r.cryptocurrencyId === cryptocurrencyId,
+      ),
+    [balanceSummaryRows, network, cryptocurrencyId],
+  );
 
   const cryptoOptions = useMemo(() => {
     if (!allSupportedCrypto || !network) return [];
@@ -53,28 +110,90 @@ export default function SweepConfigModal({
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
 
-  // When both network and crypto selected, show preview
+  // Cached preview (no chain calls) — only fired when admin clicks Preview.
   const {
     data: previewData,
     isLoading: isPreviewLoading,
     error: previewError,
+    refetch: refetchPreview,
   } = useSweepPreview(showPreview ? { network, cryptocurrencyId } : null);
 
+  // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
+  useEffect(() => {
+    if (!open) {
+      setMaxAmountInput("");
+      setPreviewRequested(false);
+      setAmountTouched(false);
+    } else {
+      setAmountTouched(false);
+    }
+  }, [open]);
+
+  // Default "Amount to sweep" from Treasury cache (and preview when loaded), minus a small fee reserve for native BTC/SOL.
+  useEffect(() => {
+    if (!open || amountTouched) return;
+    if (!network || !cryptocurrencyId) {
+      setMaxAmountInput("");
+      return;
+    }
+    const reserve = defaultFeeReserveFromAggregate(network);
+    if (showPreview && previewData) {
+      const v = Math.max(0, previewData.estimatedAmount - reserve);
+      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      return;
+    }
+    if (matchedSummaryRow) {
+      const v = Math.max(0, matchedSummaryRow.totalBalance - reserve);
+      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      return;
+    }
+    // Summary row not loaded yet (or no wallets) — avoid showing a stale amount from another asset.
+    setMaxAmountInput("");
+  }, [
+    open,
+    amountTouched,
+    network,
+    cryptocurrencyId,
+    matchedSummaryRow?.totalBalance,
+    showPreview,
+    previewData?.estimatedAmount,
+  ]);
+
   if (!open) return null;
+
+  const parsedMaxAmount = (() => {
+    const trimmed = maxAmountInput.trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  })();
+  const maxAmountInvalid = maxAmountInput.trim().length > 0 && !parsedMaxAmount;
 
   const handlePreview = () => {
     if (!network || !cryptocurrencyId) {
       toast.error("Please select both network and cryptocurrency");
       return;
     }
+    if (maxAmountInvalid) {
+      toast.error("Amount must be a positive number");
+      return;
+    }
     setPreviewRequested(true);
   };
 
   const handleInitiate = async () => {
+    if (maxAmountInvalid) {
+      toast.error("Amount must be a positive number");
+      return;
+    }
     try {
       const result = await initiateSweepMutation.mutateAsync({
         network,
         cryptocurrencyId,
+        options:
+          parsedMaxAmount !== undefined
+            ? { maxTotalAmount: parsedMaxAmount }
+            : undefined,
       });
 
       if (result.success && result.data?.sweepId) {
@@ -96,12 +215,24 @@ export default function SweepConfigModal({
     setNetwork(value);
     setCryptocurrencyId("");
     setPreviewRequested(false);
+    setAmountTouched(false);
   };
 
   const resetPreviewAndSetCrypto = (value: string) => {
     setCryptocurrencyId(value);
     setPreviewRequested(false);
+    setAmountTouched(false);
   };
+
+  const handleRefreshBalances = async () => {
+    if (!network || !cryptocurrencyId) return;
+    await refreshBalancesMutation.mutateAsync({ network, cryptocurrencyId });
+    // Pull the (now-invalidated) preview again so the modal reflects fresh totals.
+    if (showPreview) await refetchPreview();
+  };
+
+  const symbol = selectedCrypto?.symbol.toUpperCase() ?? "";
+  const refreshing = refreshBalancesMutation.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-modal-backdrop-in">
@@ -145,7 +276,7 @@ export default function SweepConfigModal({
             <div
               className={`rounded-lg px-3 py-2 text-xs font-semibold ${previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
             >
-              2. Please & Confirm
+              2. Review &amp; Confirm
             </div>
           </div>
 
@@ -164,6 +295,47 @@ export default function SweepConfigModal({
               options={cryptoOptions}
               disabled={!network || cryptoOptions.length === 0}
             />
+
+            <div className="space-y-1.5">
+              <label
+                htmlFor="sweep-max-amount"
+                className="block text-xs font-semibold text-[--color-text-primary]"
+              >
+                Amount to sweep
+              </label>
+              <div className="relative">
+                <input
+                  id="sweep-max-amount"
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  placeholder="Clear to sweep with no total cap"
+                  value={maxAmountInput}
+                  onChange={(e) => {
+                    setAmountTouched(true);
+                    setMaxAmountInput(e.target.value);
+                  }}
+                  className={`h-11 w-full rounded-xl border bg-white px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
+                    maxAmountInvalid
+                      ? "border-red-300 focus:border-red-400 focus:ring-red-100"
+                      : "border-[--color-border-input] focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                  }`}
+                />
+                {symbol && (
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
+                    {symbol}
+                  </span>
+                )}
+              </div>
+              <p
+                className={`text-[11px] ${maxAmountInvalid ? "text-red-500" : "text-[#667085]"}`}
+              >
+                {maxAmountInvalid
+                  ? "Enter a positive number."
+                  : "Prefills from cached totals minus a small reserve on Bitcoin/Solana (native fees). Cleared field = no cap."}
+              </p>
+            </div>
           </div>
 
           {showPreview && isPreviewLoading && (
@@ -182,16 +354,69 @@ export default function SweepConfigModal({
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[#667085]">Estimated amount</span>
-                <span className="font-semibold text-[--color-text-primary]">
-                  {previewData.estimatedAmount.toFixed(6)}{" "}
-                  {selectedCrypto?.symbol.toUpperCase() ?? ""}
+                <span className="font-semibold tabular-nums text-[--color-text-primary]">
+                  {previewData.estimatedAmount.toFixed(6)} {symbol}
                 </span>
               </div>
+              {parsedMaxAmount !== undefined && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#667085]">Amount cap</span>
+                  <span className="font-semibold tabular-nums text-[#03034D]">
+                    {parsedMaxAmount} {symbol}
+                  </span>
+                </div>
+              )}
               <div className="border-t border-[#ECEFFD] pt-2">
                 <p className="text-xs text-[#667085]">Destination wallet</p>
                 <p className="mt-1 break-all font-mono text-[11px] text-[#03034D]">
                   {previewData.targetAdminWallet.address}
                 </p>
+              </div>
+              <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-[11px]">
+                <span
+                  className={
+                    previewData.oldestRefreshedAt
+                      ? "text-[#667085]"
+                      : "text-amber-600"
+                  }
+                  title={
+                    previewData.oldestRefreshedAt
+                      ? new Date(previewData.oldestRefreshedAt).toLocaleString()
+                      : undefined
+                  }
+                >
+                  {formatRefreshedAt(
+                    previewData.oldestRefreshedAt,
+                    previewData.neverRefreshedCount,
+                  )}
+                  {previewData.neverRefreshedCount > 0 &&
+                    previewData.oldestRefreshedAt && (
+                      <span className="ml-1 text-amber-600">
+                        ({previewData.neverRefreshedCount} not yet refreshed)
+                      </span>
+                    )}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleRefreshBalances}
+                  disabled={refreshing}
+                  className="inline-flex items-center gap-1 font-semibold text-[#03034D] underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <svg
+                    className={`h-3 w-3 ${refreshing ? "animate-spin" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  {refreshing ? "Refreshing..." : "Refresh now"}
+                </button>
               </div>
             </div>
           )}
@@ -213,7 +438,7 @@ export default function SweepConfigModal({
           {!showPreview || !previewData ? (
             <button
               onClick={handlePreview}
-              disabled={!canPreview || isPreviewLoading}
+              disabled={!canPreview || isPreviewLoading || maxAmountInvalid}
               className="flex-1 rounded-xl bg-[#03034D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPreviewLoading ? "Loading Preview..." : "Preview Sweep"}
@@ -221,12 +446,12 @@ export default function SweepConfigModal({
           ) : (
             <button
               onClick={handleInitiate}
-              disabled={initiateSweepMutation.isPending}
+              disabled={initiateSweepMutation.isPending || maxAmountInvalid}
               className="flex-1 rounded-xl bg-[#03034D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {initiateSweepMutation.isPending
                 ? "Starting..."
-                : "Please & Confirm"}
+                : "Confirm Sweep"}
             </button>
           )}
         </div>
