@@ -56,7 +56,7 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
   return (
     <div className="group relative rounded-2xl border border-[#E4E7EC] bg-white p-5 transition-all hover:border-[#C7CAFB] hover:shadow-[0_8px_24px_-12px_rgba(3,3,77,0.18)]">
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-start gap-2.5">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[--color-primary-taint] text-[13px] font-bold text-[#03034D]">
             {row.symbol.toUpperCase().slice(0, 4)}
           </div>

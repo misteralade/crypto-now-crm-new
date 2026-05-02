@@ -19,6 +19,9 @@ const NETWORK_OPTIONS = [
   { label: "Ethereum (ERC-20)", value: "ERC20" },
 ];
 
+// Must match backend `SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT` in cryptonow-backend/src/util/constants.ts
+const SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT = false;
+
 // Standardize error extraction across mutation paths.
 function getErrorMessage(error: unknown) {
   if (error instanceof Error && error.message) return error.message;
@@ -117,6 +120,8 @@ export default function SweepConfigModal({
 
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
+  const isBtcLimitedSweepUi =
+    network === "BTC" && !SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT;
 
   // Cached preview (no chain calls) — only fired when admin clicks Preview.
   const {
@@ -139,11 +144,13 @@ export default function SweepConfigModal({
 
   // Default "Amount to sweep" from Treasury cache (and preview when loaded), minus a small fee reserve for native BTC/SOL.
   useEffect(() => {
-    if (!open || amountTouched) return;
+    if (!open) return;
     if (!network || !cryptocurrencyId) {
       setMaxAmountInput("");
       return;
     }
+    // Bitcoin: always show aggregate total (read-only); ignore manual edits for display sync.
+    if (!isBtcLimitedSweepUi && amountTouched) return;
     const reserve = defaultFeeReserveFromAggregate(network);
     if (showPreview && previewData) {
       const v = Math.max(0, previewData.estimatedAmount - reserve);
@@ -159,6 +166,7 @@ export default function SweepConfigModal({
     setMaxAmountInput("");
   }, [
     open,
+    isBtcLimitedSweepUi,
     amountTouched,
     network,
     cryptocurrencyId,
@@ -175,7 +183,10 @@ export default function SweepConfigModal({
     const n = Number(trimmed);
     return Number.isFinite(n) && n > 0 ? n : undefined;
   })();
-  const maxAmountInvalid = maxAmountInput.trim().length > 0 && !parsedMaxAmount;
+  const maxAmountInvalid =
+    !isBtcLimitedSweepUi &&
+    maxAmountInput.trim().length > 0 &&
+    !parsedMaxAmount;
 
   const handlePreview = () => {
     if (!network || !cryptocurrencyId) {
@@ -199,7 +210,7 @@ export default function SweepConfigModal({
         network,
         cryptocurrencyId,
         options:
-          parsedMaxAmount !== undefined
+          !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
             ? { maxTotalAmount: parsedMaxAmount }
             : undefined,
       });
@@ -274,161 +285,182 @@ export default function SweepConfigModal({
           </button>
         </div>
 
-        <div className="space-y-5 p-6">
-          <div className="grid grid-cols-2 gap-2 rounded-xl bg-[--color-bg-light] p-2">
-            <div
-              className={`rounded-lg px-3 py-2 text-xs font-semibold ${!previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
-            >
-              1. Configure
-            </div>
-            <div
-              className={`rounded-lg px-3 py-2 text-xs font-semibold ${previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
-            >
-              2. Review &amp; Confirm
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <LabeledPillSelect
-              label="Select Network"
-              value={network}
-              onValueChange={resetPreviewAndSetNetwork}
-              options={NETWORK_OPTIONS}
-            />
-
-            <LabeledPillSelect
-              label="Select Cryptocurrency"
-              value={cryptocurrencyId}
-              onValueChange={resetPreviewAndSetCrypto}
-              options={cryptoOptions}
-              disabled={!network || cryptoOptions.length === 0}
-            />
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="sweep-max-amount"
-                className="block text-xs font-semibold text-[--color-text-primary]"
+        {/* Scrollable Content Area */}
+        <div className="max-h-[calc(100vh-250px)] overflow-y-auto p-6 custom-scrollbar">
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-2 rounded-xl bg-[--color-bg-light] p-2">
+              <div
+                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${!previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
               >
-                Amount to sweep
-              </label>
-              <div className="relative">
-                <input
-                  id="sweep-max-amount"
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputMode="decimal"
-                  placeholder="Clear to sweep with no total cap"
-                  value={maxAmountInput}
-                  onChange={(e) => {
-                    setAmountTouched(true);
-                    setMaxAmountInput(e.target.value);
-                  }}
-                  className={`h-11 w-full rounded-xl border bg-white px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
-                    maxAmountInvalid
-                      ? "border-red-300 focus:border-red-400 focus:ring-red-100"
-                      : "border-[--color-border-input] focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
-                  }`}
-                />
-                {symbol && (
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
-                    {symbol}
-                  </span>
+                1. Configure
+              </div>
+              <div
+                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
+              >
+                2. Please & Confirm
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <LabeledPillSelect
+                label="Select Network"
+                value={network}
+                onValueChange={resetPreviewAndSetNetwork}
+                options={NETWORK_OPTIONS}
+              />
+
+              <LabeledPillSelect
+                label="Select Cryptocurrency"
+                value={cryptocurrencyId}
+                onValueChange={resetPreviewAndSetCrypto}
+                options={cryptoOptions}
+                disabled={!network || cryptoOptions.length === 0}
+              />
+
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="sweep-max-amount"
+                  className="block text-xs font-semibold text-[--color-text-primary]"
+                >
+                  {isBtcLimitedSweepUi
+                    ? "Total to sweep (estimated)"
+                    : "Amount to sweep"}
+                </label>
+                <div className="relative">
+                  <input
+                    id="sweep-max-amount"
+                    type={isBtcLimitedSweepUi ? "text" : "number"}
+                    min={isBtcLimitedSweepUi ? undefined : 0}
+                    step={isBtcLimitedSweepUi ? undefined : "any"}
+                    readOnly={isBtcLimitedSweepUi}
+                    inputMode={isBtcLimitedSweepUi ? undefined : "decimal"}
+                    placeholder={
+                      isBtcLimitedSweepUi
+                        ? "Select crypto and preview to load total"
+                        : "Clear to sweep with no total cap"
+                    }
+                    value={maxAmountInput}
+                    onChange={(e) => {
+                      if (isBtcLimitedSweepUi) return;
+                      setAmountTouched(true);
+                      setMaxAmountInput(e.target.value);
+                    }}
+                    className={`h-11 w-full rounded-xl border px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
+                      isBtcLimitedSweepUi
+                        ? "cursor-not-allowed border-[#E4E7EC] bg-[#F8F9FC] text-[--color-text-primary]"
+                        : maxAmountInvalid
+                          ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
+                          : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                    }`}
+                  />
+                  {symbol && (
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
+                      {symbol}
+                    </span>
+                  )}
+                </div>
+                {isBtcLimitedSweepUi && (
+                  <p className="text-xs leading-relaxed text-[#667085]">
+                    Custom total caps are not supported for BTC yet.
+                  </p>
                 )}
               </div>
             </div>
-          </div>
 
-          {showPreview && isPreviewLoading && (
-            <div className="flex justify-center py-4">
-              <LoadingSpinner />
-            </div>
-          )}
+            {showPreview && isPreviewLoading && (
+              <div className="flex justify-center py-4">
+                <LoadingSpinner />
+              </div>
+            )}
 
-          {showPreview && previewData && (
-            <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-[--color-primary-taint] p-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[#667085]">Wallets eligible</span>
-                <span className="font-semibold text-[--color-text-primary]">
-                  {previewData.totalWallets}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[#667085]">Estimated amount</span>
-                <span className="font-semibold tabular-nums text-[--color-text-primary]">
-                  {previewData.estimatedAmount.toFixed(6)} {symbol}
-                </span>
-              </div>
-              {parsedMaxAmount !== undefined && (
+            {showPreview && previewData && (
+              <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-[--color-primary-taint] p-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#667085]">Amount cap</span>
-                  <span className="font-semibold tabular-nums text-[#03034D]">
-                    {parsedMaxAmount} {symbol}
+                  <span className="text-[#667085]">Wallets eligible</span>
+                  <span className="font-semibold text-[--color-text-primary]">
+                    {previewData.totalWallets}
                   </span>
                 </div>
-              )}
-              <div className="border-t border-[#ECEFFD] pt-2">
-                <p className="text-xs text-[#667085]">Destination wallet</p>
-                <p className="mt-1 break-all font-mono text-[11px] text-[#03034D]">
-                  {previewData.targetAdminWallet.address}
-                </p>
-              </div>
-              <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-[10px] font-medium leading-tight text-[#667085]">
-                <span
-                  className={
-                    previewData.oldestRefreshedAt
-                      ? "text-[#667085]"
-                      : "text-amber-600"
-                  }
-                  title={
-                    previewData.oldestRefreshedAt
-                      ? moment(previewData.oldestRefreshedAt).format(
-                          "YYYY-MM-DD HH:mm:ss",
-                        )
-                      : undefined
-                  }
-                >
-                  {formatRefreshedAt(
-                    previewData.oldestRefreshedAt,
-                    previewData.neverRefreshedCount,
-                  )}
-                  {previewData.neverRefreshedCount > 0 &&
-                    previewData.oldestRefreshedAt && (
-                      <span className="ml-1 text-amber-600">
-                        ({previewData.neverRefreshedCount} not yet refreshed)
-                      </span>
-                    )}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleRefreshBalances}
-                  disabled={refreshing}
-                  className="inline-flex items-center gap-1 font-semibold text-[#03034D] underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <svg
-                    className={`h-3 w-3 ${refreshing ? "animate-spin" : ""}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#667085]">Estimated amount</span>
+                  <span className="font-semibold tabular-nums text-[--color-text-primary]">
+                    {previewData.estimatedAmount.toFixed(
+                      network === "BTC" ? 8 : 6,
+                    )}{" "}
+                    {symbol}
+                  </span>
+                </div>
+                {!isBtcLimitedSweepUi && parsedMaxAmount !== undefined && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">Amount cap</span>
+                    <span className="font-semibold tabular-nums text-[#03034D]">
+                      {parsedMaxAmount} {symbol}
+                    </span>
+                  </div>
+                )}
+                <div className="border-t border-[#ECEFFD] pt-2">
+                  <p className="text-xs text-[#667085]">Destination wallet</p>
+                  <p className="mt-1 break-all font-mono text-[11px] text-[#03034D]">
+                    {previewData.targetAdminWallet.address}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-[10px] font-medium leading-tight text-[#667085]">
+                  <span
+                    className={
+                      previewData.oldestRefreshedAt
+                        ? "text-[#667085]"
+                        : "text-amber-600"
+                    }
+                    title={
+                      previewData.oldestRefreshedAt
+                        ? moment(previewData.oldestRefreshedAt).format(
+                            "YYYY-MM-DD HH:mm:ss",
+                          )
+                        : undefined
+                    }
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
-                  {refreshing ? "Refreshing..." : "Refresh now"}
-                </button>
+                    {formatRefreshedAt(
+                      previewData.oldestRefreshedAt,
+                      previewData.neverRefreshedCount,
+                    )}
+                    {previewData.neverRefreshedCount > 0 &&
+                      previewData.oldestRefreshedAt && (
+                        <span className="ml-1 text-amber-600">
+                          ({previewData.neverRefreshedCount} not yet refreshed)
+                        </span>
+                      )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRefreshBalances}
+                    disabled={refreshing}
+                    className="inline-flex items-center gap-1 font-semibold text-[#03034D] underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <svg
+                      className={`h-3 w-3 ${refreshing ? "animate-spin" : ""}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    {refreshing ? "Refreshing..." : "Refresh now"}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {previewError && (
-            <div className="rounded-lg border border-red-100 bg-red-50 p-3 text-xs text-red-600">
-              {previewError.message}
-            </div>
-          )}
+            {previewError && (
+              <div className="rounded-lg border border-red-100 bg-red-50 p-3 text-xs text-red-600">
+                {previewError.message}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 border-t border-[--color-border] bg-[#FBFBFF] px-6 py-4">

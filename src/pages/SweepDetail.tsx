@@ -51,7 +51,6 @@ export default function SweepDetail() {
     { label: 'Skipped', value: sweep?.totalWalletsSkipped ?? '-' },
     { label: 'Failed', value: sweep?.totalWalletsFailed ?? '-', danger: true },
     { label: 'Amount Swept', value: sweep ? `${Number(sweep.actualTotalAmount).toFixed(6)}` : '-' },
-    { label: 'Target Wallet', value: sweep ? sweep.targetAddress.slice(0, 8) + '...' + sweep.targetAddress.slice(-6) : '-' },
   ];
 
   const progress = sweep?.totalWalletsFound
@@ -79,29 +78,32 @@ export default function SweepDetail() {
           </div>
 
           {sweep && (
-            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-              <div>
-                <p className="text-xs text-[#667085]">Network</p>
-                <p className="mt-1 inline-flex rounded-full bg-[--color-accent-light] px-2.5 py-1 text-xs font-mono font-semibold text-[--color-primary]">
-                  {sweep.network}
-                </p>
+            <div className="mt-6 space-y-5">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div>
+                  <p className="text-xs font-medium text-[#667085]">Network</p>
+                  <p className="mt-1.5 inline-flex rounded-full bg-[--color-accent-light] px-3 py-1 text-xs font-mono font-bold text-[--color-primary]">
+                    {sweep.network}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-[#667085]">Created</p>
+                  <p className="mt-1.5 text-[13px] font-semibold text-[--color-text-primary]">
+                    {new Date(sweep.createdAt).toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-[#667085]">Completed</p>
+                  <p className="mt-1.5 text-[13px] font-semibold text-[--color-text-primary]">
+                    {sweep.completedAt ? new Date(sweep.completedAt).toLocaleString() : 'Not yet completed'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-[#667085]">Target wallet</p>
-                <p className="mt-1 font-mono text-[12px] text-[--color-text-primary]" title={sweep.targetAddress}>
-                  {shortAddress(sweep.targetAddress)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-[#667085]">Created</p>
-                <p className="mt-1 text-sm font-medium text-[--color-text-primary]">
-                  {new Date(sweep.createdAt).toLocaleString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-[#667085]">Completed</p>
-                <p className="mt-1 text-sm font-medium text-[--color-text-primary]">
-                  {sweep.completedAt ? new Date(sweep.completedAt).toLocaleString() : 'Not yet completed'}
+
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-xs font-medium text-[#667085]">Target wallet address</p>
+                <p className="mt-1.5 font-mono text-[13px] font-bold text-[--color-primary] break-all bg-white/40 p-2 rounded-lg border border-white/20">
+                  {sweep.targetAddress}
                 </p>
               </div>
             </div>
