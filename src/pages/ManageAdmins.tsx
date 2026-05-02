@@ -10,6 +10,7 @@ import CreateNewPermissionsModal from '../components/pages/manageAdmins/CreateNe
 import ManageAdminFilterModal from "../components/pages/manageAdmins/ManageAdminFilterModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import ConfirmModal from "../components/global/ConfirmModal.tsx";
+import { getLoggedInAdminId } from '../util/auth.util';
 
 const ManageAdmins = () => {
   const {
@@ -54,15 +55,19 @@ const ManageAdmins = () => {
     handleConfirmDeleteAdmin,
   } = useManageAdminPage();
 
+  const currentAdminId = useMemo(() => getLoggedInAdminId(), []);
+
   const columns = useMemo(
     () =>
       SearchAdminDataColumn(
         handleUpdateAdminStatus,
         handleDeleteAdmin,
+        currentAdminId,
       ),
     [
       handleUpdateAdminStatus,
-      handleDeleteAdmin
+      handleDeleteAdmin,
+      currentAdminId,
     ],
   );
 

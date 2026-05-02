@@ -89,20 +89,12 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.INITIATED, label: 'Initiated' },
   { value: TRANSACTION_STATUS.PENDING, label: 'Pending' },
   { value: TRANSACTION_STATUS.AWAITING_PAYMENT, label: 'Awaiting Payment' },
-  { value: TRANSACTION_STATUS.PAYMENT_RECEIVED, label: 'Payment Received' },
-  { value: TRANSACTION_STATUS.PAYMENT_CONFIRMED, label: 'Payment Confirmed' },
-  { value: TRANSACTION_STATUS.PROCESSING, label: 'Processing' },
   { value: TRANSACTION_STATUS.AWAITING_CRYPTO, label: 'Awaiting Crypto' },
-  { value: TRANSACTION_STATUS.CRYPTO_SENT, label: 'Crypto Sent' },
-  { value: TRANSACTION_STATUS.CRYPTO_RECEIVED, label: 'Crypto Received' },
-  { value: TRANSACTION_STATUS.CRYPTO_CONFIRMED, label: 'Crypto Confirmed' },
   { value: TRANSACTION_STATUS.COMPLETED, label: 'Completed' },
   { value: TRANSACTION_STATUS.FAILED, label: 'Failed' },
   { value: TRANSACTION_STATUS.EXPIRED, label: 'Expired' },
   { value: TRANSACTION_STATUS.CANCELLED, label: 'Cancelled' },
   { value: TRANSACTION_STATUS.DISPUTED, label: 'Disputed' },
-  { value: TRANSACTION_STATUS.REFUNDING, label: 'Refunding' },
-  { value: TRANSACTION_STATUS.REFUNDED, label: 'Refunded' },
   {
     value: TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
     label: 'Payment Account Confirmed',
@@ -111,6 +103,7 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED, label: 'Deposit Confirmed' },
   { value: TRANSACTION_STATUS.PAYOUT_INITIATED, label: 'Payout Initiated' },
   { value: TRANSACTION_STATUS.PAYOUT_FAILED, label: 'Payout Failed' },
+  { value: TRANSACTION_STATUS.PENDING_PAYOUT, label: 'Pending Payout' },
 ]
 
 export const ALLOWED_ADMIN_TRANSACTION_STATUS = [

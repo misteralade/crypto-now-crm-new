@@ -5,6 +5,7 @@ import { History, LogOut, ChevronLeft, ChevronRight, Wallet } from 'lucide-react
 // @ts-ignore
 import logo from '../assets/img/logo.svg'
 import {LOCAL_STORAGE_KEYS, ROUTES} from '../util/constants.util.ts'
+import { useAdminAuth } from '../hooks/useAdminAuth'
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false)
@@ -177,6 +178,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const navigate = useNavigate()
   const currentPath = routerState.location.pathname
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const { isSuperAdmin } = useAdminAuth()
 
   const handleLogout = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
@@ -221,35 +223,43 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = item.path === ROUTES.DASHBOARD 
-                ? currentPath === item.path 
-                : currentPath === item.path || currentPath.startsWith(item.path + '/')
+            {navItems
+              .filter((item) => {
+                // Only show Manage Admins to Super Admins
+                if (item.path === ROUTES.MANAGE_ADMINS) {
+                  return isSuperAdmin
+                }
+                return true
+              })
+              .map((item) => {
+                const Icon = item.icon
+                const isActive = item.path === ROUTES.DASHBOARD 
+                  ? currentPath === item.path 
+                  : currentPath === item.path || currentPath.startsWith(item.path + '/')
 
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => {
-                    if (!isDesktop) setIsOpen(false)
-                  }}
-                  className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
-                    isActive
-                      ? 'bg-white/15 text-white'
-                      : 'text-white/55 hover:bg-white/8 hover:text-white/90'
-                  }`}
-                >
-                  <Icon
-                    className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-white/55'}`}
-                  />
-                  <span className="text-[14.5px] font-medium tracking-[-0.01em]">{item.label}</span>
-                  {isActive && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#948EEE]" />
-                  )}
-                </Link>
-              )
-            })}
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => {
+                      if (!isDesktop) setIsOpen(false)
+                    }}
+                    className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+                      isActive
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/55 hover:bg-white/8 hover:text-white/90'
+                    }`}
+                  >
+                    <Icon
+                      className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-white/55'}`}
+                    />
+                    <span className="text-[14.5px] font-medium tracking-[-0.01em]">{item.label}</span>
+                    {isActive && (
+                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#948EEE]" />
+                    )}
+                  </Link>
+                )
+              })}
           </nav>
 
           {/* Logout */}

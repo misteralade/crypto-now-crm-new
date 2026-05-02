@@ -145,7 +145,7 @@ export default function SweepConfigModal({
             <div
               className={`rounded-lg px-3 py-2 text-xs font-semibold ${previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
             >
-              2. Review & Confirm
+              2. Please & Confirm
             </div>
           </div>
 
@@ -173,7 +173,7 @@ export default function SweepConfigModal({
           )}
 
           {showPreview && previewData && (
-            <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-gradient-to-br from-[#F8F8FF] to-white p-4">
+            <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-[--color-primary-taint] p-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[#667085]">Wallets eligible</span>
                 <span className="font-semibold text-[--color-text-primary]">
@@ -226,7 +226,7 @@ export default function SweepConfigModal({
             >
               {initiateSweepMutation.isPending
                 ? "Starting..."
-                : "Confirm & Start"}
+                : "Please & Confirm"}
             </button>
           )}
         </div>

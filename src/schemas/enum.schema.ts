@@ -12,10 +12,25 @@ export const TransactionAction = z.preprocess(
 export const TransactionStatus = z.preprocess(
   (val) => {
     if (typeof val === "string") return val.toUpperCase();
-
     return val;
   },
-  z.enum(['INITIATED', 'PENDING', 'AWAITING_PAYMENT', 'PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED', 'PROCESSING', 'AWAITING_CRYPTO', 'CRYPTO_SENT', 'CRYPTO_RECEIVED', 'CRYPTO_CONFIRMED', 'COMPLETED', 'FAILED', 'EXPIRED', 'CANCELLED', 'DISPUTED', 'REFUNDING', 'REFUNDED', 'PAYMENT_ACCOUNT_CONFIRMED', 'DEPOSIT_DETECTED', 'DEPOSIT_CONFIRMED', 'PAYOUT_INITIATED', 'PAYOUT_FAILED']),
+  z.enum([
+    'INITIATED',
+    'PENDING',
+    'AWAITING_PAYMENT',
+    'AWAITING_CRYPTO',
+    'COMPLETED',
+    'FAILED',
+    'EXPIRED',
+    'CANCELLED',
+    'DISPUTED',
+    'PAYMENT_ACCOUNT_CONFIRMED',
+    'DEPOSIT_DETECTED',
+    'DEPOSIT_CONFIRMED',
+    'PAYOUT_INITIATED',
+    'PAYOUT_FAILED',
+    'PENDING_PAYOUT',
+  ])
 );
 
 export const TransactionPriority = z.preprocess(

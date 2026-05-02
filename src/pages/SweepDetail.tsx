@@ -64,7 +64,7 @@ export default function SweepDetail() {
       <PageHeader title="Sweep Details" subtitle="Monitor status, progress, and individual wallet transfer outcomes" />
 
       <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <section className="rounded-2xl border border-[#DDE0FF] bg-gradient-to-r from-[#ECECFF] via-[#F5F6FF] to-white p-5 shadow-[0_18px_40px_-30px_rgba(3,3,77,0.45)] md:p-6">
+        <section className="rounded-2xl border border-[#DDE0FF] bg-[--color-primary-taint] p-5 shadow-[0_18px_40px_-30px_rgba(3,3,77,0.45)] md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="space-y-2">
               <p className="inline-flex rounded-full border border-[#D6D9FF] bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#575AE5]">
@@ -130,7 +130,7 @@ export default function SweepDetail() {
           {isLoading
             ? Array.from({ length: 6 }).map((_, i) => <StatSkeleton key={i} />)
             : stats.map(({ label, value, highlight, danger }) => (
-                <div key={label} className={`cn-card border p-4 ${highlight ? 'border-emerald-200 bg-emerald-50/40' : ''} ${danger ? 'border-red-200 bg-red-50/40' : ''}`}>
+                <div key={label} className={`cn-card border p-4 ${highlight ? 'border-emerald-200 bg-emerald-50/40' : danger ? 'border-red-200 bg-red-50/40' : 'border-[#DDE0FF] bg-[--color-primary-taint]'}`}>
                   <p className="mb-1 text-xs text-[--color-text-muted]">{label}</p>
                   <p className={`text-lg font-semibold ${highlight ? 'text-[--color-success]' : danger ? 'text-red-600' : 'text-[--color-text-primary]'}`}>
                     {value}
