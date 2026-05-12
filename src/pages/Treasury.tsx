@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import PageHeader from "../components/global/pageHeader.tsx";
+import { useCryptoQuery } from "../queries/crypto.querries.ts";
 import { useSweepQuery } from "../queries/sweep.querries.ts";
 import type {
   SweepHistoryParams,
@@ -57,13 +58,17 @@ function StatCard({
   label,
   value,
   sub,
+  className = "",
 }: {
   label: string;
   value: string | number;
   sub?: string;
+  className?: string;
 }) {
   return (
-    <div className="bg-[--color-primary-taint] rounded-2xl p-5 md:p-6 flex flex-col gap-1.5 border border-[#DDE0FF]">
+    <div
+      className={`bg-[--color-primary-taint] rounded-2xl p-5 md:p-6 flex flex-col gap-1.5 border border-[#DDE0FF] ${className}`}
+    >
       <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-[0.08em]">
         {label}
       </p>
@@ -71,6 +76,103 @@ function StatCard({
         {value}
       </p>
       {sub && <p className="text-xs text-gray-500">{sub}</p>}
+    </div>
+  );
+}
+
+type TokenSweepSummary = {
+  cryptocurrencyId: string;
+  symbol: string;
+  name: string;
+  totalAmount: number;
+  sweepCount: number;
+};
+
+function getAmountDecimals(symbol: string): number {
+  switch (symbol.toUpperCase()) {
+    case "BTC":
+      return 8;
+    case "ETH":
+    case "SOL":
+      return 6;
+    case "USDT":
+    case "USDC":
+      return 2;
+    default:
+      return 6;
+  }
+}
+
+function formatTokenAmount(symbol: string, value: number): string {
+  if (!Number.isFinite(value) || value === 0) return "0";
+  return value.toFixed(getAmountDecimals(symbol));
+}
+
+function TokenSummaryCard({
+  tokenTotals,
+  className = "",
+}: {
+  tokenTotals: TokenSweepSummary[];
+  className?: string;
+}) {
+  const visibleTokens = tokenTotals.slice(0, 4);
+  const hiddenCount = Math.max(0, tokenTotals.length - visibleTokens.length);
+
+  return (
+    <div
+      className={`bg-[--color-primary-taint] rounded-2xl p-5 md:p-6 flex flex-col gap-4 border border-[#DDE0FF] ${className}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-[0.08em]">
+            TOTAL AMOUNT SWEPT
+          </p>
+          <p className="text-xs text-gray-500">
+            Visible history grouped by token
+          </p>
+        </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 whitespace-nowrap">
+          {tokenTotals.length} token{tokenTotals.length === 1 ? "" : "s"}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {visibleTokens.map((token) => (
+          <div
+            key={token.cryptocurrencyId}
+            className="rounded-xl border border-white/70 bg-white/75 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.8)]"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p className="truncate text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-600">
+                {token.symbol}
+              </p>
+              <p className="text-[10px] font-medium text-gray-500 tabular-nums whitespace-nowrap">
+                {token.sweepCount} run{token.sweepCount === 1 ? "" : "s"}
+              </p>
+            </div>
+            <p className="mt-1 font-mono text-sm font-semibold tabular-nums leading-none text-gray-900">
+              {formatTokenAmount(token.symbol, token.totalAmount)}{" "}
+              <span className="text-[11px] font-medium text-gray-500">
+                {token.symbol}
+              </span>
+            </p>
+            <p className="mt-1 truncate text-[10px] text-gray-500">
+              {token.name}
+            </p>
+          </div>
+        ))}
+
+        {hiddenCount > 0 && (
+          <div className="rounded-xl border border-dashed border-[#C7CAFB] bg-white/50 px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-600">
+              +{hiddenCount} more
+            </p>
+            <p className="mt-1 text-[10px] text-gray-500">
+              Additional tokens are included in the page totals.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -97,6 +199,7 @@ function formatWalletAddress(address: string) {
 
 export default function Treasury() {
   const navigate = useNavigate();
+  const { allSupportedCrypto } = useCryptoQuery();
   const { useSweepHistory } = useSweepQuery();
 
   const [filters, setFilters] = useState<SweepHistoryParams>({
@@ -116,25 +219,47 @@ export default function Treasury() {
     [filters.size, historyData],
   );
   const totalSweeps = historyData?.total ?? 0;
-  const totalSwept = useMemo(
-    () =>
-      sweeps.reduce((sum, sweep) => sum + Number(sweep.actualTotalAmount), 0),
-    [sweeps],
-  );
-  const successRate = useMemo(() => {
-    if (sweeps.length === 0) return 0;
-    const successfulCount = sweeps.filter(
-      (sweep) => sweep.status === "COMPLETED" || sweep.status === "PARTIAL",
-    ).length;
-    return Math.round((successfulCount / sweeps.length) * 100);
-  }, [sweeps]);
-  const inFlight = useMemo(
+  const completedRuns = useMemo(
     () =>
       sweeps.filter(
-        (sweep) => sweep.status === "IN_PROGRESS" || sweep.status === "PENDING",
+        (sweep) => sweep.status === "COMPLETED" || sweep.status === "PARTIAL",
       ).length,
     [sweeps],
   );
+  const failedRuns = useMemo(
+    () => sweeps.filter((sweep) => sweep.status === "FAILED").length,
+    [sweeps],
+  );
+  const tokenTotals = useMemo(() => {
+    const cryptoById = new Map(
+      (allSupportedCrypto ?? []).map((crypto) => [crypto.id, crypto] as const),
+    );
+    const totals = new Map<string, TokenSweepSummary>();
+
+    for (const sweep of sweeps) {
+      const amount = Number(sweep.actualTotalAmount);
+      if (!Number.isFinite(amount)) continue;
+
+      const crypto = cryptoById.get(sweep.cryptocurrencyId);
+      const symbol = crypto?.symbol?.toUpperCase() ?? sweep.network;
+      const name = crypto?.name ?? "Unknown token";
+      const current = totals.get(sweep.cryptocurrencyId) ?? {
+        cryptocurrencyId: sweep.cryptocurrencyId,
+        symbol,
+        name,
+        totalAmount: 0,
+        sweepCount: 0,
+      };
+
+      current.totalAmount += amount;
+      current.sweepCount += 1;
+      totals.set(sweep.cryptocurrencyId, current);
+    }
+
+    return Array.from(totals.values()).sort(
+      (a, b) => b.totalAmount - a.totalAmount || a.symbol.localeCompare(b.symbol),
+    );
+  }, [allSupportedCrypto, sweeps]);
 
   function handleRowClick(sweep: SweepRequest) {
     void navigate({
@@ -150,7 +275,7 @@ export default function Treasury() {
         header: "Network",
         render: (value) => (
           <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-mono text-[11px] font-semibold text-indigo-700">
-            {value}
+            {String(value)}
           </span>
         ),
       },
@@ -160,9 +285,9 @@ export default function Treasury() {
         render: (value) => (
           <span
             className="font-mono text-xs text-gray-500 whitespace-nowrap"
-            title={value}
+            title={String(value)}
           >
-            {formatWalletAddress(value)}
+            {formatWalletAddress(String(value))}
           </span>
         ),
       },
@@ -183,21 +308,21 @@ export default function Treasury() {
         header: "Amount Swept",
         render: (value) => (
           <span className="font-semibold tabular-nums text-gray-900 whitespace-nowrap">
-            {Number(value).toFixed(6)}
+            {Number(value as string | number).toFixed(6)}
           </span>
         ),
       },
       {
         key: "status",
         header: "Status",
-        render: (value) => <StatusBadge status={value} />,
+        render: (value) => <StatusBadge status={String(value)} />,
       },
       {
         key: "createdAt",
         header: "Created",
         render: (value) => (
           <span className="text-xs text-gray-500 whitespace-nowrap">
-            {new Date(value).toLocaleString()}
+            {new Date(String(value)).toLocaleString()}
           </span>
         ),
       },
@@ -284,26 +409,19 @@ export default function Treasury() {
 
         <BalanceSummaryGrid />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-12">
           <StatCard
+            className="xl:col-span-3"
             label="Total Sweep Runs"
             value={totalSweeps}
             sub="all recorded treasury jobs"
           />
+          <TokenSummaryCard className="xl:col-span-6" tokenTotals={tokenTotals} />
           <StatCard
-            label="In Progress"
-            value={inFlight}
-            sub="currently pending or processing"
-          />
-          <StatCard
-            label="Success Rate"
-            value={`${successRate}%`}
-            sub="based on visible sweep history"
-          />
-          <StatCard
-            label="Total Amount Swept"
-            value={totalSwept.toFixed(4)}
-            sub="sum of actual swept amounts"
+            className="xl:col-span-3"
+            label="Completed Runs"
+            value={completedRuns}
+            sub={`${failedRuns} failed in visible history`}
           />
         </div>
 

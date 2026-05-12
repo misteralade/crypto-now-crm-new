@@ -169,10 +169,12 @@ const TransactionDetails = () => {
                 )}
                 
                 {/* Payment Receipts */}
-                <TransactionReceipts
-                  receiptImageUrl={transaction.receiptImageUrl}
-                  adminPaymentReceiptUrl={transaction.adminPaymentReceiptUrl}
-                />
+                {transaction.type === "BUY" && (
+                  <TransactionReceipts
+                    receiptImageUrl={transaction.receiptImageUrl}
+                    adminPaymentReceiptUrl={transaction.adminPaymentReceiptUrl}
+                  />
+                )}
                 
                 {/* Notes */}
                 {(transaction.userNotes || transaction.adminNotes || transaction.internalNotes) && (

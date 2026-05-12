@@ -306,16 +306,18 @@ const TransactionDetailsDrawer = ({
             </div>
 
             {/* Receipt Url */}
-            <div className="mt-4 flex justify-between items-start">
-              <div className="text-[#828282] mb-1 text-[16px]">
-                Uploaded receipt
+            {transaction.type === "BUY" && (
+              <div className="mt-4 flex justify-between items-start">
+                <div className="text-[#828282] mb-1 text-[16px]">
+                  Uploaded receipt
+                </div>
+                <img
+                  src={transaction.receiptImageUrl}
+                  alt={transaction.sessionId}
+                  className="rounded-md border border-gray-200 w-48"
+                />
               </div>
-              <img
-                src={transaction.receiptImageUrl}
-                alt={transaction.sessionId}
-                className="rounded-md border border-gray-200 w-48"
-              />
-            </div>
+            )}
           </section>
 
           {/* Activity Log */}
@@ -449,130 +451,132 @@ const TransactionDetailsDrawer = ({
             )}
 
             {/* Admin Upload transaction receipt */}
-            <section className="mt-4">
-              <div className="mt-6 bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl">
-                <h3 className="text-[14px] font-semibold text-[#828282] mb-4">
-                  Upload payment receipt
-                </h3>
+            {transaction.type === "BUY" && (
+              <section className="mt-4">
+                <div className="mt-6 bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl">
+                  <h3 className="text-[14px] font-semibold text-[#828282] mb-4">
+                    Upload payment receipt
+                  </h3>
 
-                <div className="space-y-4">
-                  {/* Upload Button */}
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#03034D] rounded-lg cursor-pointer hover:bg-[#E8E8FF] transition-colors">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 mb-2 text-[#03034D]" />
-                      <p className="text-sm text-[#03034D] font-medium">
-                        Click to upload file
-                      </p>
-                      <p className="text-xs text-[#828282] mt-1">
-                        PNG, JPG, JPEG or PDF (MAX. 5MB)
-                      </p>
-                    </div>
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/png,image/jpeg,image/jpg,application/pdf"
-                      onChange={handleImageUpload}
-                    />
-                  </label>
+                  <div className="space-y-4">
+                    {/* Upload Button */}
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#03034D] rounded-lg cursor-pointer hover:bg-[#E8E8FF] transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 mb-2 text-[#03034D]" />
+                        <p className="text-sm text-[#03034D] font-medium">
+                          Click to upload file
+                        </p>
+                        <p className="text-xs text-[#828282] mt-1">
+                          PNG, JPG, JPEG or PDF (MAX. 5MB)
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/png,image/jpeg,image/jpg,application/pdf"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
 
-                  {/* File Preview */}
-                  {uploadedFile ? (
-                    // Show uploaded file preview (takes priority)
-                    <div className="relative group">
-                      {previewUrl ? (
-                        // Image preview
-                        <div className="relative">
-                          <img
-                            src={previewUrl}
-                            alt="Upload preview"
-                            className="w-full h-48 object-cover rounded-lg border border-gray-200"
-                          />
-                          <button
-                            onClick={removeFile}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X size={16} />
-                          </button>
-                          <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                            {uploadedFile.name}
-                          </div>
-                        </div>
-                      ) : (
-                        // PDF preview
-                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
-                              <span className="text-red-600 font-semibold text-xs">
-                                PDF
-                              </span>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-[#0E0F0C]">
-                                {uploadedFile.name}
-                              </p>
-                              <p className="text-xs text-[#828282]">
-                                {(uploadedFile.size / 1024).toFixed(2)} KB
-                              </p>
+                    {/* File Preview */}
+                    {uploadedFile ? (
+                      // Show uploaded file preview (takes priority)
+                      <div className="relative group">
+                        {previewUrl ? (
+                          // Image preview
+                          <div className="relative">
+                            <img
+                              src={previewUrl}
+                              alt="Upload preview"
+                              className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                            />
+                            <button
+                              onClick={removeFile}
+                              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X size={16} />
+                            </button>
+                            <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                              {uploadedFile.name}
                             </div>
                           </div>
-                          <button
-                            onClick={removeFile}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <X size={20} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ) : transaction.adminPaymentReceiptUrl ? (
-                    // Show admin transaction receipt when no file is uploaded
-                    <div className="relative group">
-                      {transaction.adminPaymentReceiptUrl
-                        .toLowerCase()
-                        .endsWith(".pdf") ? (
-                        // PDF preview
-                        <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
-                              <span className="text-red-600 font-semibold text-xs">
-                                PDF
-                              </span>
+                        ) : (
+                          // PDF preview
+                          <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
+                                <span className="text-red-600 font-semibold text-xs">
+                                  PDF
+                                </span>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-[#0E0F0C]">
+                                  {uploadedFile.name}
+                                </p>
+                                <p className="text-xs text-[#828282]">
+                                  {(uploadedFile.size / 1024).toFixed(2)} KB
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-medium text-[#0E0F0C]">
-                                Admin Payment Receipt
-                              </p>
-                              <p className="text-xs text-[#828282]">
-                                <a
-                                  href={transaction.adminPaymentReceiptUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-[#03034D] hover:underline"
-                                >
-                                  View receipt
-                                </a>
-                              </p>
+                            <button
+                              onClick={removeFile}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <X size={20} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : transaction.adminPaymentReceiptUrl ? (
+                      // Show admin transaction receipt when no file is uploaded
+                      <div className="relative group">
+                        {transaction.adminPaymentReceiptUrl
+                          .toLowerCase()
+                          .endsWith(".pdf") ? (
+                          // PDF preview
+                          <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-red-100 rounded flex items-center justify-center">
+                                <span className="text-red-600 font-semibold text-xs">
+                                  PDF
+                                </span>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-[#0E0F0C]">
+                                  Admin Payment Receipt
+                                </p>
+                                <p className="text-xs text-[#828282]">
+                                  <a
+                                    href={transaction.adminPaymentReceiptUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#03034D] hover:underline"
+                                  >
+                                    View receipt
+                                  </a>
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ) : (
-                        // Image preview
-                        <div className="relative">
-                          <img
-                            src={transaction.adminPaymentReceiptUrl}
-                            alt="Admin payment receipt"
-                            className="w-full h-48 object-cover rounded-lg border border-gray-200"
-                          />
-                          <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                            Admin Payment Receipt
+                        ) : (
+                          // Image preview
+                          <div className="relative">
+                            <img
+                              src={transaction.adminPaymentReceiptUrl}
+                              alt="Admin payment receipt"
+                              className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                            />
+                            <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                              Admin Payment Receipt
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : null}
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             <section className="mt-4">
               <div className="text-lg font-semibold text-[#454745] mb-4">
