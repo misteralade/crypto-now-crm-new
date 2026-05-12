@@ -206,6 +206,45 @@ export const useAdminUserCustodialWalletsQuery = (userId: string | undefined) =>
   });
 };
 
+export const useAdminCustodialWalletDetailsQuery = (walletAddress: string | undefined) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_CUSTODIAL_WALLET_DETAILS, walletAddress],
+    queryFn: async () => {
+      if (!walletAddress) return null;
+      const { data, success } = await cryptoServiceApi.adminGetCustodialWalletByAddress(walletAddress);
+      return success ? data : null;
+    },
+    enabled: !!walletAddress,
+  });
+};
+
+export const useAdminRefreshCustodialWalletBalanceMutation = (walletAddress: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: [QUERY_KEYS.CRYPTO.ADMIN_REFRESH_CUSTODIAL_WALLET_BALANCE, walletAddress],
+    mutationFn: async () => {
+      if (!walletAddress) throw new Error('Missing wallet address.');
+      toast.loading('Refreshing wallet balance...');
+      const { data, message, success } = await cryptoServiceApi.adminRefreshCustodialWalletBalance(walletAddress);
+      if (!success) throw new Error(message);
+      return data;
+    },
+    onSuccess: async () => {
+      toast.dismiss();
+      toast.success('Wallet balance refreshed.');
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_CUSTODIAL_WALLET_DETAILS, walletAddress],
+      });
+    },
+    onError: (error: unknown) => {
+      toast.dismiss();
+      const message = error instanceof Error ? error.message : 'Failed to refresh wallet balance.';
+      toast.error(message);
+    },
+  });
+};
+
 // Generate all missing custodial wallets for a user (Admin only).
 export const useAdminGenerateUserCustodialWalletsMutation = (userId: string | undefined) => {
   const queryClient = useQueryClient();

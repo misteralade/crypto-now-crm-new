@@ -1,20 +1,22 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState, type ChangeEvent, type FC, type ReactNode } from 'react'
 import { ExternalLink } from 'lucide-react'
-import type {UserStatusVariant} from "../types/global.types.ts";
+import { cn } from '../lib/utils'
+import type { UserStatusVariant } from '../types/global.types.ts'
 
 // ============================================================================
 // Types & Interfaces
 // ============================================================================
 
-export interface TableColumn<T = any> {
+export interface TableColumn<T = unknown> {
   key: string
-  header: any
-  render?: (value: any, row: T) => ReactNode
+  header: ReactNode
+  render?: (value: unknown, row: T) => ReactNode
   className?: string
   headerClassName?: string
 }
 
-export interface TableProps<T = any> {
+export interface TableProps<T = unknown> {
   data: Array<T>
   columns: Array<TableColumn<T>>
   className?: string
@@ -82,7 +84,7 @@ export const mapTransactionStatus = (
 // Main Table Component
 // ============================================================================
 
-export default function Table<T = any>({
+export default function Table<T = unknown>({
   data,
   columns,
   className = '',
@@ -249,11 +251,27 @@ export default function Table<T = any>({
             {data.map((row, index) => (
               <tr
                 key={index}
-                className={`transition-colors hover:bg-[#F8F8FF] ${onRowClick ? 'cursor-pointer' : ''} ${rowClassName}`}
+                className={cn(
+                  'transition-colors hover:bg-[#F8F8FF]',
+                  onRowClick && 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#575AE5]/40 focus-visible:ring-inset',
+                  rowClassName,
+                )}
                 onClick={() => onRowClick?.(row)}
+                onKeyDown={(event) => {
+                  if (!onRowClick) return
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    onRowClick(row)
+                  }
+                }}
+                tabIndex={onRowClick ? 0 : undefined}
+                role={onRowClick ? 'button' : undefined}
               >
                 {selectable && (
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {renderCheckbox ? (
                       renderCheckbox({
                         checked: selectedIndexes.includes(index),
@@ -278,7 +296,7 @@ export default function Table<T = any>({
                   </td>
                 )}
                 {columns.map((column) => {
-                  const value = (row as any)[column.key]
+                  const value = (row as Record<string, unknown>)[column.key]
                   const defaultTextClass = column.className
                     ? column.className
                     : ['type', 'amount', 'date'].includes(column.key)

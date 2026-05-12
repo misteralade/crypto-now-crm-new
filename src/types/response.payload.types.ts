@@ -102,7 +102,16 @@ export type SearchTransactionsResponse = {
   userCryptoWallet?: UserCryptoWalletResponsePayload;
   processor?: AdminResponsePayload;
   dispute?: DisputeDetailsResponse;
+  ledgerEntries?: LedgerEntryResponsePayload[];
 }
+
+export type AdminRetryPendingPayoutsResponse = {
+  retriedCount: number;
+  skippedCount: number;
+  warnings: string[];
+  requiresConfirmation: boolean;
+  forceProceed: boolean;
+};
 
 export type WeeklyTransactionVolume = {
   totalFiatVolume: string;
@@ -116,6 +125,21 @@ export type TransactionActivities = {
   adminId: string;
   action: string;
   message: string;
+  createdAt: Date;
+}
+
+export type LedgerEntryResponsePayload = {
+  id: string;
+  transactionId: string;
+  accountType: string;
+  entryType: string;
+  amount: string;
+  currency: string;
+  description: string;
+  userId: string | null;
+  referenceId: string | null;
+  referenceType: string | null;
+  runningBalance: string | null;
   createdAt: Date;
 }
 
@@ -323,6 +347,50 @@ export type CustodialWalletResponsePayload = {
 }
 
 export type AdminGetUserCustodialWalletsAPIResponse = BaseApiResponse<Array<CustodialWalletResponsePayload>>
+
+export type AdminCustodialWalletDetailsResponsePayload = {
+  wallet: {
+    id: string;
+    userId: string;
+    cryptocurrencyId: string;
+    network: string;
+    walletAddress: string;
+    derivationIndex: number;
+    derivationPath: string | null;
+    webhookProvider: string;
+    isActive: boolean;
+    lastDepositAt: Date | null;
+    totalDepositsCount: number;
+    cachedBalance: string;
+    cachedBalanceUpdatedAt: Date | null;
+    cachedBalanceSource: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  user: UserResponsePayload | null;
+  cryptocurrency: {
+    id: string;
+    name: string;
+    symbol: string;
+    logoUrl: string | null;
+    networks: string[];
+    isActive: boolean;
+    buyRate: string;
+    sellRate: string;
+    createdAt: Date;
+  } | null;
+}
+
+export type AdminCustodialWalletDetailsAPIResponse = BaseApiResponse<AdminCustodialWalletDetailsResponsePayload>
+
+export type RefreshCustodialWalletBalanceResponsePayload = {
+  walletAddress: string;
+  cachedBalance: string;
+  cachedBalanceUpdatedAt: Date;
+  cachedBalanceSource: string;
+}
+
+export type RefreshCustodialWalletBalanceAPIResponse = BaseApiResponse<RefreshCustodialWalletBalanceResponsePayload>
 
 export type AdminGetUserCryptoWalletsAPIResponse = BaseApiResponse<Array<UserCryptoWalletResponsePayload>>
 

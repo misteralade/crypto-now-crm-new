@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import {useManageAdminPage} from "../hooks/pages/useManageAdminPage";
 import {SearchAdminDataColumn, SearchAdminDataRow} from "../components/tables/AdminManagementTables";
 import Table from "../components/table";
@@ -11,6 +12,7 @@ import ManageAdminFilterModal from "../components/pages/manageAdmins/ManageAdmin
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import ConfirmModal from "../components/global/ConfirmModal.tsx";
 import { getLoggedInAdminId } from '../util/auth.util';
+import { ROUTES } from '../util/constants.util';
 
 const ManageAdmins = () => {
   const {
@@ -54,6 +56,7 @@ const ManageAdmins = () => {
     toggleDeleteAdminModal,
     handleConfirmDeleteAdmin,
   } = useManageAdminPage();
+  const navigate = useNavigate();
 
   const currentAdminId = useMemo(() => getLoggedInAdminId(), []);
 
@@ -76,6 +79,10 @@ const ManageAdmins = () => {
     [loadingSearchedAdmins, searchedAdmins?.admins],
   )
 
+  const handleViewAdminDetails = (adminId: string) => {
+    navigate({ to: ROUTES.ADMIN_DETAILS.replace('$adminId', adminId) })
+  }
+
   return (
     <AuthenticatedLayout>
       <div className="p-6 mx-auto">
@@ -89,7 +96,12 @@ const ManageAdmins = () => {
           onOpenCreateRole={toggleAddNewRoleModal}
         />
         
-        <Table data={data} columns={columns} loading={loadingSearchedAdmins}/>
+        <Table
+          data={data}
+          columns={columns}
+          loading={loadingSearchedAdmins}
+          onRowClick={(row) => handleViewAdminDetails(row.id)}
+        />
         
         <TableFooter
           currentPage={searchedAdmins?.page || 1}

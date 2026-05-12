@@ -1,8 +1,20 @@
-import {Fragment} from "react";
+import { Fragment } from "react"
+import { Link } from '@tanstack/react-router'
 import {StatusColumn} from "./global";
 import type {TableColumn} from "../table";
 import momentClient from "../../util/moment";
 import type {SearchAdminResponsePayload} from "../../types/response.payload.types.ts";
+import { ROUTES } from "../../util/constants.util.ts";
+
+type SearchAdminTableRow = {
+  id: string
+  name: string
+  username: string
+  email: string
+  role: string
+  status: boolean
+  date: string
+}
 
 export const SearchAdminDataColumn = (
   handleUpdateAdminStatus: (id: string, status: boolean) => void,
@@ -13,7 +25,7 @@ export const SearchAdminDataColumn = (
     key: 'id',
     header: 'Admin ID',
     render: (value) => (
-      <span className="overflow-hidden text-[#101828] text-sm whitespace-nowrap text-ellipsis">
+      <span className="overflow-hidden text-sm whitespace-nowrap text-ellipsis tabular-nums text-[#101828]">
         {value}
       </span>
     ),
@@ -22,9 +34,20 @@ export const SearchAdminDataColumn = (
     key: 'name',
     header: 'Name',
     render: (value, row) => (
-      <span className="overflow-hidden text-[#101828] text-sm whitespace-nowrap text-ellipsis">
-        {value} {row.id === currentAdminId && <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full ml-1 font-bold uppercase tracking-wider">You</span>}
-      </span>
+      <div className="min-w-0">
+        <p className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-[#101828]">
+          {value}{' '}
+          {row.id === currentAdminId && <span className="ml-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700">You</span>}
+        </p>
+        <Link
+          to={ROUTES.ADMIN_DETAILS.replace('$adminId', row.id)}
+          className="mt-1 block text-sm font-medium text-[#03034D] hover:underline"
+          onClick={(event) => event.stopPropagation()}
+          title={`View ${row.username} details`}
+        >
+          @{row.username}
+        </Link>
+      </div>
     ),
   },
   {
@@ -56,7 +79,7 @@ export const SearchAdminDataColumn = (
     key: 'date',
     header: 'Last Active',
     render: (value) => (
-      <span className="overflow-hidden text-ellipsis truncate text-sm font-medium leading-tight text-[#667085] whitespace-nowrap">
+      <span className="overflow-hidden truncate whitespace-nowrap text-sm font-medium leading-tight tabular-nums text-[#667085]">
         {value}
       </span>
     ),
@@ -74,7 +97,10 @@ export const SearchAdminDataColumn = (
       <div className="flex items-center justify-start gap-2 lg:gap-x-[16px] whitespace-nowrap">
         <button
           className={`px-2.5 md:px-3 py-1 rounded-full text-[11px] cursor-pointer hover:opacity-80 md:text-xs font-medium ${row.status === true ? 'bg-[#FCE8E8] text-[#EB5757]' : 'bg-[#FDF2E7] text-[#F2994A]'} disabled:opacity-50 disabled:cursor-not-allowed`}
-          onClick={() => handleUpdateAdminStatus(row.id, !row.status)}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleUpdateAdminStatus(row.id, !row.status)
+          }}
           disabled={row.id === currentAdminId}
           title={row.id === currentAdminId ? "You cannot suspend yourself" : ""}
         >
@@ -83,7 +109,10 @@ export const SearchAdminDataColumn = (
         
         <button
           className="px-3 py-1 font-medium text-[12px] bg-[#EF4444] text-white rounded-full hover:opacity-70 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() => handleDeleteUser(row.id)}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleDeleteUser(row.id)
+          }}
           disabled={row.id === currentAdminId}
           title={row.id === currentAdminId ? "You cannot delete yourself" : ""}
         >
@@ -97,7 +126,7 @@ export const SearchAdminDataColumn = (
 export const SearchAdminDataRow = (
   data: Array<SearchAdminResponsePayload> | undefined,
 ) => {
-  const rowItems: Array<any> = []
+  const rowItems: Array<SearchAdminTableRow> = []
 
   if (!data) {
     return rowItems
@@ -107,8 +136,9 @@ export const SearchAdminDataRow = (
     rowItems.push({
       id: item.id,
       name: `${item.firstName} ${item.lastName}`,
+      username: item.username,
       email: item.email,
-      role: item.adminRoles[0].role.name,
+      role: item.adminRoles[0]?.role?.name || 'N/A',
       status: item.active,
       date: momentClient.formatToNormalisedDateAndTime(item.lastActive),
     })

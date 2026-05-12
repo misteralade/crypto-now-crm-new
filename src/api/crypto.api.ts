@@ -12,6 +12,8 @@ import type {
   BaseApiResponse, GetAllSupportedCryptoAPIResponse, GetSupportedCryptoAPIResponse,
   SearchSupportedCryptoAPIResponse, UploadAPIResponse,
   AdminGetUserCustodialWalletsAPIResponse,
+  AdminCustodialWalletDetailsAPIResponse,
+  RefreshCustodialWalletBalanceAPIResponse,
   AdminGenerateUserCustodialWalletsAPIResponse,
 } from "../types/response.payload.types";
 
@@ -68,6 +70,14 @@ class CryptoServiceApi {
   // Fetch a user's custodial (deposit) wallets (Admin only).
   async adminGetUserCustodialWallets(userId: string) {
     return await axiosGetRequestHandler(`/custodial-wallet/admin/${userId}`) as AdminGetUserCustodialWalletsAPIResponse;
+  }
+
+  async adminGetCustodialWalletByAddress(walletAddress: string) {
+    return await axiosGetRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}`) as AdminCustodialWalletDetailsAPIResponse;
+  }
+
+  async adminRefreshCustodialWalletBalance(walletAddress: string) {
+    return await axiosPostRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}/refresh`, {}) as RefreshCustodialWalletBalanceAPIResponse;
   }
 
   // Generate all missing custodial (deposit) wallets for a user (Admin only).

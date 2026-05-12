@@ -1,8 +1,9 @@
-import { useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout.tsx';
 import PageHeader from '../components/global/pageHeader.tsx';
 import { useSweepQuery } from '../queries/sweep.querries.ts';
 import type { SweepWalletResult } from '../api/sweep.api.ts';
+import { cn } from '../lib/utils.ts';
 
 const SWEEP_STATUS = {
   COMPLETED: { label: 'Completed', dot: 'bg-green-500', badge: 'bg-[--color-success-bg] text-[--color-success] border border-emerald-200' },
@@ -38,6 +39,7 @@ function shortAddress(address: string) {
 }
 
 export default function SweepDetail() {
+  const navigate = useNavigate();
   const { sweepId } = useParams({ strict: false }) as { sweepId: string };
   const { useSweepStatus } = useSweepQuery();
   const { data: sweep, isLoading } = useSweepStatus(sweepId);
@@ -57,6 +59,14 @@ export default function SweepDetail() {
     ? Math.round(((sweep.totalWalletsSwept + sweep.totalWalletsFailed + sweep.totalWalletsSkipped) / sweep.totalWalletsFound) * 100)
     : 0;
   const processedCount = sweep ? sweep.totalWalletsSwept + sweep.totalWalletsFailed + sweep.totalWalletsSkipped : 0;
+
+  function openWalletDetails(walletAddress: string) {
+    void navigate({
+      to: '/dashboard/treasury/wallet/$walletAddress',
+      params: { walletAddress },
+      search: { fromSweepId: sweepId },
+    });
+  }
 
   return (
     <AuthenticatedLayout>
@@ -170,7 +180,22 @@ export default function SweepDetail() {
                   {results.map((r: SweepWalletResult, i: number) => {
                     const ws = WALLET_STATUS[r.status] ?? { label: r.status, classes: 'text-gray-500', dot: 'bg-gray-400' };
                     return (
-                      <tr key={i} className="transition-colors hover:bg-[--color-bg-light]">
+                      <tr
+                        key={i}
+                        className={cn(
+                          'transition-colors hover:bg-[--color-bg-light] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#575AE5]/30 focus-visible:ring-inset',
+                        )}
+                        onClick={() => openWalletDetails(r.walletAddress)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openWalletDetails(r.walletAddress);
+                          }
+                        }}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`Open details for wallet ${r.walletAddress}`}
+                      >
                         <td className="px-4 py-3 font-mono text-xs text-[--color-text-secondary] max-w-[200px] truncate" title={r.walletAddress}>
                           {shortAddress(r.walletAddress)}
                         </td>

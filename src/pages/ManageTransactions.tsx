@@ -22,6 +22,14 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { SummaryCardSkeleton } from "../components/global/Skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import type { TimelineFilter } from "../types/global.types";
 
 const ManageTransactions = () => {
   const {
@@ -36,6 +44,7 @@ const ManageTransactions = () => {
     showTransactionDetails,
     adminTransactionStats,
     loadingAdminTransactionStats,
+    selectedStatsTimeline,
 
     // ⚙️ Functions
     handleSelectTransactionId,
@@ -46,7 +55,15 @@ const ManageTransactions = () => {
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
     handlePageSizeChange: updatePageSize,
+    handleSelectedStatsTimelineChange,
   } = useManageTransactionsPage();
+
+  const timelineLabels: Record<TimelineFilter, string> = {
+    week: "This Week",
+    month: "This Month",
+    year: "This Year",
+    all: "All Time",
+  };
 
   const {
     // 🧩 Values
@@ -75,7 +92,9 @@ const ManageTransactions = () => {
     handleSelectedStatus,
     handleSelectedPriority,
     handleViewTransactionDetails,
-  } = useTransactionsTable();
+  } = useTransactionsTable({
+    timeline: selectedStatsTimeline,
+  });
 
   const columns = useMemo(
     () =>
@@ -114,7 +133,24 @@ const ManageTransactions = () => {
         subtitle="Monitor and manage all system transactions"
       />
       <div className="p-6 mx-auto space-y-8">
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between gap-4">
+          <Select
+            value={selectedStatsTimeline}
+            onValueChange={(value) =>
+              handleSelectedStatsTimelineChange(value as TimelineFilter)
+            }
+          >
+            <SelectTrigger className="w-[160px] rounded-xl border-[#ECECEC] shadow-sm text-[14px] font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
+              <SelectItem value="year">This Year</SelectItem>
+            </SelectContent>
+          </Select>
+
           <button
             onClick={resetSearchFilter}
             className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
@@ -138,7 +174,7 @@ const ManageTransactions = () => {
                 <ShortSummaryCard
                   title="Total Orders"
                   value={adminTransactionStats?.totalOrders?.toString() || "0"}
-                  time="Current timeline"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<Activity className="w-4 h-4" />}
                 />
               </div>
@@ -149,7 +185,7 @@ const ManageTransactions = () => {
                 <ShortSummaryCard
                   title="Payouts Sent"
                   value={adminTransactionStats?.payoutsSent?.toString() || "0"}
-                  time="Initiated"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<Zap className="w-4 h-4 text-orange-500" />}
                 />
               </div>
@@ -160,7 +196,7 @@ const ManageTransactions = () => {
                 <ShortSummaryCard
                   title="Completed"
                   value={adminTransactionStats?.completed?.toString() || "0"}
-                  time="Successfully paid"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<CheckCircle className="w-4 h-4 text-green-500" />}
                 />
               </div>
@@ -171,7 +207,7 @@ const ManageTransactions = () => {
                 <ShortSummaryCard
                   title="Payout Failed"
                   value={adminTransactionStats?.payoutFailed?.toString() || "0"}
-                  time="Needs retry"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<AlertCircle className="w-4 h-4 text-red-500" />}
                 />
               </div>
@@ -184,7 +220,7 @@ const ManageTransactions = () => {
                   value={
                     adminTransactionStats?.pendingPayout?.toString() || "0"
                   }
-                  time="Awaiting funds"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<Clock className="w-4 h-4 text-blue-500" />}
                 />
               </div>
@@ -195,7 +231,7 @@ const ManageTransactions = () => {
                 <ShortSummaryCard
                   title="Critical"
                   value={adminTransactionStats?.critical?.toString() || "0"}
-                  time="Urgent Attention"
+                  time={timelineLabels[selectedStatsTimeline]}
                   icon={<ShieldAlert className="w-4 h-4 text-red-600" />}
                 />
               </div>
@@ -216,11 +252,12 @@ const ManageTransactions = () => {
 
           {/* Transactions Table */}
           <div className="overflow-hidden">
-            <Table
-              data={data}
-              columns={columns}
-              loading={loadingSearchTransactions}
-            />
+          <Table
+            data={data}
+            columns={columns}
+            loading={loadingSearchTransactions}
+            onRowClick={(row) => handleShowTransactionDetails(row.id)}
+          />
           </div>
 
           <div className="px-4 py-4 bg-[#F9FAFB] border-t border-[#ECECEC] rounded-b-3xl">

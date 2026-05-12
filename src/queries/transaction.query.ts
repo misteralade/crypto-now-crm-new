@@ -7,26 +7,35 @@ import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
 import { QUERY_KEYS } from './querries.keys'
 import type {RootState} from '../store';
+import type { TimelineFilter } from '../types/global.types';
 import type {
   AxiosServerError,
+  AdminRetryPendingPayoutsResponse,
   SearchTransactionsResponse,
   UsersWithTopTransactionVolume,
   WeeklyTransactionVolumeTrend,
 } from '../types/response.payload.types'
 
-export const useTransactionQuery = () => {
+type UseTransactionQueryOptions = {
+  adminStatsTimeline?: TimelineFilter;
+}
+
+export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
   const queryClient = useQueryClient()
   const matchRoute = useMatchRoute()
   const searchTransaction = useSelector((state: RootState) => state.transactionManagement.search.transactions);
+  const dashboardTimelineFilter = useSelector(
+    (state: RootState) => state.dashboard.timelineFilter,
+  );
+  const adminStatsTimeline = options?.adminStatsTimeline ?? 'all';
 
   const { data: transactionVolume, isLoading: loadingTransactionVolume } = useQuery({
       queryKey: [
         QUERY_KEYS.TRANSACTION.GET_WEEKLY_TRANSACTION_VOLUME,
-        (store.getState() as RootState).dashboard.timelineFilter,
+        dashboardTimelineFilter,
       ],
       queryFn: async () => {
-        const timeline = (store.getState() as RootState).dashboard
-          .timelineFilter
+        const timeline = dashboardTimelineFilter
         if (!timeline) return null
 
         const { data, success } =
@@ -40,16 +49,16 @@ export const useTransactionQuery = () => {
       },
       enabled:
         !!matchRoute({ to: ROUTES.DASHBOARD }) &&
-        !!(store.getState() as RootState).dashboard.timelineFilter,
+        !!dashboardTimelineFilter,
     });
 
   const { data: weeklyTransactionCount, isLoading: loadingWeeklyTransactionCount } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_WEEKLY_TRANSACTION_COUNT,
-      (store.getState() as RootState).dashboard.timelineFilter,
+      dashboardTimelineFilter,
     ],
     queryFn: async () => {
-      const timeline = (store.getState() as RootState).dashboard.timelineFilter
+      const timeline = dashboardTimelineFilter
       if (!timeline) return null
 
       const { data, success } =
@@ -63,16 +72,16 @@ export const useTransactionQuery = () => {
     },
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
-      !!(store.getState() as RootState).dashboard.timelineFilter,
+      !!dashboardTimelineFilter,
   });
 
   const { data: transactionVolumeTrend, isLoading: loadingTransactionVolumeTrend } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_TRANSACTION_VOLUME_TREND,
-      (store.getState() as RootState).dashboard.timelineFilter,
+      dashboardTimelineFilter,
     ],
     queryFn: async () => {
-      const timeline = (store.getState() as RootState).dashboard.timelineFilter
+      const timeline = dashboardTimelineFilter
       if (!timeline) return [] as Array<WeeklyTransactionVolumeTrend>
 
       const { data, success } =
@@ -82,16 +91,16 @@ export const useTransactionQuery = () => {
     },
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
-      !!(store.getState() as RootState).dashboard.timelineFilter,
+      !!dashboardTimelineFilter,
   });
 
   const { data: usersWithTopTransactionVolume, isLoading: loadingUsersWithTopTransactionVolume } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_USERS_WITH_TOP_TRANSACTION_VOLUME,
-      (store.getState() as RootState).dashboard.timelineFilter,
+      dashboardTimelineFilter,
     ],
     queryFn: async () => {
-      const timeline = (store.getState() as RootState).dashboard.timelineFilter
+      const timeline = dashboardTimelineFilter
       if (!timeline) return [] as Array<UsersWithTopTransactionVolume>
 
       const { data, success } =
@@ -103,16 +112,16 @@ export const useTransactionQuery = () => {
     },
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
-      !!(store.getState() as RootState).dashboard.timelineFilter,
+      !!dashboardTimelineFilter,
   });
 
   const { data: transactionTypeByPercentage, isLoading: loadingTransactionTypeByPercentage } = useQuery({
     queryKey: [
       QUERY_KEYS.TRANSACTION.GET_TRANSACTION_TYPE_BY_PERCENTAGE,
-      (store.getState() as RootState).dashboard.timelineFilter,
+      dashboardTimelineFilter,
     ],
     queryFn: async () => {
-      const timeline = (store.getState() as RootState).dashboard.timelineFilter
+      const timeline = dashboardTimelineFilter
       if (!timeline) return null
 
       const { data, success } =
@@ -122,16 +131,16 @@ export const useTransactionQuery = () => {
     },
     enabled:
       !!matchRoute({ to: ROUTES.DASHBOARD }) &&
-      !!(store.getState() as RootState).dashboard.timelineFilter,
+      !!dashboardTimelineFilter,
   });
 
   const { data: adminTransactionStats, isLoading: loadingAdminTransactionStats } = useQuery({
     queryKey: [
       'GET_ADMIN_TRANSACTION_STATS',
-      (store.getState() as RootState).dashboard.timelineFilter,
+      adminStatsTimeline,
     ],
     queryFn: async () => {
-      const timeline = (store.getState() as RootState).dashboard.timelineFilter || 'MONTH'
+      const timeline = adminStatsTimeline.toUpperCase()
       const { data, success } = await transactionServiceApi.getAdminTransactionStats({ timeline })
       if (success) return data
       return null
@@ -304,15 +313,51 @@ export const useTransactionQuery = () => {
   })
 
   const adminRetryPendingPayoutsMutation = useMutation({
-    mutationFn: async (sessionId?: string) => {
+    mutationFn: async (params?: { sessionId?: string; forceProceed?: boolean }) => {
       toast.loading('Processing payout retries...')
-      const { success, message } = await transactionServiceApi.adminRetryPendingPayouts(sessionId)
-      return { success, message }
+      const { data, success, message } = await transactionServiceApi.adminRetryPendingPayouts(
+        params?.sessionId,
+        params?.forceProceed === true,
+      )
+      return { success, message, data }
     },
-    onSuccess: (res) => {
+    onSuccess: async (
+      res: {
+        success: boolean
+        message: string
+        data: AdminRetryPendingPayoutsResponse
+      },
+      variables,
+    ) => {
       toast.dismiss()
       if (res?.success) {
+        const warnings = res.data?.warnings || []
+        const requiresConfirmation =
+          res.data?.requiresConfirmation === true && variables?.forceProceed !== true
+
+        if (requiresConfirmation) {
+          const warningMessage = warnings.join('\n')
+          toast.warning(warnings[0] || res.message)
+          const confirmed = window.confirm(
+            `${warningMessage || res.message}\n\nProceed anyway?`,
+          )
+
+          if (confirmed) {
+            await adminRetryPendingPayoutsMutation.mutateAsync({
+              sessionId: variables?.sessionId,
+              forceProceed: true,
+            })
+            return
+          }
+
+          return
+        }
+
+        if (warnings.length > 0) {
+          toast.warning(warnings[0])
+        }
         toast.success(res.message)
+
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS] })
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER.GET_WEEKLY_USER_STATS_SUMMARY] })
       } else {

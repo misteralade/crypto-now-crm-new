@@ -1,4 +1,5 @@
 import {
+  API_KIT,
   axiosGetRequestHandler,
   axiosPatchRequestHandler,
   axiosPostRequestHandler,
@@ -14,6 +15,7 @@ import type {
   GetTransactionVolumeAPIResponse,
   GetTransactionVolumeTrendAPIResponse,
   GetUsersWithTopTransactionVolumeAPIResponse,
+  AdminRetryPendingPayoutsResponse,
   SearchTransactionsAPIResponse,
   UploadAPIResponse,
 } from '../types/response.payload.types'
@@ -108,6 +110,14 @@ class TransactionServiceApi {
   async adminGetTransactionDetails(sessionId: string) {
     return await axiosGetRequestHandler(`/transaction/admin/details/${sessionId}`) as GetTransactionDetailsAPIResponse
   }
+
+  async adminDownloadTransactionLedgerCsv(sessionId: string) {
+    const response = await API_KIT.get(`/transaction/admin/details/${sessionId}/ledger/export`, {
+      responseType: 'blob',
+    })
+
+    return response.data as Blob
+  }
   
   async adminLockTransaction(sessionId: string) {
     return (await axiosPostRequestHandler(
@@ -134,11 +144,11 @@ class TransactionServiceApi {
     throw new Error(response.message);
   }
 
-  async adminRetryPendingPayouts(sessionId?: string) {
+  async adminRetryPendingPayouts(sessionId?: string, forceProceed = false) {
     return (await axiosPostRequestHandler(
       '/transaction/admin/retry-pending-payouts',
-      { sessionId },
-    )) as BaseApiResponse<null>
+      { sessionId, forceProceed },
+    )) as BaseApiResponse<AdminRetryPendingPayoutsResponse>
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type MouseEvent } from 'react'
 import { Copy } from 'lucide-react'
 // import Copy from "../../assets/img/fluent_copy-16-regular.svg"
 
@@ -47,14 +47,16 @@ const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
 
 interface ClickableDetailsProps {
   text: string;
-  onClick: (value: any) => void;
+  onClick: (value: string) => void;
   className?: string;
 }
 
 export const ClickableDetails = ({ text, onClick, className }: ClickableDetailsProps) => {
   const [clicked, setClicked] = useState(false);
   
-  const handleClick = () => {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     setClicked(true);
     onClick(text);
     setTimeout(() => setClicked(false), 1500);
@@ -63,6 +65,7 @@ export const ClickableDetails = ({ text, onClick, className }: ClickableDetailsP
   return (
     <div className={`relative flex items-center gap-2 max-w-[200px] w-3/4 md:w-fit ${className}`}>
       <a
+        href="#"
         onClick={handleClick}
         className={`text-blue-600 overflow-hidden whitespace-nowrap text-ellipsis hover:underline cursor-pointer`}
       >

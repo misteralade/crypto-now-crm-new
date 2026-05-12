@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {clearSearchTransactions, setSearchTransactionsField} from "../../redux/transaction-management.slice.ts";
 import type {TransactionStatus} from "../../schemas/enum.schema.ts";
@@ -6,10 +6,57 @@ import type { SearchTransactionsRequestType } from "../../schemas/transaction.sc
 import momentClient from "../../util/moment.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {ROUTES} from "../../util/constants.util.ts";
+import type { TimelineFilter } from "../../types/global.types";
 
-export const useTransactionsTable = () => {
+type TransactionsTableOptions = {
+  timeline?: TimelineFilter;
+}
+
+const getTimelineDateRange = (timeline: TimelineFilter) => {
+  if (timeline === "all") {
+    return {
+      fromDate: undefined,
+      toDate: undefined,
+    };
+  }
+
+  const now = new Date()
+
+  if (timeline === "week") {
+    const fromDate = new Date(now)
+    fromDate.setDate(now.getDate() - now.getDay())
+    fromDate.setHours(0, 0, 0, 0)
+
+    const toDate = new Date(fromDate)
+    toDate.setDate(fromDate.getDate() + 6)
+    toDate.setHours(23, 59, 59, 999)
+
+    return { fromDate, toDate };
+  }
+
+  if (timeline === "month") {
+    const fromDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    fromDate.setHours(0, 0, 0, 0)
+
+    const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    toDate.setHours(23, 59, 59, 999)
+
+    return { fromDate, toDate };
+  }
+
+  const fromDate = new Date(now.getFullYear(), 0, 1)
+  fromDate.setHours(0, 0, 0, 0)
+
+  const toDate = new Date(now.getFullYear(), 11, 31)
+  toDate.setHours(23, 59, 59, 999)
+
+  return { fromDate, toDate };
+}
+
+export const useTransactionsTable = (options?: TransactionsTableOptions) => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const selectedTimeline = options?.timeline ?? 'all'
   
   const [query, setQuery] = useState('')
   const [pageSize, setPageSize] = useState<number>(10);
@@ -59,18 +106,33 @@ export const useTransactionsTable = () => {
 
   const resetSearchFilter = () => {
     setQuery("");
-    setFromDate(undefined)
-    setToDate(undefined)
     setMinAmountRange(undefined)
     setMaxAmountRange(undefined)
     setSelectedCryptoId(undefined)
     setSelectedStatus("ALL")
+    setSelectedPriority("ALL")
     dispatch(clearSearchTransactions())
     // Explicitly ensure userId is cleared
     dispatch(setSearchTransactionsField({
       field: 'userId',
       value: undefined,
     }))
+
+    const { fromDate, toDate } = getTimelineDateRange(selectedTimeline)
+    setFromDate(fromDate)
+    setToDate(toDate)
+    handleSearchTransactionFieldUpdate(
+      "createdAtFrom",
+      fromDate
+        ? momentClient.toISOStringFromDateWithDayBoundary(fromDate, true)
+        : undefined,
+    )
+    handleSearchTransactionFieldUpdate(
+      "createdAtTo",
+      toDate
+        ? momentClient.toISOStringFromDateWithDayBoundary(toDate, false)
+        : undefined,
+    )
   }
 
   const handleFromDate = (date: Date) => {
@@ -111,6 +173,28 @@ export const useTransactionsTable = () => {
     setSelectedStatus("ALL")
     handleSearchTransactionFieldUpdate("status", undefined)
   }
+
+  useEffect(() => {
+    const { fromDate, toDate } = getTimelineDateRange(selectedTimeline)
+    setFromDate(fromDate)
+    setToDate(toDate)
+    dispatch(setSearchTransactionsField({
+      field: 'createdAtFrom',
+      value: fromDate
+        ? momentClient.toISOStringFromDateWithDayBoundary(fromDate, true)
+        : undefined,
+    }))
+    dispatch(setSearchTransactionsField({
+      field: 'createdAtTo',
+      value: toDate
+        ? momentClient.toISOStringFromDateWithDayBoundary(toDate, false)
+        : undefined,
+    }))
+    dispatch(setSearchTransactionsField({
+      field: 'page',
+      value: 1,
+    }))
+  }, [dispatch, selectedTimeline])
   
   return {
     // 🧩 Values

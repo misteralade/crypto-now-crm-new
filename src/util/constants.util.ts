@@ -45,6 +45,7 @@ export const ROUTES = {
   USER_TRANSACTIONS: '/dashboard/users/transaction-history/$userId',
   NOTIFICATIONS: '/dashboard/notifications',
   MANAGE_ADMINS: '/dashboard/manage-admins',
+  ADMIN_DETAILS: '/dashboard/manage-admins/$adminId',
   TESTIMONIALS: '/dashboard/testimonials',
   KYC_TIER_LIMITS: '/dashboard/kyc-tier-limits',
   SUPPORTED_CURRENCIES: '/dashboard/supported-currencies',
@@ -102,6 +103,7 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.DEPOSIT_DETECTED, label: 'Deposit Detected' },
   { value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED, label: 'Deposit Confirmed' },
   { value: TRANSACTION_STATUS.PAYOUT_INITIATED, label: 'Payout Initiated' },
+  { value: TRANSACTION_STATUS.PROCESSING, label: 'Processing' },
   { value: TRANSACTION_STATUS.PAYOUT_FAILED, label: 'Payout Failed' },
   { value: TRANSACTION_STATUS.PENDING_PAYOUT, label: 'Pending Payout' },
 ]

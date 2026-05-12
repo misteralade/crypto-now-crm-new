@@ -16,10 +16,37 @@ import type {
   UsersWithTopTransactionVolume,
 } from '../../types/response.payload.types'
 
+type TransactionSummaryRow = {
+  user: string
+  transactionId: string
+  amount: string
+  date: Date
+  status: string
+}
+
+type TransactionManagementRow = {
+  id: string
+  type: string
+  amount: string
+  date: string
+  status: string
+  isAnonymous: string
+  updatedAt: string
+}
+
+type UserTransactionHistoryRow = {
+  id: string
+  date: string
+  type: string
+  amount: string
+  rate: string
+  status: string
+}
+
 // Dashboard Tables Start
 export const UsersWithTopTransactionColumn = (
   handleViewTransaction: (sessionId: string) => void,
-): Array<TableColumn> => [
+): Array<TableColumn<TransactionSummaryRow>> => [
   {
     key: 'user',
     header: 'User',
@@ -66,7 +93,7 @@ export const UsersWithTopTransactionColumn = (
 export const UsersWithTopTransactionDataRow = (
   data: Array<UsersWithTopTransactionVolume> | undefined,
 ) => {
-  const rowItems: Array<any> = []
+  const rowItems: Array<TransactionSummaryRow> = []
 
   if (!data) {
     return rowItems
@@ -97,7 +124,7 @@ export const TransactionsManagementColumn = (
   handleViewTransactionDetails: (sessionId: string) => void,
   selectedTransactionIds: Array<string>, // Add this to track selected state
   selectedIdCount: number,
-): Array<TableColumn> => [
+): Array<TableColumn<TransactionManagementRow>> => [
   {
     key: 'index',
     header: (
@@ -261,7 +288,10 @@ export const TransactionsManagementColumn = (
       <Fragment>
         <button
           className="text-[#03034D] hover:opacity-80 text-[12px] cursor-pointer font-medium inline-flex items-center gap-1"
-          onClick={() => handleShowTransactionDetails(row.id)}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleShowTransactionDetails(row.id)
+          }}
         >
           <span>View Order</span>
           <span aria-hidden><ChevronRight size={16} /></span>
@@ -274,7 +304,7 @@ export const TransactionsManagementColumn = (
 export const TransactionsManagementDataRow = (
   data: Array<SearchTransactionsResponse> | undefined,
 ) => {
-  const rowItems: Array<any> = []
+  const rowItems: Array<TransactionManagementRow> = []
 
   if (!data) {
     return rowItems
@@ -302,7 +332,7 @@ export const TransactionsManagementDataRow = (
 export const UserTransactionsManagementColumn = (
   handleViewTransaction: (sessionId: string) => void,
   onDownload: (id: string) => void,
-): Array<TableColumn> => [
+): Array<TableColumn<UserTransactionHistoryRow>> => [
   {
     key: 'id',
     header: (
@@ -432,7 +462,7 @@ export const UserTransactionsManagementColumn = (
 export const UserTransactionsManagementDataRow = (
   data: Array<SearchTransactionsResponse> | undefined,
 ) => {
-  const rowItems: Array<any> = []
+  const rowItems: Array<UserTransactionHistoryRow> = []
 
   if (!data) {
     return rowItems

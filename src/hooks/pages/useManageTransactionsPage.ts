@@ -18,10 +18,13 @@ import type {
   UpdateTransactionStatusRequestType
 } from "../../schemas/transaction.schema";
 import type {RootState} from "../../store";
+import type { TimelineFilter } from "../../types/global.types";
 import type {AxiosServerError} from "../../types/response.payload.types";
 
 export const useManageTransactionsPage = () => {
   const dispatch = useDispatch()
+  const [selectedStatsTimeline, setSelectedStatsTimeline] =
+    useState<TimelineFilter>('all')
   
   // Ensure userId is always undefined for manage transactions page
   useEffect(() => {
@@ -36,18 +39,25 @@ export const useManageTransactionsPage = () => {
     loadingSearchTransactions,
     transactionDetail,
     loadingTransactionDetails,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
 
     // Mutations
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
     adminLockTransactionMutation,
-  } = useTransactionQuery();
+  } = useTransactionQuery({
+    adminStatsTimeline: selectedStatsTimeline,
+  });
   
   const { allSupportedCrypto, loadingAllSupportedCrypto } = useCryptoQuery();
   const [selectedTransactionIds, setSelectedTransactionIds] = useState<Array<string>>([])
   const [showTransactionDetails, setShowTransactionDetails] = useState(false);
 
-  const handleSearchTransactionFieldUpdate = (field: keyof SearchTransactionsRequestType, value: any ) => {
+  const handleSearchTransactionFieldUpdate = (
+    field: keyof SearchTransactionsRequestType,
+    value: SearchTransactionsRequestType[keyof SearchTransactionsRequestType],
+  ) => {
     dispatch(setSearchTransactionsField({
       field,
       value,
@@ -73,8 +83,7 @@ export const useManageTransactionsPage = () => {
   }
 
   const handleSelectAllTransactionIds = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const transactionIds = searchTransactions && searchTransactions?.transactions?.map(tx => tx.id) || [];
+    const transactionIds = searchTransactions?.transactions?.map(tx => tx.id) || [];
     if (selectedTransactionIds.length === transactionIds.length) {
       setSelectedTransactionIds([]);
     } else {
@@ -123,7 +132,10 @@ export const useManageTransactionsPage = () => {
     }
   }
 
-  const handleTransactionUpdateField = (field: (keyof UpdateTransactionStatusRequestType), value: any) => {
+  const handleTransactionUpdateField = (
+    field: keyof UpdateTransactionStatusRequestType,
+    value: UpdateTransactionStatusRequestType[keyof UpdateTransactionStatusRequestType],
+  ) => {
     dispatch(setTransactionDetailUpdateField({ field, value }))
   }
 
@@ -150,6 +162,9 @@ export const useManageTransactionsPage = () => {
   }
 
   const toggleShowTransactionDetails = () => setShowTransactionDetails(!showTransactionDetails)
+  const handleSelectedStatsTimelineChange = (timeline: TimelineFilter) => {
+    setSelectedStatsTimeline(timeline)
+  }
 
   return {
     // 🧩 Values
@@ -161,6 +176,9 @@ export const useManageTransactionsPage = () => {
     transactionDetail,
     loadingTransactionDetails,
     showTransactionDetails,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
+    selectedStatsTimeline,
 
     // ⚙️ Functions
     handleSelectTransactionId,
@@ -171,5 +189,6 @@ export const useManageTransactionsPage = () => {
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
     handlePageSizeChange,
+    handleSelectedStatsTimelineChange,
   }
 }

@@ -15,23 +15,40 @@ import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
 import { convertToMillify } from "../util/index.util.ts";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
+import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
 
 const TransactionDetails = () => {
   const {
     // 🧩 Values
     transactionInfo: transaction,
     loadingTransactionInfo,
+    ledgerEntries,
+    exportingLedgerCsv,
     
     
     // ⚙️ Functions
     goBack,
+    handleExportLedgerCsv,
   } = useTransactionDetailsPage();
   
   return (
     <AuthenticatedLayout>
       <div className="p-6 mx-auto">
-        <PageHeader title="Transaction Details" />
+        <PageHeader
+          title="Transaction Details"
+          actions={
+            <button
+              type="button"
+              onClick={handleExportLedgerCsv}
+              disabled={exportingLedgerCsv}
+              className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Download className="h-4 w-4" />
+              {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}
+            </button>
+          }
+        />
         
         <div className="mt-5 mb-6 flex items-center gap-3">
           <button
@@ -194,6 +211,8 @@ const TransactionDetails = () => {
                     </div>
                   </div>
                 )}
+
+                <LedgerEntriesSection ledgerEntries={ledgerEntries} />
               </div>
               
               <div className="space-y-6">
