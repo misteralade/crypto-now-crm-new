@@ -98,9 +98,9 @@ export default function SweepConfigModal({
   const matchedSummaryRow = useMemo(
     () =>
       balanceSummaryRows.find(
-        (r) => r.network === network && r.cryptocurrencyId === cryptocurrencyId,
+        (r) => r.network === network && r.cryptocurrencyId === cryptocurrencyId
       ),
-    [balanceSummaryRows, network, cryptocurrencyId],
+    [balanceSummaryRows, network, cryptocurrencyId]
   );
 
   // Crypto comes first — show all active cryptos regardless of network.
@@ -116,20 +116,21 @@ export default function SweepConfigModal({
 
   const selectedCrypto = useMemo(
     () => allSupportedCrypto?.find((crypto) => crypto.id === cryptocurrencyId),
-    [allSupportedCrypto, cryptocurrencyId],
+    [allSupportedCrypto, cryptocurrencyId]
   );
 
   // Network options are driven by the selected crypto's supported networks.
   const networkOptions = useMemo(() => {
     if (!selectedCrypto?.networks) return NETWORK_OPTIONS;
     return NETWORK_OPTIONS.filter((opt) =>
-      selectedCrypto.networks!.includes(opt.value),
+      selectedCrypto.networks!.includes(opt.value)
     );
   }, [selectedCrypto]);
 
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
-  const isBtcLimitedSweepUi = network === "BTC" && !SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT;
+  const isBtcLimitedSweepUi =
+    network === "BTC" && !SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT;
 
   // Cached preview (no chain calls) — only fired when admin clicks Preview.
   const {
@@ -142,7 +143,10 @@ export default function SweepConfigModal({
   // Auto-fill amount from preview/summary minus gas fee reserve.
   // Deps use primitive sub-fields intentionally to avoid re-running on unrelated object changes.
   useEffect(() => {
-    if (!network || !cryptocurrencyId) { setMaxAmountInput(""); return; }
+    if (!network || !cryptocurrencyId) {
+      setMaxAmountInput("");
+      return;
+    }
     if (!isBtcLimitedSweepUi && amountTouched) return;
     const reserve = defaultFeeReserveFromAggregate(network);
     if (showPreview && previewData) {
@@ -156,7 +160,7 @@ export default function SweepConfigModal({
       return;
     }
     setMaxAmountInput("");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isBtcLimitedSweepUi,
     amountTouched,
@@ -247,7 +251,9 @@ export default function SweepConfigModal({
 
     // If current crypto is not supported on new network, clear it.
     if (cryptocurrencyId && allSupportedCrypto) {
-      const selected = allSupportedCrypto.find((c) => c.id === cryptocurrencyId);
+      const selected = allSupportedCrypto.find(
+        (c) => c.id === cryptocurrencyId
+      );
       if (!selected?.networks?.includes(value)) {
         setCryptocurrencyId("");
       }
@@ -256,7 +262,7 @@ export default function SweepConfigModal({
     // Auto-select crypto if the new network has exactly one option.
     if (allSupportedCrypto) {
       const availableForNetwork = allSupportedCrypto.filter(
-        (c) => c.isActive && c.networks?.includes(value),
+        (c) => c.isActive && c.networks?.includes(value)
       );
       if (availableForNetwork.length === 1) {
         setCryptocurrencyId(availableForNetwork[0].id);
@@ -297,8 +303,16 @@ export default function SweepConfigModal({
   const refreshing = refreshBalancesMutation.isPending;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}>
-      <div className={`w-full max-w-lg overflow-hidden rounded-2xl border border-[#E4E7EC] bg-white shadow-2xl ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${
+        isClosing ? "animate-modal-backdrop-out" : "animate-modal-backdrop-in"
+      }`}
+    >
+      <div
+        className={`w-full max-w-lg overflow-hidden rounded-2xl border border-[#E4E7EC] bg-white shadow-2xl ${
+          isClosing ? "animate-modal-content-out" : "animate-modal-content-in"
+        }`}
+      >
         <div className="flex items-center justify-between border-b border-[--color-border] px-6 py-4">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#667085]">
@@ -333,12 +347,20 @@ export default function SweepConfigModal({
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-[--color-bg-light] p-2">
               <div
-                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${!previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
+                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${
+                  !previewRequested
+                    ? "bg-white text-[#03034D] shadow-sm"
+                    : "text-[#667085]"
+                }`}
               >
                 1. Configure
               </div>
               <div
-                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${previewRequested ? "bg-white text-[#03034D] shadow-sm" : "text-[#667085]"}`}
+                className={`rounded-lg px-3 py-2 text-center text-xs font-semibold ${
+                  previewRequested
+                    ? "bg-white text-[#03034D] shadow-sm"
+                    : "text-[#667085]"
+                }`}
               >
                 2. Please & Confirm
               </div>
@@ -366,7 +388,9 @@ export default function SweepConfigModal({
                   htmlFor="sweep-max-amount"
                   className="block text-xs font-semibold text-[--color-text-primary]"
                 >
-                  {isBtcLimitedSweepUi ? "Total to sweep (estimated)" : "Amount to sweep"}
+                  {isBtcLimitedSweepUi
+                    ? "Total to sweep (estimated)"
+                    : "Amount to sweep"}
                 </label>
                 <div className="relative">
                   <input
@@ -391,8 +415,8 @@ export default function SweepConfigModal({
                       isBtcLimitedSweepUi
                         ? "cursor-not-allowed border-[#E4E7EC] bg-[#F8F9FC]"
                         : maxAmountInvalid
-                          ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
-                          : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                        ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
+                        : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
                     }`}
                   />
                   {symbol && (
@@ -402,10 +426,14 @@ export default function SweepConfigModal({
                   )}
                 </div>
                 {isBtcLimitedSweepUi && (
-                  <p className="text-xs text-[#667085]">Custom amount caps are not supported for BTC yet.</p>
+                  <p className="text-xs text-[#667085]">
+                    Custom amount caps are not supported for BTC yet.
+                  </p>
                 )}
                 {maxAmountInvalid && (
-                  <p className="text-xs text-red-500">Amount must be a positive number.</p>
+                  <p className="text-xs text-red-500">
+                    Amount must be a positive number.
+                  </p>
                 )}
               </div>
             </div>
@@ -425,28 +453,44 @@ export default function SweepConfigModal({
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#667085]">Estimated total balance</span>
+                  <span className="text-[#667085]">
+                    Estimated total balance
+                  </span>
                   <span className="font-semibold tabular-nums text-[--color-text-primary]">
-                    {previewData.estimatedAmount.toFixed(network === "BTC" ? 8 : 6)} {symbol}
+                    {previewData.estimatedAmount.toFixed(
+                      network === "BTC" ? 8 : 6
+                    )}{" "}
+                    {symbol}
                   </span>
                 </div>
                 {defaultFeeReserveFromAggregate(network) > 0 && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#667085]">
                       Est. gas fee reserve
-                      <span className="ml-1 text-[11px] text-[#9CA3AF]">(withheld for network fees)</span>
+                      <span className="ml-1 text-[11px] text-[#9CA3AF]">
+                        (withheld for network fees)
+                      </span>
                     </span>
                     <span className="tabular-nums text-[#DC6803]">
-                      − {defaultFeeReserveFromAggregate(network).toFixed(network === "BTC" ? 8 : 6)} {symbol}
+                      −{" "}
+                      {defaultFeeReserveFromAggregate(network).toFixed(
+                        network === "BTC" ? 8 : 6
+                      )}{" "}
+                      {symbol}
                     </span>
                   </div>
                 )}
                 <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-sm">
-                  <span className="font-semibold text-[--color-text-primary]">Amount to be swept</span>
+                  <span className="font-semibold text-[--color-text-primary]">
+                    Amount to be swept
+                  </span>
                   <span className="font-bold tabular-nums text-[#03034D]">
-                    {Math.max(0, previewData.estimatedAmount - defaultFeeReserveFromAggregate(network)).toFixed(
-                      network === "BTC" ? 8 : 6,
-                    )} {symbol}
+                    {Math.max(
+                      0,
+                      previewData.estimatedAmount -
+                        defaultFeeReserveFromAggregate(network)
+                    ).toFixed(network === "BTC" ? 8 : 6)}{" "}
+                    {symbol}
                   </span>
                 </div>
                 {!isBtcLimitedSweepUi && parsedMaxAmount !== undefined && (
@@ -481,14 +525,14 @@ export default function SweepConfigModal({
                     title={
                       previewData.oldestRefreshedAt
                         ? moment(previewData.oldestRefreshedAt).format(
-                            "YYYY-MM-DD HH:mm:ss",
+                            "YYYY-MM-DD HH:mm:ss"
                           )
                         : undefined
                     }
                   >
                     {formatRefreshedAt(
                       previewData.oldestRefreshedAt,
-                      previewData.neverRefreshedCount,
+                      previewData.neverRefreshedCount
                     )}
                     {previewData.neverRefreshedCount > 0 &&
                       previewData.oldestRefreshedAt && (
