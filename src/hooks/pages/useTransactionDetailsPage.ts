@@ -11,9 +11,13 @@ import { transactionServiceApi } from "../../api/transaction.api";
 export const useTransactionDetailsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { transactionInfo, loadingTransactionInfo } = useTransactionQuery();
+  const {
+    transactionInfo,
+    loadingTransactionInfo,
+    adminRetryPendingPayoutsMutation,
+  } = useTransactionQuery();
   
-  const { id } = useParams({ from: '/dashboard/transactions/$id' })
+  const { id } = useParams({ from: '/dashboard/transaction/$id' })
   
   useEffect(() => {
     if (id) {
@@ -40,10 +44,27 @@ export const useTransactionDetailsPage = () => {
       window.URL.revokeObjectURL(url);
       toast.success("Ledger CSV exported successfully");
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to export ledger CSV");
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to export ledger CSV");
+        return;
+      }
+
+      toast.error("Failed to export ledger CSV");
     },
   });
+
+  const handleManualPayoutRetry = async (sessionId?: string) => {
+    if (!sessionId) {
+      toast.error("Transaction session ID is required to retry payout");
+      return;
+    }
+
+    await adminRetryPendingPayoutsMutation.mutateAsync({
+      sessionId,
+      forceProceed: true,
+    });
+  };
   
   const goBack = () => {
     dispatch(clearTransactionDetailSessionId());
@@ -60,10 +81,12 @@ export const useTransactionDetailsPage = () => {
     loadingTransactionInfo,
     ledgerEntries: transactionInfo?.ledgerEntries || [],
     exportingLedgerCsv: exportLedgerMutation.isPending,
+    retryingPayout: adminRetryPendingPayoutsMutation.isPending,
     
     
     // ⚙️ Functions
     goBack,
     handleExportLedgerCsv: () => exportLedgerMutation.mutate(),
+    handleManualPayoutRetry,
   }
 }

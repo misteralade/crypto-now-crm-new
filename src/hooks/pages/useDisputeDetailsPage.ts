@@ -10,7 +10,7 @@ export const useDisputeDetailsPage = () => {
   const navigate = useNavigate();
   const { disputeMessages, loadingDisputeMessages, disputeDetails, loadingDisputeDetails, adminSendDisputeMutation } = useDisputeQuery();
   
-  const { id } = useParams({ from: '/dashboard/disputes/$id' })
+  const { id } = useParams({ from: '/dashboard/dispute/$id' })
   
   useEffect(() => {
     if (id) {

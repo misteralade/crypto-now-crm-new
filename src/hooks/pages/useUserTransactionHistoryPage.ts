@@ -14,7 +14,7 @@ import type {SearchTransactionsResponse} from "../../types/response.payload.type
 export const useUserTransactionHistoryPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { searchUserTransactions, loadingSearchUserTransactions } = useTransactionQuery();
+  const { searchUserTransactions, loadingSearchUserTransactions, fetchingSearchUserTransactions, refetchSearchUserTransactions } = useTransactionQuery();
   const { allSupportedCrypto, loadingAllSupportedCrypto } = useCryptoQuery();
   
   const { userId } = useParams({ from: '/dashboard/users/transaction-history/$userId' })
@@ -109,6 +109,8 @@ export const useUserTransactionHistoryPage = () => {
     handleDownloadSingle,
     handleExportAll,
     handlePageSizeChange,
+    handleRefreshTransactions: refetchSearchUserTransactions,
+    isFetchingTransactions: fetchingSearchUserTransactions,
     goBack,
   };
 };

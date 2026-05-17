@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Zap,
   ShieldAlert,
+  RefreshCcw,
 } from "lucide-react";
 import { SummaryCardSkeleton } from "../components/global/Skeleton";
 import {
@@ -54,8 +55,12 @@ const ManageTransactions = () => {
     handleTransactionUpdateField,
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
+    handleManualPayoutRetry,
+    retryingPayout,
     handlePageSizeChange: updatePageSize,
     handleSelectedStatsTimelineChange,
+    handleRefreshTransactions,
+    isFetchingTransactions,
   } = useManageTransactionsPage();
 
   const timelineLabels: Record<TimelineFilter, string> = {
@@ -134,29 +139,45 @@ const ManageTransactions = () => {
       />
       <div className="p-6 mx-auto space-y-8">
         <div className="flex items-center justify-between gap-4">
-          <Select
-            value={selectedStatsTimeline}
-            onValueChange={(value) =>
-              handleSelectedStatsTimelineChange(value as TimelineFilter)
-            }
-          >
-            <SelectTrigger className="w-[160px] rounded-xl border-[#ECECEC] shadow-sm text-[14px] font-medium">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-              <SelectItem value="year">This Year</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select
+              value={selectedStatsTimeline}
+              onValueChange={(value) =>
+                handleSelectedStatsTimelineChange(value as TimelineFilter)
+              }
+            >
+              <SelectTrigger className="w-[160px] rounded-xl border-[#ECECEC] shadow-sm text-[14px] font-medium bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Time</SelectItem>
+                <SelectItem value="week">This Week</SelectItem>
+                <SelectItem value="month">This Month</SelectItem>
+                <SelectItem value="year">This Year</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <button
-            onClick={resetSearchFilter}
-            className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            Reset View
-          </button>
+            <button
+              onClick={() => handleRefreshTransactions()}
+              disabled={isFetchingTransactions}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#ECECEC] rounded-xl shadow-sm text-[14px] font-medium text-[#03034D] hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              title="Refresh Transactions"
+            >
+              <RefreshCcw
+                className={`w-4 h-4 ${isFetchingTransactions ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={resetSearchFilter}
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              Reset View
+            </button>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -301,12 +322,13 @@ const ManageTransactions = () => {
         <TransactionDetailsDrawer
           isOpen={showTransactionDetails}
           onClose={handleShowTransactionDetails}
-          transaction={
-            !loadingTransactionDetails ? transactionDetail : undefined
-          }
+          transaction={transactionDetail}
+          loading={loadingTransactionDetails}
           handleTransactionUpdateField={handleTransactionUpdateField}
           handleTransactionUpdate={handleTransactionUpdate}
           handleTransactionReceiptUpload={handleTransactionReceiptUpload}
+          handleManualPayoutRetry={handleManualPayoutRetry}
+          retryingPayout={retryingPayout}
         />
       </div>
     </AuthenticatedLayout>

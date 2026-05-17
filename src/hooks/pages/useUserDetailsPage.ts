@@ -22,7 +22,7 @@ export const useUserDetailsPage = () => {
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
-  const { userId } = useParams({ from: '/dashboard/users/$userId' })
+  const { userId } = useParams({ from: '/dashboard/user/$userId' })
   
   useEffect(() => {
     if (userId) {

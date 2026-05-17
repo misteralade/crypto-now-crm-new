@@ -30,10 +30,10 @@ export const ROUTES = {
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   TRANSACTIONS: '/dashboard/transactions',
-  TRANSACTIONS_DETAILS: '/dashboard/transactions/$id',
+  TRANSACTIONS_DETAILS: '/dashboard/transaction/$id',
   DISPUTES: '/dashboard/disputes',
   EDIT_DISPUTE: '/dashboard/disputes/edit/$id',
-  DISPUTE_DETAILS: `/dashboard/disputes/$id`,
+  DISPUTE_DETAILS: `/dashboard/dispute/$id`,
   COIN_MANAGEMENT: '/dashboard/coin-management',
   ADD_COIN: '/dashboard/coin-management/add-coin',
   EDIT_COIN: '/dashboard/coin-management/$coinId',
@@ -41,7 +41,7 @@ export const ROUTES = {
   TREASURY: '/dashboard/treasury',
   AUDIT_TRAILS: '/dashboard/audit-trails',
   USERS: '/dashboard/users',
-  USERS_DETAILS: '/dashboard/users/$userId',
+  USERS_DETAILS: '/dashboard/user/$userId',
   USER_TRANSACTIONS: '/dashboard/users/transaction-history/$userId',
   NOTIFICATIONS: '/dashboard/notifications',
   MANAGE_ADMINS: '/dashboard/manage-admins',
@@ -50,7 +50,7 @@ export const ROUTES = {
   KYC_TIER_LIMITS: '/dashboard/kyc-tier-limits',
   SUPPORTED_CURRENCIES: '/dashboard/supported-currencies',
   KYC_SESSIONS: '/dashboard/kyc-sessions',
-  KYC_SESSION_DETAIL: '/dashboard/kyc-sessions/$id',
+  KYC_SESSION_DETAIL: '/dashboard/kyc-session/$id',
 }
 
 export const CRYPTO_NETWORK_OPTIONS = [

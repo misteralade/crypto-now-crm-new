@@ -26,7 +26,7 @@ const TransactionHash = ({ cryptoTxHash, network, walletAddress }: TransactionHa
           <div>
             <p className="text-sm text-gray-500 mb-2">Transaction Hash</p>
             <div className="flex items-center gap-2 w-full">
-              <CopyDetails text={cryptoTxHash} className="!max-w-[400px]" iconClassName="!w-8 !h-8" />
+              <CopyDetails text={cryptoTxHash} wrap={true} className="!max-w-[400px]" iconClassName="!w-8 !h-8" />
               <a
                 href={chainUrl}
                 target="_blank"

@@ -1,5 +1,10 @@
 import type {TransactionStatus} from "../schemas/enum.schema.ts";
 
+const MANUAL_PAYOUT_RETRY_STATUSES = new Set<TransactionStatus>([
+  "PENDING_PAYOUT",
+  "PAYOUT_FAILED",
+]);
+
 export enum StatusCategory {
   INITIAL = 'initial',
   IN_PROGRESS = 'in_progress',
@@ -313,4 +318,8 @@ export const getStatusColor = (status: string): string => {
 export const getStatusDot = (status: string): string => {
   const config = getStatusConfig(status);
   return config.dotColor;
+};
+
+export const canManuallyRetryPayout = (status: string): boolean => {
+  return MANUAL_PAYOUT_RETRY_STATUSES.has(status.toUpperCase() as TransactionStatus);
 };

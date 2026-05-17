@@ -25,15 +25,18 @@ export const useSignInPage = () => {
   }, []);
 
   useEffect(() => {
-    setEmail(queryEmail);
-    setPassword(queryPassword);
+    if (queryEmail) setEmail(queryEmail);
+    if (queryPassword) setPassword(queryPassword);
   }, [queryEmail, queryPassword]);
 
   const pingAdminUser = async () => {
-    const { success } = await authServiceApi.pingAdmin();
-
-    if (success) {
-      navigate({ to: ROUTES.DASHBOARD });
+    try {
+      const { success } = await authServiceApi.pingAdmin();
+      if (success) {
+        navigate({ to: ROUTES.DASHBOARD });
+      }
+    } catch {
+      // Not authenticated — stay on login page
     }
   };
 

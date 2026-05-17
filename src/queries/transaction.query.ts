@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMatchRoute } from '@tanstack/react-router'
 import { toast } from 'react-toastify'
-import {useSelector} from "react-redux";
-import {ROUTES, TIME_IN_MILLISECONDS} from '../util/constants.util.ts'
+import { useSelector } from "react-redux";
+import { ROUTES } from "../util/constants.util.ts";
 import { transactionServiceApi } from '../api/transaction.api'
 import { store  } from '../store'
 import { QUERY_KEYS } from './querries.keys'
@@ -154,7 +154,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
 
   const searchUserTransactionHistory = useSelector((state: RootState) => state.transactionManagement.search.userTransactionHistory);
 
-  const { data: searchTransactions, isLoading: loadingSearchTransactions } = useQuery({
+  const { data: searchTransactions, isLoading: loadingSearchTransactions, isFetching: fetchingSearchTransactions, refetch: refetchSearchTransactions } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchTransaction],
     queryFn: async () => {
       const payload = (store.getState() as RootState).transactionManagement.search.transactions
@@ -169,10 +169,9 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
       return null;
     },
     enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction && !matchRoute({ to: ROUTES.USER_TRANSACTIONS }),
-    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
-  const { data: searchUserTransactions, isLoading: loadingSearchUserTransactions } = useQuery({
+  const { data: searchUserTransactions, isLoading: loadingSearchUserTransactions, isFetching: fetchingSearchUserTransactions, refetch: refetchSearchUserTransactions } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchUserTransactionHistory],
     queryFn: async () => {
       const payload = (store.getState() as RootState).transactionManagement.search.userTransactionHistory
@@ -187,7 +186,6 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
       return null;
     },
     enabled: !!matchRoute({ to: ROUTES.USER_TRANSACTIONS }) && !!searchUserTransactionHistory,
-    refetchInterval: TIME_IN_MILLISECONDS.ONE_MINUTE,
   });
 
   const { data: transactionDetail, isLoading: loadingTransactionDetails } = useQuery({
@@ -359,6 +357,8 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
         toast.success(res.message)
 
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS] })
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS] })
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS_PAGE] })
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER.GET_WEEKLY_USER_STATS_SUMMARY] })
       } else {
         toast.error(res?.message || 'Failed to retry payouts')
@@ -386,6 +386,10 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     loadingSearchTransactions,
     searchUserTransactions,
     loadingSearchUserTransactions,
+    fetchingSearchTransactions,
+    fetchingSearchUserTransactions,
+    refetchSearchTransactions,
+    refetchSearchUserTransactions,
     transactionDetail,
     loadingTransactionDetails,
     transactionInfo,

@@ -54,6 +54,7 @@ interface MFLabeledPillSearchSelectProps {
 
 export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass = '', valueClass = '', className = '', placeholder = 'Search...', value: controlledValue }: MFLabeledPillSearchSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownClosing, setIsDropdownClosing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState(controlledValue || '')
@@ -71,11 +72,19 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
   const selectedOption = options.find(opt => opt.value === selectedItem);
   const displayValue = selectedOption ? selectedOption.label : '';
 
+  const closeDropdown = () => {
+    setIsDropdownClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsDropdownClosing(false);
+      setSearchTerm('');
+    }, 120);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setSearchTerm('');
+        closeDropdown();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -95,15 +104,14 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
       case 'ArrowDown': e.preventDefault(); setHighlightedIndex(prev => prev < filteredOptions.length - 1 ? prev + 1 : prev); break;
       case 'ArrowUp': e.preventDefault(); setHighlightedIndex(prev => prev > 0 ? prev - 1 : 0); break;
       case 'Enter': e.preventDefault(); if (filteredOptions[highlightedIndex]) handleSelect(filteredOptions[highlightedIndex].value); break;
-      case 'Escape': e.preventDefault(); setIsOpen(false); setSearchTerm(''); break;
+      case 'Escape': e.preventDefault(); closeDropdown(); break;
     }
   };
 
   const handleSelect = (optionValue: string) => {
     setSelectedItem(optionValue);
     onChange(optionValue);
-    setIsOpen(false);
-    setSearchTerm('');
+    closeDropdown();
     setHighlightedIndex(0);
   };
 
@@ -122,7 +130,7 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
           <legend className={`px-2 text-[13px] font-medium text-[#454745] leading-none ${labelClass}`}>{label}</legend>
           <div
             className={`w-full cursor-pointer bg-transparent outline-none pr-8 text-[#101828] text-[16px] ${valueClass} ${className} flex items-center justify-between`}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => isOpen ? closeDropdown() : setIsOpen(true)}
             onKeyDown={handleKeyDown}
             tabIndex={0}
             role="combobox"
@@ -144,8 +152,8 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
           </div>
         </fieldset>
 
-        {isOpen && (
-          <div className="absolute z-50 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-[300px] overflow-hidden animate-in fade-in-0 zoom-in-95 slide-in-from-top-1 duration-150">
+        {(isOpen || isDropdownClosing) && (
+          <div className={`absolute z-50 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-[300px] overflow-hidden ${isDropdownClosing ? 'animate-modal-content-out' : 'animate-in fade-in-0 zoom-in-95 slide-in-from-top-1 duration-150'}`}>
             <div className="p-2 border-b border-gray-100">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9A9A9A]" />

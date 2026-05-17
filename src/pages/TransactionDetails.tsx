@@ -17,6 +17,7 @@ import TransactionDetailsPipeline from "../components/pages/manageTransactions/d
 import { convertToMillify } from "../util/index.util.ts";
 import { ArrowLeft, Download } from "lucide-react";
 import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
+import { canManuallyRetryPayout } from "../util/transaction.util.ts";
 
 const TransactionDetails = () => {
   const {
@@ -25,12 +26,16 @@ const TransactionDetails = () => {
     loadingTransactionInfo,
     ledgerEntries,
     exportingLedgerCsv,
+    retryingPayout,
     
     
     // ⚙️ Functions
     goBack,
     handleExportLedgerCsv,
+    handleManualPayoutRetry,
   } = useTransactionDetailsPage();
+
+  const canRetryPayout = transaction ? canManuallyRetryPayout(transaction.status) : false;
   
   return (
     <AuthenticatedLayout>
@@ -38,15 +43,27 @@ const TransactionDetails = () => {
         <PageHeader
           title="Transaction Details"
           actions={
-            <button
-              type="button"
-              onClick={handleExportLedgerCsv}
-              disabled={exportingLedgerCsv}
-              className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <Download className="h-4 w-4" />
-              {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}
-            </button>
+            <div className="flex items-center gap-3">
+              {canRetryPayout && (
+                <button
+                  type="button"
+                  onClick={() => handleManualPayoutRetry(transaction?.sessionId)}
+                  disabled={retryingPayout}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {retryingPayout ? "Retrying..." : "Trigger payout retry"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handleExportLedgerCsv}
+                disabled={exportingLedgerCsv}
+                className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Download className="h-4 w-4" />
+                {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}
+              </button>
+            </div>
           }
         />
         
@@ -213,8 +230,6 @@ const TransactionDetails = () => {
                     </div>
                   </div>
                 )}
-
-                <LedgerEntriesSection ledgerEntries={ledgerEntries} />
               </div>
               
               <div className="space-y-6">
@@ -245,7 +260,7 @@ const TransactionDetails = () => {
                   <div>
                     <p className="text-sm text-gray-500 mb-2">Session ID</p>
                     <div className="flex items-center gap-2">
-                      <CopyDetails text={transaction.sessionId} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
+                      <CopyDetails text={transaction.sessionId} wrap={true} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
                     </div>
                   </div>
                 </div>
@@ -257,7 +272,7 @@ const TransactionDetails = () => {
                     <div>
                       <p className="text-gray-500 mb-1">Transaction ID</p>
                       <div className="flex items-center gap-1">
-                        <CopyDetails text={transaction.id} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
+                        <CopyDetails text={transaction.id} wrap={true} className="!max-w-[300px]" iconClassName="!w-8 !h-8" />
                       </div>
                     </div>
                     
@@ -277,6 +292,10 @@ const TransactionDetails = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-6">
+              <LedgerEntriesSection ledgerEntries={ledgerEntries} />
             </div>
           </Fragment>
         ) : (

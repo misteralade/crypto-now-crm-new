@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import WalletDetails from '../../../../pages/WalletDetails.tsx'
+import WalletDetails from '../../../pages/WalletDetails.tsx'
 
-export const Route = createFileRoute('/dashboard/treasury/wallet/$walletAddress')({
+export const Route = createFileRoute('/dashboard/custodial-wallet/$walletAddress')({
   component: WalletDetails,
   validateSearch: (search: Record<string, unknown>) => {
     return {

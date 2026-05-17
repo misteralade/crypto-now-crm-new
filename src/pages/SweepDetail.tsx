@@ -62,7 +62,7 @@ export default function SweepDetail() {
 
   function openWalletDetails(walletAddress: string) {
     void navigate({
-      to: '/dashboard/treasury/wallet/$walletAddress',
+      to: '/dashboard/custodial-wallet/$walletAddress',
       params: { walletAddress },
       search: { fromSweepId: sweepId },
     });

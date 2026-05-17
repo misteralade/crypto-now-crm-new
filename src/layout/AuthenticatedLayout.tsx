@@ -33,9 +33,20 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   }, []);
   
   const pingAdminUser = async () => {
-    const { success } = await authServiceApi.pingAdmin();
-    
-    if (!success) {
+    const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+    if (!token) {
+      navigate({ to: ROUTES.LOGIN });
+      return;
+    }
+
+    try {
+      const { success } = await authServiceApi.pingAdmin();
+
+      if (!success) {
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+        navigate({ to: ROUTES.LOGIN })
+      }
+    } catch {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       navigate({ to: ROUTES.LOGIN })
     }
@@ -45,12 +56,10 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
     <div className="min-h-screen bg-[#F5F5FF]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+        <div
+          className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          onClick={() => setSidebarOpen(false)}
+        />
         <div className="flex-1 flex flex-col min-w-0">
           {!sidebarOpen && (
             <button

@@ -8,7 +8,7 @@ import ManageTransactionsControls from "../components/pages/manageTransactions/M
 import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import { useUserTransactionHistoryPage } from '../hooks/pages/useUserTransactionHistoryPage.ts';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, RefreshCcw } from 'lucide-react';
 
 const UserTransactionHistory = () => {
   const {
@@ -22,6 +22,8 @@ const UserTransactionHistory = () => {
     // ⚙️ Functions
     handleDownloadSingle,
     handleExportAll,
+    handleRefreshTransactions,
+    isFetchingTransactions,
     goBack,
   } = useUserTransactionHistoryPage();
   
@@ -72,8 +74,22 @@ const UserTransactionHistory = () => {
         <PageHeader title="Transaction History" />
         
         <div className="my-6 flex items-center justify-between w-full">
-          <div className="text-lg text-[#858585] font-medium">
-            Transaction History
+          <div className="flex items-center gap-4">
+            <div className="text-lg text-[#858585] font-medium">
+              Transaction History
+            </div>
+
+            <button
+              onClick={() => handleRefreshTransactions()}
+              disabled={isFetchingTransactions}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#ECECEC] rounded-lg shadow-sm text-[13px] font-medium text-[#03034D] hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              title="Refresh Transactions"
+            >
+              <RefreshCcw
+                className={`w-3.5 h-3.5 ${isFetchingTransactions ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </button>
           </div>
 
           <button

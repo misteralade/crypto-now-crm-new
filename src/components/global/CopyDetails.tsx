@@ -6,9 +6,10 @@ interface CopyDetailsProps {
   text: string;
     className?: string;
   iconClassName?: string;
+  wrap?: boolean;
 }
 
-const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
+const CopyDetails = ({text, className, iconClassName, wrap}: CopyDetailsProps) => {
     const [response, setResponse] = useState<string>("");
     const handleCopy = () => {
         navigator.clipboard.writeText(text)
@@ -23,16 +24,16 @@ const CopyDetails = ({text, className, iconClassName}: CopyDetailsProps) => {
     };
     return (
       <div
-        className={`flex gap-2 items-center relative max-w-[400px] w-3/4 md:w-fit ${className}`}
+        className={`flex gap-2 items-center relative ${!wrap ? "max-w-[400px]" : "w-full"} w-3/4 md:w-fit ${className}`}
       >
         <p
-          className={`text-black overflow-hidden whitespace-nowrap text-ellipsis`}
+          className={`text-black overflow-hidden ${wrap ? "break-all" : "whitespace-nowrap text-ellipsis"}`}
         >
           {text}
         </p>
 
         <Copy
-          className={`text-purple-600 hover:cursor-pointer h-18 w-1 ${iconClassName}`}
+          className={`text-purple-600 hover:cursor-pointer shrink-0 ${iconClassName || "h-4 w-4"}`}
           onClick={handleCopy}
         />
 

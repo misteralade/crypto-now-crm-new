@@ -37,6 +37,8 @@ export const useManageTransactionsPage = () => {
     // Queries
     searchTransactions,
     loadingSearchTransactions,
+    fetchingSearchTransactions,
+    refetchSearchTransactions,
     transactionDetail,
     loadingTransactionDetails,
     adminTransactionStats,
@@ -46,6 +48,7 @@ export const useManageTransactionsPage = () => {
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
     adminLockTransactionMutation,
+    adminRetryPendingPayoutsMutation,
   } = useTransactionQuery({
     adminStatsTimeline: selectedStatsTimeline,
   });
@@ -100,34 +103,23 @@ export const useManageTransactionsPage = () => {
   }
 
   const handleShowTransactionDetails = async (sessionId?: string) => {
-    // If sessionId is not present, then just toggle the state and clear the redux
     if (!sessionId) {
       dispatch(clearTransactionDetailSessionId())
-      toggleShowTransactionDetails()
+      setShowTransactionDetails(false)
       return
     }
 
-    // If sessionId is present, try to lock the transaction first
+    // Open drawer immediately — lock in the background, close only on failure
+    dispatch(setTransactionDetailSessionId(sessionId))
+    setShowTransactionDetails(true)
+
     try {
       await adminLockTransactionMutation.mutateAsync(sessionId)
-      // Lock successful, open the sidebar
-      dispatch(setTransactionDetailSessionId(sessionId))
-      toggleShowTransactionDetails()
     } catch (error) {
-      console.log({
-        error
-      })
-      // Handle lock error
       const axiosError = error as AxiosServerError
       const errorMessage = axiosError.response?.data?.error?.message || 'Failed to lock transaction'
-      
-      // Show error message
       toast.error(errorMessage)
-      
-      // Ensure sidebar is closed and clear sessionId
-      if (showTransactionDetails) {
-        toggleShowTransactionDetails()
-      }
+      setShowTransactionDetails(false)
       dispatch(clearTransactionDetailSessionId())
     }
   }
@@ -141,9 +133,21 @@ export const useManageTransactionsPage = () => {
 
   const handleTransactionUpdate = async () => {
     await adminUpdateTransactionMutation.mutateAsync();
-    toggleShowTransactionDetails();
+    setShowTransactionDetails(false);
     dispatch(clearTransactionDetailSessionId())
     dispatch(clearTransactionDetailUpdateField());
+  }
+
+  const handleManualPayoutRetry = async (sessionId?: string) => {
+    if (!sessionId) {
+      toast.error("Transaction session ID is required to retry payout");
+      return;
+    }
+
+    await adminRetryPendingPayoutsMutation.mutateAsync({
+      sessionId,
+      forceProceed: true,
+    });
   }
 
   const handleTransactionReceiptUpload = async (file: File): Promise<string> => {
@@ -161,7 +165,6 @@ export const useManageTransactionsPage = () => {
     return result?.signedUrl || '';
   }
 
-  const toggleShowTransactionDetails = () => setShowTransactionDetails(!showTransactionDetails)
   const handleSelectedStatsTimelineChange = (timeline: TimelineFilter) => {
     setSelectedStatsTimeline(timeline)
   }
@@ -188,7 +191,11 @@ export const useManageTransactionsPage = () => {
     handleTransactionUpdateField,
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
+    handleManualPayoutRetry,
+    retryingPayout: adminRetryPendingPayoutsMutation.isPending,
     handlePageSizeChange,
     handleSelectedStatsTimelineChange,
+    handleRefreshTransactions: refetchSearchTransactions,
+    isFetchingTransactions: fetchingSearchTransactions,
   }
 }

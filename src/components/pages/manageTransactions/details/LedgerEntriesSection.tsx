@@ -7,6 +7,59 @@ interface LedgerEntriesSectionProps {
   ledgerEntries: LedgerEntryResponsePayload[] | undefined;
 }
 
+const accountTypeMeta: Record<
+  string,
+  {
+    label: string;
+    description: string;
+  }
+> = {
+  USER_NGN: {
+    label: "User NGN",
+    description: "User balance / liability",
+  },
+  PLATFORM_NGN: {
+    label: "Platform NGN",
+    description: "Platform treasury account",
+  },
+  CRYPTO_CUSTODY: {
+    label: "Crypto Custody",
+    description: "Custodial crypto balance",
+  },
+  FEE_COLLECTED: {
+    label: "Fee Collected",
+    description: "Platform fee revenue",
+  },
+  PAYOUT_SENT: {
+    label: "Payout Sent",
+    description: "External payout settlement rail",
+  },
+  REFUND_ISSUED: {
+    label: "Refund Issued",
+    description: "Customer refund balance",
+  },
+};
+
+const getAccountMeta = (accountType: string) =>
+  accountTypeMeta[accountType] ?? {
+    label: accountType.replaceAll("_", " "),
+    description: "Ledger account",
+  };
+
+const getEntryMeta = (entryType: string, referenceType: string | null) => {
+  const isReversal = referenceType === "PAYOUT_REVERSAL";
+  const isCredit = entryType === "CREDIT";
+
+  return {
+    label: isReversal ? `REVERSAL ${entryType}` : entryType,
+    className: isReversal
+      ? "bg-[#FFF4ED] text-[#B54708]"
+      : isCredit
+        ? "bg-[#ECFDF3] text-[#027A48]"
+        : "bg-[#FEF3F2] text-[#B42318]",
+  };
+};
+
 const LedgerEntriesSection = ({
   ledgerEntries,
 }: LedgerEntriesSectionProps) => {
@@ -18,7 +71,11 @@ const LedgerEntriesSection = ({
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Ledger Entries</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Immutable accounting rows attached to this transaction. Reversal rows appear when a payout is finalized as failed.
+            Immutable accounting rows attached to this transaction. A credit on
+            <span className="font-medium text-gray-700"> User NGN </span>
+            means the user balance increased; a credit on
+            <span className="font-medium text-gray-700"> Payout Sent </span>
+            means the failed payout was reversed, not that money was paid out successfully.
           </p>
         </div>
       </div>
@@ -44,65 +101,71 @@ const LedgerEntriesSection = ({
               </tr>
             </thead>
             <tbody>
-              {ledgerEntries.map((entry) => (
-                <tr key={entry.id} className="align-top">
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
-                    {new Date(entry.createdAt).toLocaleString()}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                    {entry.accountType.replaceAll("_", " ")}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                        entry.entryType === "CREDIT"
-                          ? "bg-[#ECFDF3] text-[#027A48]"
-                          : "bg-[#FEF3F2] text-[#B42318]"
-                      }`}
-                    >
-                      {entry.entryType}
-                    </span>
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                    {formatNumber(entry.amount)}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
-                    {entry.currency}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-700 min-w-[220px]">
-                    <Fragment>{entry.description}</Fragment>
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm whitespace-nowrap">
-                    {entry.referenceType ? (
+              {ledgerEntries.map((entry) => {
+                const entryMeta = getEntryMeta(entry.entryType, entry.referenceType);
+                const accountMeta = getAccountMeta(entry.accountType);
+
+                return (
+                  <tr key={entry.id} className="align-top">
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {new Date(entry.createdAt).toLocaleString()}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span>{accountMeta.label}</span>
+                        <span className="text-xs font-normal text-gray-500">
+                          {accountMeta.description}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                          entry.referenceType === "PAYOUT_REVERSAL"
-                            ? "bg-[#FEE4E2] text-[#B42318]"
-                            : "bg-[#F2F4F7] text-[#344054]"
-                        }`}
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${entryMeta.className}`}
                       >
-                        {entry.referenceType.replaceAll("_", " ")}
+                        {entryMeta.label}
                       </span>
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-700 min-w-[180px]">
-                    {entry.referenceId ? (
-                      <CopyDetails
-                        text={entry.referenceId}
-                        className="!max-w-[180px]"
-                        iconClassName="!w-7 !h-7"
-                      />
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
-                  <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
-                    {entry.runningBalance ? formatNumber(entry.runningBalance) : "—"}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      {formatNumber(entry.amount)}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {entry.currency}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-700 min-w-[220px]">
+                      <Fragment>{entry.description}</Fragment>
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm whitespace-nowrap">
+                      {entry.referenceType ? (
+                        <span
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                            entry.referenceType === "PAYOUT_REVERSAL"
+                              ? "bg-[#FFF4ED] text-[#B54708]"
+                              : "bg-[#F2F4F7] text-[#344054]"
+                          }`}
+                        >
+                          {entry.referenceType.replaceAll("_", " ")}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-700 min-w-[180px]">
+                      {entry.referenceId ? (
+                        <CopyDetails
+                          text={entry.referenceId}
+                          className="!max-w-[180px]"
+                          iconClassName="!w-7 !h-7"
+                        />
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </td>
+                    <td className="border-b border-[#F3F4F6] px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {entry.runningBalance ? formatNumber(entry.runningBalance) : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

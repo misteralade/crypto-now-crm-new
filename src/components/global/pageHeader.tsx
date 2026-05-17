@@ -11,16 +11,30 @@ interface PageHeaderProps {
 }
 
 /** Decode the JWT payload without verifying - used only for display (email/name). */
-function decodeAdminEmail(): string {
+function decodeAdminName(): string {
   try {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN)
     if (!token) return 'Admin'
     const base64 = token.split('.')[1]
     if (!base64) return 'Admin'
     const payload = JSON.parse(atob(base64.replace(/-/g, '+').replace(/_/g, '/')))
-    const email: string = payload?.email || ''
+    
+    // Prioritize real name from JWT
+    const { firstName, lastName, username, email } = payload
+    if (firstName && firstName !== 'admin' && lastName && lastName !== 'admin') {
+      return `${firstName} ${lastName}`
+    } else if (firstName && firstName !== 'admin') {
+      return firstName
+    }
+
+    // Fallback to username
+    if (username && username !== 'admin') {
+      return username.charAt(0).toUpperCase() + username.slice(1)
+    }
+
+    const emailStr: string = email || ''
     // Show name part of email (before @) formatted nicely
-    const name = email.split('@')[0] ?? 'Admin'
+    const name = emailStr.split('@')[0] ?? 'Admin'
     return name.charAt(0).toUpperCase() + name.slice(1).replace(/[._-]/g, ' ')
   } catch {
     return 'Admin'
@@ -28,7 +42,7 @@ function decodeAdminEmail(): string {
 }
 
 const PageHeader = ({ title, subtitle, actions, className }: PageHeaderProps) => {
-  const adminName = useMemo(() => decodeAdminEmail(), [])
+  const adminName = useMemo(() => decodeAdminName(), [])
 
   return (
     <div className={`sticky top-0 z-20 w-full border-b border-gray-100 bg-white ${className ?? ''}`}>
