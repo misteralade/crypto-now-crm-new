@@ -19,6 +19,9 @@ const NETWORK_OPTIONS = [
   { label: "Ethereum (ERC-20)", value: "ERC20" },
 ];
 
+// Must match backend `SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT` in cryptonow-backend/src/util/constants.ts
+const SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT = false;
+
 // Standardize error extraction across mutation paths.
 function getErrorMessage(error: unknown) {
   if (error instanceof Error && error.message) return error.message;
@@ -32,6 +35,29 @@ function formatCacheTimestampLabel(iso: string): string {
   return m.isSame(moment(), "year")
     ? m.format("D MMM HH:mm")
     : m.format("D MMM YY HH:mm");
+}
+
+// Gas fee reserve withheld from the sweep amount (same units as the swept asset).
+function defaultFeeReserveFromAggregate(network: string): number {
+  switch (network) {
+    case "BTC":
+      return 0.00003;
+    case "SOLANA":
+      return 895_000 / 1e9; // ~rent-exempt minimum + signature fee
+    default:
+      return 0; // ERC-20/TRC-20 fees are paid in the native token, not the swept asset
+  }
+}
+
+// Formats a suggested sweep amount (trims trailing zeros).
+function formatSuggestedSweepAmount(value: number, network: string): string {
+  if (!Number.isFinite(value) || value <= 0) return "";
+  const decimals = network === "BTC" ? 8 : 6;
+  let s = value.toFixed(decimals);
+  while (s.includes(".") && (s.endsWith("0") || s.endsWith("."))) {
+    s = s.slice(0, -1);
+  }
+  return s;
 }
 
 // Cached aggregate freshness line for the sweep preview panel.
@@ -103,6 +129,7 @@ export default function SweepConfigModal({
 
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
+  const isBtcLimitedSweepUi = network === "BTC" && !SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT;
 
   // Cached preview (no chain calls) — only fired when admin clicks Preview.
   const {
@@ -112,6 +139,34 @@ export default function SweepConfigModal({
     refetch: refetchPreview,
   } = useSweepPreview(showPreview ? { network, cryptocurrencyId } : null);
 
+  // Auto-fill amount from preview/summary minus gas fee reserve.
+  // Deps use primitive sub-fields intentionally to avoid re-running on unrelated object changes.
+  useEffect(() => {
+    if (!network || !cryptocurrencyId) { setMaxAmountInput(""); return; }
+    if (!isBtcLimitedSweepUi && amountTouched) return;
+    const reserve = defaultFeeReserveFromAggregate(network);
+    if (showPreview && previewData) {
+      const v = Math.max(0, previewData.estimatedAmount - reserve);
+      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      return;
+    }
+    if (matchedSummaryRow) {
+      const v = Math.max(0, matchedSummaryRow.totalBalance - reserve);
+      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      return;
+    }
+    setMaxAmountInput("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isBtcLimitedSweepUi,
+    amountTouched,
+    network,
+    cryptocurrencyId,
+    matchedSummaryRow?.totalBalance,
+    showPreview,
+    previewData?.estimatedAmount,
+  ]);
+
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
   useEffect(() => {
     if (open) {
@@ -120,6 +175,8 @@ export default function SweepConfigModal({
     } else if (shouldRender) {
       setIsClosing(true);
       setPreviewRequested(false);
+      setMaxAmountInput("");
+      setAmountTouched(false);
       const timer = setTimeout(() => {
         setShouldRender(false);
         setIsClosing(false);
@@ -130,19 +187,42 @@ export default function SweepConfigModal({
 
   if (!shouldRender) return null;
 
+  const parsedMaxAmount = (() => {
+    const trimmed = maxAmountInput.trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  })();
+  const maxAmountInvalid =
+    !isBtcLimitedSweepUi &&
+    maxAmountInput.trim().length > 0 &&
+    parsedMaxAmount === undefined;
+
   const handlePreview = () => {
     if (!network || !cryptocurrencyId) {
       toast.error("Please select both network and cryptocurrency");
+      return;
+    }
+    if (maxAmountInvalid) {
+      toast.error("Amount must be a positive number");
       return;
     }
     setPreviewRequested(true);
   };
 
   const handleInitiate = async () => {
+    if (maxAmountInvalid) {
+      toast.error("Amount must be a positive number");
+      return;
+    }
     try {
       const result = await initiateSweepMutation.mutateAsync({
         network,
         cryptocurrencyId,
+        options:
+          !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
+            ? { maxTotalAmount: parsedMaxAmount }
+            : undefined,
       });
 
       if (result.success && result.data?.sweepId) {
@@ -163,6 +243,7 @@ export default function SweepConfigModal({
   const resetPreviewAndSetNetwork = (value: string) => {
     setNetwork(value);
     setPreviewRequested(false);
+    setAmountTouched(false);
 
     // If current crypto is not supported on new network, clear it.
     if (cryptocurrencyId && allSupportedCrypto) {
@@ -186,6 +267,7 @@ export default function SweepConfigModal({
   const resetPreviewAndSetCrypto = (value: string) => {
     setCryptocurrencyId(value);
     setPreviewRequested(false);
+    setAmountTouched(false);
 
     // Auto-select network if the new crypto supports exactly one network.
     if (allSupportedCrypto) {
@@ -278,6 +360,54 @@ export default function SweepConfigModal({
                 options={networkOptions}
                 disabled={!cryptocurrencyId || networkOptions.length === 0}
               />
+
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="sweep-max-amount"
+                  className="block text-xs font-semibold text-[--color-text-primary]"
+                >
+                  {isBtcLimitedSweepUi ? "Total to sweep (estimated)" : "Amount to sweep"}
+                </label>
+                <div className="relative">
+                  <input
+                    id="sweep-max-amount"
+                    type={isBtcLimitedSweepUi ? "text" : "number"}
+                    min={isBtcLimitedSweepUi ? undefined : 0}
+                    step={isBtcLimitedSweepUi ? undefined : "any"}
+                    readOnly={isBtcLimitedSweepUi}
+                    inputMode={isBtcLimitedSweepUi ? undefined : "decimal"}
+                    placeholder={
+                      isBtcLimitedSweepUi
+                        ? "Select crypto and preview to load total"
+                        : "Leave empty to sweep all (no cap)"
+                    }
+                    value={maxAmountInput}
+                    onChange={(e) => {
+                      if (isBtcLimitedSweepUi) return;
+                      setAmountTouched(true);
+                      setMaxAmountInput(e.target.value);
+                    }}
+                    className={`h-11 w-full rounded-xl border px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
+                      isBtcLimitedSweepUi
+                        ? "cursor-not-allowed border-[#E4E7EC] bg-[#F8F9FC]"
+                        : maxAmountInvalid
+                          ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
+                          : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                    }`}
+                  />
+                  {symbol && (
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
+                      {symbol}
+                    </span>
+                  )}
+                </div>
+                {isBtcLimitedSweepUi && (
+                  <p className="text-xs text-[#667085]">Custom amount caps are not supported for BTC yet.</p>
+                )}
+                {maxAmountInvalid && (
+                  <p className="text-xs text-red-500">Amount must be a positive number.</p>
+                )}
+              </div>
             </div>
 
             {showPreview && isPreviewLoading && (
@@ -297,23 +427,36 @@ export default function SweepConfigModal({
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-[#667085]">Estimated total balance</span>
                   <span className="font-semibold tabular-nums text-[--color-text-primary]">
-                    {previewData.estimatedAmount.toFixed(
-                      network === "BTC" ? 8 : 6,
-                    )}{" "}
-                    {symbol}
+                    {previewData.estimatedAmount.toFixed(network === "BTC" ? 8 : 6)} {symbol}
                   </span>
                 </div>
+                {defaultFeeReserveFromAggregate(network) > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">
+                      Est. gas fee reserve
+                      <span className="ml-1 text-[11px] text-[#9CA3AF]">(withheld for network fees)</span>
+                    </span>
+                    <span className="tabular-nums text-[#DC6803]">
+                      − {defaultFeeReserveFromAggregate(network).toFixed(network === "BTC" ? 8 : 6)} {symbol}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-sm">
-                  <span className="font-semibold text-[--color-text-primary]">
-                    Amount to be swept
-                  </span>
+                  <span className="font-semibold text-[--color-text-primary]">Amount to be swept</span>
                   <span className="font-bold tabular-nums text-[#03034D]">
-                    {previewData.estimatedAmount.toFixed(
+                    {Math.max(0, previewData.estimatedAmount - defaultFeeReserveFromAggregate(network)).toFixed(
                       network === "BTC" ? 8 : 6,
-                    )}{" "}
-                    {symbol}
+                    )} {symbol}
                   </span>
                 </div>
+                {!isBtcLimitedSweepUi && parsedMaxAmount !== undefined && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">Custom amount cap</span>
+                    <span className="font-semibold tabular-nums text-[#03034D]">
+                      {parsedMaxAmount} {symbol}
+                    </span>
+                  </div>
+                )}
 
                 <div className="border-t border-[#ECEFFD] pt-2 space-y-1">
                   <div className="flex items-center gap-1.5">
