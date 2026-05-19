@@ -45,7 +45,9 @@ export default function SweepDetail() {
   const { data: sweep, isLoading } = useSweepStatus(sweepId);
 
   const isTerminal = sweep && ['COMPLETED', 'FAILED', 'PARTIAL'].includes(sweep.status);
-  const results: SweepWalletResult[] = sweep?.sweepResults ?? [];
+  const results: SweepWalletResult[] = [...(sweep?.sweepResults ?? [])].sort(
+    (a, b) => (Number(b.balance ?? 0)) - (Number(a.balance ?? 0))
+  );
 
   const stats = [
     { label: 'Wallets Found', value: sweep?.totalWalletsFound ?? '-' },

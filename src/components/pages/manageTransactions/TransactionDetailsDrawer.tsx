@@ -659,52 +659,48 @@ const TransactionDetailsDrawer = ({
               )}
 
               <section className="mt-4">
-                <div className="text-lg font-semibold text-[#454745] mb-4">
+                <div className="text-[16px] font-semibold text-[#454745] mb-4">
                   Update transaction status
                 </div>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap gap-3">
                   {ALLOWED_ADMIN_TRANSACTION_STATUS.filter(
                     (s: string | undefined) => s !== undefined
                   ).map((transactionStatus) => {
                     const hideStatus = hideStatuses.includes(transactionStatus);
                     const isCurrent = transaction.status === transactionStatus;
+                    const isSelected = selectedStatus === transactionStatus;
+                    const colorObj = getStatusColorObject(transactionStatus);
 
                     return (
-                      <Fragment key={transactionStatus}>
-                        <button
-                          className={`px-5 py-2 rounded-full normal-case ${
-                            getStatusColorObject(transactionStatus).bg
-                          } text-sm font-semibold ${
-                            getStatusColorObject(transactionStatus).textColor
-                          } hover:opacity-80 hover:cursor-pointer ${
-                            hideStatus ? "hidden" : ""
-                          } ${
-                            isCurrent
-                              ? "cursor-not-allowed opacity-60 hover:cursor-progress"
-                              : ""
-                          } ${
-                            selectedStatus === transactionStatus
-                              ? "ring-2 ring-offset-2 ring-[#03034D]"
-                              : ""
-                          }`}
-                          type="button"
-                          value={transactionStatus}
-                          onClick={
-                            !isCurrent
-                              ? () => {
-                                  handleTransactionUpdateField(
-                                    "status",
-                                    transactionStatus
-                                  );
-                                  setSelectedStatus(transactionStatus);
-                                }
-                              : undefined
-                          }
-                          disabled={isCurrent}
-                        >
-                          {getStatusDisplayText(transactionStatus)}
-                        </button>
-                      </Fragment>
+                      <button
+                        key={transactionStatus}
+                        className={`px-4 py-2 rounded-xl border transition-all duration-200 text-sm font-semibold ${
+                          hideStatus ? "hidden" : ""
+                        } ${
+                          isCurrent
+                            ? "opacity-50 cursor-not-allowed border-transparent"
+                            : "hover:shadow-sm cursor-pointer active:scale-95"
+                        } ${
+                          isSelected
+                            ? `ring-2 ring-[#03034D] ring-offset-1 border-transparent ${colorObj.bg} ${colorObj.textColor}`
+                            : `border-transparent ${colorObj.bg} ${colorObj.textColor}`
+                        }`}
+                        type="button"
+                        onClick={
+                          !isCurrent
+                            ? () => {
+                                handleTransactionUpdateField(
+                                  "status",
+                                  transactionStatus
+                                );
+                                setSelectedStatus(transactionStatus);
+                              }
+                            : undefined
+                        }
+                        disabled={isCurrent}
+                      >
+                        {getStatusDisplayText(transactionStatus)}
+                      </button>
                     );
                   })}
                 </div>
@@ -727,8 +723,13 @@ const TransactionDetailsDrawer = ({
 
             <section>
               <button
-                className="w-full py-4 bg-[#03034D] font-semibold text-white rounded-full cursor-pointer hover:bg-[#FF8B5A]"
+                className={`w-full py-4 font-semibold text-white rounded-full transition-all duration-200 ${
+                  !selectedStatus || selectedStatus === transaction.status
+                    ? "bg-[#03034D]/50 cursor-not-allowed"
+                    : "bg-[#03034D] cursor-pointer hover:bg-[#050568] shadow-lg hover:shadow-xl active:scale-[0.98]"
+                }`}
                 onClick={handleTransactionUpdate}
+                disabled={!selectedStatus || selectedStatus === transaction.status}
               >
                 Confirm status
               </button>
