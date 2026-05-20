@@ -135,15 +135,7 @@ export default function SweepDetail() {
       <PageHeader 
         title="Sweep Run Details" 
         subtitle="Real-time execution monitoring and wallet outcomes"
-        actions={
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-gray-100 active:scale-95 border border-gray-200"
-          >
-            <ArrowLeft size={16} />
-            <span>Back to Treasury</span>
-          </button>
-        }
+        onBack={handleBack}
       />
 
       <div className="mx-auto max-w-6xl space-y-8 p-6 pb-20">

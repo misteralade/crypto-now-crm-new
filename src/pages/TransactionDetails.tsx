@@ -39,45 +39,34 @@ const TransactionDetails = () => {
   
   return (
     <AuthenticatedLayout>
-      <div className="p-6 mx-auto">
-        <PageHeader
-          title="Transaction Details"
-          actions={
-            <div className="flex items-center gap-3">
-              {canRetryPayout && (
-                <button
-                  type="button"
-                  onClick={() => handleManualPayoutRetry(transaction?.sessionId)}
-                  disabled={retryingPayout}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {retryingPayout ? "Retrying..." : "Trigger payout retry"}
-                </button>
-              )}
+      <PageHeader
+        title="Transaction Details"
+        onBack={goBack}
+        actions={
+          <div className="flex items-center gap-3">
+            {canRetryPayout && (
               <button
                 type="button"
-                onClick={handleExportLedgerCsv}
-                disabled={exportingLedgerCsv}
-                className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+                onClick={() => handleManualPayoutRetry(transaction?.sessionId)}
+                disabled={retryingPayout}
+                className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <Download className="h-4 w-4" />
-                {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}
+                {retryingPayout ? "Retrying..." : "Trigger payout retry"}
               </button>
-            </div>
-          }
-        />
-        
-        <div className="mt-5 mb-6 flex items-center gap-3">
-          <button
-            type="button"
-            onClick={goBack}
-            aria-label="Go back"
-            className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-[#ECECEC] shadow-sm hover:bg-[#F5F5FF] transition-colors"
-          >
-            <ArrowLeft className="w-4.5 h-4.5 text-[#03034D]" style={{ width: 18, height: 18 }} />
-          </button>
-        </div>
-        
+            )}
+            <button
+              type="button"
+              onClick={handleExportLedgerCsv}
+              disabled={exportingLedgerCsv}
+              className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Download className="h-4 w-4" />
+              {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}
+            </button>
+          </div>
+        }
+      />
+      <div className="p-6 mx-auto">
         {loadingTransactionInfo ? (
           <LoadingSpinner size={"lg"} fullScreen={true} message={"Loading transaction details..."} />
         ) : transaction ? (

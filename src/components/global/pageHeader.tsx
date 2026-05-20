@@ -1,4 +1,4 @@
-import { Bell, User } from 'lucide-react'
+import { Bell, User, ArrowLeft } from 'lucide-react'
 import { useMemo, type ReactNode } from 'react'
 import { LOCAL_STORAGE_KEYS, ROUTES } from '../../util/constants.util'
 import { Link } from '@tanstack/react-router'
@@ -8,6 +8,7 @@ interface PageHeaderProps {
   subtitle?: string
   actions?: ReactNode
   className?: string
+  onBack?: () => void
 }
 
 /** Decode the JWT payload without verifying - used only for display (email/name). */
@@ -41,15 +42,26 @@ function decodeAdminName(): string {
   }
 }
 
-const PageHeader = ({ title, subtitle, actions, className }: PageHeaderProps) => {
+const PageHeader = ({ title, subtitle, actions, className, onBack }: PageHeaderProps) => {
   const adminName = useMemo(() => decodeAdminName(), [])
 
   return (
     <div className={`sticky top-0 z-20 w-full border-b border-gray-100 bg-white ${className ?? ''}`}>
       <div className="flex w-full items-center justify-between gap-4 px-6 py-4">
-        <div className="min-w-0">
-          <h2 className="text-balance text-xl font-semibold leading-tight text-gray-900">{title}</h2>
-          {subtitle && <p className="mt-1 text-pretty text-sm text-gray-500">{subtitle}</p>}
+        <div className="flex items-center gap-4 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-100 bg-gray-50 text-gray-600 transition-all hover:bg-gray-100 active:scale-95"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-4.5 w-4.5" />
+            </button>
+          )}
+          <div className="min-w-0">
+            <h2 className="text-balance text-xl font-semibold leading-tight text-gray-900">{title}</h2>
+            {subtitle && <p className="mt-1 text-pretty text-sm text-gray-500">{subtitle}</p>}
+          </div>
         </div>
 
         <div className="flex items-center gap-4">
