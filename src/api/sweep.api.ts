@@ -80,6 +80,13 @@ export interface SweepRequest {
   completedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  options?: {
+    dustThresholdOverride?: number;
+    targetWalletAddresses?: string[];
+    note?: string;
+    autoFuel?: boolean;
+    maxTotalAmount?: number;
+  } | null;
 }
 
 export interface SweepHistoryData {
@@ -116,6 +123,11 @@ export interface SweepHistoryParams {
   status?: SweepStatus;
 }
 
+export interface RestartSweepResult {
+  sweepId: string;
+  restartedFromSweepId: string;
+}
+
 // ─── API Class ────────────────────────────────────────────────────────────────
 
 class SweepServiceApi {
@@ -139,6 +151,11 @@ class SweepServiceApi {
   /** Initiate a real sweep — returns immediately with sweepId */
   async initiateSweep(params: InitiateSweepParams) {
     return await axiosPostRequestHandler('/sweep/admin/sweep/initiate', params) as BaseApiResponse<{ sweepId: string }>;
+  }
+
+  /** Restart a sweep using the persisted options from an existing run */
+  async restartSweep(sweepId: string) {
+    return await axiosPostRequestHandler(`/sweep/admin/sweep/${sweepId}/restart`) as BaseApiResponse<RestartSweepResult>;
   }
 
   /** Poll real-time status of a specific sweep */

@@ -111,11 +111,10 @@ export default function WalletDetails() {
       <PageHeader
         title="Wallet Details"
         subtitle="Inspect the wallet, owner context, and sweep outcome from one admin view"
+        onBack={goBack}
       />
 
       <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <BackButton onClick={goBack} />
-
         <section className="rounded-2xl border border-[#DDE0FF] bg-[--color-primary-taint] p-5 shadow-[0_18px_40px_-30px_rgba(3,3,77,0.35)] md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="space-y-2">

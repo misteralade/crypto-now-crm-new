@@ -78,6 +78,27 @@ export const useSweepQuery = () => {
     },
   });
 
+  // ─── Restart Sweep Mutation ─────────────────────────────────────────────────
+  const restartSweepMutation = useMutation({
+    mutationKey: [QUERY_KEYS.SWEEP.RESTART],
+    mutationFn: async (sweepId: string) => {
+      return await sweepServiceApi.restartSweep(sweepId);
+    },
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SWEEP.HISTORY] });
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SWEEP.BY_ID] });
+        toast.success(message || 'Sweep restarted');
+      } else {
+        toast.error(message);
+      }
+    },
+    onError: (error: unknown) => {
+      const msg = error instanceof Error ? error.message : 'Failed to restart sweep';
+      toast.error(msg);
+    },
+  });
+
   // ─── Cached Balance Summary (per-asset grid) ─────────────────────────────────
   const useBalanceSummary = () => {
     return useQuery({
@@ -119,6 +140,7 @@ export const useSweepQuery = () => {
     useSweepHistory,
     useSweepStatus,
     initiateSweepMutation,
+    restartSweepMutation,
     useBalanceSummary,
     refreshBalancesMutation,
   };

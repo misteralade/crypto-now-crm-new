@@ -70,37 +70,24 @@ const UserTransactionHistory = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-6 mx-auto">
-        <PageHeader title="Transaction History" />
-        
-        <div className="my-6 flex items-center justify-between w-full">
-          <div className="flex items-center gap-4">
-            <div className="text-lg text-[#858585] font-medium">
-              Transaction History
-            </div>
-
-            <button
-              onClick={() => handleRefreshTransactions()}
-              disabled={isFetchingTransactions}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#ECECEC] rounded-lg shadow-sm text-[13px] font-medium text-[#03034D] hover:bg-gray-50 disabled:opacity-50 transition-colors"
-              title="Refresh Transactions"
-            >
-              <RefreshCcw
-                className={`w-3.5 h-3.5 ${isFetchingTransactions ? "animate-spin" : ""}`}
-              />
-              Refresh
-            </button>
-          </div>
-
+      <PageHeader
+        title="Transaction History"
+        onBack={goBack}
+        actions={
           <button
-            onClick={goBack}
-            className="flex items-center gap-2 text-[#03034D] hover:opacity-80 cursor-pointer"
+            onClick={() => handleRefreshTransactions()}
+            disabled={isFetchingTransactions}
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#ECECEC] rounded-lg shadow-sm text-[13px] font-medium text-[#03034D] hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            title="Refresh Transactions"
           >
-            <ArrowLeft size={20} />
-            <span className="text-sm font-medium">Back to User Details</span>
+            <RefreshCcw
+              className={`w-3.5 h-3.5 ${isFetchingTransactions ? "animate-spin" : ""}`}
+            />
+            Refresh
           </button>
-        </div>
-        
+        }
+      />
+      <div className="p-6 mx-auto">
         <ManageTransactionsControls
           onOpenFilter={toggleApplyFilter}
           onApplyAction={toggleApplyAction}

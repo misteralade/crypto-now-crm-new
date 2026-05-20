@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "formik": "^2.4.9",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.552.0",
     "millify": "^6.1.0",
     "moment": "^2.30.1",

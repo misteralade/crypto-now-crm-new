@@ -1,4 +1,5 @@
 import { SearchInput } from '../../ui/search-input'
+import CustomButton from '../../global/Button'
 
 interface AdminsControlsProps {
   onOpenFilter: () => void;
@@ -22,7 +23,7 @@ const AdminsControls = ({ onOpenFilter, searchValue, onSearchChange, onOpenCreat
           />
           <button
             onClick={onOpenFilter}
-            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-12 px-5 border border-[#ECECEC] rounded-full transition-all bg-white shadow-sm active:scale-95"
           >
             <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
             <span className="text-[14px] font-medium text-[#454745]">Filter</span>
@@ -30,18 +31,17 @@ const AdminsControls = ({ onOpenFilter, searchValue, onSearchChange, onOpenCreat
         </div>
 
         <div className="flex w-full lg:w-auto items-center gap-2 lg:justify-end">
-          <button
+          <CustomButton
             onClick={onOpenCreate}
-            className="px-5 py-2.5 rounded-full bg-[#03034D] text-white text-[14px] font-medium hover:bg-[#050568] active:scale-[0.98] transition-all w-full md:w-auto cursor-pointer"
-          >
-            Add new admin
-          </button>
-          <button
+            className="w-full md:w-auto h-12"
+            buttonText="Add new admin"
+          />
+          <CustomButton
+            variant="button"
             onClick={onOpenCreateRole}
-            className="px-5 py-2.5 rounded-full bg-white border border-[#ECECEC] text-[#03034D] text-[14px] font-medium hover:bg-[#F5F5FF] transition-colors w-full md:w-auto cursor-pointer"
-          >
-            Add New Role
-          </button>
+            className="bg-white !text-[#03034D] border border-[#ECECEC] hover:bg-[#F5F5FF] w-full md:w-auto h-12 shadow-sm"
+            buttonText="Add New Role"
+          />
         </div>
       </div>
     </div>

@@ -49,41 +49,23 @@ const DisputeDetails = () => {
         <LoadingSpinner fullScreen={true} message="Loading dispute details..." />
       ) : disputeDetails && (
         <Fragment>
-          <div className={`space-y-10 md:space-y-20 min-h-screen bg-gray-50`}>
-            <div className="mx-auto">
-              {/* Header */}
-              <div className="sticky top-0 z-10 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <button
-                        className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 hover:cursor-pointer"
-                        onClick={goBack}
-                      >
-                        Go Back
-                      </button>
-                      
-                      <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Dispute Details</h1>
-                        <p className="text-sm text-gray-500">Dispute ID: {disputeDetails.id}</p>
-                      </div>
-                    </div>
-                    
-                    {/* Status Badge */}
-                    <div
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border font-medium text-sm ${getDisputeStatusColor(disputeDetails.status)}`}
-                    >
-                      {getStatusIcon(disputeDetails.status)}
-                      {disputeDetails.status.replace("_", " ")}
-                    </div>
-                  </div>
-                </div>
+          <PageHeader
+            title="Dispute Details"
+            subtitle={`Dispute ID: ${disputeDetails.id}`}
+            onBack={goBack}
+            actions={
+              <div
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border font-medium text-sm ${getDisputeStatusColor(disputeDetails.status)}`}
+              >
+                {getStatusIcon(disputeDetails.status)}
+                {disputeDetails.status.replace("_", " ")}
               </div>
-              
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Left Column - Transaction & Dispute Info */}
-                  <div className="lg:col-span-3 space-y-6">
+            }
+          />
+          <div className="p-6 mx-auto max-w-7xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column - Transaction & Dispute Info */}
+              <div className="lg:col-span-3 space-y-6">
                     {/* Transaction Details */}
                     <TransactionDisputeInfo
                       sessionId={disputeDetails.transaction?.sessionId || ''}
@@ -125,8 +107,6 @@ const DisputeDetails = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
         </Fragment>
       )}
     </AuthenticatedLayout>

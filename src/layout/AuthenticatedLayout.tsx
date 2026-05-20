@@ -4,6 +4,7 @@ import Sidebar from "../components/sidebar.tsx";
 import {authServiceApi} from "../api/auth.api.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants.util.ts";
+import { motion, AnimatePresence } from 'framer-motion'
 
 const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
@@ -56,23 +57,40 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
     <div className="min-h-screen bg-[#F5F5FF]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-        <div
-          className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-          onClick={() => setSidebarOpen(false)}
-        />
+        <AnimatePresence>
+          {sidebarOpen && window.innerWidth < 1024 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 z-40 lg:hidden pointer-events-auto"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+        </AnimatePresence>
         <div className="flex-1 flex flex-col min-w-0">
           {!sidebarOpen && (
-            <button
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               aria-label="Open sidebar"
               className="lg:hidden fixed top-20 sm:top-6 left-4 z-30 p-2 rounded-lg border border-[#ECECEC] bg-white shadow-sm"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-5 h-5 text-[#03034D]" />
-            </button>
+            </motion.button>
           )}
-          <main className="flex-1">
+          <motion.main 
+            key={window.location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex-1"
+          >
             {children}
-          </main>
+          </motion.main>
         </div>
       </div>
     </div>

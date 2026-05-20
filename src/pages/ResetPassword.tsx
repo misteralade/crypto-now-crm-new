@@ -10,6 +10,8 @@ import { ROUTES } from '../util/constants.util'
 import { PasswordResetUpdateRequestSchema } from '../schemas/user.schema'
 import type { PasswordResetUpdateRequestType } from '../schemas/user.schema'
 
+import { PillInput } from '../components/ui/input'
+
 const ResetPassword = () => {
   const navigate = useNavigate();
   const { token } = useSearch({ from: '/reset-password' }) as { token: string }
@@ -95,75 +97,53 @@ const ResetPassword = () => {
           validationSchema={toFormikValidationSchema(PasswordResetUpdateRequestSchema)}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
             <Form className="space-y-6">
               {/* Password Field */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-[14px] font-medium text-[#374151] mb-2"
-                >
-                  New Password
-                </label>
-                <div className="relative">
-                  <Field
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    className="w-full h-[52px] px-4 py-3 pr-12 border-[1.5px] border-[#E5E7EB] rounded-[26px] focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition-all duration-200 text-[16px] placeholder-[#9CA3AF]"
-                    placeholder="Enter new password"
-                    disabled={isSubmitting}
-                  />
+              <PillInput
+                label="New Password"
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter new password"
+                disabled={isSubmitting}
+                error={errors.password && touched.password ? errors.password : undefined}
+                iconRight={
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors duration-200"
+                    className="text-[#9A9A9A] hover:text-[#03034D] transition-colors"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
-                </div>
-                {errors.password && touched.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                )}
-              </div>
+                }
+              />
 
               {/* Confirm Password Field */}
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-[14px] font-medium text-[#374151] mb-2"
-                >
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <Field
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    className="w-full h-[52px] px-4 py-3 pr-12 border-[1.5px] border-[#E5E7EB] rounded-[26px] focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition-all duration-200 text-[16px] placeholder-[#9CA3AF]"
-                    placeholder="Confirm new password"
-                    disabled={isSubmitting}
-                  />
+              <PillInput
+                label="Confirm Password"
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                value={values.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Confirm new password"
+                disabled={isSubmitting}
+                error={errors.confirmPassword && touched.confirmPassword ? errors.confirmPassword : undefined}
+                iconRight={
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors duration-200"
+                    className="text-[#9A9A9A] hover:text-[#03034D] transition-colors"
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
-                </div>
-                {errors.confirmPassword && touched.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                )}
-              </div>
+                }
+              />
 
               {/* Submit Button */}
               <div className="pt-2">
@@ -193,4 +173,5 @@ const ResetPassword = () => {
 }
 
 export default ResetPassword
+
 

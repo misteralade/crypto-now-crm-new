@@ -42,42 +42,18 @@ const UserDetails = () => {
 
   return (
     <AuthenticatedLayout>
+      <PageHeader 
+        title="User Details" 
+        subtitle={userProfile ? `${userProfile.profile?.firstName} ${userProfile.profile?.lastName}` : 'Review user profile and activity'}
+        onBack={goBack} 
+      />
       <div className="p-6 mx-auto">
-        <PageHeader title="User Details" />
-        
         {(loadingUserProfile || loadingUserProfileSummary) ? (
           <div className="flex items-center justify-center min-h-[80vh]">
             <LoadingSpinner size="lg" message="Loading user details..." />
           </div>
         ) : (
           <Fragment>
-            <div className="flex items-center justify-between w-full mt-10">
-              <div className="text-lg text-[#858585] font-medium flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={goBack}
-                  className="text-[#03034D] hover:underline hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#03034D] rounded-sm"
-                >
-                  All Users
-                </button>
-                <span className="text-[#C4C4C4]">/</span>
-                <span>
-                  {userProfileSummary?.user?.profile?.firstName || userProfile?.profile?.firstName}{' '}
-                  {userProfileSummary?.user?.profile?.lastName || userProfile?.profile?.lastName}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={goBack}
-                  className="flex items-center gap-2 text-[#03034D] hover:opacity-80 hover:cursor-pointer"
-                >
-                  <ArrowLeft size={20} />
-                  <span className="text-sm font-medium">Back to Users</span>
-                </button>
-              </div>
-            </div>
-
             {/* User Information Section */}
             <UserInformationSection
               user={userProfile || userProfileSummary?.user || undefined}

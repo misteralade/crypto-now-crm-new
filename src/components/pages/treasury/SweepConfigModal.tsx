@@ -201,6 +201,17 @@ export default function SweepConfigModal({
     !isBtcLimitedSweepUi &&
     maxAmountInput.trim().length > 0 &&
     parsedMaxAmount === undefined;
+  const previewAmountToSweep = showPreview && previewData
+    ? Math.max(
+        0,
+        Math.min(
+          previewData.estimatedAmount - defaultFeeReserveFromAggregate(network),
+          !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
+            ? parsedMaxAmount
+            : Number.POSITIVE_INFINITY
+        )
+      )
+    : 0;
 
   const handlePreview = () => {
     if (!network || !cryptocurrencyId) {
@@ -485,22 +496,10 @@ export default function SweepConfigModal({
                     Amount to be swept
                   </span>
                   <span className="font-bold tabular-nums text-[#03034D]">
-                    {Math.max(
-                      0,
-                      previewData.estimatedAmount -
-                        defaultFeeReserveFromAggregate(network)
-                    ).toFixed(network === "BTC" ? 8 : 6)}{" "}
+                    {previewAmountToSweep.toFixed(network === "BTC" ? 8 : 6)}{" "}
                     {symbol}
                   </span>
                 </div>
-                {!isBtcLimitedSweepUi && parsedMaxAmount !== undefined && (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#667085]">Custom amount cap</span>
-                    <span className="font-semibold tabular-nums text-[#03034D]">
-                      {parsedMaxAmount} {symbol}
-                    </span>
-                  </div>
-                )}
 
                 <div className="border-t border-[#ECEFFD] pt-2 space-y-1">
                   <div className="flex items-center gap-1.5">

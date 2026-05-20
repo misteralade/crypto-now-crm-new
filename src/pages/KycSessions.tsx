@@ -104,6 +104,8 @@ function KycStepBadge({ step }: { step: KycSessionStep }) {
   );
 }
 
+import { SearchInput } from "../components/ui/search-input";
+
 const KycSessions = () => {
   const dispatch = useDispatch();
   const { page, limit, statusFilter, userIdFilter } = useSelector(
@@ -135,23 +137,19 @@ const KycSessions = () => {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <form onSubmit={handleSearch} className="flex gap-2 flex-1">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by User ID…"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03034D]/20 focus:border-[#03034D]"
-              />
-            </div>
+            <SearchInput
+              placeholder="Search by User ID…"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
             <button
               type="submit"
-              className="px-4 py-2.5 bg-[#03034D] text-white text-sm font-medium rounded-lg hover:bg-[#03034D]/90 transition-colors"
+              className="px-6 py-2.5 bg-[#03034D] text-white text-sm font-medium rounded-full hover:bg-[#03034D]/90 transition-colors shadow-sm active:scale-95"
             >
               Search
             </button>
           </form>
+
 
           <select
             value={statusFilter ?? ""}

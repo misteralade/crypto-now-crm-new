@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout.tsx';
 import PageHeader from '../components/global/pageHeader.tsx';
 import { useSweepQuery } from '../queries/sweep.querries.ts';
 import type { SweepWalletResult } from '../api/sweep.api.ts';
 import { cn } from '../lib/utils.ts';
-import { ArrowLeft, Clock, Globe, Target, Wallet, CheckCircle2, AlertCircle, RefreshCcw, ExternalLink } from 'lucide-react';
+import { Clock, Globe, Target, Wallet, CheckCircle2, AlertCircle, RefreshCcw, ExternalLink } from 'lucide-react';
 import Table, { type TableColumn } from '../components/table.tsx';
+import ConfirmModal from '../components/global/ConfirmModal.tsx';
 
 const SWEEP_STATUS = {
   COMPLETED: { label: 'Completed', color: '#037847', bg: 'bg-[#E8F8F0]', border: 'border-emerald-200', dot: 'bg-green-500' },
@@ -40,9 +42,11 @@ function shortAddress(address: string) {
 export default function SweepDetail() {
   const navigate = useNavigate();
   const { sweepId } = useParams({ strict: false }) as { sweepId: string };
-  const { useSweepStatus } = useSweepQuery();
+  const { useSweepStatus, restartSweepMutation } = useSweepQuery();
   const { data: sweep, isLoading } = useSweepStatus(sweepId);
+  const [showRestartModal, setShowRestartModal] = useState(false);
 
+  const isRestartable = sweep && ['COMPLETED', 'FAILED', 'PARTIAL', 'IN_PROGRESS'].includes(sweep.status);
   const isTerminal = sweep && ['COMPLETED', 'FAILED', 'PARTIAL'].includes(sweep.status);
   const results: SweepWalletResult[] = [...(sweep?.sweepResults ?? [])].sort(
     (a, b) => (Number(b.balance ?? 0)) - (Number(a.balance ?? 0))
@@ -122,6 +126,34 @@ export default function SweepDetail() {
     });
   }
 
+  function handleRestartSweep() {
+    if (!sweep) return;
+    restartSweepMutation.mutate(sweep.id, {
+      onSuccess: (response) => {
+        const nextSweepId = response.data?.sweepId;
+        setShowRestartModal(false);
+        if (response.success && nextSweepId) {
+          void navigate({
+            to: '/dashboard/treasury/$sweepId',
+            params: { sweepId: nextSweepId },
+          });
+        }
+      },
+    });
+  }
+
+  const headerActions = isRestartable ? (
+    <button
+      type="button"
+      onClick={() => setShowRestartModal(true)}
+      disabled={restartSweepMutation.isPending}
+      className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      <RefreshCcw size={14} className={cn(restartSweepMutation.isPending && 'animate-spin')} />
+      Restart Sweep
+    </button>
+  ) : null;
+
   const handleBack = () => {
     if (window.history.length > 1) {
       navigate({ to: '/dashboard/treasury' });
@@ -136,11 +168,12 @@ export default function SweepDetail() {
         title="Sweep Run Details" 
         subtitle="Real-time execution monitoring and wallet outcomes"
         onBack={handleBack}
+        actions={headerActions}
       />
 
       <div className="mx-auto max-w-6xl space-y-8 p-6 pb-20">
         {/* Main Info Card */}
-        <section className="relative overflow-hidden rounded-[2rem] border border-[#DDE0FF] bg-white p-1 shadow-[0_20px_50px_-20px_rgba(3,3,77,0.15)]">
+        <section className="relative overflow-hidden rounded-[2rem] border border-[#DDE0FF] bg-white p-1">
           <div className="rounded-[1.8rem] bg-gradient-to-br from-[#F8F9FF] to-white p-6 md:p-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-4">
@@ -232,7 +265,7 @@ export default function SweepDetail() {
 
         {/* Error Callout */}
         {sweep?.failureReason && (
-          <div className="flex items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700 shadow-sm">
+          <div className="flex items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">
             <AlertCircle className="mt-0.5 shrink-0" size={20} />
             <div className="space-y-1">
               <p className="font-bold leading-none">Execution Error</p>
@@ -259,11 +292,20 @@ export default function SweepDetail() {
             loading={isLoading}
             onRowClick={openWalletDetails}
             emptyMessage="No wallet results found for this run"
-            className="border border-[#F0F0FF] shadow-xl shadow-blue-500/5"
+            className="border border-[#F0F0FF]"
             theadClassName="bg-gray-50/50 border-b border-gray-100"
           />
         </div>
       </div>
+
+      <ConfirmModal
+        open={showRestartModal}
+        actionType="proceed"
+        onClose={() => setShowRestartModal(false)}
+        onConfirm={handleRestartSweep}
+        message="This will replay the same settings and create another sweep request. If the current run is still in progress, it will be stopped best-effort before the new run starts."
+        confirmText="Restart Sweep"
+      />
     </AuthenticatedLayout>
   );
 }
@@ -279,7 +321,7 @@ function StatMiniCard({ label, value, sub, icon, color }: { label: string; value
   const theme = themes[color];
 
   return (
-    <div className={cn("rounded-2xl border p-4 transition-all hover:shadow-md", theme.bg, theme.border)}>
+    <div className={cn("rounded-2xl border p-4 transition-all", theme.bg, theme.border)}>
       <div className="flex items-center justify-between mb-3">
         <div className={cn("p-2 rounded-xl", theme.icon)}>
           {icon}

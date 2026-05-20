@@ -104,18 +104,10 @@ const KycSessionDetail = ({ sessionId }: KycSessionDetailProps) => {
       <PageHeader
         title="KYC Session Detail"
         subtitle={`Session ID: ${session.id}`}
+        onBack={() => navigate({ to: ROUTES.KYC_SESSIONS })}
       />
 
-      <div className="p-6 space-y-6 max-w-4xl">
-        {/* Back */}
-        <button
-          onClick={() => navigate({ to: ROUTES.KYC_SESSIONS })}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#03034D] transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to KYC Sessions
-        </button>
-
+      <div className="p-6 space-y-6 max-w-6xl mx-auto">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* User info */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">

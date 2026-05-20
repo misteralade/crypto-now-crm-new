@@ -53,12 +53,12 @@ const TableFooter = ({ currentPage, totalPages, pageSize, totalItems, onPageChan
   const endItem = Math.min(currentPage * pageSize, totalItems)
 
   return (
-    <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-3 px-1">
+    <div className="flex flex-wrap items-center justify-between w-full mt-6 gap-4 px-2">
       {/* Left side - Items per page + count */}
-      <div className="flex items-center gap-2.5">
-        <span className="text-[13px] text-[#9A9A9A]">Show</span>
+      <div className="flex items-center gap-3">
+        <span className="text-[13px] text-[#9A9A9A] font-medium">Show</span>
         <Select value={pageSize === totalItems ? 'all' : String(pageSize)} onValueChange={handlePageSizeChange}>
-          <SelectTrigger className="h-8 w-[72px] rounded-full border-[#ECECEC] text-[13px] text-[#454745] px-3">
+          <SelectTrigger className="h-9 w-[80px] rounded-full border-[#ECECEC] text-[13px] text-[#03034D] px-4 font-bold shadow-sm mb-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -69,8 +69,8 @@ const TableFooter = ({ currentPage, totalPages, pageSize, totalItems, onPageChan
             <SelectItem value="all">All</SelectItem>
           </SelectContent>
         </Select>
-        <span className="text-[13px] text-[#9A9A9A]">
-          Showing {startItem}–{endItem} of <span className="font-semibold text-[#454745]">{totalItems}</span>
+        <span className="text-[13px] text-[#9A9A9A] font-medium ml-1">
+          Showing <span className="text-[#03034D] font-bold">{startItem}–{endItem}</span> of <span className="text-[#03034D] font-bold">{totalItems}</span>
         </span>
       </div>
 

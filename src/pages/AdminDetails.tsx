@@ -46,26 +46,12 @@ const AdminDetails = () => {
 
   return (
     <AuthenticatedLayout>
+      <PageHeader 
+        title="Admin Details" 
+        subtitle={adminDetails ? `${fullName} - @${adminDetails.username}` : 'Review profile, role, and activity metadata'} 
+        onBack={goBack}
+      />
       <div className="p-6 mx-auto">
-        <PageHeader title="Admin Details" subtitle={adminDetails ? `${fullName} - @${adminDetails.username}` : 'Review profile, role, and activity metadata'} />
-
-        <div className="mt-5 mb-6 flex items-center gap-3">
-          <button
-            type="button"
-            onClick={goBack}
-            aria-label="Go back to admin management"
-            className="inline-flex items-center justify-center size-10 rounded-xl bg-white border border-[#ECECEC] shadow-sm hover:bg-[#F5F5FF] transition-colors"
-          >
-            <ArrowLeft className="h-4.5 w-4.5 text-[#03034D]" style={{ width: 18, height: 18 }} />
-          </button>
-
-          <div className="min-w-0 text-sm text-[#858585]">
-            <span className="font-medium text-[#03034D]">Admin Management</span>
-            <span className="mx-2 text-[#C4C4C4]">/</span>
-            <span className="truncate text-[#858585]">{adminDetails ? fullName : 'Admin Details'}</span>
-          </div>
-        </div>
-
         {loadingAdminDetails ? (
           <LoadingSpinner size="lg" fullScreen message="Loading admin details..." />
         ) : adminDetails ? (
