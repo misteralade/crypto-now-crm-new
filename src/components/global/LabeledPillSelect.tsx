@@ -6,6 +6,8 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { PillSelect } from '../ui/select'
+import { cn } from '../../lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Default export: simple pill select (wraps Radix)
 interface MFLabeledPillSelectProps {
@@ -40,7 +42,7 @@ export default function MFLabeledPillSelect({ label, options, value, onChange, o
   )
 }
 
-// Named export: search-capable select (kept custom)
+// Named export: search-capable select (kept custom but updated styling)
 interface MFLabeledPillSearchSelectProps {
   options: Array<{ value: string; label: string; logoUrl?: string }>;
   label: string;
@@ -121,39 +123,60 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
     onChange('');
   };
 
-  return (
-    <Fragment>
-      <div ref={dropdownRef} className="relative">
-        <fieldset
-          className={`relative rounded-xl border transition-all duration-150 ${isOpen ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200'} px-4 py-3 bg-white`}
-        >
-          <legend className={`px-2 text-[13px] font-medium text-[#454745] leading-none ${labelClass}`}>{label}</legend>
-          <div
-            className={`w-full cursor-pointer bg-transparent outline-none pr-8 text-[#101828] text-[16px] ${valueClass} ${className} flex items-center justify-between`}
-            onClick={() => isOpen ? closeDropdown() : setIsOpen(true)}
-            onKeyDown={handleKeyDown}
-            tabIndex={0}
-            role="combobox"
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-          >
-            <div className="flex items-center gap-2">
-              {selectedOption?.logoUrl && (
-                <img src={selectedOption.logoUrl} alt="" className="w-5 h-5 rounded-full object-contain" />
-              )}
-              <span className={!displayValue ? 'text-[#9A9A9A]' : ''}>{displayValue || placeholder}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {displayValue && (
-                <X className="w-4 h-4 text-[#9A9A9A] hover:text-[#101828] transition-colors" onClick={clearSelection} />
-              )}
-              <ChevronDown className={`w-5 h-5 text-[#9A9A9A] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-            </div>
-          </div>
-        </fieldset>
+  const isLabelFloating = isOpen || !!selectedItem;
 
-        {(isOpen || isDropdownClosing) && (
-          <div className={`absolute z-50 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-[300px] overflow-hidden ${isDropdownClosing ? 'animate-modal-content-out' : 'animate-in fade-in-0 zoom-in-95 slide-in-from-top-1 duration-150'}`}>
+  return (
+    <div ref={dropdownRef} className="relative w-full mb-5">
+      <div
+        className={cn(
+          "relative w-full h-14 rounded-full border bg-white flex items-center px-8 cursor-pointer transition-all duration-200",
+          isOpen ? "border-blue-500 ring-1 ring-blue-500/10 shadow-sm" : "border-gray-300",
+          className
+        )}
+        onClick={() => isOpen ? closeDropdown() : setIsOpen(true)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+      >
+        <span
+          className={cn(
+            "absolute left-7 px-2 font-medium transition-all duration-200 pointer-events-none z-10 bg-white rounded-sm",
+            isLabelFloating
+              ? "-top-[9px] text-[12px] text-gray-600 scale-90 origin-left"
+              : "top-1/2 -translate-y-1/2 text-sm text-gray-400",
+            isOpen && "text-blue-600",
+            labelClass
+          )}
+        >
+          {label}
+        </span>
+
+        <div className={cn("flex-1 flex items-center gap-2 truncate text-base text-[#101828]", isLabelFloating && "pt-5 pb-1", valueClass)}>
+          {selectedOption?.logoUrl && (
+            <img src={selectedOption.logoUrl} alt="" className="w-6 h-6 rounded-full object-contain" />
+          )}
+          <span className={!displayValue ? 'text-gray-400' : ''}>{displayValue || placeholder}</span>
+        </div>
+
+        <div className="flex items-center gap-2 ml-2">
+          {displayValue && (
+            <X className="w-4 h-4 text-[#9A9A9A] hover:text-[#101828] transition-colors" onClick={clearSelection} />
+          )}
+          <ChevronDown className={cn("w-5 h-5 text-[#9A9A9A] opacity-70 transition-transform duration-200", isOpen && "rotate-180")} />
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {(isOpen) && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute z-[9999] w-full mt-2 bg-white border border-gray-200 rounded-[20px] shadow-2xl overflow-hidden"
+          >
             <div className="p-2 border-b border-gray-100">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9A9A9A]" />
@@ -164,19 +187,21 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                   onChange={(e) => { setSearchTerm(e.target.value); setHighlightedIndex(0); }}
                   onKeyDown={handleKeyDown}
                   placeholder={placeholder}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-[13px] transition-all"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10 text-sm transition-all"
                 />
               </div>
             </div>
-            <div className="overflow-y-auto max-h-[240px]" role="listbox">
+            <div className="overflow-y-auto max-h-[240px] p-1.5" role="listbox">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((opt, index) => (
                   <div
                     key={opt.value}
                     onClick={() => handleSelect(opt.value)}
-                    className={`px-4 py-2.5 cursor-pointer text-[13px] transition-colors rounded-lg mx-1 my-0.5 flex items-center gap-3 ${
-                      opt.value === selectedItem ? 'bg-blue-50 text-blue-900 font-medium' : 'text-gray-900 hover:bg-gray-50'
-                    } ${index === highlightedIndex ? 'bg-gray-50' : ''}`}
+                    className={cn(
+                      "px-4 py-2.5 cursor-pointer text-sm transition-colors rounded-xl flex items-center gap-3",
+                      opt.value === selectedItem ? 'bg-blue-50 text-blue-900 font-bold' : 'text-gray-900 hover:bg-gray-50',
+                      index === highlightedIndex && opt.value !== selectedItem ? 'bg-gray-50' : ''
+                    )}
                     role="option"
                     aria-selected={opt.value === selectedItem}
                   >
@@ -187,12 +212,12 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
                   </div>
                 ))
               ) : (
-                <div className="px-4 py-8 text-center text-[13px] text-[#9A9A9A]">No options found</div>
+                <div className="px-4 py-8 text-center text-sm text-gray-400 font-medium">No options found</div>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
-    </Fragment>
+      </AnimatePresence>
+    </div>
   );
 };
