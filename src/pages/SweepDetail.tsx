@@ -4,37 +4,36 @@ import PageHeader from '../components/global/pageHeader.tsx';
 import { useSweepQuery } from '../queries/sweep.querries.ts';
 import type { SweepWalletResult } from '../api/sweep.api.ts';
 import { cn } from '../lib/utils.ts';
+import { ArrowLeft, Clock, Globe, Target, Wallet, CheckCircle2, AlertCircle, RefreshCcw, ExternalLink } from 'lucide-react';
+import Table, { type TableColumn } from '../components/table.tsx';
 
 const SWEEP_STATUS = {
-  COMPLETED: { label: 'Completed', dot: 'bg-green-500', badge: 'bg-[--color-success-bg] text-[--color-success] border border-emerald-200' },
-  FAILED: { label: 'Failed', dot: 'bg-red-500', badge: 'bg-red-50 text-red-600 border border-red-200' },
-  PARTIAL: { label: 'Partial', dot: 'bg-amber-500', badge: 'bg-amber-50 text-amber-600 border border-amber-200' },
-  IN_PROGRESS: { label: 'In Progress', dot: 'bg-blue-500 animate-pulse', badge: 'bg-blue-50 text-blue-600 border border-blue-200' },
-  PENDING: { label: 'Pending', dot: 'bg-gray-400', badge: 'bg-gray-100 text-gray-500 border border-gray-200' },
-} as Record<string, { label: string; dot: string; badge: string }>;
+  COMPLETED: { label: 'Completed', color: '#037847', bg: 'bg-[#E8F8F0]', border: 'border-emerald-200', dot: 'bg-green-500' },
+  FAILED: { label: 'Failed', color: '#EB5757', bg: 'bg-red-50', border: 'border-red-200', dot: 'bg-red-500' },
+  PARTIAL: { label: 'Partial', color: '#B45309', bg: 'bg-amber-50', border: 'border-amber-200', dot: 'bg-amber-500' },
+  IN_PROGRESS: { label: 'In Progress', color: '#575AE5', bg: 'bg-blue-50', border: 'border-blue-200', dot: 'bg-blue-500 animate-pulse' },
+  PENDING: { label: 'Pending', color: '#6B6E6B', bg: 'bg-gray-100', border: 'border-gray-200', dot: 'bg-gray-400' },
+} as Record<string, { label: string; color: string; bg: string; border: string; dot: string }>;
 
 function SweepStatusBadge({ status }: { status: string }) {
-  const s = SWEEP_STATUS[status] ?? { label: status, dot: 'bg-gray-400', badge: 'bg-gray-100 text-gray-500' };
+  const s = SWEEP_STATUS[status] ?? { label: status, color: '#6B6E6B', bg: 'bg-gray-100', border: 'border-gray-200', dot: 'bg-gray-400' };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${s.badge}`}>
-      <span className={`w-2 h-2 rounded-full ${s.dot}`} />
+    <span className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border tracking-wide uppercase", s.bg, s.border)} style={{ color: s.color }}>
+      <span className={cn("w-2 h-2 rounded-full", s.dot)} />
       {s.label}
     </span>
   );
 }
 
 const WALLET_STATUS = {
-  success: { label: 'Success', classes: 'text-[--color-success]', dot: 'bg-emerald-500' },
-  failed: { label: 'Failed', classes: 'text-red-600', dot: 'bg-red-500' },
-  skipped: { label: 'Skipped', classes: 'text-amber-600', dot: 'bg-amber-500' },
-  pending: { label: 'Pending', classes: 'text-gray-500', dot: 'bg-gray-400' },
-} as Record<string, { label: string; classes: string; dot: string }>;
-
-function StatSkeleton() {
-  return <div className="h-20 rounded-xl bg-[--color-border] animate-pulse" />;
-}
+  success: { label: 'Success', color: 'text-emerald-600', dot: 'bg-emerald-500', bg: 'bg-emerald-50' },
+  failed: { label: 'Failed', color: 'text-red-600', dot: 'bg-red-500', bg: 'bg-red-50' },
+  skipped: { label: 'Skipped', color: 'text-amber-600', dot: 'bg-amber-500', bg: 'bg-amber-50' },
+  pending: { label: 'Pending', color: 'text-gray-500', dot: 'bg-gray-400', bg: 'bg-gray-50' },
+} as Record<string, { label: string; color: string; dot: string; bg: string }>;
 
 function shortAddress(address: string) {
+  if (!address) return '—';
   return `${address.slice(0, 10)}...${address.slice(-8)}`;
 }
 
@@ -49,198 +48,258 @@ export default function SweepDetail() {
     (a, b) => (Number(b.balance ?? 0)) - (Number(a.balance ?? 0))
   );
 
-  const stats = [
-    { label: 'Wallets Found', value: sweep?.totalWalletsFound ?? '-' },
-    { label: 'Swept', value: sweep?.totalWalletsSwept ?? '-', highlight: true },
-    { label: 'Skipped', value: sweep?.totalWalletsSkipped ?? '-' },
-    { label: 'Failed', value: sweep?.totalWalletsFailed ?? '-', danger: true },
-    { label: 'Amount Swept', value: sweep ? `${Number(sweep.actualTotalAmount).toFixed(6)}` : '-' },
-  ];
-
   const progress = sweep?.totalWalletsFound
     ? Math.round(((sweep.totalWalletsSwept + sweep.totalWalletsFailed + sweep.totalWalletsSkipped) / sweep.totalWalletsFound) * 100)
     : 0;
   const processedCount = sweep ? sweep.totalWalletsSwept + sweep.totalWalletsFailed + sweep.totalWalletsSkipped : 0;
 
-  function openWalletDetails(walletAddress: string) {
+  const columns: TableColumn<SweepWalletResult>[] = [
+    {
+      key: 'walletAddress',
+      header: 'Wallet Address',
+      render: (val) => (
+        <div className="flex items-center gap-2 group">
+          <Wallet size={14} className="text-gray-400 group-hover:text-[#575AE5] transition-colors" />
+          <span className="font-mono text-xs font-medium text-gray-700">{shortAddress(val as string)}</span>
+        </div>
+      )
+    },
+    {
+      key: 'balance',
+      header: 'Balance',
+      render: (val) => (
+        <span className="font-mono text-xs font-semibold text-gray-900 tabular-nums">
+          {val !== undefined ? Number(val).toFixed(6) : '—'}
+        </span>
+      )
+    },
+    {
+      key: 'amount',
+      header: 'Amount Swept',
+      render: (val) => (
+        <span className="font-mono text-xs font-bold text-[#575AE5] tabular-nums">
+          {val ? Number(val).toFixed(6) : '—'}
+        </span>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Outcome',
+      render: (val, row) => {
+        const ws = WALLET_STATUS[val as string] ?? WALLET_STATUS.pending;
+        return (
+          <div className="space-y-1">
+            <span className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase border", ws.bg, ws.color.replace('text-', 'border-').replace('600', '200'))}>
+              <span className={cn("h-1.5 w-1.5 rounded-full", ws.dot)} />
+              {ws.label}
+            </span>
+            {row.error && (
+              <p className="text-[10px] text-red-500 font-medium max-w-[150px] truncate leading-tight" title={row.error}>
+                {row.error}
+              </p>
+            )}
+          </div>
+        );
+      }
+    },
+    {
+      key: 'txHash',
+      header: 'Transaction Hash',
+      render: (val) => val ? (
+        <div className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5] hover:underline cursor-pointer transition-all" title={val as string}>
+          <span>{(val as string).slice(0, 10)}...</span>
+          <ExternalLink size={10} />
+        </div>
+      ) : <span className="text-gray-400">—</span>
+    }
+  ];
+
+  function openWalletDetails(row: SweepWalletResult) {
     void navigate({
       to: '/dashboard/custodial-wallet/$walletAddress',
-      params: { walletAddress },
+      params: { walletAddress: row.walletAddress },
       search: { fromSweepId: sweepId },
     });
   }
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate({ to: '/dashboard/treasury' });
+    } else {
+      navigate({ to: '/dashboard/treasury' });
+    }
+  };
+
   return (
     <AuthenticatedLayout>
-      <PageHeader title="Sweep Details" subtitle="Monitor status, progress, and individual wallet transfer outcomes" />
+      <PageHeader 
+        title="Sweep Run Details" 
+        subtitle="Real-time execution monitoring and wallet outcomes"
+        actions={
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-gray-100 active:scale-95 border border-gray-200"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Treasury</span>
+          </button>
+        }
+      />
 
-      <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <section className="rounded-2xl border border-[#DDE0FF] bg-[--color-primary-taint] p-5 shadow-[0_18px_40px_-30px_rgba(3,3,77,0.45)] md:p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div className="space-y-2">
-              <p className="inline-flex rounded-full border border-[#D6D9FF] bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#575AE5]">
-                Sweep Run
-              </p>
-              <h2 className="text-xl font-semibold text-[--color-text-primary]">Run ID: <span className="font-mono text-sm text-[#575AE5]">{sweep?.id ?? sweepId}</span></h2>
-              <p className="text-sm text-[#4B4E60]">
-                Review execution progress and inspect wallet-level outcomes in real time.
-              </p>
+      <div className="mx-auto max-w-6xl space-y-8 p-6 pb-20">
+        {/* Main Info Card */}
+        <section className="relative overflow-hidden rounded-[2rem] border border-[#DDE0FF] bg-white p-1 shadow-[0_20px_50px_-20px_rgba(3,3,77,0.15)]">
+          <div className="rounded-[1.8rem] bg-gradient-to-br from-[#F8F9FF] to-white p-6 md:p-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-xl bg-[#575AE5]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#575AE5]">
+                    <RefreshCcw size={12} className={cn(sweep?.status === 'IN_PROGRESS' && "animate-spin")} />
+                    Sweep Execution
+                  </div>
+                  {sweep && <SweepStatusBadge status={sweep.status} />}
+                </div>
+                
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight text-[#03034D] md:text-3xl">
+                    Run <span className="text-[#575AE5] font-mono text-lg opacity-80">#{sweep?.id.slice(0, 8) ?? '...'}</span>
+                  </h1>
+                  <p className="mt-1 text-sm font-medium text-gray-500 flex items-center gap-2">
+                    <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600">{sweep?.id ?? sweepId}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:gap-12">
+                <div className="space-y-1">
+                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <Globe size={12} /> Network
+                  </p>
+                  <p className="text-sm font-black text-[#03034D]">{sweep?.network ?? '—'}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <Clock size={12} /> Started
+                  </p>
+                  <p className="text-sm font-bold text-[#03034D]">
+                    {sweep ? new Date(sweep.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—'}
+                  </p>
+                </div>
+                <div className="col-span-2 space-y-1 sm:col-span-1">
+                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <Target size={12} /> Target Wallet
+                  </p>
+                  <p className="font-mono text-[11px] font-bold text-[#575AE5] break-all">
+                    {shortAddress(sweep?.targetAddress ?? '')}
+                  </p>
+                </div>
+              </div>
             </div>
-            {sweep && <SweepStatusBadge status={sweep.status} />}
+
+            {/* Progress Section integrated into the card */}
+            {sweep && !isTerminal && (
+              <div className="mt-8 space-y-3 rounded-2xl bg-[#575AE5]/5 p-4 border border-[#575AE5]/10">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#575AE5]">
+                  <span className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 animate-ping rounded-full bg-[#575AE5]" />
+                    Processing Wallets
+                  </span>
+                  <span className="tabular-nums">{progress}% Complete</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-white border border-[#DDE0FF]">
+                  <div 
+                    className="h-full rounded-full bg-gradient-to-r from-[#575AE5] to-[#7C7FFF] transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(87,90,229,0.3)]" 
+                    style={{ width: `${progress}%` }} 
+                  />
+                </div>
+                <div className="flex justify-between items-center text-[10px] font-medium text-gray-500">
+                  <p>{processedCount} of {sweep.totalWalletsFound} wallets completed</p>
+                  <p className="flex items-center gap-1"><RefreshCcw size={10} className="animate-spin" /> Live updates every 3s</p>
+                </div>
+              </div>
+            )}
           </div>
-
-          {sweep && (
-            <div className="mt-6 space-y-5">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div>
-                  <p className="text-xs font-medium text-[#667085]">Network</p>
-                  <p className="mt-1.5 inline-flex rounded-full bg-[--color-accent-light] px-3 py-1 text-xs font-mono font-bold text-[--color-primary]">
-                    {sweep.network}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-[#667085]">Created</p>
-                  <p className="mt-1.5 text-[13px] font-semibold text-[--color-text-primary]">
-                    {new Date(sweep.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-[#667085]">Completed</p>
-                  <p className="mt-1.5 text-[13px] font-semibold text-[--color-text-primary]">
-                    {sweep.completedAt ? new Date(sweep.completedAt).toLocaleString() : 'Not yet completed'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-xs font-medium text-[#667085]">Target wallet address</p>
-                <p className="mt-1.5 font-mono text-[13px] font-bold text-[--color-primary] break-all bg-white/40 p-2 rounded-lg border border-white/20">
-                  {sweep.targetAddress}
-                </p>
-              </div>
-            </div>
-          )}
         </section>
 
-        {sweep && !isTerminal && (
-          <section className="cn-card space-y-3 border-[#E4E7EC] p-5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-2 font-medium text-[--color-text-primary]">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-blue-500" />
-                Sweep is currently processing wallets
-              </span>
-              <span className="font-semibold tabular-nums text-[--color-primary]">{progress}%</span>
-            </div>
-            <div className="h-2 overflow-hidden rounded-full bg-[--color-border]">
-              <div className="h-full rounded-full bg-[--color-accent-mid] transition-all duration-500" style={{ width: `${progress}%` }} />
-            </div>
-            <p className="text-xs text-[--color-text-muted]">
-              {processedCount} of {sweep.totalWalletsFound} wallets processed. This page refreshes automatically every 3 seconds.
-            </p>
-          </section>
-        )}
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => <StatSkeleton key={i} />)
-            : stats.map(({ label, value, highlight, danger }) => (
-                <div key={label} className={`cn-card border p-4 ${highlight ? 'border-emerald-200 bg-emerald-50/40' : danger ? 'border-red-200 bg-red-50/40' : 'border-[#DDE0FF] bg-[--color-primary-taint]'}`}>
-                  <p className="mb-1 text-xs text-[--color-text-muted]">{label}</p>
-                  <p className={`text-lg font-semibold ${highlight ? 'text-[--color-success]' : danger ? 'text-red-600' : 'text-[--color-text-primary]'}`}>
-                    {value}
-                  </p>
-                </div>
-              ))
-          }
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-5">
+          <StatMiniCard label="Total Found" value={sweep?.totalWalletsFound ?? '—'} icon={<Globe size={14} />} color="blue" />
+          <StatMiniCard label="Swept" value={sweep?.totalWalletsSwept ?? '—'} icon={<CheckCircle2 size={14} />} color="green" />
+          <StatMiniCard label="Failed" value={sweep?.totalWalletsFailed ?? '—'} icon={<AlertCircle size={14} />} color="red" />
+          <StatMiniCard label="Skipped" value={sweep?.totalWalletsSkipped ?? '—'} icon={<Clock size={14} />} color="amber" />
+          <div className="col-span-2 sm:col-span-1 lg:col-span-1">
+             <StatMiniCard 
+                label="Amount Swept" 
+                value={sweep ? Number(sweep.actualTotalAmount).toFixed(4) : '—'} 
+                sub={sweep?.network} 
+                icon={<Wallet size={14} />} 
+                color="indigo" 
+              />
+          </div>
         </div>
 
+        {/* Error Callout */}
         {sweep?.failureReason && (
-          <div className="cn-card border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            <p className="mb-1 font-semibold">Sweep failed</p>
-            <p className="font-mono text-xs">{sweep.failureReason}</p>
+          <div className="flex items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700 shadow-sm">
+            <AlertCircle className="mt-0.5 shrink-0" size={20} />
+            <div className="space-y-1">
+              <p className="font-bold leading-none">Execution Error</p>
+              <p className="font-mono text-xs opacity-90">{sweep.failureReason}</p>
+            </div>
           </div>
         )}
 
-        {results.length > 0 && (
-          <section className="cn-card overflow-hidden border-[#E4E7EC]">
-            <div className="flex items-center justify-between border-b border-[--color-border] px-5 py-3.5">
-              <h3 className="text-sm font-semibold text-[--color-text-primary]">Wallet Results</h3>
-              <span className="text-xs text-[--color-text-muted]">{results.length} wallets</span>
+        {/* Results Table */}
+        <div className="space-y-4">
+          <div className="flex items-end justify-between px-2">
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-[#03034D]">Wallet Outomes</h3>
+              <p className="text-xs font-medium text-gray-500">Detailed breakdown of each address processed in this run</p>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[--color-border] bg-[--color-bg-light]">
-                    {['Wallet Address', 'Balance', 'Amount', 'Status', 'Tx Hash'].map((header) => (
-                      <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[--color-text-muted] whitespace-nowrap">
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[--color-border]">
-                  {results.map((r: SweepWalletResult, i: number) => {
-                    const ws = WALLET_STATUS[r.status] ?? { label: r.status, classes: 'text-gray-500', dot: 'bg-gray-400' };
-                    return (
-                      <tr
-                        key={i}
-                        className={cn(
-                          'transition-colors hover:bg-[--color-bg-light] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#575AE5]/30 focus-visible:ring-inset',
-                        )}
-                        onClick={() => openWalletDetails(r.walletAddress)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openWalletDetails(r.walletAddress);
-                          }
-                        }}
-                        tabIndex={0}
-                        role="button"
-                        aria-label={`Open details for wallet ${r.walletAddress}`}
-                      >
-                        <td className="px-4 py-3 font-mono text-xs text-[--color-text-secondary] max-w-[200px] truncate" title={r.walletAddress}>
-                          {shortAddress(r.walletAddress)}
-                        </td>
-                        <td className="px-4 py-3 tabular-nums text-[--color-text-secondary]">
-                          {r.balance !== undefined ? r.balance.toFixed(6) : '—'}
-                        </td>
-                        <td className="px-4 py-3 tabular-nums font-semibold">
-                          {r.amount ? r.amount.toFixed(6) : '—'}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1.5 font-semibold ${ws.classes}`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${ws.dot}`} />
-                            {ws.label}
-                          </span>
-                          {r.error && (
-                            <p className="text-xs text-[--color-text-muted] mt-0.5 max-w-[200px] truncate" title={r.error}>
-                              {r.error}
-                            </p>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 font-mono text-xs">
-                          {r.txHash
-                            ? <span className="cursor-pointer text-[--color-accent-mid] hover:underline" title={r.txHash}>{r.txHash.slice(0, 12)}...</span>
-                            : <span className="text-[--color-text-muted]">—</span>
-                          }
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {isLoading && (
-          <div className="flex animate-pulse flex-col gap-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-xl bg-[--color-border]" style={{ animationDelay: `${i * 40}ms` }} />
-            ))}
+            <span className="rounded-lg bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
+              {results.length} results
+            </span>
           </div>
-        )}
+          
+          <Table<SweepWalletResult>
+            data={results}
+            columns={columns}
+            loading={isLoading}
+            onRowClick={openWalletDetails}
+            emptyMessage="No wallet results found for this run"
+            className="border border-[#F0F0FF] shadow-xl shadow-blue-500/5"
+            theadClassName="bg-gray-50/50 border-b border-gray-100"
+          />
+        </div>
       </div>
     </AuthenticatedLayout>
+  );
+}
+
+function StatMiniCard({ label, value, sub, icon, color }: { label: string; value: string | number; sub?: string; icon: React.ReactNode; color: 'blue' | 'green' | 'red' | 'amber' | 'indigo' }) {
+  const themes = {
+    blue: { bg: 'bg-blue-50', icon: 'bg-blue-100 text-blue-600', border: 'border-blue-100' },
+    green: { bg: 'bg-emerald-50', icon: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-100' },
+    red: { bg: 'bg-red-50', icon: 'bg-red-100 text-red-600', border: 'border-red-100' },
+    amber: { bg: 'bg-amber-50', icon: 'bg-amber-100 text-amber-600', border: 'border-amber-100' },
+    indigo: { bg: 'bg-indigo-50', icon: 'bg-indigo-100 text-indigo-600', border: 'border-indigo-100' },
+  };
+  const theme = themes[color];
+
+  return (
+    <div className={cn("rounded-2xl border p-4 transition-all hover:shadow-md", theme.bg, theme.border)}>
+      <div className="flex items-center justify-between mb-3">
+        <div className={cn("p-2 rounded-xl", theme.icon)}>
+          {icon}
+        </div>
+      </div>
+      <div className="space-y-0.5">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-xl font-black text-[#03034D] tabular-nums">{value}</p>
+          {sub && <span className="text-[10px] font-bold text-gray-400 uppercase">{sub}</span>}
+        </div>
+      </div>
+    </div>
   );
 }
