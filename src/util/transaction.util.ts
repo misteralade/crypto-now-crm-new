@@ -233,6 +233,15 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Payout attempt failed, will retry',
     isActionable: true,
   },
+  PENDING_PAYOUT: {
+    category: StatusCategory.AWAITING,
+    bgColor: 'bg-yellow-50',
+    textColor: 'text-yellow-800',
+    dotColor: 'bg-yellow-600',
+    displayName: 'Pending Payout',
+    description: 'Transaction is awaiting payout due to low platform balance or other non-critical issues',
+    isActionable: true,
+  },
 };
 
 // Utility functions

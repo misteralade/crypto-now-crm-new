@@ -41,6 +41,7 @@ export const useManageTransactionsPage = () => {
     refetchSearchTransactions,
     transactionDetail,
     loadingTransactionDetails,
+    refetchTransactionDetail,
     adminTransactionStats,
     loadingAdminTransactionStats,
 
@@ -144,10 +145,18 @@ export const useManageTransactionsPage = () => {
       return;
     }
 
-    await adminRetryPendingPayoutsMutation.mutateAsync({
+    const res = await adminRetryPendingPayoutsMutation.mutateAsync({
       sessionId,
       forceProceed: true,
     });
+
+    if (res?.success) {
+      // Refresh both the drawer detail and the main table
+      await Promise.all([
+        refetchTransactionDetail(),
+        refetchSearchTransactions(),
+      ]);
+    }
   }
 
   const handleTransactionReceiptUpload = async (file: File): Promise<string> => {

@@ -188,7 +188,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     enabled: !!matchRoute({ to: ROUTES.USER_TRANSACTIONS }) && !!searchUserTransactionHistory,
   });
 
-  const { data: transactionDetail, isLoading: loadingTransactionDetails } = useQuery({
+  const { data: transactionDetail, isLoading: loadingTransactionDetails, refetch: refetchTransactionDetail } = useQuery({
       queryKey: [
         QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS,
         (store.getState() as RootState).transactionManagement.details
@@ -215,7 +215,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
           .transactionSessionId,
     });
   
-  const { data: transactionInfo, isLoading: loadingTransactionInfo } = useQuery({
+  const { data: transactionInfo, isLoading: loadingTransactionInfo, refetch: refetchTransactionInfo } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS_PAGE, (store.getState() as RootState).transactionManagement.details.transactionSessionId],
     queryFn: async () => {
       const sessionId = (store.getState() as RootState).transactionManagement.details.transactionSessionId
@@ -392,8 +392,10 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     refetchSearchUserTransactions,
     transactionDetail,
     loadingTransactionDetails,
+    refetchTransactionDetail,
     transactionInfo,
     loadingTransactionInfo,
+    refetchTransactionInfo,
     adminTransactionStats,
     loadingAdminTransactionStats,
     

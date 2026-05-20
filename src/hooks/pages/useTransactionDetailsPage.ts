@@ -14,6 +14,7 @@ export const useTransactionDetailsPage = () => {
   const {
     transactionInfo,
     loadingTransactionInfo,
+    refetchTransactionInfo,
     adminRetryPendingPayoutsMutation,
   } = useTransactionQuery();
   
@@ -60,10 +61,14 @@ export const useTransactionDetailsPage = () => {
       return;
     }
 
-    await adminRetryPendingPayoutsMutation.mutateAsync({
+    const res = await adminRetryPendingPayoutsMutation.mutateAsync({
       sessionId,
       forceProceed: true,
     });
+
+    if (res?.success) {
+      await refetchTransactionInfo();
+    }
   };
   
   const goBack = () => {

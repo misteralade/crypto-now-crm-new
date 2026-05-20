@@ -238,6 +238,36 @@ export const transactionStatusStyles: Record<
     dot: 'bg-blue-400',
     textColor: 'text-blue-600',
   },
+  PENDING_PAYOUT: {
+    text: 'Pending Payout',
+    bg: 'bg-yellow-50',
+    dot: 'bg-yellow-400',
+    textColor: 'text-yellow-600',
+  },
+  PAYOUT_INITIATED: {
+    text: 'Payout Initiated',
+    bg: 'bg-indigo-50',
+    dot: 'bg-indigo-400',
+    textColor: 'text-indigo-600',
+  },
+  PAYOUT_FAILED: {
+    text: 'Payout Failed',
+    bg: 'bg-red-50',
+    dot: 'bg-red-400',
+    textColor: 'text-red-600',
+  },
+  DEPOSIT_DETECTED: {
+    text: 'Deposit Detected',
+    bg: 'bg-blue-50',
+    dot: 'bg-blue-400',
+    textColor: 'text-blue-600',
+  },
+  DEPOSIT_CONFIRMED: {
+    text: 'Deposit Confirmed',
+    bg: 'bg-blue-50',
+    dot: 'bg-blue-400',
+    textColor: 'text-blue-600',
+  },
 }
 
 export const userStatusOptions = [
