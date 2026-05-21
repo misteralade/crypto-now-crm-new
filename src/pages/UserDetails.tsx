@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { ArrowLeft } from 'lucide-react'
 import { useUserDetailsPage } from "../hooks/pages/useUserDetailsPage";
 import { LoadingSpinner } from "../components/global/LoadingSpinner";
 import PageHeader from "../components/global/pageHeader.tsx";

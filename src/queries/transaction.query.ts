@@ -241,7 +241,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
       const updatePayload = (store.getState() as RootState)
         .transactionManagement.details.update
 
-      if (!updatePayload) {
+      if (!sessionId || !updatePayload) {
         toast.dismiss()
         return null
       }
@@ -256,6 +256,11 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     },
     onSuccess: (response) => {
       toast.dismiss()
+      if (!response) {
+        toast.error('No transaction update payload was provided')
+        return
+      }
+
       const { message } = response
       if (response.success) {
         toast.success(response.message)

@@ -113,6 +113,15 @@ export type AdminRetryPendingPayoutsResponse = {
   forceProceed: boolean;
 };
 
+export type AdminTransactionStatsResponse = {
+  totalOrders: number;
+  payoutsSent: number;
+  completed: number;
+  payoutFailed: number;
+  pendingPayout: number;
+  critical: number;
+};
+
 export type WeeklyTransactionVolume = {
   totalFiatVolume: string;
   totalUsdVolume: string;

@@ -8,15 +8,15 @@ import type { UserStatusVariant } from '../types/global.types.ts'
 // Types & Interfaces
 // ============================================================================
 
-export interface TableColumn<T = unknown> {
+export interface TableColumn<T extends Record<string, any> = Record<string, any>> {
   key: string
   header: ReactNode
-  render?: (value: unknown, row: T) => ReactNode
+  render?: (value: any, row: T) => ReactNode
   className?: string
   headerClassName?: string
 }
 
-export interface TableProps<T = unknown> {
+export interface TableProps<T extends Record<string, any> = Record<string, any>> {
   data: Array<T>
   columns: Array<TableColumn<T>>
   className?: string
@@ -84,7 +84,7 @@ export const mapTransactionStatus = (
 // Main Table Component
 // ============================================================================
 
-export default function Table<T = unknown>({
+export default function Table<T extends Record<string, any> = Record<string, any>>({
   data,
   columns,
   className = '',
@@ -296,7 +296,7 @@ export default function Table<T = unknown>({
                   </td>
                 )}
                 {columns.map((column) => {
-                  const value = (row as Record<string, unknown>)[column.key]
+                  const value = row[column.key]
                   const defaultTextClass = column.className
                     ? column.className
                     : ['type', 'amount', 'date'].includes(column.key)
@@ -314,7 +314,11 @@ export default function Table<T = unknown>({
                       key={column.key}
                       className={`px-4 py-5 text-sm ${defaultTextClass} ${resolvedCellClass}`}
                     >
-                      {column.render ? column.render(value, row) : value}
+                      {column.render
+                        ? column.render(value, row)
+                        : value == null
+                          ? ''
+                          : String(value)}
                     </td>
                   )
                 })}

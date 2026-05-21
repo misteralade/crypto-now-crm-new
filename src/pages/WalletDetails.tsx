@@ -9,7 +9,6 @@ import {
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import PageHeader from "../components/global/pageHeader.tsx";
-import BackButton from "../components/global/BackButton.tsx";
 import {
   useAdminCustodialWalletDetailsQuery,
   useAdminRefreshCustodialWalletBalanceMutation,

@@ -10,6 +10,7 @@ import type {
 } from '../schemas/transaction.schema'
 import type {
   BaseApiResponse,
+  AdminTransactionStatsResponse,
   GetTransactionCountAPIResponse, GetTransactionDetailsAPIResponse,
   GetTransactionTypeByPercentageAPIResponse,
   GetTransactionVolumeAPIResponse,
@@ -58,7 +59,7 @@ class TransactionServiceApi {
     return (await axiosGetRequestHandler(
       '/transaction/admin/stats',
       queryParams,
-    )) as BaseApiResponse<unknown>
+    )) as BaseApiResponse<AdminTransactionStatsResponse>
   }
 
   async getTransactionTypeByPercentage(queryParams?: Record<string, unknown>) {

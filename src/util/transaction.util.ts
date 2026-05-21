@@ -54,15 +54,6 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Transaction is currently being processed',
     isActionable: false,
   },
-  PAYMENT_CONFIRMED: {
-    category: StatusCategory.IN_PROGRESS,
-    bgColor: 'bg-cyan-50',
-    textColor: 'text-cyan-700',
-    dotColor: 'bg-cyan-500',
-    displayName: 'Payment Confirmed',
-    description: 'Payment has been confirmed',
-    isActionable: false,
-  },
   PAYMENT_ACCOUNT_CONFIRMED: {
     category: StatusCategory.IN_PROGRESS,
     bgColor: 'bg-teal-50',
@@ -70,24 +61,6 @@ const statusConfig: Record<TransactionStatus, {
     dotColor: 'bg-teal-500',
     displayName: 'Account Confirmed',
     description: 'Payment account has been confirmed',
-    isActionable: false,
-  },
-  CRYPTO_SENT: {
-    category: StatusCategory.IN_PROGRESS,
-    bgColor: 'bg-purple-50',
-    textColor: 'text-purple-700',
-    dotColor: 'bg-purple-500',
-    displayName: 'Crypto Sent',
-    description: 'Cryptocurrency has been sent',
-    isActionable: false,
-  },
-  CRYPTO_CONFIRMED: {
-    category: StatusCategory.IN_PROGRESS,
-    bgColor: 'bg-violet-50',
-    textColor: 'text-violet-700',
-    dotColor: 'bg-violet-500',
-    displayName: 'Crypto Confirmed',
-    description: 'Cryptocurrency transaction confirmed',
     isActionable: false,
   },
 
@@ -101,15 +74,6 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Waiting for payment to be received',
     isActionable: true,
   },
-  PAYMENT_RECEIVED: {
-    category: StatusCategory.AWAITING,
-    bgColor: 'bg-lime-50',
-    textColor: 'text-lime-700',
-    dotColor: 'bg-lime-500',
-    displayName: 'Payment Received',
-    description: 'Payment has been received, awaiting confirmation',
-    isActionable: false,
-  },
   AWAITING_CRYPTO: {
     category: StatusCategory.AWAITING,
     bgColor: 'bg-orange-50',
@@ -117,15 +81,6 @@ const statusConfig: Record<TransactionStatus, {
     dotColor: 'bg-orange-500',
     displayName: 'Awaiting Crypto',
     description: 'Waiting for cryptocurrency transaction',
-    isActionable: false,
-  },
-  CRYPTO_RECEIVED: {
-    category: StatusCategory.AWAITING,
-    bgColor: 'bg-emerald-50',
-    textColor: 'text-emerald-700',
-    dotColor: 'bg-emerald-500',
-    displayName: 'Crypto Received',
-    description: 'Cryptocurrency received, awaiting confirmation',
     isActionable: false,
   },
 
@@ -139,16 +94,6 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Transaction completed successfully',
     isActionable: true,
   },
-  REFUNDED: {
-    category: StatusCategory.SUCCESS,
-    bgColor: 'bg-green-50',
-    textColor: 'text-green-700',
-    dotColor: 'bg-green-500',
-    displayName: 'Refunded',
-    description: 'Transaction has been refunded',
-    isActionable: true,
-  },
-
   // Failed statuses
   FAILED: {
     category: StatusCategory.FAILED,
@@ -187,15 +132,6 @@ const statusConfig: Record<TransactionStatus, {
     displayName: 'Cancelled',
     description: 'Transaction was cancelled',
     isActionable: true,
-  },
-  REFUNDING: {
-    category: StatusCategory.CANCELLED,
-    bgColor: 'bg-slate-50',
-    textColor: 'text-slate-700',
-    dotColor: 'bg-slate-500',
-    displayName: 'Refunding',
-    description: 'Refund is being processed',
-    isActionable: false,
   },
   DEPOSIT_DETECTED: {
     category: StatusCategory.AWAITING,

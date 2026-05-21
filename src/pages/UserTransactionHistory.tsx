@@ -8,7 +8,7 @@ import ManageTransactionsControls from "../components/pages/manageTransactions/M
 import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import { useUserTransactionHistoryPage } from '../hooks/pages/useUserTransactionHistoryPage.ts';
-import { ArrowLeft, RefreshCcw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 
 const UserTransactionHistory = () => {
   const {

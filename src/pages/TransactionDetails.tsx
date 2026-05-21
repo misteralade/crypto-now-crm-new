@@ -15,7 +15,7 @@ import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
 import { convertToMillify } from "../util/index.util.ts";
-import { ArrowLeft, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
 import { canManuallyRetryPayout } from "../util/transaction.util.ts";
 

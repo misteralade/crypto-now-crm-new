@@ -693,7 +693,9 @@ const TransactionDetailsDrawer = ({
                                   "status",
                                   transactionStatus
                                 );
-                                setSelectedStatus(transactionStatus);
+                                setSelectedStatus(
+                                  transactionStatus as TransactionStatusType
+                                );
                               }
                             : undefined
                         }

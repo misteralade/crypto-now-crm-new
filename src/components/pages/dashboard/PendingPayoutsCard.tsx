@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { RefreshCcw, AlertCircle, ChevronRight } from 'lucide-react';
 
 interface PendingPayoutsCardProps {
