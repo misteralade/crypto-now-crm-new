@@ -136,7 +136,7 @@ class SweepServiceApi {
   private constructor() {}
 
   public static getInstance(): SweepServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!SweepServiceApi.instance) {
       SweepServiceApi.instance = new SweepServiceApi();
     }

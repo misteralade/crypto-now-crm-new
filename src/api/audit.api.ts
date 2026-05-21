@@ -9,7 +9,7 @@ class AuditServiceApi {
   }
 
   public static getInstance(): AuditServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!AuditServiceApi.instance) {
       AuditServiceApi.instance = new AuditServiceApi();
     }

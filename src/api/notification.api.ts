@@ -9,7 +9,7 @@ class NotificationServiceApi {
   }
 
   public static getInstance(): NotificationServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!NotificationServiceApi.instance) {
       NotificationServiceApi.instance = new NotificationServiceApi();
     }

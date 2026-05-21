@@ -16,7 +16,7 @@ class KycSessionServiceApi {
   private constructor() {}
 
   public static getInstance(): KycSessionServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!KycSessionServiceApi.instance) {
       KycSessionServiceApi.instance = new KycSessionServiceApi()
     }

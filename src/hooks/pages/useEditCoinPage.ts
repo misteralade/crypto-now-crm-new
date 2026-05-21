@@ -43,7 +43,7 @@ export const useEditCoinPage = () => {
 
   const handleUpdateCrypto = async () => {
     const { success } = await updateCryptoCurrencyMutation.mutateAsync()
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (success) {
       dispatch(clearEditCoinPayload())
       dispatch(clearEditCoinId())

@@ -19,7 +19,7 @@ export const useCryptoQuery = () => {
     queryKey: [QUERY_KEYS.CRYPTO.SEARCH_SUPPORTED_CRYPTO_CURRENCIES, search],
     queryFn: async () => {
       const payload = (store.getState() as RootState).coinManagement.search.supportedCrypto;
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+       
       if (!payload) return null;
 
       const { data, success } = await cryptoServiceApi.searchSupportedCryptoCurrencies(payload);
@@ -120,7 +120,7 @@ export const useCryptoQuery = () => {
        
       if (!cryptoId) throw new Error("Missing crypto ID to update coin.")
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+       
       if (!payload) throw new Error("Missing payload to update coin.")
       
       // Clean invalid URL fields before sending

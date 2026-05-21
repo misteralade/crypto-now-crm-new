@@ -18,7 +18,7 @@ class AdminServiceApi {
   }
 
   public static getInstance(): AdminServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!AdminServiceApi.instance) {
       AdminServiceApi.instance = new AdminServiceApi();
     }

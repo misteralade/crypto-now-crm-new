@@ -15,7 +15,7 @@ class DisputeServiceApi {
   }
   
   public static getInstance(): DisputeServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!DisputeServiceApi.instance) {
       DisputeServiceApi.instance = new DisputeServiceApi();
     }

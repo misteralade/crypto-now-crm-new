@@ -15,7 +15,7 @@ export const useAddCoinPage = () => {
   const saveCoin = async () => {
     const { success } = await createCryptoCurrencyMutation.mutateAsync()
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (success) {
       navigate({ to: ROUTES.COIN_MANAGEMENT })
     }

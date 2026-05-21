@@ -200,25 +200,27 @@ function formatWalletAddress(address: string) {
 export default function Treasury() {
   const navigate = useNavigate();
   const { allSupportedCrypto } = useCryptoQuery();
-  const { useSweepHistory } = useSweepQuery();
+  const { useSweepHistoryInfinite } = useSweepQuery();
 
-  const [filters, setFilters] = useState<SweepHistoryParams>({
-    page: 1,
+  const [filters, setFilters] = useState<Omit<SweepHistoryParams, "page">>({
     size: 20,
   });
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: historyData, isLoading } = useSweepHistory(filters);
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useSweepHistoryInfinite(filters);
 
-  const sweeps = useMemo(() => historyData?.data ?? [], [historyData]);
-  const totalPages = useMemo(
-    () =>
-      historyData && filters.size
-        ? Math.ceil(historyData.total / filters.size)
-        : 1,
-    [filters.size, historyData],
+  const sweeps = useMemo(
+    () => infiniteData?.pages.flatMap((page) => page.data) ?? [],
+    [infiniteData],
   );
-  const totalSweeps = historyData?.total ?? 0;
+
+  const totalSweeps = infiniteData?.pages[0]?.total ?? 0;
   const completedRuns = useMemo(
     () =>
       sweeps.filter(
@@ -359,7 +361,7 @@ export default function Treasury() {
 
   function updateStatusFilter(value: string) {
     const statusValue = value === "" ? undefined : (value as SweepStatus);
-    setFilters((prev) => ({ ...prev, status: statusValue, page: 1 }));
+    setFilters((prev) => ({ ...prev, status: statusValue }));
   }
 
   return (
@@ -444,7 +446,6 @@ export default function Treasury() {
                   setFilters((prev) => ({
                     ...prev,
                     network: e.target.value || undefined,
-                    page: 1,
                   }))
                 }
                 className="h-10 min-w-[160px] rounded-lg border border-[--color-border-input] bg-white px-3 text-sm text-[--color-text-primary] outline-none transition-all focus:border-[--color-accent-mid] focus:ring-2 focus:ring-[#DCDDFD]"
@@ -483,37 +484,25 @@ export default function Treasury() {
             />
           </div>
 
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-[--color-border] px-4 py-3">
-              <p className="text-xs text-[--color-text-muted]">
-                Page {filters.page ?? 1} of {totalPages}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  disabled={(filters.page ?? 1) <= 1}
-                  onClick={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      page: Math.max(1, (prev.page ?? 1) - 1),
-                    }))
-                  }
-                  className="rounded-lg border border-[--color-border] px-3 py-1.5 text-xs font-medium text-[--color-text-secondary] transition-colors hover:bg-[--color-bg-light] disabled:opacity-40"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled={(filters.page ?? 1) >= totalPages}
-                  onClick={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      page: (prev.page ?? 1) + 1,
-                    }))
-                  }
-                  className="rounded-lg border border-[--color-border] px-3 py-1.5 text-xs font-medium text-[--color-text-secondary] transition-colors hover:bg-[--color-bg-light] disabled:opacity-40"
-                >
-                  Next
-                </button>
-              </div>
+          {hasNextPage && (
+            <div className="flex items-center justify-center border-t border-[--color-border] px-4 py-6 bg-gray-50/30">
+              <button
+                disabled={isFetchingNextPage}
+                onClick={() => void fetchNextPage()}
+                className="inline-flex items-center gap-2 rounded-full bg-white border border-[#DDE0FF] px-8 py-2.5 text-sm font-bold text-[#575AE5] shadow-sm transition-all hover:bg-[#F5F5FF] active:scale-95 disabled:opacity-50"
+              >
+                {isFetchingNextPage ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-[#575AE5]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading more...
+                  </span>
+                ) : (
+                  "Load More Activity"
+                )}
+              </button>
             </div>
           )}
         </section>

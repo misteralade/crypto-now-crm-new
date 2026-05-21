@@ -63,7 +63,7 @@ const UserTransactionHistory = () => {
   )
 
   const data = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     () => UserTransactionsManagementDataRow(!loadingSearchTransactions ? searchTransactions?.transactions : []) || [],
     [searchTransactions?.transactions, loadingSearchTransactions],
   )

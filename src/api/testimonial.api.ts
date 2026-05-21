@@ -22,7 +22,7 @@ class TestimonialServiceApi {
   }
 
   public static getInstance(): TestimonialServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!TestimonialServiceApi.instance) {
       TestimonialServiceApi.instance = new TestimonialServiceApi();
     }

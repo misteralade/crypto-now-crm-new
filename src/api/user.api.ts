@@ -13,7 +13,7 @@ class UserServiceApi {
   }
 
   public static getInstance(): UserServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!UserServiceApi.instance) {
       UserServiceApi.instance = new UserServiceApi();
     }

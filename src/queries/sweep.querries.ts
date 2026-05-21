@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import {
   sweepServiceApi,
   type SweepHistoryParams,
@@ -29,7 +29,29 @@ export const useSweepQuery = () => {
     });
   };
 
-  // ─── History ─────────────────────────────────────────────────────────────────
+  // ─── History (Infinite) ──────────────────────────────────────────────────────
+  const useSweepHistoryInfinite = (params?: Omit<SweepHistoryParams, 'page'>) => {
+    return useInfiniteQuery({
+      queryKey: [QUERY_KEYS.SWEEP.HISTORY, 'infinite', params],
+      queryFn: async ({ pageParam = 1 }) => {
+        const { data, success, message } = await sweepServiceApi.getSweepHistory({
+          ...params,
+          page: pageParam as number,
+        });
+        if (!success) throw new Error(message);
+        return data;
+      },
+      getNextPageParam: (lastPage) => {
+        if (lastPage.page >= Math.ceil(lastPage.total / lastPage.size)) {
+          return undefined;
+        }
+        return lastPage.page + 1;
+      },
+      initialPageParam: 1,
+    });
+  };
+
+  // ─── History (Paginated) ─────────────────────────────────────────────────────
   const useSweepHistory = (params?: SweepHistoryParams) => {
     return useQuery({
       queryKey: [QUERY_KEYS.SWEEP.HISTORY, params],
@@ -138,6 +160,7 @@ export const useSweepQuery = () => {
   return {
     useSweepPreview,
     useSweepHistory,
+    useSweepHistoryInfinite,
     useSweepStatus,
     initiateSweepMutation,
     restartSweepMutation,

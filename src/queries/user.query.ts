@@ -22,7 +22,7 @@ export const useUserQuery = () => {
       queryFn: async () => {
         const timeline = (store.getState() as RootState).dashboard
           .timelineFilter
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+         
         if (!timeline) return null
 
         const { data, success } =

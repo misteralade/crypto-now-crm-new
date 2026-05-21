@@ -41,7 +41,7 @@ const AuditTrails = () => {
   
   const data = useMemo(
     () =>
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+       
     SearchAuditLogDataRow(searchAuditLog?.logs ? searchAuditLog.logs : []) ||
       [],
     [searchAuditLog?.logs, loadingSearchAuditLog],

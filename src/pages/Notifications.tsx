@@ -33,7 +33,7 @@ const NotificationsPage = () => {
   const columns = useMemo(() => NotificationsDataColumn(handleViewTransactionDetails), [ handleViewTransactionDetails ],)
 
   const data = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     () => NotificationsDataRow(!loadingSearchNotification ? searchNotification?.notifications : []) || [],
     [searchNotification?.notifications, loadingSearchNotification],
   )

@@ -24,7 +24,7 @@ class CryptoServiceApi {
   }
 
   public static getInstance(): CryptoServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!CryptoServiceApi.instance) {
       CryptoServiceApi.instance = new CryptoServiceApi();
     }

@@ -18,7 +18,7 @@ class BankServiceApi {
   }
 
   public static getInstance(): BankServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!BankServiceApi.instance) {
       BankServiceApi.instance = new BankServiceApi();
     }

@@ -9,7 +9,7 @@ class RateServiceApi {
   }
 
   public static getInstance(): RateServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!RateServiceApi.instance) {
       RateServiceApi.instance = new RateServiceApi();
     }

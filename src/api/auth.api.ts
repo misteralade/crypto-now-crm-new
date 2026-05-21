@@ -8,7 +8,7 @@ class AuthServiceApi {
   }
 
   public static getInstance(): AuthServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!AuthServiceApi.instance) {
       AuthServiceApi.instance = new AuthServiceApi();
     }

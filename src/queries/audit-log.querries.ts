@@ -16,7 +16,7 @@ export const useAuditLogQuery = () => {
     queryFn: async () => {
       const rootState = store.getState() as RootState;
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+       
       if (!rootState.auditLog.search) {
         return;
       }
@@ -29,7 +29,7 @@ export const useAuditLogQuery = () => {
 
       return null;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     enabled: !!search && !!matchRoute({ to: ROUTES.AUDIT_TRAILS }),
   });
 

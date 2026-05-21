@@ -460,19 +460,19 @@ const TransactionDetailsDrawer = ({
                       <Fragment>
                         <CustomerAccountDetails
                           address={
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                             
                             transaction.userCryptoWallet
                               ? transaction.userCryptoWallet.walletAddress
                               : "N/A"
                           }
                           coinType={
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                             
                             transaction.cryptocurrency
                               ? transaction.cryptocurrency.symbol
                               : "N/A"
                           }
                           networkType={
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                             
                             transaction.userCryptoWallet
                               ? transaction.userCryptoWallet.network
                               : "N/A"
@@ -487,7 +487,7 @@ const TransactionDetailsDrawer = ({
                               Account name
                             </div>
                             <div className="font-medium text-[#0E0F0C]">
-                              {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
+                              { }
                               {transaction.userBankAccount
                                 ? transaction.userBankAccount.accountName
                                 : "N/A"}
@@ -499,7 +499,7 @@ const TransactionDetailsDrawer = ({
                               Bank name
                             </div>
                             <div className="font-medium text-[#0E0F0C]">
-                              {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
+                              { }
                               {transaction.userBankAccount
                                 ? transaction.userBankAccount.bankName
                                 : "N/A"}
@@ -513,7 +513,7 @@ const TransactionDetailsDrawer = ({
                             <div className="font-medium text-[#0E0F0C]">
                               <CopyDetails
                                 text={
-                                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                                   
                                   transaction.userBankAccount
                                     ? transaction.userBankAccount.accountNumber
                                     : "N/A"

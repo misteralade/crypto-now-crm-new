@@ -17,7 +17,7 @@ class CurrencyServiceApi {
   }
 
   public static getInstance(): CurrencyServiceApi {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!CurrencyServiceApi.instance) {
       CurrencyServiceApi.instance = new CurrencyServiceApi();
     }

@@ -43,7 +43,7 @@ const CoinManagement = () => {
   ), [])
   
   const data = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     () => SearchSupportedCryptoDataRow(supportedCrypto?.supportedCryptos) ?? [],
     [supportedCrypto?.supportedCryptos, loadingSupportedCrypto],
   )

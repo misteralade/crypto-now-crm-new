@@ -56,7 +56,7 @@ export const SearchAuditLogDataColumn: Array<TableColumn> = [
 export const SearchAuditLogDataRow = (data: Array<AuditLogResponsePayload>) => {
   const rowItems: Array<any> = [];
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+   
   if (!data) {
     return rowItems;
   }
