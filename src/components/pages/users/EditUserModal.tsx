@@ -2,7 +2,7 @@ import { X, Calendar } from "lucide-react";
 import { Formik, Form } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRef, useEffect, useState } from "react";
-import MFLabeledPillInput from "../../global/LabeledPillInput";
+import { PillInput } from "../../ui/input";
 import { AdminUserProfileUpdateRequestSchema } from "../../../schemas/user.schema";
 import type { AdminUserProfileUpdateRequestType } from "../../../schemas/user.schema";
 import momentClient from "../../../util/moment";
@@ -107,7 +107,7 @@ const EditUserModal = ({
                 <div className="px-6 pb-4 space-y-8 mt-8">
                   {/* First Name */}
                   <div>
-                    <MFLabeledPillInput
+                    <PillInput
                       label="First Name"
                       placeholder="e.g John"
                       value={values.firstName || ""}
@@ -124,7 +124,7 @@ const EditUserModal = ({
 
                   {/* Last Name */}
                   <div>
-                    <MFLabeledPillInput
+                    <PillInput
                       label="Last Name"
                       placeholder="e.g Doe"
                       value={values.lastName || ""}
@@ -141,7 +141,7 @@ const EditUserModal = ({
 
                   {/* Phone Number */}
                   <div>
-                    <MFLabeledPillInput
+                    <PillInput
                       label="Phone Number"
                       placeholder="e.g +1234567890"
                       value={values.phoneNumber || ""}

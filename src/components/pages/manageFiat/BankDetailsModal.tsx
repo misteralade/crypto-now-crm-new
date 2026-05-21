@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
-import MFLabeledPillInput from "../../global/LabeledPillInput";
+import { PillInput } from "../../ui/input";
 import { MFLabeledPillSearchSelect } from "../../global/LabeledPillSelect";
 import type { RootState } from "../../../store";
 import type { SupportedPlatformBankAccountResponse } from "../../../types/response.payload.types";
@@ -119,7 +119,7 @@ const BankDetailsModal = ({
           />
 
           <div className="space-y-1">
-            <MFLabeledPillInput
+            <PillInput
               label="Account Number"
               placeholder="0000000000"
               value={payload.accountNumber || ""}

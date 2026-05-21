@@ -3,7 +3,7 @@
 // MFLabeledPillSearchSelect is kept as a full custom component
 // since it has search/filter functionality not in the base select.
 
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { PillSelect } from '../ui/select'
 import { cn } from '../../lib/utils'
@@ -56,7 +56,6 @@ interface MFLabeledPillSearchSelectProps {
 
 export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass = '', valueClass = '', className = '', placeholder = 'Search...', value: controlledValue }: MFLabeledPillSearchSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownClosing, setIsDropdownClosing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState(controlledValue || '')
@@ -75,12 +74,8 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
   const displayValue = selectedOption ? selectedOption.label : '';
 
   const closeDropdown = () => {
-    setIsDropdownClosing(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setIsDropdownClosing(false);
-      setSearchTerm('');
-    }, 120);
+    setIsOpen(false);
+    setSearchTerm('');
   };
 
   useEffect(() => {

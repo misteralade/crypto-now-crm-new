@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { X } from "lucide-react";
-import MFLabeledPillInput from "../../global/LabeledPillInput";
+import { PillInput } from "../../ui/input";
 import type { AdminPermissionResponsePayload } from "../../../types/response.payload.types";
 import MFLabeledPillTextarea from "../../global/LabeledPillTextarea";
 
@@ -93,7 +93,7 @@ const CreateNewPermissionsModal = ({
             </div>
 
             <div className="px-6 space-y-[32px] mt-4">
-              <MFLabeledPillInput
+              <PillInput
                 label="Name"
                 placeholder="Transaction Manager"
                 onChange={(e) => handleRoleName(e.target.value)}

@@ -1,27 +1,23 @@
 import { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { X, Plus, Trash2, Edit2, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { X, Plus, Trash2, Edit2, AlertTriangle, ShieldCheck, RefreshCcw } from 'lucide-react';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout.tsx';
 import PageHeader from '../components/global/pageHeader.tsx';
 import { PillInput } from '../components/ui/input';
 import { PillSelect } from '../components/ui/select';
-import { useKycTierLimitQuery } from '../queries/kyc-tier-limit.querries';
+import { useKycQuery } from '../queries/kyc.querries';
 import {
   setCreateKycTierLimitField,
-  resetCreateKycTierLimitForm,
   setUpdateKycTierLimitField,
-  resetUpdateKycTierLimitForm,
+  setUpdateKycTierLimitId,
+  setDeleteKycTierLimitId,
+  clearCreateKycTierLimit,
+  clearUpdateKycTierLimit,
+  clearDeleteKycTierLimitId,
 } from '../redux/kyc-tier-limit.slice';
 import type { RootState } from '../store';
-import type { KycTierType, CreateKycTierLimitRequestType } from '../types/kyc-tier-limit.types';
-import { ROUTES } from '../util/constants.util';
+import type { KycTierType } from '../types/kyc-tier-limit.types';
 import CustomButton from '../components/global/Button';
-
-const TIER_LABELS: Record<KycTierType, string> = {
-  guest: 'Guest — unverified users',
-  tier1: 'Tier 1 — basic verification',
-  tier2: 'Tier 2 — full verification',
-};
 
 const boolOptions = [
   { value: 'true', label: 'Active' },
@@ -36,67 +32,65 @@ const tierOptions = [
 
 const KycTierLimits = () => {
   const dispatch = useDispatch();
-  const { createForm, updateForm } = useSelector((s: RootState) => s.kycTierLimit);
+  const { create: createForm, update: updateFormState } = useSelector((s: RootState) => s.kycTierLimit);
+  const updateForm = updateFormState; // for compatibility with previous naming in component
+  
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const {
-    useGetAllKycTierLimits,
-    useCreateKycTierLimit,
-    useUpdateKycTierLimit,
-    useDeleteKycTierLimit,
-  } = useKycTierLimitQuery();
-
-  const { data: tierLimits, isLoading } = useGetAllKycTierLimits();
-  const createKycTierLimitMutation = useCreateKycTierLimit();
-  const updateKycTierLimitMutation = useUpdateKycTierLimit();
-  const deleteKycTierLimitMutation = useDeleteKycTierLimit();
+    kycTierLimits,
+    loadingKycTierLimits,
+    createKycTierLimitMutation,
+    updateKycTierLimitMutation,
+    deleteKycTierLimitMutation,
+  } = useKycQuery();
 
   const groupedLimits = useMemo(() => {
-    if (!tierLimits) return {} as Record<KycTierType, any[]>;
-    return tierLimits.reduce((acc, limit) => {
+    if (!kycTierLimits) return {} as Record<KycTierType, any[]>;
+    return kycTierLimits.reduce((acc: any, limit: any) => {
       if (!acc[limit.kycTier]) acc[limit.kycTier] = [];
       acc[limit.kycTier].push(limit);
       return acc;
     }, {} as Record<KycTierType, any[]>);
-  }, [tierLimits]);
+  }, [kycTierLimits]);
 
   function handleCreate() {
-    createKycTierLimitMutation.mutate(createForm, {
+    createKycTierLimitMutation.mutate(undefined, {
       onSuccess: (res) => {
-        if (response.success) {
+        if (res.success) {
           setIsCreateModalOpen(false);
-          dispatch(resetCreateKycTierLimitForm());
+          dispatch(clearCreateKycTierLimit());
         }
       },
     });
   }
 
   function handleUpdate() {
-    if (!updateForm.id) return;
-    updateKycTierLimitMutation.mutate({ id: updateForm.id, data: updateForm.data }, {
+    updateKycTierLimitMutation.mutate(undefined, {
       onSuccess: (res) => {
-        if (response.success) {
+        if (res.success) {
           setIsEditModalOpen(false);
-          dispatch(resetUpdateKycTierLimitForm());
+          dispatch(clearUpdateKycTierLimit());
         }
       },
     });
   }
 
   function handleDelete() {
-    if (!deletingId) return;
-    deleteKycTierLimitMutation.mutate(deletingId, {
-      onSuccess: () => {
-        setIsDeleteModalOpen(false);
-        setDeletingId(null);
+    deleteKycTierLimitMutation.mutate(undefined, {
+      onSuccess: (res) => {
+        if (res.success) {
+          setIsDeleteModalOpen(false);
+          dispatch(clearDeleteKycTierLimitId());
+        }
       },
     });
   }
 
   function openEditModal(limit: any) {
+    dispatch(setUpdateKycTierLimitId(limit.id));
     dispatch(setUpdateKycTierLimitField({ field: 'kycTier', value: limit.kycTier }));
     dispatch(setUpdateKycTierLimitField({ field: 'currencyCode', value: limit.currencyCode }));
     dispatch(setUpdateKycTierLimitField({ field: 'minTransactionAmount', value: limit.minTransactionAmount }));
@@ -108,33 +102,29 @@ const KycTierLimits = () => {
     dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsBTC', value: limit.requiredConfirmationsBTC }));
     dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsSOL', value: limit.requiredConfirmationsSOL }));
     dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsTRC20', value: limit.requiredConfirmationsTRC20 }));
-    // update state with ID
-    // this is a bit hacky but works with the current slice
-    (updateForm as any).id = limit.id; 
+    
     setIsEditModalOpen(true);
   }
 
   function closeCreateModal() {
     setIsCreateModalOpen(false);
-    dispatch(resetCreateKycTierLimitForm());
+    dispatch(clearCreateKycTierLimit());
   }
 
   function closeEditModal() {
     setIsEditModalOpen(false);
-    dispatch(resetUpdateKycTierLimitForm());
+    dispatch(clearUpdateKycTierLimit());
   }
 
   function openDeleteModal(id: string) {
-    setDeletingId(id);
+    dispatch(setDeleteKycTierLimitId(id));
     setIsDeleteModalOpen(true);
   }
 
   function closeDeleteModal() {
     setIsDeleteModalOpen(false);
-    setDeletingId(null);
+    dispatch(clearDeleteKycTierLimitId());
   }
-
-  const response = { success: true }; // placeholder for mutation callbacks
 
   return (
     <AuthenticatedLayout>
@@ -153,12 +143,12 @@ const KycTierLimits = () => {
       />
 
       <div className="p-6 mx-auto space-y-8">
-        {isLoading ? (
+        {loadingKycTierLimits ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <RefreshCcw className="w-8 h-8 text-[#575AE5] animate-spin" />
             <p className="text-gray-500 font-medium">Loading tier limits...</p>
           </div>
-        ) : tierLimits?.length === 0 ? (
+        ) : !kycTierLimits || kycTierLimits.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
             <ShieldCheck className="w-12 h-12 text-gray-200 mb-4" />
             <p className="text-gray-900 font-semibold">No tier limits configured</p>
@@ -188,7 +178,7 @@ const KycTierLimits = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-                    {groupedLimits[tier].map((limit) => (
+                    {groupedLimits[tier].map((limit: any) => (
                       <div
                         key={limit.id}
                         className="bg-white rounded-[32px] border border-[#ECECEC] p-6 transition-all hover:border-[#575AE5] group"
@@ -274,7 +264,7 @@ const KycTierLimits = () => {
                   label="KYC Tier"
                   options={tierOptions}
                   value={createForm.kycTier}
-                  onValueChange={(v) => dispatch(setCreateKycTierLimitField({ field: 'kycTier', value: v as KycTierType }))}
+                  onValueChange={(v) => dispatch(setCreateKycTierLimitField({ field: 'kycTier', value: v as any }))}
                 />
                 <PillInput
                   label="Currency Code"
@@ -351,16 +341,14 @@ const KycTierLimits = () => {
                   variant="button"
                   onClick={closeCreateModal}
                   className="bg-white !text-[#03034D] border border-[#ECECEC] hover:bg-gray-50 px-8"
-                >
-                  Cancel
-                </CustomButton>
+                  buttonText="Cancel"
+                />
                 <CustomButton
                   onClick={handleCreate}
                   disabled={createKycTierLimitMutation.isPending}
                   className="px-10"
-                >
-                  {createKycTierLimitMutation.isPending ? 'Creating...' : 'Create Tier Limit'}
-                </CustomButton>
+                  buttonText={createKycTierLimitMutation.isPending ? 'Creating...' : 'Create Tier Limit'}
+                />
               </div>
             </div>
           </div>
@@ -385,7 +373,7 @@ const KycTierLimits = () => {
                   label="KYC Tier"
                   options={tierOptions}
                   value={updateForm.data.kycTier ?? ''}
-                  onValueChange={(v) => dispatch(setUpdateKycTierLimitField({ field: 'kycTier', value: v as KycTierType }))}
+                  onValueChange={(v) => dispatch(setUpdateKycTierLimitField({ field: 'kycTier', value: v as any }))}
                 />
                 <PillInput
                   label="Currency Code"
@@ -462,16 +450,14 @@ const KycTierLimits = () => {
                   variant="button"
                   onClick={closeEditModal}
                   className="bg-white !text-[#03034D] border border-[#ECECEC] hover:bg-gray-50 px-8"
-                >
-                  Cancel
-                </CustomButton>
+                  buttonText="Cancel"
+                />
                 <CustomButton
                   onClick={handleUpdate}
                   disabled={updateKycTierLimitMutation.isPending}
                   className="px-10"
-                >
-                  {updateKycTierLimitMutation.isPending ? 'Saving...' : 'Save Changes'}
-                </CustomButton>
+                  buttonText={updateKycTierLimitMutation.isPending ? 'Saving...' : 'Save Changes'}
+                />
               </div>
             </div>
           </div>

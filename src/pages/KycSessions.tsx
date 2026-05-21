@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "@tanstack/react-router";
-import { Search, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout";
 import PageHeader from "../components/global/pageHeader";
 import { useKycSessionQuery } from "../queries/kyc-session.querries";

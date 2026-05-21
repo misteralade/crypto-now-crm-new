@@ -79,6 +79,8 @@ export default function AuditTrailsFilterModal({
 }: AuditTrailsFilterModalProps) {
   const [isClosing, setIsClosing] = useState(false)
   const [shouldRender, setShouldRender] = useState(isOpen)
+  const fromRef = useRef<HTMLInputElement>(null)
+  const toRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (isOpen) {
@@ -95,9 +97,6 @@ export default function AuditTrailsFilterModal({
   }, [isOpen, shouldRender])
 
   if (!shouldRender) return null
-
-  const fromRef = useRef<HTMLInputElement>(null)
-  const toRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
