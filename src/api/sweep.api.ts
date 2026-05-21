@@ -155,7 +155,7 @@ class SweepServiceApi {
 
   /** Restart a sweep using the persisted options from an existing run */
   async restartSweep(sweepId: string) {
-    return await axiosPostRequestHandler(`/sweep/admin/sweep/${sweepId}/restart`) as BaseApiResponse<RestartSweepResult>;
+    return await axiosPostRequestHandler(`/sweep/admin/sweep/${sweepId}/restart`, {}) as BaseApiResponse<RestartSweepResult>;
   }
 
   /** Poll real-time status of a specific sweep */

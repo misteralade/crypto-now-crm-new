@@ -2,6 +2,7 @@ import {Fragment} from "react";
 import {AlertCircle, CheckCircle, Clock, HelpCircle, Loader, X, Zap} from "lucide-react";
 import {LoadingSpinner} from "../components/global/LoadingSpinner.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
+import PageHeader from "../components/global/pageHeader.tsx";
 import {useDisputeDetailsPage} from "../hooks/pages/useDisputeDetailsPage.ts";
 import DisputeInformation from "../components/pages/disputes/details/DisputeInformation.tsx";
 import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";

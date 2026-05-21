@@ -104,6 +104,7 @@ function KycStepBadge({ step }: { step: KycSessionStep }) {
   );
 }
 
+import { PillSelect } from "../components/ui/select";
 import { SearchInput } from "../components/ui/search-input";
 
 const KycSessions = () => {
@@ -125,6 +126,11 @@ const KycSessions = () => {
     e.preventDefault();
     dispatch(setKycSessionUserIdFilter(searchInput.trim()));
   }
+
+  const statusOptions = STATUS_FILTER_OPTIONS.map(opt => ({
+    label: opt.label,
+    value: opt.value || '__empty__'
+  }));
 
   return (
     <AuthenticatedLayout>
@@ -150,24 +156,20 @@ const KycSessions = () => {
             </button>
           </form>
 
-
-          <select
-            value={statusFilter ?? ""}
-            onChange={(e) =>
-              dispatch(
-                setKycSessionStatusFilter(
-                  (e.target.value as KycSessionStep) || undefined
+          <div className="sm:w-[200px]">
+            <PillSelect
+              label="Status"
+              value={statusFilter ?? '__empty__'}
+              onValueChange={(v) =>
+                dispatch(
+                  setKycSessionStatusFilter(
+                    (v === '__empty__' ? undefined : v as KycSessionStep)
+                  )
                 )
-              )
-            }
-            className="px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03034D]/20 bg-white"
-          >
-            {STATUS_FILTER_OPTIONS.map((opt) => (
-              <option key={opt.label} value={opt.value ?? ""}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+              }
+              options={statusOptions}
+            />
+          </div>
         </div>
 
         {/* Table */}

@@ -16,7 +16,7 @@ import {
   clearDeleteKycTierLimitId,
 } from '../redux/kyc-tier-limit.slice';
 import type { RootState } from '../store';
-import type { KycTierType } from '../types/kyc-tier-limit.types';
+import type { KycTierType } from '../schemas/kyc.schema';
 import CustomButton from '../components/global/Button';
 
 const boolOptions = [
@@ -24,16 +24,20 @@ const boolOptions = [
   { value: 'false', label: 'Inactive' },
 ];
 
+const TIER_LABELS: Record<KycTierType, string> = {
+  GUEST: 'Guest — unverified users',
+  VERIFIED: 'Verified — full verification',
+};
+
 const tierOptions = [
-  { value: 'guest', label: 'Guest — unverified users' },
-  { value: 'tier1', label: 'Tier 1 — basic verification' },
-  { value: 'tier2', label: 'Tier 2 — full verification' },
+  { value: 'GUEST', label: 'Guest — unverified users' },
+  { value: 'VERIFIED', label: 'Verified — full verification' },
 ];
 
 const KycTierLimits = () => {
   const dispatch = useDispatch();
   const { create: createForm, update: updateFormState } = useSelector((s: RootState) => s.kycTierLimit);
-  const updateForm = updateFormState; // for compatibility with previous naming in component
+  const updateForm = updateFormState;
   
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -135,9 +139,9 @@ const KycTierLimits = () => {
           <CustomButton
             onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center gap-2"
+            buttonText="Add New Limit"
           >
             <Plus size={18} />
-            Add New Limit
           </CustomButton>
         }
       />
@@ -156,16 +160,15 @@ const KycTierLimits = () => {
             <CustomButton
               onClick={() => setIsCreateModalOpen(true)}
               className="mt-6"
-            >
-              Add First Limit
-            </CustomButton>
+              buttonText="Add First Limit"
+            />
           </div>
         ) : (
           <div className="space-y-10 pb-20">
-            {(['guest', 'tier1', 'tier2'] as KycTierType[]).map((tier) => (
+            {(['GUEST', 'VERIFIED'] as KycTierType[]).map((tier) => (
               <section key={tier} className="space-y-5">
                 <div className="flex items-center gap-3 px-2">
-                  <h2 className="text-[20px] font-bold text-[#03034D] capitalize">{tier}</h2>
+                  <h2 className="text-[20px] font-bold text-[#03034D] capitalize">{TIER_LABELS[tier]}</h2>
                   <div className="h-px flex-1 bg-[#F2F4F7]" />
                   <span className="text-[12px] font-bold text-gray-400 uppercase tracking-widest">
                     {groupedLimits[tier]?.length || 0} config{groupedLimits[tier]?.length === 1 ? '' : 's'}
