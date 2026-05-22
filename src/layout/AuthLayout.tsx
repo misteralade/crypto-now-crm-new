@@ -18,24 +18,23 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children, layoutType }: AuthLayoutProps) => {
   return (
     <Fragment>
-      <div className="min-h-screen flex">
-        {layoutType === 1 ? (
-          <div className="w-full max-lg:px-8">
-            <div className="max-w-[1200px] mx-auto bg-white relative">
-              {/* Logo at top left - positioned same as other layout */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
-                <Link className="absolute top-8 left-[0px]" to="/">
-                  <img src={Logo} alt="CryptoNow Logo" className="h-8" />
-                </Link>
-              </motion.div>
-            </div>
+      <div className="min-h-screen flex flex-col lg:flex-row relative bg-white">
+        {/* Logo - Global position at top left of the screen */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="absolute top-8 left-8 z-50 pointer-events-auto"
+        >
+          <Link to="/">
+            <img src={Logo} alt="CryptoNow Logo" className="h-8 w-auto" />
+          </Link>
+        </motion.div>
 
-            {/* Centered content area */}
-            <div className="w-full flex items-center justify-center min-h-screen">
+        {layoutType === 1 ? (
+          <div className="w-full flex items-center justify-center min-h-screen p-8">
+            <div className="max-w-[1200px] w-full mx-auto relative mt-16 lg:mt-0">
+              {/* Centered content area */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -47,21 +46,11 @@ const AuthLayout = ({ children, layoutType }: AuthLayoutProps) => {
           </div>
         ) : (
           <>
-            <div className="flex-1 flex flex-col justify-center items-center px-8 py-12 bg-white relative">
-              <div className="w-full max-w-[400px] max-xl:mt-20">
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                >
-                  <Link className="absolute top-8" to="/">
-                    <img src={Logo} alt="CryptoNow Logo" className="h-8" />
-                  </Link>
-                </motion.div>
-
+            <div className="flex-1 flex flex-col justify-center items-center px-8 py-20 bg-white relative">
+              <div className="w-full max-w-[400px] mt-12 lg:mt-0">
                 {/* Form content passed as children */}
                 <motion.div
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
                 >
