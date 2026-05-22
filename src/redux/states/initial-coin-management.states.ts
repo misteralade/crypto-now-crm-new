@@ -57,6 +57,7 @@ export const createSupportedCryptoAndWalletInitialState: CreateSupportedCryptoAn
 
   // Common
   isActive: true,
+  blockchainEnvironment: 'testnet',
 }
 
 export const editSupportedCryptoInitialState: EditSupportedCryptoAndAdminWalletRequestType = {
@@ -74,6 +75,7 @@ export const editSupportedCryptoInitialState: EditSupportedCryptoAndAdminWalletR
   websiteUrl: undefined,
   whitepaperUrl: undefined,
   additionalInfo: undefined,
+  blockchainEnvironment: undefined,
 
   // Common
   isActive: undefined,

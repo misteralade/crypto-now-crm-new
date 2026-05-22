@@ -1,12 +1,17 @@
 import { useState } from 'react'
-import { CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
+import { BLOCKCHAIN_ENVIRONMENT_OPTIONS, CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
 import type { EditSupportedCryptoAndAdminWalletRequestType } from '../../../../schemas/crypto.schema'
 import type { AdminCryptoWalletResponsePayload } from '../../../../types/response.payload.types';
 import { PillInput } from '../../../ui/input'
 import { Switch } from '../../../ui/switch'
 import { Checkbox } from '../../../ui/checkbox'
+import { LabeledSelect } from '../../../ui/select'
 
 const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter((opt) => opt.value !== undefined) as Array<{ value: string; label: string }>;
+type WalletEntryFormState = {
+  walletAddress: string;
+  blockchainEnvironment: "testnet" | "mainnet";
+};
 
 interface EditCoinDetailsProps {
   name: string;
@@ -28,11 +33,16 @@ const EditCoinDetails = ({
   const [isActive, setIsActive] = useState(active);
   const [selectedNetworks, setSelectedNetworks] = useState<string[]>(networks);
 
-  const initialAddresses = adminCryptoWallets.reduce<Record<string, string>>((acc, w) => {
-    if (w.network) acc[w.network] = w.walletAddress;
+  const initialWalletEntries = adminCryptoWallets.reduce<Record<string, WalletEntryFormState>>((acc, w) => {
+    if (w.network) {
+      acc[w.network] = {
+        walletAddress: w.walletAddress,
+        blockchainEnvironment: w.blockchainEnvironment ?? "testnet",
+      };
+    }
     return acc;
   }, {});
-  const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>(initialAddresses);
+  const [walletEntries, setWalletEntries] = useState<Record<string, WalletEntryFormState>>(initialWalletEntries);
 
   const handleNetworkToggle = (networkValue: string) => {
     const updated = selectedNetworks.includes(networkValue)
@@ -40,14 +50,45 @@ const EditCoinDetails = ({
       : [...selectedNetworks, networkValue];
     setSelectedNetworks(updated);
     onChangeInputField('networks', updated);
-    const wallets = updated.map((n) => ({ network: n, walletAddress: walletAddresses[n] ?? '' }));
+    const wallets = updated.map((n) => ({
+      network: n,
+      walletAddress: walletEntries[n]?.walletAddress ?? '',
+      blockchainEnvironment: walletEntries[n]?.blockchainEnvironment ?? "testnet",
+    }));
     onChangeInputField('wallets', wallets);
   };
 
   const handleWalletAddressChange = (network: string, address: string) => {
-    const updated = { ...walletAddresses, [network]: address };
-    setWalletAddresses(updated);
-    const wallets = selectedNetworks.map((n) => ({ network: n, walletAddress: updated[n] ?? '' }));
+    const updated = {
+      ...walletEntries,
+      [network]: {
+        walletAddress: address,
+        blockchainEnvironment: walletEntries[network]?.blockchainEnvironment ?? "testnet",
+      },
+    };
+    setWalletEntries(updated);
+    const wallets = selectedNetworks.map((n) => ({
+      network: n,
+      walletAddress: updated[n]?.walletAddress ?? '',
+      blockchainEnvironment: updated[n]?.blockchainEnvironment ?? "testnet",
+    }));
+    onChangeInputField('wallets', wallets);
+  };
+
+  const handleWalletEnvironmentChange = (network: string, blockchainEnvironment: "testnet" | "mainnet") => {
+    const updated = {
+      ...walletEntries,
+      [network]: {
+        walletAddress: walletEntries[network]?.walletAddress ?? "",
+        blockchainEnvironment,
+      },
+    };
+    setWalletEntries(updated);
+    const wallets = selectedNetworks.map((n) => ({
+      network: n,
+      walletAddress: updated[n]?.walletAddress ?? '',
+      blockchainEnvironment: updated[n]?.blockchainEnvironment ?? "testnet",
+    }));
     onChangeInputField('wallets', wallets);
   };
 
@@ -85,12 +126,19 @@ const EditCoinDetails = ({
                 onCheckedChange={() => handleNetworkToggle(opt.value)}
               />
               {selectedNetworks.includes(opt.value) && (
-                <div className="ml-7">
+                <div className="ml-7 grid gap-3">
                   <PillInput
                     label={`${opt.value} Deposit Wallet Address`}
                     placeholder={`Enter ${opt.value} wallet address`}
-                    value={walletAddresses[opt.value] ?? ''}
+                    value={walletEntries[opt.value]?.walletAddress ?? ''}
                     onChange={(e) => handleWalletAddressChange(opt.value, e.target.value)}
+                  />
+                  <LabeledSelect
+                    label="Blockchain Environment"
+                    value={walletEntries[opt.value]?.blockchainEnvironment ?? "testnet"}
+                    onValueChange={(value) => handleWalletEnvironmentChange(opt.value, value as "testnet" | "mainnet")}
+                    options={BLOCKCHAIN_ENVIRONMENT_OPTIONS}
+                    className="h-14"
                   />
                 </div>
               )}

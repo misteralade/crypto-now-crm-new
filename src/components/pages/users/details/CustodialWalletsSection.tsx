@@ -51,8 +51,26 @@ const sortWallets = (wallets: CustodialWalletResponsePayload[]) => {
   return [...wallets].sort((a, b) => {
     const netCmp = a.network.localeCompare(b.network);
     if (netCmp !== 0) return netCmp;
+    const envCmp = a.blockchainEnvironment.localeCompare(b.blockchainEnvironment);
+    if (envCmp !== 0) return envCmp;
     return a.walletAddress.localeCompare(b.walletAddress);
   });
+};
+
+const getEnvironmentMeta = (environment: CustodialWalletResponsePayload["blockchainEnvironment"]) => {
+  if (environment === "mainnet") {
+    return {
+      label: "Mainnet",
+      badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      cardClass: "border-[#DDE0FF] bg-white",
+    };
+  }
+
+  return {
+    label: "Testnet",
+    badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+    cardClass: "border-amber-200 bg-amber-50/60",
+  };
 };
 
 const CustodialWalletsSection = ({ userId, supportedCryptos }: CustodialWalletsSectionProps) => {
@@ -96,15 +114,19 @@ const CustodialWalletsSection = ({ userId, supportedCryptos }: CustodialWalletsS
           {sortedWallets.map((wallet) => {
             const crypto = cryptoById.get(wallet.cryptocurrencyId);
             const title = crypto ? `${crypto.name} (${crypto.symbol})` : "Crypto";
+            const env = getEnvironmentMeta(wallet.blockchainEnvironment);
 
             return (
-              <div key={wallet.id} className="p-4 border rounded-lg">
+              <div key={wallet.id} className={`p-4 border rounded-lg ${env.cardClass}`}>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <div className="font-medium text-[#0E0F0C] truncate">{title}</div>
                       <span className="text-[12px] px-2 py-1 rounded-full bg-[#F2F4F7] text-[#344054]">
                         {wallet.network}
+                      </span>
+                      <span className={`text-[12px] px-2 py-1 rounded-full border ${env.badgeClass}`}>
+                        {env.label}
                       </span>
                       {!wallet.isActive ? (
                         <span className="text-[12px] px-2 py-1 rounded-full bg-[#FCE8E8] text-[#B42318]">
@@ -136,4 +158,3 @@ const CustodialWalletsSection = ({ userId, supportedCryptos }: CustodialWalletsS
 };
 
 export default CustodialWalletsSection;
-

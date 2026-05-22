@@ -192,7 +192,7 @@ interface LabeledSelectProps {
   label?: string;
   value?: string;
   onValueChange?: (value: string) => void;
-  options: Array<{ value: string; label: string }>;
+  options: ReadonlyArray<{ value: string; label: string }>;
   placeholder?: string;
   disabled?: boolean;
   error?: string;

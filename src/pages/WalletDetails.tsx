@@ -53,6 +53,31 @@ function DetailCard({
   );
 }
 
+function getEnvironmentMeta(
+  environment: "testnet" | "mainnet" | undefined
+) {
+  if (!environment) {
+    return null;
+  }
+
+  if (environment === "mainnet") {
+    return {
+      label: "Mainnet",
+      sectionClass:
+        "border-[#CFE8D8] bg-[linear-gradient(180deg,#F6FFF9_0%,#FFFFFF_100%)] shadow-[0_18px_40px_-30px_rgba(3,120,71,0.25)]",
+      badgeClass:
+        "border-emerald-200 bg-emerald-50 text-emerald-700",
+    };
+  }
+
+  return {
+    label: "Testnet",
+    sectionClass:
+      "border-amber-200 bg-[linear-gradient(180deg,#FFFDF4_0%,#FFFFFF_100%)] shadow-[0_18px_40px_-30px_rgba(160,112,0,0.25)]",
+    badgeClass: "border-amber-200 bg-amber-50 text-amber-700",
+  };
+}
+
 export default function WalletDetails() {
   const navigate = useNavigate();
   const { walletAddress } = useParams({ strict: false }) as {
@@ -83,6 +108,7 @@ export default function WalletDetails() {
     ? true
     : Date.now() - new Date(cachedBalanceUpdatedAt).getTime() >
       6 * 60 * 60 * 1000;
+  const env = getEnvironmentMeta(walletDetails?.wallet.blockchainEnvironment);
 
   const copyAddress = async () => {
     if (!walletDetails?.wallet.walletAddress) return;
@@ -114,7 +140,11 @@ export default function WalletDetails() {
       />
 
       <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <section className="rounded-2xl border border-[#DDE0FF] bg-[--color-primary-taint] p-5 shadow-[0_18px_40px_-30px_rgba(3,3,77,0.35)] md:p-6">
+        <section
+          className={`rounded-2xl border p-5 md:p-6 ${
+            env?.sectionClass ?? "border-[#DDE0FF] bg-[--color-primary-taint] shadow-[0_18px_40px_-30px_rgba(3,3,77,0.35)]"
+          }`}
+        >
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="space-y-2">
               <p className="inline-flex items-center gap-2 rounded-full border border-[#D6D9FF] bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#575AE5]">
@@ -125,10 +155,19 @@ export default function WalletDetails() {
                 {walletDetails?.cryptocurrency?.symbol ?? "Wallet"} on{" "}
                 {walletDetails?.wallet.network ?? "network"}
               </h2>
-              <p className="text-pretty text-sm text-[#4B4E60]">
-                Review the wallet balance, ownership details, and the sweep row
-                that led here.
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                {env && (
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold ${env.badgeClass}`}
+                  >
+                    {env.label}
+                  </span>
+                )}
+                <p className="text-pretty text-sm text-[#4B4E60]">
+                  Review the wallet balance, ownership details, and the sweep
+                  row that led here.
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">

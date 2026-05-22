@@ -70,6 +70,12 @@ export const BankAndCryptoType = z.preprocess((val) => {
   return val;
 }, z.enum(["RECEIVING", "SENDING", "BOTH"]));
 
+export const BlockchainEnvironmentType = z.preprocess((val) => {
+  if (typeof val === "string") return val.toLowerCase();
+
+  return val;
+}, z.enum(["testnet", "mainnet"]));
+
 export const CryptoNetworkType = z.preprocess((val) => {
   if (typeof val === "string") return val.toUpperCase();
   return val;

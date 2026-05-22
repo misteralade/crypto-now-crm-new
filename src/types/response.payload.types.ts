@@ -323,6 +323,7 @@ export type AdminCryptoWalletResponsePayload = {
   walletAddress: string;
   isActive: string;
   network: string;
+  blockchainEnvironment: "testnet" | "mainnet";
   createdAt: Date;
 }
 
@@ -347,6 +348,7 @@ export type CustodialWalletResponsePayload = {
   userId: string;
   cryptocurrencyId: string;
   network: string;
+  blockchainEnvironment: "testnet" | "mainnet";
   walletAddress: string;
   derivationIndex: number;
   derivationPath: string | null;
@@ -363,6 +365,7 @@ export type AdminCustodialWalletDetailsResponsePayload = {
     userId: string;
     cryptocurrencyId: string;
     network: string;
+    blockchainEnvironment: "testnet" | "mainnet";
     walletAddress: string;
     derivationIndex: number;
     derivationPath: string | null;

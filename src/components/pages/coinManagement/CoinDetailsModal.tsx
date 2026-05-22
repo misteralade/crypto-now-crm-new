@@ -34,13 +34,21 @@ const WalletCard = ({
   wallet: AdminCryptoWalletResponsePayload;
 }) => {
   const isActive = Boolean(wallet.isActive);
+  const environment = wallet.blockchainEnvironment === "mainnet"
+    ? { label: "Mainnet", className: "bg-[#FFF7ED] text-[#C2410C]" }
+    : { label: "Testnet", className: "bg-[#EFF6FF] text-[#2563EB]" };
 
   return (
     <div className="bg-[#F8F8FF] rounded-xl p-3 border border-[#ECECEC]">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[11px] font-semibold text-[#03034D] uppercase tracking-wide">
-          {wallet.network}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold text-[#03034D] uppercase tracking-wide">
+            {wallet.network}
+          </span>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${environment.className}`}>
+            {environment.label}
+          </span>
+        </div>
         <span
           className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
             isActive

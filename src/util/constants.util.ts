@@ -85,6 +85,11 @@ export const CRYPTO_NETWORK_OPTIONS = [
   // { value: CRYPTO_NETWORK.OKEX, label: 'OKEx Chain' },
 ] as const
 
+export const BLOCKCHAIN_ENVIRONMENT_OPTIONS = [
+  { value: "testnet", label: "Testnet" },
+  { value: "mainnet", label: "Mainnet" },
+] as const
+
 export const TRANSACTION_STATUS_OPTIONS = [
   { value: undefined, label: 'All' },
   { value: TRANSACTION_STATUS.INITIATED, label: 'Initiated' },

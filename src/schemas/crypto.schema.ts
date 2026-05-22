@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {BasicSearchQuerySchema} from "./common.schema";
-import { BankAndCryptoType, CryptoNetworkType } from './enum.schema'
+import { BankAndCryptoType, BlockchainEnvironmentType, CryptoNetworkType } from './enum.schema'
 
 export const SearchSupportedCryptoWalletRequestSchema = BasicSearchQuerySchema.extend({
   createdBy: z.string().uuid().optional().describe("Optional UUID of the admin who created the cryptocurrency"),
@@ -33,6 +33,7 @@ export const WalletEntrySchema = z.object({
   walletAddress: z.string().min(1).max(255),
   walletLabel: z.string().min(1).max(100).optional(),
   walletType: BankAndCryptoType.default("BOTH").optional(),
+  blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
 
 export const CreateSupportedCryptoAndAdminWalletRequestSchema = z.object({
@@ -54,6 +55,7 @@ export const CreateSupportedCryptoAndAdminWalletRequestSchema = z.object({
   networks: z.array(z.string()).min(1, "Select at least one network"),
   wallets: z.array(WalletEntrySchema).min(1, "Provide a wallet address for each selected network"),
   isActive: z.boolean().default(true).optional(),
+  blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
 
 export const EditSupportedCryptoAndAdminWalletRequestSchema = z.object({
@@ -74,6 +76,7 @@ export const EditSupportedCryptoAndAdminWalletRequestSchema = z.object({
   networks: z.array(z.string()).optional(),
   wallets: z.array(WalletEntrySchema).optional(),
   isActive: z.boolean().optional(),
+  blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
 
 export type WalletEntryType = z.infer<typeof WalletEntrySchema>;

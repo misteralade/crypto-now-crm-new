@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
+import { BLOCKCHAIN_ENVIRONMENT_OPTIONS, CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
 import type { CreateSupportedCryptoAndAdminWalletRequestType } from '../../../../schemas/crypto.schema'
 import { PillInput } from '../../../ui/input'
 import { Switch } from '../../../ui/switch'
 import { Checkbox } from '../../../ui/checkbox'
+import { LabeledSelect } from '../../../ui/select'
 
 const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter((opt) => opt.value !== undefined) as Array<{ value: string; label: string }>;
+type WalletEntryFormState = {
+  walletAddress: string;
+  blockchainEnvironment: "testnet" | "mainnet";
+};
 
 interface CoinDetailsProps {
   onChangeInputField: (field: keyof CreateSupportedCryptoAndAdminWalletRequestType, value: any) => void
@@ -13,7 +18,7 @@ interface CoinDetailsProps {
 
 const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
   const [selectedNetworks, setSelectedNetworks] = useState<string[]>([]);
-  const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>({});
+  const [walletEntries, setWalletEntries] = useState<Record<string, WalletEntryFormState>>({});
   const [isStableCoin, setIsStableCoin] = useState(false);
 
   const handleNetworkToggle = (networkValue: string) => {
@@ -22,14 +27,45 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
       : [...selectedNetworks, networkValue];
     setSelectedNetworks(updated);
     onChangeInputField("networks", updated);
-    const updatedWallets = updated.map((n) => ({ network: n, walletAddress: walletAddresses[n] ?? '' }));
+    const updatedWallets = updated.map((n) => ({
+      network: n,
+      walletAddress: walletEntries[n]?.walletAddress ?? "",
+      blockchainEnvironment: walletEntries[n]?.blockchainEnvironment ?? "testnet",
+    }));
     onChangeInputField("wallets", updatedWallets);
   };
 
   const handleWalletAddressChange = (network: string, address: string) => {
-    const updated = { ...walletAddresses, [network]: address };
-    setWalletAddresses(updated);
-    const wallets = selectedNetworks.map((n) => ({ network: n, walletAddress: updated[n] ?? '' }));
+    const updated = {
+      ...walletEntries,
+      [network]: {
+        walletAddress: address,
+        blockchainEnvironment: walletEntries[network]?.blockchainEnvironment ?? "testnet",
+      },
+    };
+    setWalletEntries(updated);
+    const wallets = selectedNetworks.map((n) => ({
+      network: n,
+      walletAddress: updated[n]?.walletAddress ?? "",
+      blockchainEnvironment: updated[n]?.blockchainEnvironment ?? "testnet",
+    }));
+    onChangeInputField("wallets", wallets);
+  };
+
+  const handleWalletEnvironmentChange = (network: string, blockchainEnvironment: "testnet" | "mainnet") => {
+    const updated = {
+      ...walletEntries,
+      [network]: {
+        walletAddress: walletEntries[network]?.walletAddress ?? "",
+        blockchainEnvironment,
+      },
+    };
+    setWalletEntries(updated);
+    const wallets = selectedNetworks.map((n) => ({
+      network: n,
+      walletAddress: updated[n]?.walletAddress ?? "",
+      blockchainEnvironment: updated[n]?.blockchainEnvironment ?? "testnet",
+    }));
     onChangeInputField("wallets", wallets);
   };
 
@@ -65,12 +101,19 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                 onCheckedChange={() => handleNetworkToggle(opt.value)}
               />
               {selectedNetworks.includes(opt.value) && (
-                <div className="ml-7">
+                <div className="ml-7 grid gap-3">
                   <PillInput
                     label={`${opt.value} Deposit Wallet Address`}
                     placeholder={`Enter ${opt.value} wallet address`}
-                    value={walletAddresses[opt.value] ?? ''}
+                    value={walletEntries[opt.value]?.walletAddress ?? ''}
                     onChange={(e) => handleWalletAddressChange(opt.value, e.target.value)}
+                  />
+                  <LabeledSelect
+                    label="Blockchain Environment"
+                    value={walletEntries[opt.value]?.blockchainEnvironment ?? "testnet"}
+                    onValueChange={(value) => handleWalletEnvironmentChange(opt.value, value as "testnet" | "mainnet")}
+                    options={BLOCKCHAIN_ENVIRONMENT_OPTIONS}
+                    className="h-14"
                   />
                 </div>
               )}
