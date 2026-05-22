@@ -56,6 +56,11 @@ const Dashboard = () => {
     all: 'All Time',
   }
 
+  const formatCount = (value: number | undefined | null) => {
+    const safeValue = Number.isFinite(value ?? NaN) ? Number(value) : 0
+    return safeValue.toLocaleString('en-US')
+  }
+
   return (
     <AuthenticatedLayout>
       <PageHeader title="Overview" subtitle="Admin reports and analytics" />
@@ -111,7 +116,7 @@ const Dashboard = () => {
           {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="New Users"
-              value={`${Number(Number(weeklyUserSummary?.newUsersCount).toFixed(2)).toLocaleString()}`}
+              value={formatCount(weeklyUserSummary?.newUsersCount)}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<Users className="w-4 h-4" />}
             />
@@ -120,7 +125,7 @@ const Dashboard = () => {
           {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Active Users"
-              value={`${Number(Number(weeklyUserSummary?.activeUsersCount).toFixed(2)).toLocaleString()}`}
+              value={formatCount(weeklyUserSummary?.activeUsersCount)}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<UserCheck className="w-4 h-4" />}
             />

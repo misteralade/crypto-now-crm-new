@@ -18,6 +18,11 @@ import {LoadingSpinner} from "../../global/LoadingSpinner.tsx";
 
 const COLORS = ['#575AE5', '#FF4F64']
 
+const toFiniteNumber = (value: unknown, fallback = 0) => {
+  const numericValue = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(numericValue) ? numericValue : fallback
+}
+
 interface VolumeTrendProps {
   loading: boolean
   data: WeeklyTransactionVolumeTrend[]
@@ -26,7 +31,7 @@ interface VolumeTrendProps {
 export const VolumeTrend = ({ loading, data }: VolumeTrendProps) => {
   const lineData = data?.map((item) => ({
     date: item.dateLabel,
-    value: parseFloat((Number(item.totalFiatVolume) / 1_000_000).toFixed(2)),
+    value: Number((toFiniteNumber(item.totalFiatVolume) / 1_000_000).toFixed(2)),
   }))
 
   return (
@@ -112,7 +117,7 @@ export const PieGraph = ({ loading, data }: PieGraphProps) => {
   const pieData: { name: string; value: number }[] = (data ?? []).map(
     (item) => ({
       name: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-      value: parseFloat(item.percentage),
+      value: toFiniteNumber(item.percentage),
     }),
   )
 
