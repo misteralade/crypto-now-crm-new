@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { BLOCKCHAIN_ENVIRONMENT_OPTIONS, CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
+import { CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
 import type { CreateSupportedCryptoAndAdminWalletRequestType } from '../../../../schemas/crypto.schema'
 import { PillInput } from '../../../ui/input'
 import { Switch } from '../../../ui/switch'
 import { Checkbox } from '../../../ui/checkbox'
-import { LabeledSelect } from '../../../ui/select'
 
 const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter((opt) => opt.value !== undefined) as Array<{ value: string; label: string }>;
 type WalletEntryFormState = {
@@ -85,32 +84,6 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
     emitWallets(updated, selectedNetworks);
   };
 
-  const handleWalletEnvironmentChange = (
-    network: string,
-    currentEnvironment: "testnet" | "mainnet",
-    blockchainEnvironment: "testnet" | "mainnet",
-  ) => {
-    const currentKey = walletKey(network, currentEnvironment);
-    const nextKey = walletKey(network, blockchainEnvironment);
-    if (currentKey === nextKey) return;
-
-    const currentEntry = walletEntries[currentKey];
-    if (!currentEntry) return;
-
-    const updated: Record<string, WalletEntryFormState> = {
-      ...Object.fromEntries(
-        Object.entries(walletEntries).filter(([key]) => key !== currentKey),
-      ) as Record<string, WalletEntryFormState>,
-      [nextKey]: {
-        network,
-        walletAddress: currentEntry.walletAddress,
-        blockchainEnvironment,
-      },
-    };
-    setWalletEntries(updated);
-    emitWallets(updated, selectedNetworks);
-  };
-
   return (
     <div className="mb-8">
       <h3 className="text-[24px] font-medium text-[#0E0F0C] mb-6">Coin Details</h3>
@@ -148,6 +121,9 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                     <div key={`${opt.value}-${entry.blockchainEnvironment}`} className="grid gap-3 rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4">
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#03034D]">
+                          Environment
+                        </span>
+                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${entry.blockchainEnvironment === "mainnet" ? "bg-[#FFF7ED] text-[#C2410C]" : "bg-[#EFF6FF] text-[#2563EB]"}`}>
                           {entry.blockchainEnvironment}
                         </span>
                       </div>
@@ -157,13 +133,9 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                         value={entry.walletAddress}
                         onChange={(e) => handleWalletAddressChange(opt.value, entry.blockchainEnvironment, e.target.value)}
                       />
-                      <LabeledSelect
-                        label="Blockchain Environment"
-                        value={entry.blockchainEnvironment}
-                        onValueChange={(value) => handleWalletEnvironmentChange(opt.value, entry.blockchainEnvironment, value as "testnet" | "mainnet")}
-                        options={BLOCKCHAIN_ENVIRONMENT_OPTIONS}
-                        className="h-14"
-                      />
+                      <p className="text-[12px] text-[#667085]">
+                        Environment is fixed by this card.
+                      </p>
                     </div>
                   ))}
                 </div>

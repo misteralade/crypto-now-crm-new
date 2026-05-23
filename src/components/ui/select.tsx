@@ -207,34 +207,45 @@ const LabeledSelect = ({
   disabled,
   error,
   className,
-}: LabeledSelectProps) => (
-  <div className="flex flex-col gap-2 w-full mb-5">
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((opt) => (
-          <SelectItem key={opt.value} value={opt.value || "__empty__"}>
-            {opt.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-    <AnimatePresence>
-      {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          className="text-[12px] text-red-500 ml-1 font-medium"
-        >
-          {error}
-        </motion.p>
-      )}
-    </AnimatePresence>
-  </div>
-);
+}: LabeledSelectProps) => {
+  const selectedLabel = options.find((opt) => opt.value === value)?.label;
+
+  return (
+    <div className="flex flex-col gap-2 w-full mb-5">
+      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+        <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
+          <span
+            className={cn(
+              "block truncate text-left",
+              selectedLabel ? "text-[#101828]" : "text-gray-400",
+            )}
+          >
+            {selectedLabel || placeholder}
+          </span>
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value || "__empty__"}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className="text-[12px] text-red-500 ml-1 font-medium"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 /** Pill variant select — Refined with balanced padding and precise label positioning */
 const PillSelect = ({
@@ -246,34 +257,45 @@ const PillSelect = ({
   disabled,
   error,
   className
-}: LabeledSelectProps) => (
-  <div className="flex flex-col gap-2 w-full mb-5">
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((opt) => (
-          <SelectItem key={opt.value} value={opt.value || "__empty__"}>
-            {opt.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-    <AnimatePresence>
-      {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          className="text-[12px] text-red-500 ml-1 font-medium"
-        >
-          {error}
-        </motion.p>
-      )}
-    </AnimatePresence>
-  </div>
-);
+}: LabeledSelectProps) => {
+  const selectedLabel = options.find((opt) => opt.value === value)?.label;
+
+  return (
+    <div className="flex flex-col gap-2 w-full mb-5">
+      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+        <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
+          <span
+            className={cn(
+              "block truncate text-left",
+              selectedLabel ? "text-[#101828]" : "text-gray-400",
+            )}
+          >
+            {selectedLabel || placeholder}
+          </span>
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value || "__empty__"}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className="text-[12px] text-red-500 ml-1 font-medium"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export {
   Select,

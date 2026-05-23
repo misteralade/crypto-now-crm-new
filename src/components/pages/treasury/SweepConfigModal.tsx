@@ -397,20 +397,28 @@ export default function SweepConfigModal({
               <LabeledPillSelect
                 label="Select Cryptocurrency"
                 value={cryptocurrencyId}
-                placeholder="Select crypto"
+                placeholder="Select crypto to sweep"
                 onValueChange={resetPreviewAndSetCrypto}
                 options={cryptoOptions}
                 disabled={cryptoOptions.length === 0}
               />
+              <p className="text-[12px] leading-5 text-[#667085]">
+                This chooses which asset balances will be collected into the admin sweep wallet.
+              </p>
 
               <LabeledPillSelect
                 label="Select Network"
                 value={network}
-                placeholder="Select network"
+                placeholder={
+                  cryptocurrencyId ? "Select network to sweep" : "Select crypto first"
+                }
                 onValueChange={resetPreviewAndSetNetwork}
                 options={networkOptions}
                 disabled={!cryptocurrencyId || networkOptions.length === 0}
               />
+              <p className="text-[12px] leading-5 text-[#667085]">
+                This chooses the chain those balances live on. Preview only works after both fields are set.
+              </p>
 
               <div className="space-y-1.5">
                 <label
