@@ -277,38 +277,43 @@ const KycTierLimits = () => {
                 />
                 <PillInput
                   label="Min Transaction Amount"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={createForm.minTransactionAmount}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'minTransactionAmount', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'minTransactionAmount', value: e.target.value }))}
                 />
                 <PillInput
                   label="Max Transaction Amount"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={createForm.maxTransactionAmount}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'maxTransactionAmount', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'maxTransactionAmount', value: e.target.value }))}
                 />
                 <PillInput
                   label="Daily Limit"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={createForm.dailyLimit}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'dailyLimit', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'dailyLimit', value: e.target.value }))}
                 />
                 <PillInput
                   label="Monthly Limit"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={createForm.monthlyLimit}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'monthlyLimit', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'monthlyLimit', value: e.target.value }))}
                 />
                 <PillInput
                   label="Max Payout Attempts"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="3"
                   value={createForm.maxPayoutAttempts}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'maxPayoutAttempts', value: parseInt(e.target.value) || 3 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'maxPayoutAttempts', value: e.target.value }))}
                 />
                 <PillSelect
                   label="Status"
@@ -318,24 +323,27 @@ const KycTierLimits = () => {
                 />
                 <PillInput
                   label="BTC Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={createForm.requiredConfirmationsBTC}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsBTC', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsBTC', value: e.target.value }))}
                 />
                 <PillInput
                   label="SOL Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={createForm.requiredConfirmationsSOL}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsSOL', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsSOL', value: e.target.value }))}
                 />
                 <PillInput
                   label="TRC20 Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={createForm.requiredConfirmationsTRC20}
-                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsTRC20', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setCreateKycTierLimitField({ field: 'requiredConfirmationsTRC20', value: e.target.value }))}
                 />
               </div>
 
@@ -386,38 +394,43 @@ const KycTierLimits = () => {
                 />
                 <PillInput
                   label="Min Transaction Amount"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={updateForm.data.minTransactionAmount ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'minTransactionAmount', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'minTransactionAmount', value: e.target.value }))}
                 />
                 <PillInput
                   label="Max Transaction Amount"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={updateForm.data.maxTransactionAmount ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'maxTransactionAmount', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'maxTransactionAmount', value: e.target.value }))}
                 />
                 <PillInput
                   label="Daily Limit"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={updateForm.data.dailyLimit ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'dailyLimit', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'dailyLimit', value: e.target.value }))}
                 />
                 <PillInput
                   label="Monthly Limit"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0"
                   value={updateForm.data.monthlyLimit ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'monthlyLimit', value: parseFloat(e.target.value) || 0 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'monthlyLimit', value: e.target.value }))}
                 />
                 <PillInput
                   label="Max Payout Attempts"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="3"
                   value={updateForm.data.maxPayoutAttempts ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'maxPayoutAttempts', value: parseInt(e.target.value) || 3 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'maxPayoutAttempts', value: e.target.value }))}
                 />
                 <PillSelect
                   label="Status"
@@ -427,24 +440,27 @@ const KycTierLimits = () => {
                 />
                 <PillInput
                   label="BTC Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={updateForm.data.requiredConfirmationsBTC ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsBTC', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsBTC', value: e.target.value }))}
                 />
                 <PillInput
                   label="SOL Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={updateForm.data.requiredConfirmationsSOL ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsSOL', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsSOL', value: e.target.value }))}
                 />
                 <PillInput
                   label="TRC20 Confirmations"
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="1"
                   value={updateForm.data.requiredConfirmationsTRC20 ?? ''}
-                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsTRC20', value: parseInt(e.target.value) || 1 }))}
+                  onChange={(e) => dispatch(setUpdateKycTierLimitField({ field: 'requiredConfirmationsTRC20', value: e.target.value }))}
                 />
               </div>
 

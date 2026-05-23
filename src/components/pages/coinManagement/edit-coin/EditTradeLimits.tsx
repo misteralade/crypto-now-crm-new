@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { NUMBERS } from "../../../../util/constants.util.ts";
+import { useEffect, useState } from "react";
 import type { EditSupportedCryptoAndAdminWalletRequestType } from "../../../../schemas/crypto.schema";
 import { PillInput } from '../../../ui/input'
 
@@ -15,12 +14,21 @@ interface EditTradeLimitsProps {
 }
 
 const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous, onChangeInputField }: EditTradeLimitsProps) => {
-  const [buyRate, setBuyRate] = useState<number>(buyAt);
-  const [sellRate, setSellRate] = useState<number>(sellAt);
-  const [minTradeAmount, setMinTradeAmount] = useState<number>(minAmount);
-  const [maxTradeAmount, setMaxTradeAmount] = useState<number>(maxAmount);
-  const [minTradeAmountForAnonymous, setMinTradeAmountForAnonymous] = useState<number>(minAmountAnonymous);
-  const [maxTradeAmountForAnonymous, setMaxTradeAmountForAnonymous] = useState<number>(maxAmountAnonymous);
+  const [buyRate, setBuyRate] = useState<string>(String(buyAt ?? ''));
+  const [sellRate, setSellRate] = useState<string>(String(sellAt ?? ''));
+  const [minTradeAmount, setMinTradeAmount] = useState<string>(String(minAmount ?? ''));
+  const [maxTradeAmount, setMaxTradeAmount] = useState<string>(String(maxAmount ?? ''));
+  const [minTradeAmountForAnonymous, setMinTradeAmountForAnonymous] = useState<string>(String(minAmountAnonymous ?? ''));
+  const [maxTradeAmountForAnonymous, setMaxTradeAmountForAnonymous] = useState<string>(String(maxAmountAnonymous ?? ''));
+
+  useEffect(() => {
+    setBuyRate(String(buyAt ?? ''));
+    setSellRate(String(sellAt ?? ''));
+    setMinTradeAmount(String(minAmount ?? ''));
+    setMaxTradeAmount(String(maxAmount ?? ''));
+    setMinTradeAmountForAnonymous(String(minAmountAnonymous ?? ''));
+    setMaxTradeAmountForAnonymous(String(maxAmountAnonymous ?? ''));
+  }, [buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous]);
 
   return (
     <div className="mb-8">
@@ -32,22 +40,20 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <PillInput
           id="buyRate"
           placeholder="e.g. 1500"
-          value={buyRate || ''}
-          onChange={(e) => { setBuyRate(Number(e.target.value)); onChangeInputField("buyRate", Number(e.target.value)) }}
+          value={buyRate}
+          onChange={(e) => { setBuyRate(e.target.value); onChangeInputField("buyRate", e.target.value) }}
           label="Rate to Sell to User (USD) — Sell Rate"
-          type="number"
-          min={1}
-          max={NUMBERS.ONE_BILLION}
+          type="text"
+          inputMode="decimal"
         />
         <PillInput
           id="sellRate"
           placeholder="e.g. 1400"
-          value={sellRate || ''}
-          onChange={(e) => { setSellRate(Number(e.target.value)); onChangeInputField("sellRate", Number(e.target.value)) }}
+          value={sellRate}
+          onChange={(e) => { setSellRate(e.target.value); onChangeInputField("sellRate", e.target.value) }}
           label="Rate to Buy from User (USD) — Buy Rate"
-          min={500}
-          max={NUMBERS.ONE_BILLION}
-          type="number"
+          type="text"
+          inputMode="decimal"
         />
       </div>
 
@@ -55,22 +61,20 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <PillInput
           id="minTradeAmount"
           placeholder="e.g. 100"
-          value={minTradeAmount || ''}
-          onChange={(e) => { setMinTradeAmount(Number(e.target.value)); onChangeInputField("minTransactionLimit", Number(e.target.value)) }}
+          value={minTradeAmount}
+          onChange={(e) => { setMinTradeAmount(e.target.value); onChangeInputField("minTransactionLimit", e.target.value) }}
           label="Min trade amount"
-          type="number"
-          min={0.001}
-          max={NUMBERS.ONE_BILLION}
+          type="text"
+          inputMode="decimal"
         />
         <PillInput
           id="maxTradeAmount"
           placeholder="e.g. 1000000"
-          value={maxTradeAmount || ''}
-          onChange={(e) => { setMaxTradeAmount(Number(e.target.value)); onChangeInputField("maxTransactionLimit", Number(e.target.value)) }}
+          value={maxTradeAmount}
+          onChange={(e) => { setMaxTradeAmount(e.target.value); onChangeInputField("maxTransactionLimit", e.target.value) }}
           label="Max trade amount"
-          min={500}
-          max={NUMBERS.ONE_BILLION}
-          type="number"
+          type="text"
+          inputMode="decimal"
         />
       </div>
 
@@ -78,23 +82,21 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
         <PillInput
           id="minTransactionAmountForAnonymousUsers"
           placeholder="e.g. 100"
-          value={minTradeAmountForAnonymous || ''}
-          onChange={(e) => { setMinTradeAmountForAnonymous(Number(e.target.value)); onChangeInputField("minTradeAmountForAnonymous", Number(e.target.value)) }}
+          value={minTradeAmountForAnonymous}
+          onChange={(e) => { setMinTradeAmountForAnonymous(e.target.value); onChangeInputField("minTradeAmountForAnonymous", e.target.value) }}
           label="Min Transaction Amount — Anonymous"
-          min={0.001}
-          max={NUMBERS.ONE_BILLION}
-          type="number"
+          type="text"
+          inputMode="decimal"
           step="0.1"
         />
         <PillInput
           id="maxTransactionAmountForAnonymousUsers"
           placeholder="e.g. 1000000"
-          value={maxTradeAmountForAnonymous || ''}
-          onChange={(e) => { setMaxTradeAmountForAnonymous(Number(e.target.value)); onChangeInputField("maxTradeAmountForAnonymous", Number(e.target.value)) }}
+          value={maxTradeAmountForAnonymous}
+          onChange={(e) => { setMaxTradeAmountForAnonymous(e.target.value); onChangeInputField("maxTradeAmountForAnonymous", e.target.value) }}
           label="Max Transaction Amount — Anonymous"
-          min={500}
-          max={NUMBERS.ONE_BILLION}
-          type="number"
+          type="text"
+          inputMode="decimal"
         />
       </div>
     </div>
