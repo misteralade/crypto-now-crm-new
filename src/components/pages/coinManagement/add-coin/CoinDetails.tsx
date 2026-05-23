@@ -111,28 +111,6 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
     emitWallets(updated, selectedNetworks);
   };
 
-  const handleRemoveWalletEntry = (
-    network: string,
-    blockchainEnvironment: "testnet" | "mainnet",
-  ) => {
-    const key = walletKey(network, blockchainEnvironment);
-    const updatedEntries = Object.fromEntries(
-      Object.entries(walletEntries).filter(([entryKey]) => entryKey !== key),
-    ) as Record<string, WalletEntryFormState>;
-
-    const stillHasWalletsForNetwork = Object.values(updatedEntries).some(
-      (entry) => entry.network === network,
-    );
-    const updatedNetworks = stillHasWalletsForNetwork
-      ? selectedNetworks
-      : selectedNetworks.filter((item) => item !== network);
-
-    setWalletEntries(updatedEntries);
-    setSelectedNetworks(updatedNetworks);
-    onChangeInputField("networks", updatedNetworks);
-    emitWallets(updatedEntries, updatedNetworks);
-  };
-
   return (
     <div className="mb-8">
       <h3 className="text-[24px] font-medium text-[#0E0F0C] mb-6">Coin Details</h3>

@@ -14,13 +14,14 @@ interface MFLabeledPillSelectProps {
   label: string
   options: Array<{ value: string; label: string }>
   value?: string
+  placeholder?: string
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void
   onValueChange?: (value: string) => void
   disabled?: boolean
   className?: string
 }
 
-export default function MFLabeledPillSelect({ label, options, value, onChange, onValueChange, disabled, className }: MFLabeledPillSelectProps) {
+export default function MFLabeledPillSelect({ label, options, value, placeholder = "Select...", onChange, onValueChange, disabled, className }: MFLabeledPillSelectProps) {
   const handleValueChange = (val: string) => {
     onValueChange?.(val)
     if (onChange) {
@@ -33,7 +34,8 @@ export default function MFLabeledPillSelect({ label, options, value, onChange, o
   return (
     <PillSelect
       label={label}
-      value={value === '' ? '__empty__' : value}
+      value={value || undefined}
+      placeholder={placeholder}
       onValueChange={handleValueChange}
       options={options}
       disabled={disabled}

@@ -127,6 +127,22 @@ export default function SweepConfigModal({
     );
   }, [selectedCrypto]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    if (!cryptocurrencyId && cryptoOptions.length === 1) {
+      setCryptocurrencyId(cryptoOptions[0].value);
+    }
+  }, [open, cryptocurrencyId, cryptoOptions]);
+
+  useEffect(() => {
+    if (!open || !selectedCrypto) return;
+
+    if (!network && networkOptions.length === 1) {
+      setNetwork(networkOptions[0].value);
+    }
+  }, [open, network, selectedCrypto, networkOptions]);
+
   const canPreview = Boolean(network && cryptocurrencyId);
   const showPreview = previewRequested && canPreview;
   const isBtcLimitedSweepUi =
@@ -381,6 +397,7 @@ export default function SweepConfigModal({
               <LabeledPillSelect
                 label="Select Cryptocurrency"
                 value={cryptocurrencyId}
+                placeholder="Select crypto"
                 onValueChange={resetPreviewAndSetCrypto}
                 options={cryptoOptions}
                 disabled={cryptoOptions.length === 0}
@@ -389,6 +406,7 @@ export default function SweepConfigModal({
               <LabeledPillSelect
                 label="Select Network"
                 value={network}
+                placeholder="Select network"
                 onValueChange={resetPreviewAndSetNetwork}
                 options={networkOptions}
                 disabled={!cryptocurrencyId || networkOptions.length === 0}
