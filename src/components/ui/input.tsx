@@ -12,31 +12,21 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, label, error, icon, iconRight, id, ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
-    const [isFocused, setIsFocused] = React.useState(false)
-
-    const hasValue = props.value !== undefined && props.value !== null && String(props.value).length > 0
-    const hasDefaultValue = props.defaultValue !== undefined && props.defaultValue !== null && String(props.defaultValue).length > 0
-    const hasPlaceholder = props.placeholder !== undefined && props.placeholder !== null && String(props.placeholder).length > 0
-    const isLabelFloating = isFocused || hasValue || hasDefaultValue || hasPlaceholder
 
     return (
-      <div className="flex flex-col gap-1.5 w-full mb-5">
+      <div className="flex flex-col gap-2 w-full mb-5">
+        {label && (
+          <label
+            htmlFor={inputId}
+            className={cn(
+              "ml-1 text-[13px] font-medium leading-none text-[#454745]",
+              error && "text-red-500",
+            )}
+          >
+            {label}
+          </label>
+        )}
         <div className="relative">
-          {label && (
-            <label
-              htmlFor={inputId}
-              className={cn(
-                "absolute left-7 px-2 font-medium transition-all duration-200 pointer-events-none z-10 bg-white rounded-sm",
-                isLabelFloating
-                  ? "-top-[9px] text-[12px] text-gray-600 scale-90 origin-left"
-                  : "top-1/2 -translate-y-1/2 text-sm text-gray-400",
-                error && "text-red-500",
-                isFocused && !error && "text-blue-600"
-              )}
-            >
-              {label}
-            </label>
-          )}
           {icon && (
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
               {icon}
@@ -46,14 +36,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             type={type}
             ref={ref}
-            onFocus={(e) => {
-              setIsFocused(true)
-              props.onFocus?.(e)
-            }}
-            onBlur={(e) => {
-              setIsFocused(false)
-              props.onBlur?.(e)
-            }}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
             className={cn(
               'flex h-14 w-full rounded-full border border-gray-300 bg-white px-8 py-3 text-base text-gray-900 transition-all duration-200',
               'placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10',
@@ -61,7 +46,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               error && 'border-red-500 focus:border-red-500 focus:ring-red-500/10',
               icon && 'pl-11',
               iconRight && 'pr-11',
-              isLabelFloating && 'pt-5 pb-1',
               className,
             )}
             {...props}
@@ -78,7 +62,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="text-[12px] text-red-500 ml-8 font-medium"
+              className="text-[12px] text-red-500 ml-1 font-medium"
             >
               {error}
             </motion.p>
@@ -100,38 +84,29 @@ export interface PillInputProps extends React.InputHTMLAttributes<HTMLInputEleme
 const PillInput = React.forwardRef<HTMLInputElement, PillInputProps>(
   ({ label, error, iconRight, className, id, ...props }, ref) => {
     const inputId = id || label.toLowerCase().replace(/\s+/g, '-')
-    const [isFocused, setIsFocused] = React.useState(false)
-
-    const hasValue = props.value !== undefined && props.value !== null && String(props.value).length > 0
-    const hasDefaultValue = props.defaultValue !== undefined && props.defaultValue !== null && String(props.defaultValue).length > 0
-    const hasPlaceholder = props.placeholder !== undefined && props.placeholder !== null && String(props.placeholder).length > 0
-    const isLabelFloating = isFocused || hasValue || hasDefaultValue || hasPlaceholder
 
     return (
-      <div className="flex flex-col gap-1 w-full mb-5">
+      <div className="flex flex-col gap-2 w-full mb-5">
+        <label
+          htmlFor={inputId}
+          className={cn(
+            "ml-1 text-[13px] font-medium leading-none text-[#454745]",
+            error && "text-red-500",
+          )}
+        >
+          {label}
+        </label>
         <div className="relative">
-          <label
-            htmlFor={inputId}
-            className={cn(
-              "absolute left-7 px-2 font-medium transition-all duration-200 pointer-events-none z-10 bg-white rounded-sm",
-              isLabelFloating
-                ? "-top-[9px] text-[12px] text-gray-600 scale-90 origin-left"
-                : "top-1/2 -translate-y-1/2 text-sm text-gray-400",
-              error && "text-red-500",
-              isFocused && !error && "text-blue-600"
-            )}
-          >
-            {label}
-          </label>
           <input
             id={inputId}
             ref={ref}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
             onFocus={(e) => {
-              setIsFocused(true)
               props.onFocus?.(e)
             }}
             onBlur={(e) => {
-              setIsFocused(false)
               props.onBlur?.(e)
             }}
             className={cn(
@@ -141,7 +116,6 @@ const PillInput = React.forwardRef<HTMLInputElement, PillInputProps>(
               error && 'border-red-500 focus:border-red-500 focus:ring-red-500/10',
               props.disabled && 'opacity-50 bg-gray-50',
               iconRight && 'pr-12',
-              isLabelFloating && 'pt-5 pb-1',
               className,
             )}
             {...props}
@@ -158,7 +132,7 @@ const PillInput = React.forwardRef<HTMLInputElement, PillInputProps>(
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="text-[12px] text-red-500 ml-9 font-medium"
+              className="text-[12px] text-red-500 ml-1 font-medium"
             >
               {error}
             </motion.p>

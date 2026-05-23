@@ -19,44 +19,43 @@ const SelectTrigger = React.forwardRef<
   const isCompact = className?.includes('h-8') || className?.includes('h-10');
   
   return (
-    <div className="relative w-full">
+    <div className="flex w-full flex-col gap-2">
       {label && !isCompact && (
         <span
           className={cn(
-            "absolute left-7 px-2 font-medium transition-all duration-200 pointer-events-none z-10 bg-white rounded-sm",
-            "top-1/2 -translate-y-1/2 text-sm text-gray-400",
-            (isFocused || props.value) && "-top-[9px] text-[12px] text-gray-600 scale-90 origin-left",
+            "ml-1 text-[13px] font-medium leading-none text-[#454745]",
             error && "text-red-500",
-            isFocused && !error && "text-blue-600"
+            isFocused && !error && "text-blue-600",
           )}
         >
           {label}
         </span>
       )}
-      <SelectPrimitive.Trigger
-        ref={ref}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        className={cn(
-          "flex items-center justify-between rounded-full border border-gray-300 bg-white transition-all duration-200",
-          "text-gray-900 placeholder:text-gray-400",
-          "outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10",
-          "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50",
-          "data-[placeholder]:text-gray-400",
-          error && "border-red-500 focus:border-red-500 focus:ring-red-500/10",
-          isCompact ? "h-8 px-3 text-[13px]" : "h-14 px-8 text-base",
-          !isCompact && (isFocused || props.value) && "pt-5 pb-1",
-          className,
-        )}
-        {...props}
-      >
-        <div className="truncate flex-1 text-left">
-          {children}
-        </div>
-        <SelectPrimitive.Icon asChild>
-          <ChevronDown className={cn("text-[#9A9A9A] opacity-70 flex-shrink-0", isCompact ? "h-3.5 w-3.5 ml-1" : "h-5 w-5")} />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
+      <div className="relative">
+        <SelectPrimitive.Trigger
+          ref={ref}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          className={cn(
+            "flex items-center justify-between rounded-full border border-gray-300 bg-white transition-all duration-200",
+            "text-gray-900 placeholder:text-gray-400",
+            "outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10",
+            "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50",
+            "data-[placeholder]:text-gray-400",
+            error && "border-red-500 focus:border-red-500 focus:ring-red-500/10",
+            isCompact ? "h-8 px-3 text-[13px]" : "h-14 px-8 text-base",
+            className,
+          )}
+          {...props}
+        >
+          <div className="truncate flex-1 text-left">
+            {children}
+          </div>
+          <SelectPrimitive.Icon asChild>
+            <ChevronDown className={cn("text-[#9A9A9A] opacity-70 flex-shrink-0", isCompact ? "h-3.5 w-3.5 ml-1" : "h-5 w-5")} />
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+      </div>
     </div>
   );
 });
@@ -209,7 +208,7 @@ const LabeledSelect = ({
   error,
   className,
 }: LabeledSelectProps) => (
-  <div className="flex flex-col gap-1.5 w-full mb-5">
+  <div className="flex flex-col gap-2 w-full mb-5">
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
         <SelectValue placeholder={placeholder} />
@@ -228,7 +227,7 @@ const LabeledSelect = ({
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
-          className="text-[12px] text-red-500 ml-8 font-medium"
+          className="text-[12px] text-red-500 ml-1 font-medium"
         >
           {error}
         </motion.p>
@@ -248,7 +247,7 @@ const PillSelect = ({
   error,
   className
 }: LabeledSelectProps) => (
-  <div className="flex flex-col gap-1 w-full mb-5">
+  <div className="flex flex-col gap-2 w-full mb-5">
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className={cn(className)} error={!!error} label={label} value={value}>
         <SelectValue placeholder={placeholder} />
@@ -267,7 +266,7 @@ const PillSelect = ({
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
-          className="text-[12px] text-red-500 ml-8 font-medium"
+          className="text-[12px] text-red-500 ml-1 font-medium"
         >
           {error}
         </motion.p>
