@@ -63,7 +63,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
           placeholder="e.g. 100"
           value={minTradeAmount}
           onChange={(e) => { setMinTradeAmount(e.target.value); onChangeInputField("minTransactionLimit", e.target.value) }}
-          label="Min trade amount"
+          label="Min trade amount (token)"
           type="text"
           inputMode="decimal"
         />
@@ -72,7 +72,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
           placeholder="e.g. 1000000"
           value={maxTradeAmount}
           onChange={(e) => { setMaxTradeAmount(e.target.value); onChangeInputField("maxTransactionLimit", e.target.value) }}
-          label="Max trade amount"
+          label="Max trade amount (token)"
           type="text"
           inputMode="decimal"
         />
@@ -84,7 +84,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
           placeholder="e.g. 100"
           value={minTradeAmountForAnonymous}
           onChange={(e) => { setMinTradeAmountForAnonymous(e.target.value); onChangeInputField("minTradeAmountForAnonymous", e.target.value) }}
-          label="Min Transaction Amount — Anonymous"
+          label="Min Transaction Amount — Anonymous (token)"
           type="text"
           inputMode="decimal"
           step="0.1"
@@ -94,7 +94,7 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
           placeholder="e.g. 1000000"
           value={maxTradeAmountForAnonymous}
           onChange={(e) => { setMaxTradeAmountForAnonymous(e.target.value); onChangeInputField("maxTradeAmountForAnonymous", e.target.value) }}
-          label="Max Transaction Amount — Anonymous"
+          label="Max Transaction Amount — Anonymous (token)"
           type="text"
           inputMode="decimal"
         />

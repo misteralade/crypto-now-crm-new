@@ -33,18 +33,18 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
         <PillInput
           id="minTradeAmount"
           onChange={(e) => onChangeInputField("minTransactionLimit", e.target.value)}
-          label="Min trade amount"
+          label="Min trade amount (token)"
           type="text"
           inputMode="decimal"
-          placeholder="0.001"
+          placeholder="e.g. 0.001"
         />
         <PillInput
           id="maxTradeAmount"
           onChange={(e) => onChangeInputField("maxTransactionLimit", e.target.value)}
-          label="Max trade amount"
+          label="Max trade amount (token)"
           type="text"
           inputMode="decimal"
-          placeholder="100"
+          placeholder="e.g. 100"
         />
       </div>
 
@@ -52,19 +52,19 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
         <PillInput
           id="minTransactionAmountForAnonymousUsers"
           onChange={(e) => onChangeInputField("minTradeAmountForAnonymous", e.target.value)}
-          label="Min Transaction Amount — Anonymous"
+          label="Min Transaction Amount — Anonymous (token)"
           type="text"
           inputMode="decimal"
-          placeholder="0.5"
+          placeholder="e.g. 0.5"
           step="0.1"
         />
         <PillInput
           id="maxTransactionAmountForAnonymousUsers"
           onChange={(e) => onChangeInputField("maxTradeAmountForAnonymous", e.target.value)}
-          label="Max Transaction Amount — Anonymous"
+          label="Max Transaction Amount — Anonymous (token)"
           type="text"
           inputMode="decimal"
-          placeholder="30"
+          placeholder="e.g. 30"
         />
       </div>
     </div>

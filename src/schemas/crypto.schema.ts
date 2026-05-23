@@ -14,10 +14,10 @@ export const SearchSupportedCryptoWalletRequestSchema = BasicSearchQuerySchema.e
   // additionalInfo: z.record(z.any()).optional().describe("Optional additional information as key-value pairs"),
   additionalInfo: z.string().max(100).optional().describe(`Optional filter where additionalInfo contains this substring, case-insensitively`),
   isStableCoin: z.coerce.boolean().optional().describe("Optional filter by whether the cryptocurrency is a stablecoin"),
-  maxTransactionLimit: z.number().min(0).optional().describe("Optional maximum transaction limit in USD for this cryptocurrency"),
-  minTransactionLimit: z.number().min(0).optional().describe("Optional minimum transaction limit in USD for this cryptocurrency"),
-  maxTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional maximum trade amount in USD for anonymous users"),
-  minTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional minimum trade amount in USD for anonymous users"),
+  maxTransactionLimit: z.number().min(0).optional().describe("Optional maximum transaction limit in token units for this cryptocurrency"),
+  minTransactionLimit: z.number().min(0).optional().describe("Optional minimum transaction limit in token units for this cryptocurrency"),
+  maxTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional maximum trade amount in token units for anonymous users"),
+  minTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional minimum trade amount in token units for anonymous users"),
   
   // Include Related Entities
   includeAdmin: z.coerce.boolean().default(false).optional(),

@@ -276,7 +276,7 @@ export const CoinDetailsModal = ({
                   label="Authenticated — Min"
                   value={
                     coin.minTransactionLimit
-                      ? `$${Number(coin.minTransactionLimit).toLocaleString()}`
+                      ? `${Number(coin.minTransactionLimit).toLocaleString()} ${coin.symbol}`
                       : "—"
                   }
                 />
@@ -284,7 +284,7 @@ export const CoinDetailsModal = ({
                   label="Authenticated — Max"
                   value={
                     coin.maxTransactionLimit
-                      ? `$${Number(coin.maxTransactionLimit).toLocaleString()}`
+                      ? `${Number(coin.maxTransactionLimit).toLocaleString()} ${coin.symbol}`
                       : "—"
                   }
                 />
@@ -292,9 +292,9 @@ export const CoinDetailsModal = ({
                   label="Anonymous — Min"
                   value={
                     coin.minTradeAmountForAnonymous
-                      ? `$${Number(
+                      ? `${Number(
                           coin.minTradeAmountForAnonymous
-                        ).toLocaleString()}`
+                        ).toLocaleString()} ${coin.symbol}`
                       : "—"
                   }
                 />
@@ -302,9 +302,9 @@ export const CoinDetailsModal = ({
                   label="Anonymous — Max"
                   value={
                     coin.maxTradeAmountForAnonymous
-                      ? `$${Number(
+                      ? `${Number(
                           coin.maxTradeAmountForAnonymous
-                        ).toLocaleString()}`
+                        ).toLocaleString()} ${coin.symbol}`
                       : "—"
                   }
                 />
