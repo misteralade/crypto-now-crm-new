@@ -39,19 +39,19 @@ const EditTradeLimits = ({ symbol, buyAt, sellAt, minAmount, maxAmount, minAmoun
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-x-8 mb-6">
         <PillInput
           id="buyRate"
-          placeholder="e.g. 1500"
+          placeholder="e.g. 1500 NGN per USD"
           value={buyRate}
           onChange={(e) => { setBuyRate(e.target.value); onChangeInputField("buyRate", e.target.value) }}
-          label="Rate to Sell to User (USD) — Sell Rate"
+          label="Rate to Sell to User (NGN per USD) — Sell Rate"
           type="text"
           inputMode="decimal"
         />
         <PillInput
           id="sellRate"
-          placeholder="e.g. 1400"
+          placeholder="e.g. 1400 NGN per USD"
           value={sellRate}
           onChange={(e) => { setSellRate(e.target.value); onChangeInputField("sellRate", e.target.value) }}
-          label="Rate to Buy from User (USD) — Buy Rate"
+          label="Rate to Buy from User (NGN per USD) — Buy Rate"
           type="text"
           inputMode="decimal"
         />

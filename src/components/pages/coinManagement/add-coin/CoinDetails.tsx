@@ -56,10 +56,10 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
         ? walletEntries
         : {
             ...walletEntries,
-            [walletKey(networkValue, "testnet")]: {
+            [walletKey(networkValue, "mainnet")]: {
               network: networkValue,
               walletAddress: "",
-              blockchainEnvironment: "testnet",
+              blockchainEnvironment: "mainnet",
             },
           };
 
@@ -105,33 +105,6 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
         network,
         walletAddress: currentEntry.walletAddress,
         blockchainEnvironment,
-      },
-    };
-    setWalletEntries(updated);
-    emitWallets(updated, selectedNetworks);
-  };
-
-  const handleAddWalletEntry = (network: string) => {
-    const existingEnvironments = new Set(
-      walletEntriesForNetwork(network).map((entry) => entry.blockchainEnvironment),
-    );
-    const nextEnvironment =
-      existingEnvironments.has("testnet") && !existingEnvironments.has("mainnet")
-        ? "mainnet"
-        : !existingEnvironments.has("testnet")
-          ? "testnet"
-          : null;
-
-    if (!nextEnvironment) {
-      return;
-    }
-
-    const updated: Record<string, WalletEntryFormState> = {
-      ...walletEntries,
-      [walletKey(network, nextEnvironment)]: {
-        network,
-        walletAddress: "",
-        blockchainEnvironment: nextEnvironment,
       },
     };
     setWalletEntries(updated);
@@ -199,13 +172,6 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#03034D]">
                           {entry.blockchainEnvironment}
                         </span>
-                        <button
-                          type="button"
-                          className="text-[11px] font-medium text-[#D03C3C] hover:opacity-70"
-                          onClick={() => handleRemoveWalletEntry(opt.value, entry.blockchainEnvironment)}
-                        >
-                          Remove
-                        </button>
                       </div>
                       <PillInput
                         label={`${opt.value} Deposit Wallet Address`}
@@ -222,15 +188,6 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                       />
                     </div>
                   ))}
-                  {walletEntriesForNetwork(opt.value).length < 2 && (
-                    <button
-                      type="button"
-                      className="self-start text-[12px] font-medium text-[#03034D] hover:opacity-70"
-                      onClick={() => handleAddWalletEntry(opt.value)}
-                    >
-                      Add {walletEntriesForNetwork(opt.value).length === 0 ? "testnet" : "mainnet"} wallet
-                    </button>
-                  )}
                 </div>
               )}
             </div>

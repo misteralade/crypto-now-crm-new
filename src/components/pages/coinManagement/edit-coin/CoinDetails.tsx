@@ -40,7 +40,7 @@ const EditCoinDetails = ({
   const initialWalletEntries = adminCryptoWallets.reduce<Record<string, WalletEntryFormState>>(
     (acc, w) => {
       if (w.network) {
-        const blockchainEnvironment = w.blockchainEnvironment ?? "testnet";
+        const blockchainEnvironment = w.blockchainEnvironment ?? "mainnet";
         acc[walletKey(w.network, blockchainEnvironment)] = {
           network: w.network,
           walletAddress: w.walletAddress,
@@ -84,10 +84,10 @@ const EditCoinDetails = ({
         ? walletEntries
         : {
             ...walletEntries,
-            [walletKey(networkValue, "testnet")]: {
+            [walletKey(networkValue, "mainnet")]: {
               network: networkValue,
               walletAddress: "",
-              blockchainEnvironment: "testnet",
+              blockchainEnvironment: "mainnet",
             },
           };
 
@@ -133,33 +133,6 @@ const EditCoinDetails = ({
         network,
         walletAddress: currentEntry.walletAddress,
         blockchainEnvironment,
-      },
-    };
-    setWalletEntries(updated);
-    emitWallets(updated, selectedNetworks);
-  };
-
-  const handleAddWalletEntry = (network: string) => {
-    const existingEnvironments = new Set(
-      walletEntriesForNetwork(network).map((entry) => entry.blockchainEnvironment),
-    );
-    const nextEnvironment =
-      existingEnvironments.has("testnet") && !existingEnvironments.has("mainnet")
-        ? "mainnet"
-        : !existingEnvironments.has("testnet")
-          ? "testnet"
-          : null;
-
-    if (!nextEnvironment) {
-      return;
-    }
-
-    const updated: Record<string, WalletEntryFormState> = {
-      ...walletEntries,
-      [walletKey(network, nextEnvironment)]: {
-        network,
-        walletAddress: "",
-        blockchainEnvironment: nextEnvironment,
       },
     };
     setWalletEntries(updated);
@@ -229,13 +202,6 @@ const EditCoinDetails = ({
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#03034D]">
                           {entry.blockchainEnvironment}
                         </span>
-                        <button
-                          type="button"
-                          className="text-[11px] font-medium text-[#D03C3C] hover:opacity-70"
-                          onClick={() => handleRemoveWalletEntry(opt.value, entry.blockchainEnvironment)}
-                        >
-                          Remove
-                        </button>
                       </div>
                       <PillInput
                         label={`${opt.value} Deposit Wallet Address`}
@@ -252,15 +218,6 @@ const EditCoinDetails = ({
                       />
                     </div>
                   ))}
-                  {walletEntriesForNetwork(opt.value).length < 2 && (
-                    <button
-                      type="button"
-                      className="self-start text-[12px] font-medium text-[#03034D] hover:opacity-70"
-                      onClick={() => handleAddWalletEntry(opt.value)}
-                    >
-                      Add {walletEntriesForNetwork(opt.value).length === 0 ? "testnet" : "mainnet"} wallet
-                    </button>
-                  )}
                 </div>
               )}
             </div>

@@ -14,18 +14,18 @@ const TradeLimits = ({ onChangeInputField }: TradeLimitsProps) => {
         <PillInput
           id="buyRate"
           onChange={(e) => onChangeInputField("buyRate", e.target.value)}
-          label="Rate to Sell to User (USD) — Sell Rate"
+          label="Rate to Sell to User (NGN per USD) — Sell Rate"
           type="text"
           inputMode="decimal"
-          placeholder="1575"
+          placeholder="1575 NGN per USD"
         />
         <PillInput
           id="sellRate"
           onChange={(e) => onChangeInputField("sellRate", e.target.value)}
-          label="Rate to Buy from User (USD) — Buy Rate"
+          label="Rate to Buy from User (NGN per USD) — Buy Rate"
           type="text"
           inputMode="decimal"
-          placeholder="1545"
+          placeholder="1545 NGN per USD"
         />
       </div>
 
