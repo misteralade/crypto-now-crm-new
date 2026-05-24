@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Filter } from 'lucide-react'
 import { SearchInput } from '../../ui/search-input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
 import {useMatchRoute} from "@tanstack/react-router";
@@ -31,9 +31,9 @@ const ManageTransactionsControls = ({ onOpenFilter, onApplyAction, searchValue, 
           />
           <button
             onClick={onOpenFilter}
-            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-10 px-4 border border-[#ECECEC] rounded-full transition-colors bg-white"
+            className="inline-flex cursor-pointer hover:border-[#948EEE] hover:bg-[#F5F5FF] items-center justify-center gap-2 h-12 px-5 border border-[#ECECEC] rounded-full transition-all bg-white shadow-sm active:scale-95"
           >
-            <img src="/icons/Filter.svg" alt="Filter" className="w-4 h-4 opacity-70" />
+            <Filter className="w-4 h-4 text-[#454745] opacity-70" />
             <span className="text-[14px] font-medium text-[#454745]">Filter</span>
           </button>
         </div>

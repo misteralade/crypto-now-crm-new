@@ -37,18 +37,6 @@ function formatCacheTimestampLabel(iso: string): string {
     : m.format("D MMM YY HH:mm");
 }
 
-// Gas fee reserve withheld from the sweep amount (same units as the swept asset).
-function defaultFeeReserveFromAggregate(network: string): number {
-  switch (network) {
-    case "BTC":
-      return 0.00003;
-    case "SOLANA":
-      return 895_000 / 1e9; // ~rent-exempt minimum + signature fee
-    default:
-      return 0; // ERC-20/TRC-20 fees are paid in the native token, not the swept asset
-  }
-}
-
 // Formats a suggested sweep amount (trims trailing zeros).
 function formatSuggestedSweepAmount(value: number, network: string): string {
   if (!Number.isFinite(value) || value <= 0) return "";
@@ -156,23 +144,24 @@ export default function SweepConfigModal({
     refetch: refetchPreview,
   } = useSweepPreview(showPreview ? { network, cryptocurrencyId } : null);
 
-  // Auto-fill amount from preview/summary minus gas fee reserve.
-  // Deps use primitive sub-fields intentionally to avoid re-running on unrelated object changes.
+  // Auto-fill amount from preview/summary using the full cached balance.
+  // The backend applies live fee estimation when the sweep is actually executed.
   useEffect(() => {
     if (!network || !cryptocurrencyId) {
       setMaxAmountInput("");
       return;
     }
     if (!isBtcLimitedSweepUi && amountTouched) return;
-    const reserve = defaultFeeReserveFromAggregate(network);
     if (showPreview && previewData) {
-      const v = Math.max(0, previewData.estimatedAmount - reserve);
-      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      setMaxAmountInput(
+        formatSuggestedSweepAmount(previewData.estimatedAmount, network)
+      );
       return;
     }
     if (matchedSummaryRow) {
-      const v = Math.max(0, matchedSummaryRow.totalBalance - reserve);
-      setMaxAmountInput(formatSuggestedSweepAmount(v, network));
+      setMaxAmountInput(
+        formatSuggestedSweepAmount(matchedSummaryRow.totalBalance, network)
+      );
       return;
     }
     setMaxAmountInput("");
@@ -221,7 +210,7 @@ export default function SweepConfigModal({
     ? Math.max(
         0,
         Math.min(
-          previewData.estimatedAmount - defaultFeeReserveFromAggregate(network),
+          previewData.estimatedAmount,
           !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
             ? parsedMaxAmount
             : Number.POSITIVE_INFINITY
@@ -500,32 +489,18 @@ export default function SweepConfigModal({
                     {symbol}
                   </span>
                 </div>
-                {defaultFeeReserveFromAggregate(network) > 0 && (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#667085]">
-                      Est. gas fee reserve
-                      <span className="ml-1 text-[11px] text-[#9CA3AF]">
-                        (withheld for network fees)
-                      </span>
-                    </span>
-                    <span className="tabular-nums text-[#DC6803]">
-                      −{" "}
-                      {defaultFeeReserveFromAggregate(network).toFixed(
-                        network === "BTC" ? 8 : 6
-                      )}{" "}
-                      {symbol}
-                    </span>
-                  </div>
-                )}
                 <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-sm">
                   <span className="font-semibold text-[--color-text-primary]">
-                    Amount to be swept
+                    Estimated amount to be swept
                   </span>
                   <span className="font-bold tabular-nums text-[#03034D]">
                     {previewAmountToSweep.toFixed(network === "BTC" ? 8 : 6)}{" "}
                     {symbol}
                   </span>
                 </div>
+                <p className="text-[11px] leading-5 text-[#667085]">
+                  Final sweep amounts are fee-adjusted at execution time using live network estimates.
+                </p>
 
                 <div className="border-t border-[#ECEFFD] pt-2 space-y-1">
                   <div className="flex items-center gap-1.5">
