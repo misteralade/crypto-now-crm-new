@@ -113,6 +113,14 @@ export type AdminRetryPendingPayoutsResponse = {
   forceProceed: boolean;
 };
 
+export type PayoutAutoApprovalLimitResponsePayload = {
+  thresholdNgn: number;
+  isFallback: boolean;
+};
+
+export type PayoutAutoApprovalLimitAPIResponse =
+  BaseApiResponse<PayoutAutoApprovalLimitResponsePayload>;
+
 export type AdminTransactionStatsResponse = {
   totalOrders: number;
   payoutsSent: number;

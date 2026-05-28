@@ -14,7 +14,7 @@ const TERMINAL_STATUSES = ['COMPLETED', 'FAILED', 'PARTIAL'];
 export const useSweepQuery = () => {
   const queryClient = useQueryClient();
 
-  // ─── Preview (dry-run) ────────────────────────────────────────────────────────
+  // ─── Preview (live estimate) ──────────────────────────────────────────────────
   const useSweepPreview = (params: SweepPreviewParams | null) => {
     return useQuery({
       queryKey: [QUERY_KEYS.SWEEP.PREVIEW, params],

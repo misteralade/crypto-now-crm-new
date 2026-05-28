@@ -1,6 +1,7 @@
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import { useDispatch } from "react-redux";
 import {useBankQuery} from "../../queries/bank.querries";
+import { usePayoutAutoApprovalLimitQuery } from "../../queries/settings.querries";
 import {
   clearSelectedBankId,
   clearCreateBankField,
@@ -10,6 +11,7 @@ import {
 import type {CreateBankAccountRequestType} from "../../schemas/bank.schema";
 import {debounce} from "../../util/debouce.util.ts";
 import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
+import { toast } from "react-toastify";
 
 export const useManageFiatPage = () => {
   const dispatch = useDispatch();
@@ -27,10 +29,23 @@ export const useManageFiatPage = () => {
     adminDeleteBankAccountMutation,
     adminCreateBankAccountMutation,
   } = useBankQuery();
+  const {
+    payoutAutoApprovalLimitQuery,
+    updatePayoutAutoApprovalLimitMutation,
+  } = usePayoutAutoApprovalLimitQuery();
   
   const [searchQuery, setSearchQuery] = useState('')
+  const [payoutAutoApprovalLimitInput, setPayoutAutoApprovalLimitInput] = useState("");
   
   const [openBankModal, setOpenBankModal] = useState(false)
+
+  useEffect(() => {
+    const threshold = payoutAutoApprovalLimitQuery.data?.thresholdNgn;
+
+    if (typeof threshold === "number" && Number.isFinite(threshold)) {
+      setPayoutAutoApprovalLimitInput(String(threshold));
+    }
+  }, [payoutAutoApprovalLimitQuery.data?.thresholdNgn]);
 
   const handleMakeDefault = async (id: string) => {
     dispatch(setSelectedBankId(id));
@@ -78,6 +93,23 @@ export const useManageFiatPage = () => {
       debouncedUpdate(query);
     };
   }, [dispatch]);
+
+  const handlePayoutAutoApprovalLimitChange = (value: string) => {
+    setPayoutAutoApprovalLimitInput(value);
+  };
+
+  const handleSavePayoutAutoApprovalLimit = async () => {
+    const parsedThreshold = Number(
+      payoutAutoApprovalLimitInput.replace(/,/g, ""),
+    );
+
+    if (!Number.isFinite(parsedThreshold) || parsedThreshold <= 0) {
+      toast.error("Enter a valid payout approval limit.");
+      return;
+    }
+
+    await updatePayoutAutoApprovalLimitMutation.mutateAsync(parsedThreshold);
+  };
   
   const handleOpenBankModal = () => {
     dispatch(clearCreateBankField());
@@ -99,6 +131,10 @@ export const useManageFiatPage = () => {
     searchQuery,
     searchedSupportedBanks,
     loadingSearchedSupportedBanks,
+    payoutAutoApprovalLimitQuery,
+    payoutAutoApprovalLimitInput,
+    savingPayoutAutoApprovalLimit:
+      updatePayoutAutoApprovalLimitMutation.isPending,
 
     // ⚙️ Functions
     handleOpenBankModal,
@@ -108,5 +144,7 @@ export const useManageFiatPage = () => {
     handleCreateBankField,
     handleAdminCreateBank,
     handleSearchChange,
+    handlePayoutAutoApprovalLimitChange,
+    handleSavePayoutAutoApprovalLimit,
   }
 }

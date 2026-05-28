@@ -10,7 +10,7 @@ export const EmailSchema = z.coerce
   .max(150, "Email must not exceed 150 characters")
   .regex(
     emailRegex,
-    "Please enter a valid email address (special characters like '+' are not allowed)",
+    "Please enter a valid email address",
   )
   .refine(
     (email) => {
@@ -19,8 +19,6 @@ export const EmailSchema = z.coerce
 
       const [local, domain] = parts;
 
-      // Local part validation (explicitly disallow +)
-      if (local.includes("+")) return false;
       if (local.length > 64) return false;
       if (/[.]{2,}/.test(local)) return false; // No consecutive dots
       if (/^[.]|[.]$/.test(local)) return false; // Cannot start or end with dot

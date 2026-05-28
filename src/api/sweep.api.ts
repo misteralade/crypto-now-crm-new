@@ -14,6 +14,13 @@ export interface SweepPreviewData {
   targetAdminWallet: { id: string; address: string };
   totalWallets: number;
   estimatedAmount: number;
+  liveBalanceAmount: number;
+  estimatedSweepableAmount: number;
+  estimatedFeeAmount: number;
+  feeAssetSymbol: string;
+  feeHandling: 'deducted_from_swept_asset' | 'paid_from_source_native_balance';
+  walletsSweepable: number;
+  walletsBlockedByFee: number;
   filteredToSpecific: boolean;
   /** ISO timestamp of the oldest cached balance across the eligible wallets */
   oldestRefreshedAt: string | null;
@@ -101,6 +108,7 @@ export interface SweepPreviewParams {
   network: string;
   targetWalletAddresses?: string[];
   dustThresholdOverride?: number;
+  maxTotalAmount?: number;
 }
 
 export interface InitiateSweepParams {
@@ -143,7 +151,7 @@ class SweepServiceApi {
     return SweepServiceApi.instance;
   }
 
-  /** Dry-run preview — returns wallet count + estimated balance */
+  /** Sweep preview — returns cached totals plus live sweepability estimates */
   async previewSweep(params: SweepPreviewParams) {
     return await axiosPostRequestHandler('/sweep/admin/sweep/preview', params) as BaseApiResponse<SweepPreviewData>;
   }

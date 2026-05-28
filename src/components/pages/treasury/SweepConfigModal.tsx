@@ -135,17 +135,38 @@ export default function SweepConfigModal({
   const showPreview = previewRequested && canPreview;
   const isBtcLimitedSweepUi =
     network === "BTC" && !SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT;
+  const parsedMaxAmount = (() => {
+    const trimmed = maxAmountInput.trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  })();
+  const maxAmountInvalid =
+    !isBtcLimitedSweepUi &&
+    maxAmountInput.trim().length > 0 &&
+    parsedMaxAmount === undefined;
+  const previewMaxTotalAmount =
+    !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
+      ? parsedMaxAmount
+      : undefined;
 
-  // Cached preview (no chain calls) — only fired when admin clicks Preview.
+  // Preview includes cached totals plus live sweepability checks when requested.
   const {
     data: previewData,
     isLoading: isPreviewLoading,
     error: previewError,
     refetch: refetchPreview,
-  } = useSweepPreview(showPreview ? { network, cryptocurrencyId } : null);
+  } = useSweepPreview(
+    showPreview
+      ? {
+          network,
+          cryptocurrencyId,
+          maxTotalAmount: previewMaxTotalAmount,
+        }
+      : null
+  );
 
-  // Auto-fill amount from preview/summary using the full cached balance.
-  // The backend applies live fee estimation when the sweep is actually executed.
+  // Auto-fill from the best estimate available. The preview response is cap-aware.
   useEffect(() => {
     if (!network || !cryptocurrencyId) {
       setMaxAmountInput("");
@@ -154,7 +175,7 @@ export default function SweepConfigModal({
     if (!isBtcLimitedSweepUi && amountTouched) return;
     if (showPreview && previewData) {
       setMaxAmountInput(
-        formatSuggestedSweepAmount(previewData.estimatedAmount, network)
+        formatSuggestedSweepAmount(previewData.estimatedSweepableAmount, network)
       );
       return;
     }
@@ -173,7 +194,7 @@ export default function SweepConfigModal({
     cryptocurrencyId,
     matchedSummaryRow?.totalBalance,
     showPreview,
-    previewData?.estimatedAmount,
+    previewData?.estimatedSweepableAmount,
   ]);
 
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
@@ -195,22 +216,11 @@ export default function SweepConfigModal({
   }, [open, shouldRender]);
 
   if (!shouldRender) return null;
-
-  const parsedMaxAmount = (() => {
-    const trimmed = maxAmountInput.trim();
-    if (!trimmed) return undefined;
-    const n = Number(trimmed);
-    return Number.isFinite(n) && n > 0 ? n : undefined;
-  })();
-  const maxAmountInvalid =
-    !isBtcLimitedSweepUi &&
-    maxAmountInput.trim().length > 0 &&
-    parsedMaxAmount === undefined;
   const previewAmountToSweep = showPreview && previewData
     ? Math.max(
         0,
         Math.min(
-          previewData.estimatedAmount,
+          previewData.estimatedSweepableAmount,
           !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
             ? parsedMaxAmount
             : Number.POSITIVE_INFINITY
@@ -317,6 +327,12 @@ export default function SweepConfigModal({
 
   const symbol = selectedCrypto?.symbol.toUpperCase() ?? "";
   const refreshing = refreshBalancesMutation.isPending;
+  const amountDecimals = network === "BTC" ? 8 : 6;
+  const previewFeeExplanation = previewData
+    ? previewData.feeHandling === "deducted_from_swept_asset"
+      ? `Fees are paid in ${previewData.feeAssetSymbol} and reduce the final amount moved when draining the source wallet.`
+      : `Fees are paid in ${previewData.feeAssetSymbol} from the source wallets, not from the ${symbol || "asset"} amount being swept.`
+    : "";
 
   return (
     <div
@@ -473,20 +489,49 @@ export default function SweepConfigModal({
             {showPreview && previewData && (
               <div className="space-y-3 rounded-xl border border-[#DDE0FF] bg-[--color-primary-taint] p-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#667085]">Wallets eligible</span>
+                  <span className="text-[#667085]">Wallets in scope</span>
                   <span className="font-semibold text-[--color-text-primary]">
                     {previewData.totalWallets}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#667085]">Wallets sweepable now</span>
+                  <span className="font-semibold text-[--color-text-primary]">
+                    {previewData.walletsSweepable}
+                  </span>
+                </div>
+                {previewData.walletsBlockedByFee > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">Blocked by network fees</span>
+                    <span className="font-semibold text-[#DC6803]">
+                      {previewData.walletsBlockedByFee}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between text-sm">
                   <span className="text-[#667085]">
-                    Estimated total balance
+                    Cached total balance
                   </span>
                   <span className="font-semibold tabular-nums text-[--color-text-primary]">
                     {previewData.estimatedAmount.toFixed(
-                      network === "BTC" ? 8 : 6
+                      amountDecimals
                     )}{" "}
                     {symbol}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#667085]">Live on-chain balance</span>
+                  <span className="font-semibold tabular-nums text-[--color-text-primary]">
+                    {previewData.liveBalanceAmount.toFixed(amountDecimals)} {symbol}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#667085]">Estimated network fees</span>
+                  <span className="font-semibold tabular-nums text-[#667085]">
+                    {previewData.estimatedFeeAmount.toFixed(
+                      previewData.feeAssetSymbol === "BTC" ? 8 : 6
+                    )}{" "}
+                    {previewData.feeAssetSymbol}
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-sm">
@@ -494,12 +539,12 @@ export default function SweepConfigModal({
                     Estimated amount to be swept
                   </span>
                   <span className="font-bold tabular-nums text-[#03034D]">
-                    {previewAmountToSweep.toFixed(network === "BTC" ? 8 : 6)}{" "}
+                    {previewAmountToSweep.toFixed(amountDecimals)}{" "}
                     {symbol}
                   </span>
                 </div>
                 <p className="text-[11px] leading-5 text-[#667085]">
-                  Final sweep amounts are fee-adjusted at execution time using live network estimates.
+                  {previewFeeExplanation}
                 </p>
 
                 <div className="border-t border-[#ECEFFD] pt-2 space-y-1">
