@@ -113,6 +113,147 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.PENDING_PAYOUT, label: 'Pending Payout' },
 ]
 
+export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
+  {
+    value: TRANSACTION_STATUS.PENDING_PAYOUT,
+    label: 'Awaiting Payout',
+    description: 'Payout is paused while funds or manual review are pending.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PROCESSING,
+    label: 'Processing',
+    description: 'The transaction is actively being handled.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
+    label: 'Payment Account Confirmed',
+    description: 'Customer payment details have been confirmed.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.AWAITING_PAYMENT,
+    label: 'Awaiting Payment',
+    description: 'Waiting for the customer to send payment.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.AWAITING_CRYPTO,
+    label: 'Awaiting Bank Details',
+    description: 'Waiting for the customer bank details before payout.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PAYMENT_RECEIVED,
+    label: 'Payment Received',
+    description: 'Payment has landed and is awaiting confirmation.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PAYMENT_CONFIRMED,
+    label: 'Payment Confirmed',
+    description: 'Payment has been verified and cleared.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.DEPOSIT_DETECTED,
+    label: 'Deposit Detected',
+    description: 'On-chain deposit is visible and waiting for confirmations.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED,
+    label: 'Deposit Confirmed',
+    description: 'Deposit confirmations are complete.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.CRYPTO_SENT,
+    label: 'Crypto Sent',
+    description: 'Crypto payout has been broadcast.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.CRYPTO_RECEIVED,
+    label: 'Crypto Received',
+    description: 'Crypto payment has arrived.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.CRYPTO_CONFIRMED,
+    label: 'Crypto Confirmed',
+    description: 'Crypto payment is fully confirmed.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PAYOUT_INITIATED,
+    label: 'Payout Initiated',
+    description: 'Fiat payout has been sent to the rail.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.COMPLETED,
+    label: 'Completed',
+    description: 'The transaction finished successfully.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.PENDING,
+    label: 'Pending',
+    description: 'The transaction exists but has not entered the flow yet.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.INITIATED,
+    label: 'Initiated',
+    description: 'The transaction has just been created.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.FAILED,
+    label: 'Failed',
+    description: 'The transaction stopped because something failed.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.PAYOUT_FAILED,
+    label: 'Payout Failed',
+    description: 'The fiat payout failed and may need a retry.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.EXPIRED,
+    label: 'Expired',
+    description: 'The transaction timed out.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.CANCELLED,
+    label: 'Cancelled',
+    description: 'The transaction was stopped.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.DISPUTED,
+    label: 'Disputed',
+    description: 'The transaction is under dispute.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.REFUNDING,
+    label: 'Refunding',
+    description: 'A refund is currently being processed.',
+    priority: false,
+  },
+  {
+    value: TRANSACTION_STATUS.REFUNDED,
+    label: 'Refunded',
+    description: 'The refund has been completed.',
+    priority: false,
+  },
+] as const
+
 export const ALLOWED_ADMIN_TRANSACTION_STATUS = [
   TRANSACTION_STATUS.AWAITING_PAYMENT,
   TRANSACTION_STATUS.PAYMENT_RECEIVED,
