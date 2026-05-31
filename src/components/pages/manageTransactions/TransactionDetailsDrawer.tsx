@@ -161,7 +161,7 @@ const TransactionDetailsDrawer = ({
     description: string;
     priority: boolean;
   }) => {
-    const isCurrent = transaction.status === option.value;
+    const isCurrent = transaction?.status === option.value;
     const isSelected = selectedStatus === option.value;
     const colorObj = getStatusColorObject(option.value);
 
@@ -204,7 +204,7 @@ const TransactionDetailsDrawer = ({
     description: string;
     priority: boolean;
   }) => {
-    const isCurrent = transaction.status === option.value;
+    const isCurrent = transaction?.status === option.value;
     const isSelected = selectedStatus === option.value;
     const colorObj = getStatusColorObject(option.value);
 

@@ -1,27 +1,36 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
-import type { CreateSupportedCryptoAndAdminWalletRequestType } from '../../../../schemas/crypto.schema'
-import { PillInput } from '../../../ui/input'
-import { Switch } from '../../../ui/switch'
-import { Checkbox } from '../../../ui/checkbox'
+import type { CreateSupportedCryptoAndAdminWalletRequestType } from "../../../../schemas/crypto.schema";
+import { PillInput } from "../../../ui/input";
+import { Switch } from "../../../ui/switch";
+import { Checkbox } from "../../../ui/checkbox";
 
-const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter((opt) => opt.value !== undefined) as Array<{ value: string; label: string }>;
+const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter(
+  (opt) => opt.value !== undefined,
+) as Array<{ value: string; label: string }>;
 type WalletEntryFormState = {
   network: string;
   walletAddress: string;
   blockchainEnvironment: "testnet" | "mainnet";
 };
 
-const walletKey = (network: string, blockchainEnvironment: "testnet" | "mainnet") =>
-  `${network}:${blockchainEnvironment}`;
+const walletKey = (
+  network: string,
+  blockchainEnvironment: "testnet" | "mainnet",
+) => `${network}:${blockchainEnvironment}`;
 
 interface CoinDetailsProps {
-  onChangeInputField: (field: keyof CreateSupportedCryptoAndAdminWalletRequestType, value: any) => void
+  onChangeInputField: (
+    field: keyof CreateSupportedCryptoAndAdminWalletRequestType,
+    value: any,
+  ) => void;
 }
 
 const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
   const [selectedNetworks, setSelectedNetworks] = useState<string[]>([]);
-  const [walletEntries, setWalletEntries] = useState<Record<string, WalletEntryFormState>>({});
+  const [walletEntries, setWalletEntries] = useState<
+    Record<string, WalletEntryFormState>
+  >({});
   const [isStableCoin, setIsStableCoin] = useState(false);
 
   const walletEntriesForNetwork = (network: string) =>
@@ -29,7 +38,10 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
       .filter(([, entry]) => entry.network === network)
       .map(([key, entry]) => ({ key, ...entry }));
 
-  const emitWallets = (entries: Record<string, WalletEntryFormState>, networksToUse: string[]) => {
+  const emitWallets = (
+    entries: Record<string, WalletEntryFormState>,
+    networksToUse: string[],
+  ) => {
     const wallets = Object.values(entries)
       .filter((entry) => networksToUse.includes(entry.network))
       .map((entry) => ({
@@ -47,20 +59,23 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
     setSelectedNetworks(updated);
     onChangeInputField("networks", updated);
 
-    const nextEntries: Record<string, WalletEntryFormState> = selectedNetworks.includes(networkValue)
-      ? Object.fromEntries(
-          Object.entries(walletEntries).filter(([, entry]) => entry.network !== networkValue),
-        ) as Record<string, WalletEntryFormState>
-      : walletEntriesForNetwork(networkValue).length > 0
-        ? walletEntries
-        : {
-            ...walletEntries,
-            [walletKey(networkValue, "mainnet")]: {
-              network: networkValue,
-              walletAddress: "",
-              blockchainEnvironment: "mainnet",
-            },
-          };
+    const nextEntries: Record<string, WalletEntryFormState> =
+      selectedNetworks.includes(networkValue)
+        ? (Object.fromEntries(
+            Object.entries(walletEntries).filter(
+              ([, entry]) => entry.network !== networkValue,
+            ),
+          ) as Record<string, WalletEntryFormState>)
+        : walletEntriesForNetwork(networkValue).length > 0
+          ? walletEntries
+          : {
+              ...walletEntries,
+              [walletKey(networkValue, "mainnet")]: {
+                network: networkValue,
+                walletAddress: "",
+                blockchainEnvironment: "mainnet",
+              },
+            };
 
     setWalletEntries(nextEntries);
     emitWallets(nextEntries, updated);
@@ -86,7 +101,9 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
 
   return (
     <div className="mb-8">
-      <h3 className="text-[24px] font-medium text-[#0E0F0C] mb-6">Coin Details</h3>
+      <h3 className="text-[24px] font-medium text-[#0E0F0C] mb-6">
+        Coin Details
+      </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-x-8 mb-6">
         <PillInput
@@ -105,7 +122,9 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
 
       {/* Supported Networks */}
       <div className="mb-6">
-        <label className="block text-[13px] font-medium text-[#454745] mb-3">Supported Networks</label>
+        <label className="block text-[13px] font-medium text-[#454745] mb-3">
+          Supported Networks
+        </label>
         <div className="flex flex-col gap-4">
           {ACTIVE_NETWORKS.map((opt) => (
             <div key={opt.value} className="flex flex-col gap-3">
@@ -118,12 +137,17 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
               {selectedNetworks.includes(opt.value) && (
                 <div className="ml-7 grid gap-3">
                   {walletEntriesForNetwork(opt.value).map((entry) => (
-                    <div key={`${opt.value}-${entry.blockchainEnvironment}`} className="grid gap-3 rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4">
+                    <div
+                      key={`${opt.value}-${entry.blockchainEnvironment}`}
+                      className="grid gap-3 rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4"
+                    >
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#03034D]">
                           Environment
                         </span>
-                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${entry.blockchainEnvironment === "mainnet" ? "bg-[#FFF7ED] text-[#C2410C]" : "bg-[#EFF6FF] text-[#2563EB]"}`}>
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${entry.blockchainEnvironment === "mainnet" ? "bg-[#FFF7ED] text-[#C2410C]" : "bg-[#EFF6FF] text-[#2563EB]"}`}
+                        >
                           {entry.blockchainEnvironment}
                         </span>
                       </div>
@@ -131,11 +155,14 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
                         label={`${opt.value} Deposit Wallet Address`}
                         placeholder={`Enter ${opt.value} wallet address`}
                         value={entry.walletAddress}
-                        onChange={(e) => handleWalletAddressChange(opt.value, entry.blockchainEnvironment, e.target.value)}
+                        onChange={(e) =>
+                          handleWalletAddressChange(
+                            opt.value,
+                            entry.blockchainEnvironment,
+                            e.target.value,
+                          )
+                        }
                       />
-                      <p className="text-[12px] text-[#667085]">
-                        Environment is fixed by this card.
-                      </p>
                     </div>
                   ))}
                 </div>
@@ -147,16 +174,22 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:gap-x-8 gap-6 mb-6">
         <div>
-          <label className="block text-[13px] font-medium text-[#454745] mb-3">Status</label>
+          <label className="block text-[13px] font-medium text-[#454745] mb-3">
+            Status
+          </label>
           <Switch
             id="isActive"
             label="Active"
             defaultChecked
-            onCheckedChange={(checked) => onChangeInputField("isActive", checked)}
+            onCheckedChange={(checked) =>
+              onChangeInputField("isActive", checked)
+            }
           />
         </div>
         <div>
-          <label className="block text-[13px] font-medium text-[#454745] mb-3">Stable Coin</label>
+          <label className="block text-[13px] font-medium text-[#454745] mb-3">
+            Stable Coin
+          </label>
           <Switch
             id="isStableCoin"
             label="Stable Coin"
@@ -169,7 +202,7 @@ const CoinDetails = ({ onChangeInputField }: CoinDetailsProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default CoinDetails;

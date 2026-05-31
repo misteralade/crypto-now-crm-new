@@ -41,6 +41,7 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
   const [maxTradeAmount, setMaxTradeAmount] = useState<string>(String(maxAmount ?? ''));
   const [minTradeAmountForAnonymous, setMinTradeAmountForAnonymous] = useState<string>(String(minAmountAnonymous ?? ''));
   const [maxTradeAmountForAnonymous, setMaxTradeAmountForAnonymous] = useState<string>(String(maxAmountAnonymous ?? ''));
+  const [previewCryptoUnits, setPreviewCryptoUnits] = useState<string>(String(TARGET_CRYPTO_UNITS));
 
   const { data: currencies } = useQuery({
     queryKey: [QUERY_KEYS.CURRENCY.GET_ALL_CURRENCIES],
@@ -83,13 +84,18 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
   const coinGeckoRate = Number(liveExchangeRate?.coinGeckoRate ?? 0);
   const sellToUserRate = Number(buyRate ?? 0);
   const buyFromUserRate = Number(sellRate ?? 0);
+  const editablePreviewCryptoUnits = Number(previewCryptoUnits ?? TARGET_CRYPTO_UNITS);
+  const normalizedPreviewCryptoUnits =
+    Number.isFinite(editablePreviewCryptoUnits) && editablePreviewCryptoUnits > 0
+      ? editablePreviewCryptoUnits
+      : TARGET_CRYPTO_UNITS;
 
   const sellToUserPreview = coinGeckoRate > 0 && sellToUserRate > 0
-    ? TARGET_CRYPTO_UNITS * coinGeckoRate * sellToUserRate
+    ? normalizedPreviewCryptoUnits * coinGeckoRate * sellToUserRate
     : 0;
 
   const buyFromUserPreview = coinGeckoRate > 0 && buyFromUserRate > 0
-    ? TARGET_CRYPTO_UNITS * coinGeckoRate * buyFromUserRate
+    ? normalizedPreviewCryptoUnits * coinGeckoRate * buyFromUserRate
     : 0;
 
   return (
@@ -125,13 +131,26 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#03034D]">
               Live rate preview
             </p>
-            <h4 className="text-xl font-medium text-[#0E0F0C] mt-1">
-              2 {symbol} calculator
-            </h4>
-          </div>
-          <div className="text-sm text-[#4E4F6A] md:text-right">
-            <p>Uses the live CoinGecko rate plus the values you enter here.</p>
-            <p className="mt-1">Enter the full NGN quote, for example 1300, not 1.3.</p>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <h4 className="text-xl font-medium text-[#0E0F0C]">
+                {symbol} calculator
+              </h4>
+              <div className="flex items-center gap-2 rounded-full border border-[#D8D7F1] bg-white px-3 py-1.5">
+                <span className="text-xs font-medium uppercase tracking-[0.12em] text-[#4E4F6A]">
+                  Crypto amount
+                </span>
+                <input
+                  aria-label="Preview crypto amount"
+                  inputMode="decimal"
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  value={previewCryptoUnits}
+                  onChange={(e) => setPreviewCryptoUnits(e.target.value)}
+                  className="w-20 bg-transparent text-sm font-semibold text-[#03034D] outline-none"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -146,7 +165,7 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
               <p className="text-xs text-[#6A6B89] mt-1">Uses the Sell Rate field.</p>
               <div className="mt-4 space-y-2 text-sm text-[#0E0F0C]">
                 <p>
-                  {TARGET_CRYPTO_UNITS} {symbol} × {formatNumber(coinGeckoRate, 8)} USD × ₦{formatNumber(sellToUserRate, 2)}/USD
+                  {formatNumber(normalizedPreviewCryptoUnits, 4)} {symbol} × ${formatNumber(coinGeckoRate, 2)} USD × ₦{formatNumber(sellToUserRate, 2)}/USD
                 </p>
                 <p className="text-base font-semibold text-[#03034D]">
                   = ₦{formatMoney(sellToUserPreview)}
@@ -159,7 +178,7 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
               <p className="text-xs text-[#6A6B89] mt-1">Uses the Buy Rate field.</p>
               <div className="mt-4 space-y-2 text-sm text-[#0E0F0C]">
                 <p>
-                  {TARGET_CRYPTO_UNITS} {symbol} × {formatNumber(coinGeckoRate, 8)} USD × ₦{formatNumber(buyFromUserRate, 2)}/USD
+                  {formatNumber(normalizedPreviewCryptoUnits, 4)} {symbol} × ${formatNumber(coinGeckoRate, 2)} USD × ₦{formatNumber(buyFromUserRate, 2)}/USD
                 </p>
                 <p className="text-base font-semibold text-[#03034D]">
                   = ₦{formatMoney(buyFromUserPreview)}
