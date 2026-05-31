@@ -34,7 +34,7 @@ export const useEditCoinPage = () => {
   
   const goBack = () => navigate({ to: ROUTES.COIN_MANAGEMENT })
 
-  const handleEditCoinInputChange = (field: keyof EditSupportedCryptoAndAdminWalletRequestType, value: any ) => {
+  const handleEditCoinInputChange = (field: keyof EditSupportedCryptoAndAdminWalletRequestType, value: unknown ) => {
     dispatch(setEditCoinPayloadField({
       field,
       value: value === '' ? undefined : value,

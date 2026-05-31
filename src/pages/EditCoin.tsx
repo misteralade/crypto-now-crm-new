@@ -56,6 +56,7 @@ const EditCoin = () => {
               />
 
               <EditTradeLimits
+                cryptoId={adminCryptoDetails?.id || ''}
                 symbol={adminCryptoDetails?.symbol || ''}
                 buyAt={Number(adminCryptoDetails?.buyRate) || 0}
                 sellAt={Number(adminCryptoDetails?.sellRate) || 0}

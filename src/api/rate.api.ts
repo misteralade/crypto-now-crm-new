@@ -1,5 +1,9 @@
 import {axiosGetRequestHandler, axiosPatchRequestHandler} from "./index";
-import type {BaseApiResponse, GetPlatformExchangeRatesAPIResponsePayload} from "../types/response.payload.types";
+import type {
+  BaseApiResponse,
+  GetPlatformExchangeRatesAPIResponsePayload,
+  SupportedExchangeRateResponse,
+} from "../types/response.payload.types";
 import type { EditPlatformExchangeRateRequestType } from "../schemas/rate.schema";
 
 class RateServiceApi {
@@ -18,6 +22,10 @@ class RateServiceApi {
 
   async getAllPlatformRates() {
     return await axiosGetRequestHandler("/rate/admin/platform/all") as GetPlatformExchangeRatesAPIResponsePayload;
+  }
+
+  async getExchangeRate(cryptoId: string, currencyId: string, action: "BUY" | "SELL") {
+    return await axiosGetRequestHandler(`/rate/crypto-rate/${cryptoId}/${currencyId}/${action}`) as BaseApiResponse<SupportedExchangeRateResponse>;
   }
   
   async updatePlatformExchangeRate(id: string, payload: EditPlatformExchangeRateRequestType) {

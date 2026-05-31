@@ -325,6 +325,14 @@ export type SearchSupportedCryptoData = {
   adminCryptoWallets: Array<AdminCryptoWalletResponsePayload>;
 };
 
+export type SupportedExchangeRateResponse = {
+  fiatRate: number;
+  coinGeckoRate: number;
+  currency: string;
+  platformRate: number;
+  usdRate: number;
+};
+
 export type AdminCryptoWalletResponsePayload = {
   id: string;
   createdBy: string;
