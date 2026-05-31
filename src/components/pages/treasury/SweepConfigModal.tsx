@@ -200,20 +200,27 @@ export default function SweepConfigModal({
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
   useEffect(() => {
     if (open) {
-      setShouldRender(true);
-      setIsClosing(false);
-    } else if (shouldRender) {
-      setIsClosing(true);
-      setPreviewRequested(false);
-      setMaxAmountInput("");
-      setAmountTouched(false);
-      const timer = setTimeout(() => {
-        setShouldRender(false);
+      if (!shouldRender) {
+        setShouldRender(true);
+      }
+      if (isClosing) {
         setIsClosing(false);
-      }, 200);
-      return () => clearTimeout(timer);
+      }
+      return;
     }
-  }, [open, shouldRender]);
+
+    if (!shouldRender || isClosing) return;
+
+    setIsClosing(true);
+    setPreviewRequested(false);
+    setMaxAmountInput("");
+    setAmountTouched(false);
+    const timer = setTimeout(() => {
+      setShouldRender(false);
+      setIsClosing(false);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [open, shouldRender, isClosing]);
 
   if (!shouldRender) return null;
   const previewAmountToSweep = showPreview && previewData

@@ -1,10 +1,10 @@
-import PageHeader from '../components/global/pageHeader'
-import { useManageFiatPage } from '../hooks/pages/useManageFiatPage'
+import PageHeader from "../components/global/pageHeader";
+import { useManageFiatPage } from "../hooks/pages/useManageFiatPage";
 import AccountCard from "../components/pages/manageFiat/AccountCard.tsx";
 import BankDetailsModal from "../components/pages/manageFiat/BankDetailsModal.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
-import { SearchInput } from '../components/ui/search-input'
-import { Input } from '../components/ui/input'
+import { SearchInput } from "../components/ui/search-input";
+import { Input } from "../components/ui/input";
 
 const ManageFiat = () => {
   const {
@@ -31,11 +31,8 @@ const ManageFiat = () => {
     handleSavePayoutAutoApprovalLimit,
   } = useManageFiatPage();
 
-  const currentPayoutLimit =
-    payoutAutoApprovalLimitQuery.data?.thresholdNgn ?? 1_000_000;
-  const isFallbackLimit =
-    payoutAutoApprovalLimitQuery.data?.isFallback === true;
-  
+  const currentPayoutLimit = payoutAutoApprovalLimitQuery.data?.thresholdNgn;
+
   return (
     <AuthenticatedLayout>
       <div className="p-6 min-h-screen container">
@@ -51,7 +48,8 @@ const ManageFiat = () => {
                 Automated sell payouts stop above the configured NGN limit
               </h2>
               <p className="mt-2 max-w-2xl text-[14px] leading-6 text-[#5C6370]">
-                Payouts above this ceiling move into manual review instead of calling Nomba automatically. Admins can update the limit here without a schema change.
+                Payouts above this ceiling move into manual review instead of
+                calling Nomba automatically.
               </p>
             </div>
 
@@ -59,11 +57,6 @@ const ManageFiat = () => {
               <div className="font-medium text-[#0E0F0C]">Current limit</div>
               <div className="mt-1 text-[20px] font-semibold text-[#0E0F0C]">
                 ₦ {Number(currentPayoutLimit).toLocaleString()}
-              </div>
-              <div className="mt-1 text-[12px] text-[#5C6370]">
-                {isFallbackLimit
-                  ? "Using the documented fallback until the setting is saved."
-                  : "Loaded from the settings table."}
               </div>
             </div>
           </div>
@@ -89,12 +82,12 @@ const ManageFiat = () => {
             </button>
           </div>
         </section>
-        
+
         <div className="flex w-full items-center gap-2 justify-between lg:w-auto">
           <div className="mt-8 text-[24px] font-medium text-[#0E0F0C]">
             Account Numbers
           </div>
-          
+
           <SearchInput
             placeholder="Search Bank"
             value={searchQuery}
@@ -103,7 +96,7 @@ const ManageFiat = () => {
             className="md:w-[280px]"
           />
         </div>
-        
+
         {/* cards */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           {!loadingSearchedSupportedBanks &&
@@ -117,7 +110,7 @@ const ManageFiat = () => {
                 onDelete={handleDeleteBank}
               />
             ))}
-          
+
           <section
             className="rounded-2xl border border-[#ECECEC] bg-white shadow-sm flex items-center justify-center p-4 cursor-pointer hover:bg-[#FAFAFA]"
             onClick={handleOpenBankModal}
@@ -143,7 +136,7 @@ const ManageFiat = () => {
             </div>
           </section>
         </section>
-        
+
         {/* Modals */}
         <BankDetailsModal
           open={openBankModal}
@@ -156,6 +149,6 @@ const ManageFiat = () => {
         />
       </div>
     </AuthenticatedLayout>
-  )
-}
-export default ManageFiat
+  );
+};
+export default ManageFiat;
