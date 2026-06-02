@@ -10,6 +10,54 @@ import { QUERY_KEYS } from './querries.keys.js';
 import { toast } from 'react-toastify';
 
 const TERMINAL_STATUSES = ['COMPLETED', 'FAILED', 'PARTIAL'];
+const BTC_MAX_TOTAL_AMOUNT_VALIDATION_MESSAGE =
+  'Total amount cap (maxTotalAmount) is not supported for Bitcoin sweeps. Omit maxTotalAmount to sweep the full eligible amount.';
+
+function isBtcMaxTotalAmountValidationError(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const maybeError = error as {
+    response?: {
+      data?: {
+        error?: {
+          message?: string;
+          errors?: {
+            options?: {
+              maxTotalAmount?: {
+                _errors?: string[];
+              };
+            };
+          };
+        };
+      };
+    };
+    message?: string;
+  };
+
+  const directMessage = maybeError.response?.data?.error?.message ?? maybeError.message;
+  if (directMessage === BTC_MAX_TOTAL_AMOUNT_VALIDATION_MESSAGE) {
+    return true;
+  }
+
+  return (
+    maybeError.response?.data?.error?.errors?.options?.maxTotalAmount?._errors?.some(
+      (message) => message === BTC_MAX_TOTAL_AMOUNT_VALIDATION_MESSAGE,
+    ) ?? false
+  );
+}
+
+function stripBtcCap<T extends { network: string; maxTotalAmount?: number }>(
+  params: T,
+) {
+  if (params.network !== 'BTC' || params.maxTotalAmount == null) {
+    return params;
+  }
+
+  const { maxTotalAmount: _ignored, ...rest } = params;
+  return rest;
+}
 
 export const useSweepQuery = () => {
   const queryClient = useQueryClient();
@@ -19,9 +67,28 @@ export const useSweepQuery = () => {
     return useQuery({
       queryKey: [QUERY_KEYS.SWEEP.PREVIEW, params],
       queryFn: async () => {
-        const { data, success, message } = await sweepServiceApi.previewSweep(params!);
-        if (!success) throw new Error(message);
-        return data;
+        const requestParams = params!;
+        try {
+          const { data, success, message } = await sweepServiceApi.previewSweep(
+            requestParams,
+          );
+          if (!success) throw new Error(message);
+          return data;
+        } catch (error) {
+          if (
+            isBtcMaxTotalAmountValidationError(error) &&
+            requestParams.network === 'BTC' &&
+            requestParams.maxTotalAmount != null
+          ) {
+            const fallbackParams = stripBtcCap(requestParams);
+            const { data, success, message } = await sweepServiceApi.previewSweep(
+              fallbackParams,
+            );
+            if (!success) throw new Error(message);
+            return data;
+          }
+          throw error;
+        }
       },
       enabled: !!params?.cryptocurrencyId && !!params?.network,
       staleTime: 30_000,
@@ -86,7 +153,29 @@ export const useSweepQuery = () => {
   const initiateSweepMutation = useMutation({
     mutationKey: [QUERY_KEYS.SWEEP.INITIATE],
     mutationFn: async (params: InitiateSweepParams) => {
-      return await sweepServiceApi.initiateSweep(params);
+      try {
+        return await sweepServiceApi.initiateSweep(params);
+      } catch (error) {
+        if (
+          isBtcMaxTotalAmountValidationError(error) &&
+          params.network === 'BTC' &&
+          params.options?.maxTotalAmount != null
+        ) {
+          const fallbackParams = {
+            ...params,
+            options: stripBtcCap(params.options),
+          };
+          const response = await sweepServiceApi.initiateSweep(fallbackParams);
+          if (response.success) {
+            toast.warning(
+              'BTC maxTotalAmount was accepted by the UI, but the current backend build does not support it yet. The sweep was started without the cap.',
+            );
+          }
+          return response;
+        }
+
+        throw error;
+      }
     },
     onSuccess: ({ success, message }) => {
       if (success) {
