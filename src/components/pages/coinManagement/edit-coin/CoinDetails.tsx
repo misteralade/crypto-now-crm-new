@@ -9,6 +9,7 @@ import { Checkbox } from "../../../ui/checkbox";
 const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter(
   (opt) => opt.value !== undefined,
 ) as Array<{ value: string; label: string }>;
+
 type WalletEntryFormState = {
   network: string;
   walletAddress: string;
@@ -25,10 +26,11 @@ interface EditCoinDetailsProps {
   symbol: string;
   networks?: string[];
   active: boolean;
+  blockchainEnvironment: "testnet" | "mainnet";
   adminCryptoWallets?: AdminCryptoWalletResponsePayload[];
   onChangeInputField: (
     field: keyof EditSupportedCryptoAndAdminWalletRequestType,
-    value: any,
+    value: unknown,
   ) => void;
 }
 
@@ -37,11 +39,15 @@ const EditCoinDetails = ({
   symbol,
   networks = [],
   active,
+  blockchainEnvironment,
   adminCryptoWallets = [],
   onChangeInputField,
 }: EditCoinDetailsProps) => {
   const [isActive, setIsActive] = useState(active);
   const [selectedNetworks, setSelectedNetworks] = useState<string[]>(networks);
+  const currentBlockchainEnvironment = blockchainEnvironment;
+  const currentBlockchainEnvironmentLabel =
+    currentBlockchainEnvironment === "mainnet" ? "MAINNET" : "TESTNET";
 
   const initialWalletEntries = adminCryptoWallets.reduce<
     Record<string, WalletEntryFormState>
@@ -60,9 +66,16 @@ const EditCoinDetails = ({
     useState<Record<string, WalletEntryFormState>>(initialWalletEntries);
 
   const walletEntriesForNetwork = (network: string) =>
-    Object.entries(walletEntries)
-      .filter(([, entry]) => entry.network === network)
-      .map(([key, entry]) => ({ key, ...entry }));
+    [
+      {
+        key: walletKey(network, currentBlockchainEnvironment),
+        network,
+        walletAddress:
+          walletEntries[walletKey(network, currentBlockchainEnvironment)]?.walletAddress ??
+          "",
+        blockchainEnvironment: currentBlockchainEnvironment,
+      },
+    ];
 
   const emitWallets = (
     entries: Record<string, WalletEntryFormState>,
@@ -70,6 +83,7 @@ const EditCoinDetails = ({
   ) => {
     const wallets = Object.values(entries)
       .filter((entry) => networksToUse.includes(entry.network))
+      .filter((entry) => entry.walletAddress.trim().length > 0)
       .map((entry) => ({
         network: entry.network,
         walletAddress: entry.walletAddress,
@@ -92,16 +106,7 @@ const EditCoinDetails = ({
               ([, entry]) => entry.network !== networkValue,
             ),
           ) as Record<string, WalletEntryFormState>)
-        : walletEntriesForNetwork(networkValue).length > 0
-          ? walletEntries
-          : {
-              ...walletEntries,
-              [walletKey(networkValue, "mainnet")]: {
-                network: networkValue,
-                walletAddress: "",
-                blockchainEnvironment: "mainnet",
-              },
-            };
+        : walletEntries;
 
     setWalletEntries(nextEntries);
     emitWallets(nextEntries, updated);
@@ -176,7 +181,7 @@ const EditCoinDetails = ({
                         <span
                           className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${entry.blockchainEnvironment === "mainnet" ? "bg-[#FFF7ED] text-[#C2410C]" : "bg-[#EFF6FF] text-[#2563EB]"}`}
                         >
-                          {entry.blockchainEnvironment}
+                          {currentBlockchainEnvironmentLabel}
                         </span>
                       </div>
                       <PillInput

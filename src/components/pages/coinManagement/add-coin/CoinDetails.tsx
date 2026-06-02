@@ -22,7 +22,7 @@ const walletKey = (
 interface CoinDetailsProps {
   onChangeInputField: (
     field: keyof CreateSupportedCryptoAndAdminWalletRequestType,
-    value: any,
+    value: unknown,
   ) => void;
 }
 

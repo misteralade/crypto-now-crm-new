@@ -53,6 +53,7 @@ const EditCoin = () => {
                 networks={adminCryptoDetails?.networks ?? []}
                 active={adminCryptoDetails?.isActive || false}
                 adminCryptoWallets={adminCryptoDetails?.adminCryptoWallets ?? []}
+                blockchainEnvironment={adminCryptoDetails?.blockchainEnvironment as "testnet" | "mainnet"}
               />
 
               <EditTradeLimits

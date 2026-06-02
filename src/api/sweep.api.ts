@@ -21,6 +21,7 @@ export interface SweepPreviewData {
   feeHandling: 'deducted_from_swept_asset' | 'paid_from_source_native_balance';
   walletsSweepable: number;
   walletsBlockedByFee: number;
+  walletsSkippedBelowThreshold: number;
   filteredToSpecific: boolean;
   /** ISO timestamp of the oldest cached balance across the eligible wallets */
   oldestRefreshedAt: string | null;

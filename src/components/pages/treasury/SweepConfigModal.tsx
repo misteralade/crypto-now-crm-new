@@ -20,7 +20,7 @@ const NETWORK_OPTIONS = [
 ];
 
 // Must match backend `SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT` in cryptonow-backend/src/util/constants.ts
-const SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT = false;
+const SWEEP_BTC_SUPPORTS_MAX_TOTAL_AMOUNT = true;
 
 // Standardize error extraction across mutation paths.
 function getErrorMessage(error: unknown) {
@@ -76,6 +76,7 @@ export default function SweepConfigModal({
   const [cryptocurrencyId, setCryptocurrencyId] = useState("");
   const [previewRequested, setPreviewRequested] = useState(false);
   const [maxAmountInput, setMaxAmountInput] = useState("");
+  const [dustThresholdInput, setDustThresholdInput] = useState("");
   const [amountTouched, setAmountTouched] = useState(false);
 
   const [isClosing, setIsClosing] = useState(false);
@@ -141,13 +142,27 @@ export default function SweepConfigModal({
     const n = Number(trimmed);
     return Number.isFinite(n) && n > 0 ? n : undefined;
   })();
+  const parsedDustThresholdOverride = (() => {
+    const trimmed = dustThresholdInput.trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  })();
   const maxAmountInvalid =
     !isBtcLimitedSweepUi &&
     maxAmountInput.trim().length > 0 &&
     parsedMaxAmount === undefined;
+  const dustThresholdInvalid =
+    !isBtcLimitedSweepUi &&
+    dustThresholdInput.trim().length > 0 &&
+    parsedDustThresholdOverride === undefined;
   const previewMaxTotalAmount =
     !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
       ? parsedMaxAmount
+      : undefined;
+  const previewDustThresholdOverride =
+    !isBtcLimitedSweepUi && parsedDustThresholdOverride !== undefined
+      ? parsedDustThresholdOverride
       : undefined;
 
   // Preview includes cached totals plus live sweepability checks when requested.
@@ -161,6 +176,7 @@ export default function SweepConfigModal({
       ? {
           network,
           cryptocurrencyId,
+          dustThresholdOverride: previewDustThresholdOverride,
           maxTotalAmount: previewMaxTotalAmount,
         }
       : null
@@ -214,6 +230,7 @@ export default function SweepConfigModal({
     setIsClosing(true);
     setPreviewRequested(false);
     setMaxAmountInput("");
+    setDustThresholdInput("");
     setAmountTouched(false);
     const timer = setTimeout(() => {
       setShouldRender(false);
@@ -240,6 +257,10 @@ export default function SweepConfigModal({
       toast.error("Please select both network and cryptocurrency");
       return;
     }
+    if (dustThresholdInvalid) {
+      toast.error("Minimum wallet balance must be a positive number");
+      return;
+    }
     if (maxAmountInvalid) {
       toast.error("Amount must be a positive number");
       return;
@@ -248,17 +269,34 @@ export default function SweepConfigModal({
   };
 
   const handleInitiate = async () => {
+    if (dustThresholdInvalid) {
+      toast.error("Minimum wallet balance must be a positive number");
+      return;
+    }
     if (maxAmountInvalid) {
       toast.error("Amount must be a positive number");
       return;
     }
     try {
+      const sweepOptions =
+        !isBtcLimitedSweepUi
+          ? {
+              ...(parsedDustThresholdOverride !== undefined
+                ? {
+                    dustThresholdOverride: parsedDustThresholdOverride,
+                  }
+                : {}),
+              ...(parsedMaxAmount !== undefined
+                ? { maxTotalAmount: parsedMaxAmount }
+                : {}),
+            }
+          : undefined;
       const result = await initiateSweepMutation.mutateAsync({
         network,
         cryptocurrencyId,
         options:
-          !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
-            ? { maxTotalAmount: parsedMaxAmount }
+          sweepOptions && Object.keys(sweepOptions).length > 0
+            ? sweepOptions
             : undefined,
       });
 
@@ -485,6 +523,47 @@ export default function SweepConfigModal({
                   </p>
                 )}
               </div>
+
+              {!isBtcLimitedSweepUi && (
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="sweep-dust-threshold"
+                    className="block text-xs font-semibold text-[--color-text-primary]"
+                  >
+                    Minimum wallet balance
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="sweep-dust-threshold"
+                      type="number"
+                      min={0}
+                      step="any"
+                      inputMode="decimal"
+                      placeholder="Leave empty to sweep every wallet"
+                      value={dustThresholdInput}
+                      onChange={(e) => setDustThresholdInput(e.target.value)}
+                      className={`h-11 w-full rounded-xl border px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
+                        dustThresholdInvalid
+                          ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
+                          : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                      }`}
+                    />
+                    {symbol && (
+                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
+                        {symbol}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#667085]">
+                    Wallets at or below this balance are skipped before fee checks and on-chain execution.
+                  </p>
+                  {dustThresholdInvalid && (
+                    <p className="text-xs text-red-500">
+                      Minimum wallet balance must be a positive number.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {showPreview && isPreviewLoading && (
@@ -507,6 +586,14 @@ export default function SweepConfigModal({
                     {previewData.walletsSweepable}
                   </span>
                 </div>
+                {previewData.walletsSkippedBelowThreshold > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">Below minimum balance</span>
+                    <span className="font-semibold text-[#667085]">
+                      {previewData.walletsSkippedBelowThreshold}
+                    </span>
+                  </div>
+                )}
                 {previewData.walletsBlockedByFee > 0 && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#667085]">Blocked by network fees</span>
