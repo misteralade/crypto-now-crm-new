@@ -39,6 +39,26 @@ function shortAddress(address: string) {
   return `${address.slice(0, 10)}...${address.slice(-8)}`;
 }
 
+function isTestnetEnvironment(value: string | null | undefined) {
+  return typeof value === 'string' && value.toLowerCase() === 'testnet';
+}
+
+function getSweepTxUrl(
+  network: string | undefined,
+  blockchainEnvironment: string | undefined,
+  txHash: string,
+) {
+  if (!txHash) return null;
+
+  if (network === 'BTC') {
+    return isTestnetEnvironment(blockchainEnvironment)
+      ? `https://mempool.space/testnet/tx/${txHash}`
+      : `https://www.blockchain.com/explorer/transactions/btc/${txHash}`;
+  }
+
+  return null;
+}
+
 export default function SweepDetail() {
   const navigate = useNavigate();
   const { sweepId } = useParams({ strict: false }) as { sweepId: string };
@@ -80,10 +100,17 @@ export default function SweepDetail() {
     {
       key: 'amount',
       header: 'Amount Swept',
-      render: (val) => (
-        <span className="font-mono text-xs font-bold text-[#575AE5] tabular-nums">
-          {val ? Number(val).toFixed(6) : '—'}
-        </span>
+      render: (val, row) => (
+        <div className="space-y-1">
+          <span className="font-mono text-xs font-bold text-[#575AE5] tabular-nums">
+            {val ? Number(val).toFixed(6) : '—'}
+          </span>
+          {Number(row.allocatedFeeAmount ?? 0) > 0 && (
+            <p className="text-[10px] font-medium text-gray-500">
+              Fee deducted: {Number(row.allocatedFeeAmount).toFixed(8)} BTC
+            </p>
+          )}
+        </div>
       )
     },
     {
@@ -109,12 +136,36 @@ export default function SweepDetail() {
     {
       key: 'txHash',
       header: 'Transaction Hash',
-      render: (val) => val ? (
-        <div className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5] hover:underline cursor-pointer transition-all" title={val as string}>
-          <span>{(val as string).slice(0, 10)}...</span>
-          <ExternalLink size={10} />
-        </div>
-      ) : <span className="text-gray-400">—</span>
+      render: (val) => {
+        if (!val) return <span className="text-gray-400">—</span>;
+
+        const url = getSweepTxUrl(sweep?.network, sweep?.blockchainEnvironment, val as string);
+        const content = (
+          <>
+            <span>{(val as string).slice(0, 10)}...</span>
+            <ExternalLink size={10} />
+          </>
+        );
+
+        return url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5] hover:underline transition-all"
+            title={val as string}
+          >
+            {content}
+          </a>
+        ) : (
+          <div
+            className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5]"
+            title={val as string}
+          >
+            {content}
+          </div>
+        );
+      }
     }
   ];
 
@@ -183,6 +234,11 @@ export default function SweepDetail() {
                     Sweep Execution
                   </div>
                   {sweep && <SweepStatusBadge status={sweep.status} />}
+                  {isTestnetEnvironment(sweep?.blockchainEnvironment) && (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-700">
+                      Testnet only
+                    </div>
+                  )}
                 </div>
                 
                 <div>
@@ -245,6 +301,14 @@ export default function SweepDetail() {
             )}
           </div>
         </section>
+
+        {isTestnetEnvironment(sweep?.blockchainEnvironment) && (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            This sweep used Bitcoin testnet. A `success` here means a testnet
+            transaction was broadcast and confirmed on the testnet explorer, not
+            that real mainnet BTC reached a production wallet.
+          </section>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-5">

@@ -11,6 +11,7 @@ export type SweepStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | '
 export interface SweepPreviewData {
   cryptocurrencyId: string;
   network: string;
+  blockchainEnvironment: string;
   targetAdminWallet: { id: string; address: string };
   totalWallets: number;
   estimatedAmount: number;
@@ -21,6 +22,8 @@ export interface SweepPreviewData {
   feeHandling: 'deducted_from_swept_asset' | 'paid_from_source_native_balance';
   walletsSweepable: number;
   walletsBlockedByFee: number;
+  walletsWithoutSpendableBalance: number;
+  walletsMissingSweepSetup: number;
   walletsSkippedBelowThreshold: number;
   filteredToSpecific: boolean;
   /** ISO timestamp of the oldest cached balance across the eligible wallets */
@@ -66,12 +69,17 @@ export interface SweepWalletResult {
   amount: number;
   txHash: string | null;
   error: string | null;
+  btcBatchIndex?: number;
+  grossInputAmount?: number;
+  allocatedFeeAmount?: number;
+  inputCount?: number;
 }
 
 export interface SweepRequest {
   id: string;
   cryptocurrencyId: string;
   network: string;
+  blockchainEnvironment?: string;
   adminWalletId: string;
   initiatedBy: string;
   status: SweepStatus;

@@ -59,6 +59,17 @@ function stripBtcCap<T extends { network: string; maxTotalAmount?: number }>(
   return rest;
 }
 
+function stripMaxTotalAmount<
+  T extends { maxTotalAmount?: number }
+>(options: T | undefined) {
+  if (!options || options.maxTotalAmount == null) {
+    return options;
+  }
+
+  const { maxTotalAmount: _ignored, ...rest } = options;
+  return rest;
+}
+
 export const useSweepQuery = () => {
   const queryClient = useQueryClient();
 
@@ -156,16 +167,16 @@ export const useSweepQuery = () => {
       try {
         return await sweepServiceApi.initiateSweep(params);
       } catch (error) {
-        if (
-          isBtcMaxTotalAmountValidationError(error) &&
-          params.network === 'BTC' &&
-          params.options?.maxTotalAmount != null
-        ) {
-          const fallbackParams = {
-            ...params,
-            options: stripBtcCap(params.options),
-          };
-          const response = await sweepServiceApi.initiateSweep(fallbackParams);
+          if (
+            isBtcMaxTotalAmountValidationError(error) &&
+            params.network === 'BTC' &&
+            params.options?.maxTotalAmount != null
+          ) {
+            const fallbackParams = {
+              ...params,
+              options: stripMaxTotalAmount(params.options),
+            };
+            const response = await sweepServiceApi.initiateSweep(fallbackParams);
           if (response.success) {
             toast.warning(
               'BTC maxTotalAmount was accepted by the UI, but the current backend build does not support it yet. The sweep was started without the cap.',
