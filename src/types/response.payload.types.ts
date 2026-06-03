@@ -126,6 +126,7 @@ export type AdminTransactionStatsResponse = {
   payoutsSent: number;
   completed: number;
   payoutFailed: number;
+  inReview: number;
   pendingPayout: number;
   critical: number;
 };

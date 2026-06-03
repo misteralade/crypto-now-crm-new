@@ -222,6 +222,17 @@ const ManageTransactions = () => {
                 />
               </div>
               <div
+                onClick={() => handleSelectedStatus("AWAITING_PAYMENT")}
+                className="cursor-pointer"
+              >
+                <ShortSummaryCard
+                  title="In Review"
+                  value={adminTransactionStats?.inReview?.toString() || "0"}
+                  time={timelineLabels[selectedStatsTimeline]}
+                  icon={<Clock className="w-4 h-4 text-amber-500" />}
+                />
+              </div>
+              <div
                 onClick={() => handleSelectedStatus("PAYOUT_FAILED")}
                 className="cursor-pointer"
               >
