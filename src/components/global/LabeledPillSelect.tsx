@@ -34,7 +34,7 @@ export default function MFLabeledPillSelect({ label, options, value, placeholder
   return (
     <PillSelect
       label={label}
-      value={value || undefined}
+      value={value ?? ""}
       placeholder={placeholder}
       onValueChange={handleValueChange}
       options={options}

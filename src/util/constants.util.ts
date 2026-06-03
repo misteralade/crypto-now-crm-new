@@ -93,7 +93,6 @@ export const BLOCKCHAIN_ENVIRONMENT_OPTIONS = [
 export const TRANSACTION_STATUS_OPTIONS = [
   { value: undefined, label: 'All' },
   { value: TRANSACTION_STATUS.INITIATED, label: 'Initiated' },
-  { value: TRANSACTION_STATUS.PENDING, label: 'Pending' },
   { value: TRANSACTION_STATUS.AWAITING_PAYMENT, label: 'Awaiting Payment' },
   { value: TRANSACTION_STATUS.AWAITING_CRYPTO, label: 'Awaiting Crypto' },
   { value: TRANSACTION_STATUS.COMPLETED, label: 'Completed' },
@@ -101,16 +100,13 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.EXPIRED, label: 'Expired' },
   { value: TRANSACTION_STATUS.CANCELLED, label: 'Cancelled' },
   { value: TRANSACTION_STATUS.DISPUTED, label: 'Disputed' },
-  {
-    value: TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
-    label: 'Payment Account Confirmed',
-  },
   { value: TRANSACTION_STATUS.DEPOSIT_DETECTED, label: 'Deposit Detected' },
   { value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED, label: 'Deposit Confirmed' },
   { value: TRANSACTION_STATUS.PAYOUT_INITIATED, label: 'Payout Initiated' },
   { value: TRANSACTION_STATUS.PROCESSING, label: 'Processing' },
   { value: TRANSACTION_STATUS.PAYOUT_FAILED, label: 'Payout Failed' },
   { value: TRANSACTION_STATUS.PENDING_PAYOUT, label: 'Pending Payout' },
+  { value: TRANSACTION_STATUS.REFUNDED, label: 'Refunded' },
 ]
 
 export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
@@ -127,12 +123,6 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     priority: true,
   },
   {
-    value: TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
-    label: 'Payment Account Confirmed',
-    description: 'Customer payment details have been confirmed.',
-    priority: true,
-  },
-  {
     value: TRANSACTION_STATUS.AWAITING_PAYMENT,
     label: 'Awaiting Payment',
     description: 'Waiting for the customer to send payment.',
@@ -142,18 +132,6 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     value: TRANSACTION_STATUS.AWAITING_CRYPTO,
     label: 'Awaiting Bank Details',
     description: 'Waiting for the customer bank details before payout.',
-    priority: true,
-  },
-  {
-    value: TRANSACTION_STATUS.PAYMENT_RECEIVED,
-    label: 'Payment Received',
-    description: 'Payment has landed and is awaiting confirmation.',
-    priority: true,
-  },
-  {
-    value: TRANSACTION_STATUS.PAYMENT_CONFIRMED,
-    label: 'Payment Confirmed',
-    description: 'Payment has been verified and cleared.',
     priority: true,
   },
   {
@@ -169,24 +147,6 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     priority: true,
   },
   {
-    value: TRANSACTION_STATUS.CRYPTO_SENT,
-    label: 'Crypto Sent',
-    description: 'Crypto payout has been broadcast.',
-    priority: true,
-  },
-  {
-    value: TRANSACTION_STATUS.CRYPTO_RECEIVED,
-    label: 'Crypto Received',
-    description: 'Crypto payment has arrived.',
-    priority: true,
-  },
-  {
-    value: TRANSACTION_STATUS.CRYPTO_CONFIRMED,
-    label: 'Crypto Confirmed',
-    description: 'Crypto payment is fully confirmed.',
-    priority: true,
-  },
-  {
     value: TRANSACTION_STATUS.PAYOUT_INITIATED,
     label: 'Payout Initiated',
     description: 'Fiat payout has been sent to the rail.',
@@ -197,12 +157,6 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     label: 'Completed',
     description: 'The transaction finished successfully.',
     priority: true,
-  },
-  {
-    value: TRANSACTION_STATUS.PENDING,
-    label: 'Pending',
-    description: 'The transaction exists but has not entered the flow yet.',
-    priority: false,
   },
   {
     value: TRANSACTION_STATUS.INITIATED,
@@ -237,39 +191,26 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
   {
     value: TRANSACTION_STATUS.DISPUTED,
     label: 'Disputed',
-    description: 'The transaction is under dispute.',
-    priority: false,
-  },
-  {
-    value: TRANSACTION_STATUS.REFUNDING,
-    label: 'Refunding',
-    description: 'A refund is currently being processed.',
+    description: 'The transaction is under dispute and requires a reason.',
     priority: false,
   },
   {
     value: TRANSACTION_STATUS.REFUNDED,
     label: 'Refunded',
-    description: 'The refund has been completed.',
+    description: 'The transaction refund has been completed.',
     priority: false,
   },
 ] as const
 
 export const ALLOWED_ADMIN_TRANSACTION_STATUS = [
   TRANSACTION_STATUS.AWAITING_PAYMENT,
-  TRANSACTION_STATUS.PAYMENT_RECEIVED,
-  TRANSACTION_STATUS.PAYMENT_CONFIRMED,
   TRANSACTION_STATUS.PROCESSING,
   TRANSACTION_STATUS.AWAITING_CRYPTO,
-  TRANSACTION_STATUS.CRYPTO_SENT,
-  TRANSACTION_STATUS.CRYPTO_RECEIVED,
-  TRANSACTION_STATUS.CRYPTO_CONFIRMED,
   TRANSACTION_STATUS.COMPLETED,
   TRANSACTION_STATUS.FAILED,
   TRANSACTION_STATUS.CANCELLED,
   TRANSACTION_STATUS.DISPUTED,
-  TRANSACTION_STATUS.REFUNDING,
   TRANSACTION_STATUS.REFUNDED,
-  TRANSACTION_STATUS.PAYMENT_ACCOUNT_CONFIRMED,
 ]
 
 export const transactionStatusStyles: Record<
@@ -282,29 +223,11 @@ export const transactionStatusStyles: Record<
     dot: 'bg-orange-400',
     textColor: 'text-orange-600',
   },
-  PENDING: {
-    text: 'Pending',
-    bg: 'bg-orange-50',
-    dot: 'bg-orange-400',
-    textColor: 'text-orange-600',
-  },
   AWAITING_PAYMENT: {
     text: 'Awaiting Payment',
     bg: 'bg-yellow-50',
     dot: 'bg-yellow-400',
     textColor: 'text-yellow-600',
-  },
-  PAYMENT_RECEIVED: {
-    text: 'Payment Received',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
-  },
-  PAYMENT_CONFIRMED: {
-    text: 'Payment Confirmed',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
   },
   PROCESSING: {
     text: 'Processing',
@@ -314,24 +237,6 @@ export const transactionStatusStyles: Record<
   },
   AWAITING_CRYPTO: {
     text: 'Awaiting Crypto',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
-  },
-  CRYPTO_SENT: {
-    text: 'Crypto Sent',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
-  },
-  CRYPTO_RECEIVED: {
-    text: 'Crypto Received',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
-  },
-  CRYPTO_CONFIRMED: {
-    text: 'Crypto Confirmed',
     bg: 'bg-blue-50',
     dot: 'bg-blue-400',
     textColor: 'text-blue-600',
@@ -366,23 +271,11 @@ export const transactionStatusStyles: Record<
     dot: 'bg-red-400',
     textColor: 'text-red-600',
   },
-  REFUNDING: {
-    text: 'Refunding',
-    bg: 'bg-yellow-50',
-    dot: 'bg-yellow-400',
-    textColor: 'text-yellow-600',
-  },
   REFUNDED: {
     text: 'Refunded',
-    bg: 'bg-green-50',
-    dot: 'bg-green-400',
-    textColor: 'text-green-600',
-  },
-  PAYMENT_ACCOUNT_CONFIRMED: {
-    text: 'Payment Account Confirmed',
-    bg: 'bg-blue-50',
-    dot: 'bg-blue-400',
-    textColor: 'text-blue-600',
+    bg: 'bg-emerald-50',
+    dot: 'bg-emerald-500',
+    textColor: 'text-emerald-600',
   },
   PENDING_PAYOUT: {
     text: 'Pending Payout',

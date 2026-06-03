@@ -417,6 +417,15 @@ const TransactionDetailsDrawer = ({
                   <StatusBadge status={transaction.status} />
                 </section>
 
+                {transaction.failureReason && (
+                  <section className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
+                    <div className="text-[#828282] text-[16px]">Reason</div>
+                    <p className="mt-1 text-sm leading-relaxed text-rose-900">
+                      {transaction.failureReason}
+                    </p>
+                  </section>
+                )}
+
                 {canRetryPayout && (
                   <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
                     <div className="space-y-3">

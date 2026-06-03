@@ -36,15 +36,6 @@ const statusConfig: Record<TransactionStatus, {
   },
 
   // In progress statuses
-  PENDING: {
-    category: StatusCategory.IN_PROGRESS,
-    bgColor: 'bg-amber-50',
-    textColor: 'text-amber-700',
-    dotColor: 'bg-amber-500',
-    displayName: 'Pending',
-    description: 'Transaction is being processed',
-    isActionable: false,
-  },
   PROCESSING: {
     category: StatusCategory.IN_PROGRESS,
     bgColor: 'bg-indigo-50',
@@ -54,16 +45,6 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Transaction is currently being processed',
     isActionable: false,
   },
-  PAYMENT_ACCOUNT_CONFIRMED: {
-    category: StatusCategory.IN_PROGRESS,
-    bgColor: 'bg-teal-50',
-    textColor: 'text-teal-700',
-    dotColor: 'bg-teal-500',
-    displayName: 'Account Confirmed',
-    description: 'Payment account has been confirmed',
-    isActionable: false,
-  },
-
   // Awaiting statuses
   AWAITING_PAYMENT: {
     category: StatusCategory.AWAITING,
@@ -120,6 +101,15 @@ const statusConfig: Record<TransactionStatus, {
     dotColor: 'bg-rose-500',
     displayName: 'Disputed',
     description: 'Transaction is under dispute',
+    isActionable: true,
+  },
+  REFUNDED: {
+    category: StatusCategory.SUCCESS,
+    bgColor: 'bg-green-50',
+    textColor: 'text-green-700',
+    dotColor: 'bg-green-600',
+    displayName: 'Refunded',
+    description: 'Transaction refund completed successfully',
     isActionable: true,
   },
 

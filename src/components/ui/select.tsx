@@ -212,7 +212,7 @@ const LabeledSelect = ({
 
   return (
     <div className="flex flex-col gap-2 w-full mb-5">
-      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+      <Select value={value ?? ""} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className={cn(className)} error={!!error} label={label}>
           <span
             className={cn(
@@ -262,7 +262,7 @@ const PillSelect = ({
 
   return (
     <div className="flex flex-col gap-2 w-full mb-5">
-      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+      <Select value={value ?? ""} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className={cn(className)} error={!!error} label={label}>
           <span
             className={cn(

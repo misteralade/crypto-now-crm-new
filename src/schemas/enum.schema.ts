@@ -16,7 +16,6 @@ export const TransactionStatus = z.preprocess(
   },
   z.enum([
     'INITIATED',
-    'PENDING',
     'AWAITING_PAYMENT',
     'AWAITING_CRYPTO',
     'COMPLETED',
@@ -24,7 +23,7 @@ export const TransactionStatus = z.preprocess(
     'EXPIRED',
     'CANCELLED',
     'DISPUTED',
-    'PAYMENT_ACCOUNT_CONFIRMED',
+    'REFUNDED',
     'DEPOSIT_DETECTED',
     'DEPOSIT_CONFIRMED',
     'PAYOUT_INITIATED',

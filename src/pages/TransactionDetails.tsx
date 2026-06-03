@@ -212,7 +212,7 @@ const TransactionDetails = () => {
                 {/* Failure Reason */}
                 {transaction.failureReason && (
                   <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Failure Information</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Status Reason</h2>
                     <div className="p-4 bg-red-50 rounded-lg">
                       <p className="text-sm font-medium text-red-900 mb-1">Reason</p>
                       <p className="text-sm text-red-800">{transaction.failureReason}</p>

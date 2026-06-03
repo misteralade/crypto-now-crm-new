@@ -65,15 +65,12 @@ export const mapTransactionStatus = (
     string,
     { displayText: string; variant: StatusVariant }
   > = {
-    PAYMENT_ACCOUNT_CONFIRMED: {
-      displayText: 'Processing',
-      variant: 'processing',
-    },
     AWAITING_PAYMENT: { displayText: 'Pending', variant: 'pending' },
     COMPLETED: { displayText: 'Completed', variant: 'completed' },
     INITIATED: { displayText: 'Pending', variant: 'pending' },
     FAILED: { displayText: 'Failed', variant: 'failed' },
     EXPIRED: { displayText: 'Expired', variant: 'expired' },
+    REFUNDED: { displayText: 'Refunded', variant: 'completed' },
     ERROR: { displayText: 'Error', variant: 'error' },
   }
 
