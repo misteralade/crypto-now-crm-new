@@ -78,6 +78,7 @@ export default function SweepConfigModal({
   const [maxAmountInput, setMaxAmountInput] = useState("");
   const [dustThresholdInput, setDustThresholdInput] = useState("");
   const [amountTouched, setAmountTouched] = useState(false);
+  const [showDustThreshold, setShowDustThreshold] = useState(false);
 
   const [isClosing, setIsClosing] = useState(false);
   const [shouldRender, setShouldRender] = useState(open);
@@ -231,6 +232,7 @@ export default function SweepConfigModal({
     setMaxAmountInput("");
     setDustThresholdInput("");
     setAmountTouched(false);
+    setShowDustThreshold(false);
     const timer = setTimeout(() => {
       setShouldRender(false);
       setIsClosing(false);
@@ -378,11 +380,33 @@ export default function SweepConfigModal({
       : `Fees are paid in ${previewData.feeAssetSymbol} from the source wallets, not from the ${symbol || "asset"} amount being swept.`
     : "";
 
+  const requestClose = () => {
+    if (isClosing) return;
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        requestClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, isClosing]);
+
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${
         isClosing ? "animate-modal-backdrop-out" : "animate-modal-backdrop-in"
       }`}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) requestClose();
+      }}
     >
       <div
         className={`w-full max-w-lg overflow-hidden rounded-2xl border border-[#E4E7EC] bg-white shadow-2xl ${
@@ -399,8 +423,10 @@ export default function SweepConfigModal({
             </h2>
           </div>
           <button
-            onClick={onClose}
+            type="button"
+            onClick={requestClose}
             className="rounded-lg p-1 transition-colors hover:bg-gray-100"
+            aria-label="Close modal"
           >
             <svg
               className="h-5 w-5 text-gray-500"
@@ -525,41 +551,76 @@ export default function SweepConfigModal({
 
               {!isBtcLimitedSweepUi && (
                 <div className="space-y-1.5">
-                  <label
-                    htmlFor="sweep-dust-threshold"
-                    className="block text-xs font-semibold text-[--color-text-primary]"
+                  <button
+                    type="button"
+                    onClick={() => setShowDustThreshold((value) => !value)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#03034D] underline underline-offset-4 transition-colors hover:text-[#050568]"
+                    aria-expanded={showDustThreshold}
+                    aria-controls="sweep-dust-threshold-panel"
                   >
-                    Minimum wallet balance
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="sweep-dust-threshold"
-                      type="number"
-                      min={0}
-                      step="any"
-                      inputMode="decimal"
-                      placeholder="Leave empty to sweep every wallet"
-                      value={dustThresholdInput}
-                      onChange={(e) => setDustThresholdInput(e.target.value)}
-                      className={`h-11 w-full rounded-xl border px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
-                        dustThresholdInvalid
-                          ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
-                          : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                    <span>
+                      {showDustThreshold
+                        ? "Hide minimum wallet balance"
+                        : "Add minimum wallet balance"}
+                    </span>
+                    <svg
+                      className={`h-3.5 w-3.5 transition-transform ${
+                        showDustThreshold ? "rotate-180" : ""
                       }`}
-                    />
-                    {symbol && (
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
-                        {symbol}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[#667085]">
-                    Wallets at or below this balance are skipped before fee checks and on-chain execution.
-                  </p>
-                  {dustThresholdInvalid && (
-                    <p className="text-xs text-red-500">
-                      Minimum wallet balance must be a positive number.
-                    </p>
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {showDustThreshold && (
+                    <div
+                      id="sweep-dust-threshold-panel"
+                      className="space-y-1.5 pt-1"
+                    >
+                      <label
+                        htmlFor="sweep-dust-threshold"
+                        className="block text-xs font-semibold text-[--color-text-primary]"
+                      >
+                        Minimum wallet balance
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="sweep-dust-threshold"
+                          type="number"
+                          min={0}
+                          step="any"
+                          inputMode="decimal"
+                          placeholder="Leave empty to sweep every wallet"
+                          value={dustThresholdInput}
+                          onChange={(e) => setDustThresholdInput(e.target.value)}
+                          className={`h-11 w-full rounded-xl border px-3 pr-14 text-sm text-[--color-text-primary] outline-none transition-all focus:ring-2 ${
+                            dustThresholdInvalid
+                              ? "border-red-300 bg-white focus:border-red-400 focus:ring-red-100"
+                              : "border-[--color-border-input] bg-white focus:border-[--color-accent-mid] focus:ring-[#DCDDFD]"
+                          }`}
+                        />
+                        {symbol && (
+                          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#667085]">
+                            {symbol}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#667085]">
+                        Wallets at or below this balance are skipped before fee checks and on-chain execution.
+                      </p>
+                      {dustThresholdInvalid && (
+                        <p className="text-xs text-red-500">
+                          Minimum wallet balance must be a positive number.
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
@@ -598,6 +659,16 @@ export default function SweepConfigModal({
                     <span className="text-[#667085]">Blocked by network fees</span>
                     <span className="font-semibold text-[#DC6803]">
                       {previewData.walletsBlockedByFee}
+                    </span>
+                  </div>
+                )}
+                {previewData.walletsWithoutSpendableBalance > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#667085]">
+                      No spendable BTC UTXOs
+                    </span>
+                    <span className="font-semibold text-red-600">
+                      {previewData.walletsWithoutSpendableBalance}
                     </span>
                   </div>
                 )}
@@ -714,7 +785,8 @@ export default function SweepConfigModal({
 
         <div className="flex gap-3 border-t border-[--color-border] bg-[#FBFBFF] px-6 py-4">
           <button
-            onClick={onClose}
+            type="button"
+            onClick={requestClose}
             className="flex-1 rounded-xl border border-[#E4E7EC] bg-white px-4 py-2.5 text-sm font-semibold text-[#03034D] transition-colors hover:bg-[#F8F8FF]"
           >
             Cancel
