@@ -156,6 +156,7 @@ export default function TreasuryWalletsModal({
                 void navigate({
                   to: "/dashboard/custodial-wallet/$walletAddress",
                   params: { walletAddress: row.wallet.walletAddress },
+                  search: { fromSweepId: "" },
                 });
               }}
               className="inline-flex items-center gap-1 rounded-lg border border-transparent px-2.5 py-1.5 text-xs font-semibold text-indigo-600 transition-all hover:border-indigo-100 hover:bg-indigo-50"
@@ -212,6 +213,7 @@ export default function TreasuryWalletsModal({
               void navigate({
                 to: "/dashboard/custodial-wallet/$walletAddress",
                 params: { walletAddress: row.wallet.walletAddress },
+                search: { fromSweepId: "" },
               });
             }}
             emptyMessage="No active wallets found for this token and network."
