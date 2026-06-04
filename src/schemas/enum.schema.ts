@@ -19,6 +19,7 @@ export const TransactionStatus = z.preprocess(
     'AWAITING_PAYMENT',
     'IN_REVIEW',
     'AWAITING_CRYPTO',
+    'DEPOSIT_PENDING_MINIMUM',
     'COMPLETED',
     'FAILED',
     'EXPIRED',

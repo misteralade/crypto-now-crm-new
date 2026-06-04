@@ -73,6 +73,15 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Waiting for cryptocurrency transaction',
     isActionable: false,
   },
+  DEPOSIT_PENDING_MINIMUM: {
+    category: StatusCategory.AWAITING,
+    bgColor: 'bg-sky-50',
+    textColor: 'text-sky-700',
+    dotColor: 'bg-sky-500',
+    displayName: 'Deposit Pending Minimum',
+    description: 'Deposit is confirmed but still below the minimum threshold',
+    isActionable: false,
+  },
 
   // Success statuses
   COMPLETED: {

@@ -5,13 +5,10 @@ import { convertToMillify } from "../../../util/index.util.ts";
 import momentClient from "../../../util/moment";
 import CopyDetails from "../../global/CopyDetails";
 import { StatusBadge } from "../../global/StatusBadge";
-import {
-  TRANSACTION_STATUS_UPDATE_OPTIONS,
-  transactionStatusStyles,
-} from "../../../util/constants.util.ts";
 import { canManuallyRetryPayout } from "../../../util/transaction.util.ts";
 import { setTransactionDetailUpdateField } from "../../../redux/transaction-management.slice";
 import CustomerAccountDetails from "./CustomerAccountDetails.tsx";
+import TransactionStatusPicker from "./TransactionStatusPicker";
 import type { TransactionStatusType } from "../../../schemas/enum.schema";
 import type { SearchTransactionsResponse } from "../../../types/response.payload.types";
 import type { UpdateTransactionStatusRequestType } from "../../../schemas/transaction.schema";
@@ -19,12 +16,6 @@ import type { ChangeEvent } from "react";
 import LabeledPillInput from "../../global/LabeledPillInput";
 import type { RootState } from "../../../store";
 import { Skeleton } from "../../global/Skeleton";
-
-const PRIORITY_TRANSACTION_STATUS_OPTIONS =
-  TRANSACTION_STATUS_UPDATE_OPTIONS.filter((option) => option.priority);
-
-const SECONDARY_TRANSACTION_STATUS_OPTIONS =
-  TRANSACTION_STATUS_UPDATE_OPTIONS.filter((option) => !option.priority);
 
 interface TransactionDetailsDrawerProps {
   isOpen: boolean;
@@ -140,102 +131,9 @@ const TransactionDetailsDrawer = ({
     return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`;
   };
 
-  const getStatusColorObject = (status: string) => {
-    return (
-      transactionStatusStyles[status.toUpperCase()] ?? {
-        text: status,
-        bg: "bg-gray-50",
-        dot: "bg-gray-400",
-        textColor: "text-gray-700",
-      }
-    );
-  };
-
   const canRetryPayout = transaction
     ? canManuallyRetryPayout(transaction.status)
     : false;
-
-  const renderStatusCard = (option: {
-    value: string;
-    label: string;
-    description: string;
-    priority: boolean;
-  }) => {
-    const isCurrent = transaction?.status === option.value;
-    const isSelected = selectedStatus === option.value;
-    const colorObj = getStatusColorObject(option.value);
-
-    return (
-      <button
-        key={option.value}
-        className={`min-h-[78px] rounded-xl border px-3 py-2 text-left transition-all duration-200 ${
-          isCurrent
-            ? "opacity-55 cursor-not-allowed border-transparent"
-            : "hover:shadow-sm cursor-pointer active:scale-[0.99]"
-        } ${
-          isSelected
-            ? `ring-2 ring-[#03034D] ring-offset-1 border-transparent ${colorObj.bg} ${colorObj.textColor}`
-            : `border-transparent ${colorObj.bg} ${colorObj.textColor}`
-        }`}
-        type="button"
-        onClick={
-          !isCurrent
-            ? () => {
-                handleTransactionUpdateField("status", option.value);
-                setSelectedStatus(option.value as TransactionStatusType);
-              }
-            : undefined
-        }
-        disabled={isCurrent}
-      >
-        <div className="text-[13px] font-semibold leading-tight">
-          {option.label}
-        </div>
-        <div className="mt-1 text-[11px] font-medium leading-snug opacity-80">
-          {option.description}
-        </div>
-      </button>
-    );
-  };
-
-  const renderStatusChip = (option: {
-    value: string;
-    label: string;
-    description: string;
-    priority: boolean;
-  }) => {
-    const isCurrent = transaction?.status === option.value;
-    const isSelected = selectedStatus === option.value;
-    const colorObj = getStatusColorObject(option.value);
-
-    return (
-      <button
-        key={option.value}
-        className={`rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-all duration-200 ${
-          isCurrent
-            ? "opacity-55 cursor-not-allowed border-transparent"
-            : "hover:shadow-sm cursor-pointer active:scale-[0.99]"
-        } ${
-          isSelected
-            ? `ring-2 ring-[#03034D] ring-offset-1 border-transparent ${colorObj.bg} ${colorObj.textColor}`
-            : `border-transparent ${colorObj.bg} ${colorObj.textColor}`
-        }`}
-        type="button"
-        title={option.description}
-        onClick={
-          !isCurrent
-            ? () => {
-                handleTransactionUpdateField("status", option.value);
-                setSelectedStatus(option.value as TransactionStatusType);
-              }
-            : undefined
-        }
-        disabled={isCurrent}
-      >
-        {option.label}
-      </button>
-    );
-  };
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -736,28 +634,18 @@ const TransactionDetailsDrawer = ({
                   Update transaction status
                 </div>
                 <p className="text-[12px] text-[#828282] mb-4">
-                  The top group covers active workflow changes. The bottom group keeps cleanup and terminal states available without clutter.
+                  Statuses are grouped by buy, sell, and shared flows so the admin can pick the right state without guessing.
                 </p>
 
-                <div className="space-y-5">
-                  <div>
-                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#828282]">
-                      Priority statuses
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {PRIORITY_TRANSACTION_STATUS_OPTIONS.map(renderStatusCard)}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#828282]">
-                      Other statuses
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {SECONDARY_TRANSACTION_STATUS_OPTIONS.map(renderStatusChip)}
-                    </div>
-                  </div>
-                </div>
+                <TransactionStatusPicker
+                  transactionType={transaction.type}
+                  currentStatus={transaction.status}
+                  selectedStatus={selectedStatus}
+                  onSelectStatus={(status) => {
+                    handleTransactionUpdateField("status", status);
+                    setSelectedStatus(status);
+                  }}
+                />
               </section>
             </section>
 
