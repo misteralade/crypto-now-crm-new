@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { setSearchTransactionsField } from '../../redux/transaction-management.slice'
 import { useTransactionQuery } from '../../queries/transaction.query'
 import { useUserQuery } from '../../queries/user.query'
 import { setSelectedTimeline as reduxSetSelectedTimeline } from '../../redux/dashboard.slice'
@@ -22,6 +23,8 @@ export const useDashboardPage = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
     adminRetryPendingPayoutsMutation,
   } = useTransactionQuery()
 
@@ -42,10 +45,32 @@ export const useDashboardPage = () => {
   }
 
   const handleViewPendingPayouts = () => {
+    dispatch(setSearchTransactionsField({
+      field: 'status',
+      value: 'PENDING_PAYOUT',
+    }))
+    dispatch(setSearchTransactionsField({
+      field: 'page',
+      value: 1,
+    }))
     navigate({ 
       to: ROUTES.TRANSACTIONS,
       search: { status: 'PENDING_PAYOUT' } as any 
     });
+  }
+
+  const handleViewInReviewTransactions = () => {
+    dispatch(setSearchTransactionsField({
+      field: 'status',
+      value: 'IN_REVIEW',
+    }))
+    dispatch(setSearchTransactionsField({
+      field: 'page',
+      value: 1,
+    }))
+    navigate({
+      to: ROUTES.TRANSACTIONS,
+    })
   }
 
   return {
@@ -63,6 +88,8 @@ export const useDashboardPage = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
     retryingPayouts: adminRetryPendingPayoutsMutation.isPending,
 
     // ⚙️ Functions
@@ -70,5 +97,6 @@ export const useDashboardPage = () => {
     handleViewTransactionDetails,
     handleRetryAllPendingPayouts,
     handleViewPendingPayouts,
+    handleViewInReviewTransactions,
   }
 }

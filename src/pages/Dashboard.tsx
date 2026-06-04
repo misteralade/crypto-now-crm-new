@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { SummaryCardSkeleton } from '../components/global/Skeleton';
 
 import PendingPayoutsCard from '../components/pages/dashboard/PendingPayoutsCard';
+import InReviewTransactionsCard from '../components/pages/dashboard/InReviewTransactionsCard';
 
 const Dashboard = () => {
   const {
@@ -31,7 +32,10 @@ const Dashboard = () => {
     loadingTransactionVolumeTrend,
     usersWithTopTransactionVolume,
     loadingUsersWithTopTransactionVolume,
+    adminTransactionStats,
+    loadingAdminTransactionStats,
     retryingPayouts,
+    handleViewInReviewTransactions,
     
     // ⚙️ Functions
     handleSelectedTimelineChange,
@@ -86,13 +90,19 @@ const Dashboard = () => {
         </div>
 
         {/* Metric cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
           <PendingPayoutsCard 
             count={weeklyUserSummary?.pendingPayoutsCount || 0}
             loading={loadingWeeklyUserSummary}
             onRetry={handleRetryAllPendingPayouts}
             onView={handleViewPendingPayouts}
             retrying={retryingPayouts}
+          />
+
+          <InReviewTransactionsCard
+            count={adminTransactionStats?.inReview || 0}
+            loading={loadingAdminTransactionStats}
+            onView={handleViewInReviewTransactions}
           />
 
           {loadingTransactionVolume ? <SummaryCardSkeleton /> : (

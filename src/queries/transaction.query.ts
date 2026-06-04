@@ -145,7 +145,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
       if (success) return data
       return null
     },
-    enabled: !!matchRoute({ to: ROUTES.TRANSACTIONS }),
+    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.DASHBOARD })),
   })
 
   // Aliases expected by consumers

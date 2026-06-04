@@ -182,35 +182,34 @@ export default function SweepConfigModal({
       : null
   );
 
-  // Auto-fill from the best estimate available. The preview response is cap-aware.
+  // Auto-fill from the cached balance summary until the user edits the amount.
+  // Keep the preview response read-only so it cannot feed its own query key.
   useEffect(() => {
     if (!network || !cryptocurrencyId) {
       setMaxAmountInput("");
       return;
     }
     if (!isBtcLimitedSweepUi && amountTouched) return;
-    if (showPreview && previewData) {
-      setMaxAmountInput(
-        formatSuggestedSweepAmount(previewData.estimatedSweepableAmount, network)
-      );
-      return;
-    }
     if (matchedSummaryRow) {
-      setMaxAmountInput(
-        formatSuggestedSweepAmount(matchedSummaryRow.totalBalance, network)
+      const nextAmount = formatSuggestedSweepAmount(
+        matchedSummaryRow.totalBalance,
+        network
       );
+      if (maxAmountInput !== nextAmount) {
+        setMaxAmountInput(nextAmount);
+      }
       return;
     }
-    setMaxAmountInput("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (maxAmountInput !== "") {
+      setMaxAmountInput("");
+    }
   }, [
-    isBtcLimitedSweepUi,
     amountTouched,
+    isBtcLimitedSweepUi,
+    maxAmountInput,
+    matchedSummaryRow,
     network,
     cryptocurrencyId,
-    matchedSummaryRow?.totalBalance,
-    showPreview,
-    previewData?.estimatedSweepableAmount,
   ]);
 
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
