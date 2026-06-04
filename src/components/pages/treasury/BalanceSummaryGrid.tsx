@@ -40,11 +40,12 @@ function formatTotalBalance(symbol: string, value: number): string {
 interface BalanceCardProps {
   row: BalanceSummaryRow;
   onRefresh: (row: BalanceSummaryRow) => void;
+  onWalletCountClick?: (row: BalanceSummaryRow) => void;
   refreshing: boolean;
 }
 
 // Single asset card with totals + refresh action.
-function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
+function BalanceCard({ row, onRefresh, onWalletCountClick, refreshing }: BalanceCardProps) {
   const networkLabel = NETWORK_LABELS[row.network] ?? row.network;
   const freshness = formatRefreshedAt(row.oldestRefreshedAt, row.walletCount);
   const everRefreshed = !!row.oldestRefreshedAt;
@@ -121,9 +122,19 @@ function BalanceCard({ row, onRefresh, refreshing }: BalanceCardProps) {
               d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
             />
           </svg>
-          <span className="tabular-nums">
-            {row.walletCount} wallet{row.walletCount === 1 ? "" : "s"}
-          </span>
+          {onWalletCountClick && row.walletCount > 0 ? (
+            <button
+              type="button"
+              onClick={() => onWalletCountClick(row)}
+              className="tabular-nums font-medium text-[#667085] transition-colors hover:text-[#03034D] hover:underline"
+            >
+              {row.walletCount} wallet{row.walletCount === 1 ? "" : "s"}
+            </button>
+          ) : (
+            <span className="tabular-nums">
+              {row.walletCount} wallet{row.walletCount === 1 ? "" : "s"}
+            </span>
+          )}
         </div>
         <span
           className={`flex min-w-0 shrink items-center justify-end gap-1 text-[10px] font-medium tabular-nums leading-tight tracking-tight ${everRefreshed ? "text-[#667085]" : "text-amber-600"}`}
@@ -169,7 +180,11 @@ function BalanceCardSkeleton() {
   );
 }
 
-export default function BalanceSummaryGrid() {
+interface BalanceSummaryGridProps {
+  onWalletCountClick?: (row: BalanceSummaryRow) => void;
+}
+
+export default function BalanceSummaryGrid({ onWalletCountClick }: BalanceSummaryGridProps) {
   const { useBalanceSummary, refreshBalancesMutation } = useSweepQuery();
   const { data, isLoading, isError, refetch } = useBalanceSummary();
 
@@ -246,6 +261,7 @@ export default function BalanceSummaryGrid() {
                 key={key}
                 row={row}
                 onRefresh={handleRefresh}
+                onWalletCountClick={onWalletCountClick}
                 refreshing={refreshingKey === key}
               />
             );

@@ -245,6 +245,21 @@ export const useAdminRefreshCustodialWalletBalanceMutation = (walletAddress: str
   });
 };
 
+export const useAdminTreasuryWalletsQuery = (
+  cryptocurrencyId: string | undefined,
+  network: string | undefined,
+) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_TREASURY_WALLETS, cryptocurrencyId, network],
+    queryFn: async () => {
+      if (!cryptocurrencyId || !network) return null;
+      const { data, success } = await cryptoServiceApi.adminGetTreasuryWallets(cryptocurrencyId, network);
+      return success ? data : null;
+    },
+    enabled: !!cryptocurrencyId && !!network,
+  });
+};
+
 // Generate all missing custodial wallets for a user (Admin only).
 export const useAdminGenerateUserCustodialWalletsMutation = (userId: string | undefined) => {
   const queryClient = useQueryClient();

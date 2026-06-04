@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout.tsx';
 import PageHeader from '../components/global/pageHeader.tsx';
@@ -59,6 +59,14 @@ function getSweepTxUrl(
   return null;
 }
 
+function isZeroOrInvalidSkippedResult(row: SweepWalletResult) {
+  return (
+    row.status === 'skipped' &&
+    typeof row.error === 'string' &&
+    row.error.toLowerCase().includes('zero or invalid')
+  );
+}
+
 export default function SweepDetail() {
   const navigate = useNavigate();
   const { sweepId } = useParams({ strict: false }) as { sweepId: string };
@@ -68,9 +76,11 @@ export default function SweepDetail() {
 
   const isRestartable = sweep && ['COMPLETED', 'FAILED', 'PARTIAL', 'IN_PROGRESS'].includes(sweep.status);
   const isTerminal = sweep && ['COMPLETED', 'FAILED', 'PARTIAL'].includes(sweep.status);
-  const results: SweepWalletResult[] = [...(sweep?.sweepResults ?? [])].sort(
-    (a, b) => (Number(b.balance ?? 0)) - (Number(a.balance ?? 0))
-  );
+  const results: SweepWalletResult[] = useMemo(() => {
+    return [...(sweep?.sweepResults ?? [])]
+      .filter((row) => !isZeroOrInvalidSkippedResult(row))
+      .sort((a, b) => Number(b.balance ?? 0) - Number(a.balance ?? 0));
+  }, [sweep?.sweepResults]);
 
   const progress = sweep?.totalWalletsFound
     ? Math.round(((sweep.totalWalletsSwept + sweep.totalWalletsFailed + sweep.totalWalletsSkipped) / sweep.totalWalletsFound) * 100)
@@ -359,6 +369,10 @@ export default function SweepDetail() {
             className="border border-[#F0F0FF]"
             theadClassName="bg-gray-50/50 border-b border-gray-100"
           />
+
+          <p className="px-2 text-[11px] text-gray-500">
+            Wallets skipped during the sweep are hidden here when their balance is zero or invalid.
+          </p>
         </div>
       </div>
 

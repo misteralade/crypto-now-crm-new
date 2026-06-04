@@ -222,7 +222,7 @@ const ManageTransactions = () => {
                 />
               </div>
               <div
-                onClick={() => handleSelectedStatus("AWAITING_PAYMENT")}
+                onClick={() => handleSelectedStatus("IN_REVIEW")}
                 className="cursor-pointer"
               >
                 <ShortSummaryCard

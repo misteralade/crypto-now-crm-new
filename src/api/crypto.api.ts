@@ -13,6 +13,7 @@ import type {
   SearchSupportedCryptoAPIResponse, UploadAPIResponse,
   AdminGetUserCustodialWalletsAPIResponse,
   AdminCustodialWalletDetailsAPIResponse,
+  AdminTreasuryWalletsAPIResponse,
   RefreshCustodialWalletBalanceAPIResponse,
   AdminGenerateUserCustodialWalletsAPIResponse,
 } from "../types/response.payload.types";
@@ -74,6 +75,10 @@ class CryptoServiceApi {
 
   async adminGetCustodialWalletByAddress(walletAddress: string) {
     return await axiosGetRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}`) as AdminCustodialWalletDetailsAPIResponse;
+  }
+
+  async adminGetTreasuryWallets(cryptocurrencyId: string, network: string) {
+    return await axiosGetRequestHandler(`/custodial-wallet/admin/crypto/${encodeURIComponent(cryptocurrencyId)}/network/${encodeURIComponent(network)}`) as AdminTreasuryWalletsAPIResponse;
   }
 
   async adminRefreshCustodialWalletBalance(walletAddress: string) {

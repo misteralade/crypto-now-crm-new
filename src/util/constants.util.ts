@@ -94,6 +94,7 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: undefined, label: 'All' },
   { value: TRANSACTION_STATUS.INITIATED, label: 'Initiated' },
   { value: TRANSACTION_STATUS.AWAITING_PAYMENT, label: 'Awaiting Payment' },
+  { value: TRANSACTION_STATUS.IN_REVIEW, label: 'In Review' },
   { value: TRANSACTION_STATUS.AWAITING_CRYPTO, label: 'Awaiting Crypto' },
   { value: TRANSACTION_STATUS.COMPLETED, label: 'Completed' },
   { value: TRANSACTION_STATUS.FAILED, label: 'Failed' },
@@ -126,6 +127,12 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     value: TRANSACTION_STATUS.AWAITING_PAYMENT,
     label: 'Awaiting Payment',
     description: 'Waiting for the customer to send payment.',
+    priority: true,
+  },
+  {
+    value: TRANSACTION_STATUS.IN_REVIEW,
+    label: 'In Review',
+    description: 'The customer receipt has been submitted and is under review.',
     priority: true,
   },
   {
@@ -204,6 +211,7 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
 
 export const ALLOWED_ADMIN_TRANSACTION_STATUS = [
   TRANSACTION_STATUS.AWAITING_PAYMENT,
+  TRANSACTION_STATUS.IN_REVIEW,
   TRANSACTION_STATUS.PROCESSING,
   TRANSACTION_STATUS.AWAITING_CRYPTO,
   TRANSACTION_STATUS.COMPLETED,
@@ -228,6 +236,12 @@ export const transactionStatusStyles: Record<
     bg: 'bg-yellow-50',
     dot: 'bg-yellow-400',
     textColor: 'text-yellow-600',
+  },
+  IN_REVIEW: {
+    text: 'In Review',
+    bg: 'bg-amber-50',
+    dot: 'bg-amber-500',
+    textColor: 'text-amber-700',
   },
   PROCESSING: {
     text: 'Processing',

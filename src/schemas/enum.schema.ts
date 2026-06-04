@@ -17,6 +17,7 @@ export const TransactionStatus = z.preprocess(
   z.enum([
     'INITIATED',
     'AWAITING_PAYMENT',
+    'IN_REVIEW',
     'AWAITING_CRYPTO',
     'COMPLETED',
     'FAILED',

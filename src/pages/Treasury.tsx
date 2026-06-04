@@ -5,12 +5,14 @@ import PageHeader from "../components/global/pageHeader.tsx";
 import { useCryptoQuery } from "../queries/crypto.querries.ts";
 import { useSweepQuery } from "../queries/sweep.querries.ts";
 import type {
+  BalanceSummaryRow,
   SweepHistoryParams,
   SweepRequest,
   SweepStatus,
 } from "../api/sweep.api.ts";
 import SweepConfigModal from "../components/pages/treasury/SweepConfigModal.tsx";
 import BalanceSummaryGrid from "../components/pages/treasury/BalanceSummaryGrid.tsx";
+import TreasuryWalletsModal from "../components/pages/treasury/TreasuryWalletsModal.tsx";
 import Table, { type TableColumn } from "../components/table.tsx";
 
 const STATUS_MAP: Record<string, { label: string; classes: string }> = {
@@ -206,6 +208,8 @@ export default function Treasury() {
     size: 20,
   });
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedWalletScope, setSelectedWalletScope] =
+    useState<BalanceSummaryRow | null>(null);
 
   const {
     data: infiniteData,
@@ -268,6 +272,10 @@ export default function Treasury() {
       to: "/dashboard/treasury/$sweepId",
       params: { sweepId: sweep.id },
     });
+  }
+
+  function handleWalletCountClick(row: BalanceSummaryRow) {
+    setSelectedWalletScope(row);
   }
 
   const columns: TableColumn<SweepRequest>[] = useMemo(
@@ -409,7 +417,7 @@ export default function Treasury() {
           </div>
         </section>
 
-        <BalanceSummaryGrid />
+        <BalanceSummaryGrid onWalletCountClick={handleWalletCountClick} />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-12">
           <StatCard
@@ -507,6 +515,12 @@ export default function Treasury() {
           )}
         </section>
       </div>
+
+      <TreasuryWalletsModal
+        open={!!selectedWalletScope}
+        scope={selectedWalletScope}
+        onClose={() => setSelectedWalletScope(null)}
+      />
 
       <SweepConfigModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </AuthenticatedLayout>

@@ -66,6 +66,7 @@ export const mapTransactionStatus = (
     { displayText: string; variant: StatusVariant }
   > = {
     AWAITING_PAYMENT: { displayText: 'Pending', variant: 'pending' },
+    IN_REVIEW: { displayText: 'In Review', variant: 'processing' },
     COMPLETED: { displayText: 'Completed', variant: 'completed' },
     INITIATED: { displayText: 'Pending', variant: 'pending' },
     FAILED: { displayText: 'Failed', variant: 'failed' },

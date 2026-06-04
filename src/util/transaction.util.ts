@@ -55,6 +55,15 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Waiting for payment to be received',
     isActionable: true,
   },
+  IN_REVIEW: {
+    category: StatusCategory.AWAITING,
+    bgColor: 'bg-amber-50',
+    textColor: 'text-amber-700',
+    dotColor: 'bg-amber-500',
+    displayName: 'In Review',
+    description: 'Receipt has been uploaded and is awaiting review',
+    isActionable: false,
+  },
   AWAITING_CRYPTO: {
     category: StatusCategory.AWAITING,
     bgColor: 'bg-orange-50',

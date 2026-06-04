@@ -384,11 +384,16 @@ export type AdminCustodialWalletDetailsResponsePayload = {
     cryptocurrencyId: string;
     network: string;
     blockchainEnvironment: "testnet" | "mainnet";
+    walletPurpose: string;
     walletAddress: string;
     derivationIndex: number;
     derivationPath: string | null;
     webhookProvider: string;
     isActive: boolean;
+    leasedTransactionId: string | null;
+    leaseStartedAt: Date | null;
+    leaseExpiresAt: Date | null;
+    lastLeaseReleasedAt: Date | null;
     lastDepositAt: Date | null;
     totalDepositsCount: number;
     cachedBalance: string;
@@ -412,6 +417,7 @@ export type AdminCustodialWalletDetailsResponsePayload = {
 }
 
 export type AdminCustodialWalletDetailsAPIResponse = BaseApiResponse<AdminCustodialWalletDetailsResponsePayload>
+export type AdminTreasuryWalletsAPIResponse = BaseApiResponse<Array<AdminCustodialWalletDetailsResponsePayload>>
 
 export type RefreshCustodialWalletBalanceResponsePayload = {
   walletAddress: string;
