@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { PillSelect } from '../ui/select'
 import { cn } from '../../lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
 
 // Default export: simple pill select (wraps Radix)
 interface MFLabeledPillSelectProps {
@@ -165,56 +164,54 @@ export const MFLabeledPillSearchSelect = ({ label, options, onChange, labelClass
         </div>
       </div>
 
-      <AnimatePresence>
-        {(isOpen) && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute z-[9999] w-full mt-2 bg-white border border-gray-200 rounded-[20px] shadow-2xl overflow-hidden"
-          >
-            <div className="p-2 border-b border-gray-100">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9A9A9A]" />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => { setSearchTerm(e.target.value); setHighlightedIndex(0); }}
-                  onKeyDown={handleKeyDown}
-                  placeholder={placeholder}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10 text-sm transition-all"
-                />
-              </div>
-            </div>
-            <div className="overflow-y-auto max-h-[240px] p-1.5" role="listbox">
-              {filteredOptions.length > 0 ? (
-                filteredOptions.map((opt, index) => (
-                  <div
-                    key={opt.value}
-                    onClick={() => handleSelect(opt.value)}
-                    className={cn(
-                      "px-4 py-2.5 cursor-pointer text-sm transition-colors rounded-xl flex items-center gap-3",
-                      opt.value === selectedItem ? 'bg-blue-50 text-blue-900 font-bold' : 'text-gray-900 hover:bg-gray-50',
-                      index === highlightedIndex && opt.value !== selectedItem ? 'bg-gray-50' : ''
-                    )}
-                    role="option"
-                    aria-selected={opt.value === selectedItem}
-                  >
-                    {opt.logoUrl && (
-                      <img src={opt.logoUrl} alt="" className="w-5 h-5 rounded-full object-contain" />
-                    )}
-                    <span>{opt.label}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="px-4 py-8 text-center text-sm text-gray-400 font-medium">No options found</div>
-              )}
-            </div>
-          </motion.div>
+      <div
+        className={cn(
+          "absolute z-[9999] mt-2 w-full overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-2xl transition-all duration-150 ease-out",
+          isOpen
+            ? "pointer-events-auto max-h-[340px] translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none max-h-0 -translate-y-2 scale-95 opacity-0",
         )}
-      </AnimatePresence>
+        aria-hidden={!isOpen}
+      >
+        <div className="border-b border-gray-100 p-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9A9A9A]" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setHighlightedIndex(0); }}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              className="w-full rounded-xl border border-gray-200 py-2.5 pl-9 pr-4 text-sm outline-none transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500/10"
+            />
+          </div>
+        </div>
+        <div className="max-h-[240px] overflow-y-auto p-1.5" role="listbox">
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((opt, index) => (
+              <div
+                key={opt.value}
+                onClick={() => handleSelect(opt.value)}
+                className={cn(
+                  "flex cursor-pointer items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition-colors",
+                  opt.value === selectedItem ? 'bg-blue-50 font-bold text-blue-900' : 'text-gray-900 hover:bg-gray-50',
+                  index === highlightedIndex && opt.value !== selectedItem ? 'bg-gray-50' : ''
+                )}
+                role="option"
+                aria-selected={opt.value === selectedItem}
+              >
+                {opt.logoUrl && (
+                  <img src={opt.logoUrl} alt="" className="h-5 w-5 rounded-full object-contain" />
+                )}
+                <span>{opt.label}</span>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-8 text-center text-sm font-medium text-gray-400">No options found</div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

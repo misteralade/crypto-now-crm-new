@@ -213,6 +213,25 @@ export default function SweepConfigModal({
     cryptocurrencyId,
   ]);
 
+  const requestClose = () => {
+    if (isClosing) return;
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        requestClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, isClosing]);
+
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
   useEffect(() => {
     if (open) {
@@ -379,25 +398,6 @@ export default function SweepConfigModal({
       ? `Fees are paid in ${previewData.feeAssetSymbol} and reduce the final amount moved when draining the source wallet.`
       : `Fees are paid in ${previewData.feeAssetSymbol} from the source wallets, not from the ${symbol || "asset"} amount being swept.`
     : "";
-
-  const requestClose = () => {
-    if (isClosing) return;
-    onClose();
-  };
-
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        requestClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, isClosing]);
 
   return (
     <div

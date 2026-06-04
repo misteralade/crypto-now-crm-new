@@ -2,7 +2,6 @@ import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
 
 const Select = SelectPrimitive.Root;
 const SelectGroup = SelectPrimitive.Group;
@@ -231,18 +230,11 @@ const LabeledSelect = ({
           ))}
         </SelectContent>
       </Select>
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            className="text-[12px] text-red-500 ml-1 font-medium"
-          >
-            {error}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {error && (
+        <p className="ml-1 text-[12px] font-medium text-red-500 transition-opacity duration-150">
+          {error}
+        </p>
+      )}
     </div>
   );
 };
@@ -281,18 +273,11 @@ const PillSelect = ({
           ))}
         </SelectContent>
       </Select>
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            className="text-[12px] text-red-500 ml-1 font-medium"
-          >
-            {error}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {error && (
+        <p className="ml-1 text-[12px] font-medium text-red-500 transition-opacity duration-150">
+          {error}
+        </p>
+      )}
     </div>
   );
 };
