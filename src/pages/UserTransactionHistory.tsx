@@ -42,7 +42,6 @@ const UserTransactionHistory = () => {
     // ⚙️ Functions
     handlePageChange,
     handlePageSizeChange,
-    toggleApplyAction,
     toggleApplyFilter,
     handleSearchQuery,
     resetSearchFilter,
@@ -90,7 +89,6 @@ const UserTransactionHistory = () => {
       <div className="p-6 mx-auto">
         <ManageTransactionsControls
           onOpenFilter={toggleApplyFilter}
-          onApplyAction={toggleApplyAction}
           searchValue={query}
           onSearchChange={handleSearchQuery}
           handleExportAll={handleExportAll}
