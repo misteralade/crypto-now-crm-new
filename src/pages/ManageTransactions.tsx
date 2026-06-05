@@ -34,7 +34,6 @@ const ManageTransactions = () => {
     retryingPayout,
     handlePageSizeChange: updatePageSize,
     handleExportAll,
-    handleRefreshTransactions,
     isFetchingTransactions,
   } = useManageTransactionsPage();
 
@@ -66,6 +65,10 @@ const ManageTransactions = () => {
   } = useTransactionsTable({
     timeline: "all",
   });
+
+  const handleRefreshTransactions = () => {
+    resetSearchFilter();
+  };
 
   const columns = useMemo(
     () =>

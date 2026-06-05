@@ -48,7 +48,6 @@ const persistConfig = {
   whitelist: [
     'dashboard',
     'coinManagement',
-    'transactionManagement',
     'user',
     'fiat',
     'auditLog',

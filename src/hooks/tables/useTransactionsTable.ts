@@ -106,6 +106,9 @@ export const useTransactionsTable = (options?: TransactionsTableOptions) => {
 
   const resetSearchFilter = () => {
     setQuery("");
+    setPageSize(10);
+    setShowFilter(false)
+    setShowApplyActionPanel(false)
     setMinAmountRange(undefined)
     setMaxAmountRange(undefined)
     setSelectedCryptoId(undefined)
