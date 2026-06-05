@@ -213,7 +213,7 @@ export default function Table<T extends Record<string, any> = Record<string, any
           <thead className={theadClassName}>
             <tr className={headerRowClassName}>
               {selectable ? (
-                <th className="px-6 py-4">
+                <th className="px-2 py-3 sm:px-6 sm:py-4">
                   {renderCheckbox ? (
                     renderCheckbox({
                       checked:
@@ -238,7 +238,7 @@ export default function Table<T extends Record<string, any> = Record<string, any
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-4 py-3 text-left text-[12px] font-semibold text-[#9A9A9A] uppercase tracking-wide ${headerCellClassName} ${column.headerClassName || ''}`}
+                  className={`px-2 py-3 text-left text-[12px] font-semibold text-[#9A9A9A] uppercase tracking-wide sm:px-4 ${headerCellClassName} ${column.headerClassName || ''}`}
                 >
                   {column.header}
                 </th>
@@ -267,7 +267,7 @@ export default function Table<T extends Record<string, any> = Record<string, any
               >
                 {selectable && (
                   <td
-                    className="px-6 py-4"
+                    className="px-2 py-3 sm:px-6 sm:py-4"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {renderCheckbox ? (
@@ -310,7 +310,7 @@ export default function Table<T extends Record<string, any> = Record<string, any
                   return (
                     <td
                       key={column.key}
-                      className={`px-4 py-5 text-sm ${defaultTextClass} ${resolvedCellClass}`}
+                      className={`px-2 py-3 text-sm sm:px-4 sm:py-5 ${defaultTextClass} ${resolvedCellClass}`}
                     >
                       {column.render
                         ? column.render(value, row)

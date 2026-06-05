@@ -1,14 +1,20 @@
-import {type ReactNode, useEffect, useState} from 'react'
-import { Menu } from 'lucide-react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import Sidebar from "../components/sidebar.tsx";
 import {authServiceApi} from "../api/auth.api.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants.util.ts";
 import { motion, AnimatePresence } from 'framer-motion'
+import { SidebarToggleProvider } from "./sidebar-toggle-context.tsx";
 
 const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const sidebarToggleValue = useMemo(() => ({
+    openSidebar: () => setSidebarOpen(true),
+    closeSidebar: () => setSidebarOpen(false),
+    toggleSidebar: () => setSidebarOpen((current) => !current),
+    isSidebarOpen: sidebarOpen,
+  }), [sidebarOpen])
   
   useEffect(() => {
     const isDesktop = window.innerWidth >= 1024
@@ -69,28 +75,17 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
           )}
         </AnimatePresence>
         <div className="flex-1 flex flex-col min-w-0">
-          {!sidebarOpen && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Open sidebar"
-              className="lg:hidden fixed top-20 sm:top-6 left-4 z-30 p-2 rounded-lg border border-[#ECECEC] bg-white shadow-sm"
-              onClick={() => setSidebarOpen(true)}
+          <SidebarToggleProvider value={sidebarToggleValue}>
+            <motion.main
+              key={window.location.pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="flex-1"
             >
-              <Menu className="w-5 h-5 text-[#03034D]" />
-            </motion.button>
-          )}
-          <motion.main 
-            key={window.location.pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex-1"
-          >
-            {children}
-          </motion.main>
+              {children}
+            </motion.main>
+          </SidebarToggleProvider>
         </div>
       </div>
     </div>

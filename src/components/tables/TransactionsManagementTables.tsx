@@ -1,7 +1,6 @@
 import {ArrowUpRight, ChevronDown, ChevronRight, Download} from 'lucide-react'
 import { Fragment } from 'react'
 import { convertToMillify } from '../../util/index.util.ts'
-import { CustomCheckbox } from '../global/CheckBoxes'
 import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
 import momentClient from '../../util/moment'
 import {
@@ -117,37 +116,10 @@ export const UsersWithTopTransactionDataRow = (
 
 // Start Transactions Management Tables
 export const TransactionsManagementColumn = (
-  handleSelectTransactionId: (transactionId: string) => void,
-  handleSelectAllTransactionIds: () => void,
   handleSortBy: (columnKey: string) => void,
   handleShowTransactionDetails: (sessionId: string) => void,
   handleViewTransactionDetails: (sessionId: string) => void,
-  selectedTransactionIds: Array<string>, // Add this to track selected state
-  selectedIdCount: number,
 ): Array<TableColumn<TransactionManagementRow>> => [
-  {
-    key: 'index',
-    header: (
-      <Fragment>
-        <div className="py-3">
-          <CustomCheckbox
-            checked={selectedTransactionIds.length === selectedIdCount}
-            onChange={handleSelectAllTransactionIds}
-          />
-        </div>
-      </Fragment>
-    ),
-    render: (_, row) => (
-      <Fragment>
-        <div className="py-3">
-          <CustomCheckbox
-            checked={selectedTransactionIds.includes(row.id)}
-            onChange={() => handleSelectTransactionId(row.id)}
-          />
-        </div>
-      </Fragment>
-    ),
-  },
   {
     key: 'id',
     header: (
@@ -160,7 +132,7 @@ export const TransactionsManagementColumn = (
       </Fragment>
     ),
     render: (value) => (
-      <div className="px-4 py-5 text-sm text-[14px] text-[#101828]">
+      <div className="py-3 pr-2 text-sm text-[14px] text-[#101828] sm:py-5 sm:pr-4">
         <ClickableDetails text={value} className="!max-w-[200px]" onClick={handleViewTransactionDetails}/>
       </div>
     ),
@@ -178,7 +150,7 @@ export const TransactionsManagementColumn = (
         </span>
       </div>
     ),
-    render: (value) => <span className="py-3 text-sm text-gray-600 whitespace-nowrap">{value}</span>,
+    render: (value) => <span className="py-3 text-sm text-gray-600 whitespace-nowrap sm:py-5">{value}</span>,
   },
   {
     key: 'amount',
@@ -190,7 +162,7 @@ export const TransactionsManagementColumn = (
       </div>
     ),
     render: (value) => (
-      <span className="py-3 text-sm text-[14px] text-gray-600 tabular-nums whitespace-nowrap">{value}</span>
+      <span className="py-3 text-sm text-[14px] text-gray-600 tabular-nums whitespace-nowrap sm:py-5">{value}</span>
     ),
   },
   {
@@ -210,7 +182,7 @@ export const TransactionsManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums sm:py-5">{value}</span>
       </Fragment>
     ),
   },
@@ -271,7 +243,7 @@ export const TransactionsManagementColumn = (
     ),
     render: (value) => (
       <Fragment>
-        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums">{value}</span>
+        <span className="py-3 text-sm text-[14px] text-gray-600 whitespace-nowrap tabular-nums sm:py-5">{value}</span>
       </Fragment>
     ),
   },

@@ -215,7 +215,6 @@ export const useManageTransactionsPage = () => {
     loadingSearchTransactions,
     allSupportedCrypto,
     loadingAllSupportedCrypto,
-    selectedTransactionIds,
     transactionDetail,
     loadingTransactionDetails,
     showTransactionDetails,
