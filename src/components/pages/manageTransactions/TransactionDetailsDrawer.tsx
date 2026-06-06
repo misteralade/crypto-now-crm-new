@@ -633,9 +633,6 @@ const TransactionDetailsDrawer = ({
                 <div className="text-[16px] font-semibold text-[#454745] mb-2">
                   Update transaction status
                 </div>
-                <p className="text-[12px] text-[#828282] mb-4">
-                  Statuses are grouped by buy, sell, and shared flows so the admin can pick the right state without guessing.
-                </p>
 
                 <TransactionStatusPicker
                   transactionType={transaction.type}

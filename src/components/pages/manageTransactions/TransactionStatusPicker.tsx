@@ -19,19 +19,16 @@ const STATUS_GROUP_ORDER: Record<TransactionAction, Array<"BUY" | "BOTH" | "SELL
 
 const STATUS_GROUP_META: Record<
   "BUY" | "SELL" | "BOTH",
-  { title: string; description: string }
+  { title: string }
 > = {
   BUY: {
     title: "Buy-only statuses",
-    description: "Use these when the customer sends fiat and receives crypto.",
   },
   SELL: {
     title: "Sell-only statuses",
-    description: "Use these when the customer sends crypto and receives fiat.",
   },
   BOTH: {
     title: "Shared statuses",
-    description: "These statuses apply to both transaction directions.",
   },
 };
 
@@ -100,7 +97,6 @@ const TransactionStatusPicker = ({
         }`}
         type="button"
         aria-pressed={isSelected}
-        title={option.description}
         onClick={
           !isCurrent ? () => onSelectStatus(option.value) : undefined
         }
@@ -113,9 +109,6 @@ const TransactionStatusPicker = ({
           <span className="shrink-0 rounded-full bg-white/70 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-current md:text-[10px]">
             {option.scope}
           </span>
-        </div>
-        <div className="mt-1 text-[10px] font-medium leading-snug opacity-80 md:text-[11px]">
-          {option.description}
         </div>
       </button>
     );
@@ -142,9 +135,6 @@ const TransactionStatusPicker = ({
               <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#828282]">
                 {group.title}
               </div>
-              <p className="mt-1 text-[12px] text-[#828282]">
-                {group.description}
-              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
