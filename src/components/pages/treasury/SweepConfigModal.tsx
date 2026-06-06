@@ -59,6 +59,64 @@ function formatRefreshedAt(value: string | null, neverRefreshedCount: number) {
   return ts ? `As of ${ts}` : "Balances not yet refreshed";
 }
 
+function formatCountLabel(count: number, singular: string, plural: string) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function getZeroSweepReason(
+  previewData: {
+    walletsBlockedByFee: number;
+    walletsWithoutSpendableBalance: number;
+    walletsMissingSweepSetup: number;
+    walletsSweepable: number;
+    estimatedFeeAmount: number;
+  },
+  symbol: string
+) {
+  const reasons: string[] = [];
+
+  if (previewData.walletsBlockedByFee > 0) {
+    reasons.push(
+      `${formatCountLabel(
+        previewData.walletsBlockedByFee,
+        "wallet is",
+        "wallets are"
+      )} below the live BTC fee floor`
+    );
+  }
+
+  if (previewData.walletsWithoutSpendableBalance > 0) {
+    reasons.push(
+      `${formatCountLabel(
+        previewData.walletsWithoutSpendableBalance,
+        "wallet has",
+        "wallets have"
+      )} no spendable BTC UTXOs`
+    );
+  }
+
+  if (previewData.walletsMissingSweepSetup > 0) {
+    reasons.push(
+      `${formatCountLabel(
+        previewData.walletsMissingSweepSetup,
+        "wallet is",
+        "wallets are"
+      )} missing BTC sweep setup`
+    );
+  }
+
+  if (reasons.length === 0) {
+    return `No ${symbol || "BTC"} wallet is sweepable right now.`;
+  }
+
+  const feeNote =
+    previewData.estimatedFeeAmount === 0 && previewData.walletsSweepable === 0
+      ? ` That is why the estimated network fee is 0 ${symbol || "BTC"} too: nothing qualifies for a live sweep.`
+      : "";
+
+  return `${reasons.join(", ")}.${feeNote}`;
+}
+
 export default function SweepConfigModal({
   open,
   onClose,
@@ -271,6 +329,15 @@ export default function SweepConfigModal({
         )
       )
     : 0;
+  const zeroSweepReason =
+    previewData && previewAmountToSweep === 0
+      ? getZeroSweepReason(
+          previewData,
+          selectedCrypto?.symbol.toUpperCase() ?? ""
+        )
+      : "";
+  const confirmSweepDisabled =
+    initiateSweepMutation.isPending || previewAmountToSweep <= 0;
 
   const handlePreview = () => {
     if (!network || !cryptocurrencyId) {
@@ -698,6 +765,11 @@ export default function SweepConfigModal({
                     {previewData.feeAssetSymbol}
                   </span>
                 </div>
+                {previewAmountToSweep === 0 && (
+                  <div className="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+                    {zeroSweepReason}
+                  </div>
+                )}
                 <div className="flex items-center justify-between border-t border-[#ECEFFD] pt-2 text-sm">
                   <span className="font-semibold text-[--color-text-primary]">
                     Estimated amount to be swept
@@ -802,11 +874,13 @@ export default function SweepConfigModal({
           ) : (
             <button
               onClick={handleInitiate}
-              disabled={initiateSweepMutation.isPending}
+              disabled={confirmSweepDisabled}
               className="flex-1 rounded-xl bg-[#03034D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {initiateSweepMutation.isPending
                 ? "Starting..."
+                : previewAmountToSweep <= 0
+                ? "Nothing to Sweep"
                 : "Confirm Sweep"}
             </button>
           )}
