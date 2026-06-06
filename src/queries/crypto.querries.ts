@@ -7,8 +7,18 @@ import { ROUTES } from '../util/constants.util.ts'
 import { cryptoServiceApi } from '../api/crypto.api.js'
 import { QUERY_KEYS } from './querries.keys.js'
 import { cleanUrlFields } from '../util/url.util'
+import { sanitizeOptionalNumberFields } from '../util/number.util'
 import type {AxiosServerError} from "../types/response.payload.types";
 import type {RootState} from "../store";
+
+const OPTIONAL_CRYPTO_NUMBER_FIELDS = [
+  "buyRate",
+  "sellRate",
+  "maxTransactionLimit",
+  "minTransactionLimit",
+  "maxTradeAmountForAnonymous",
+  "minTradeAmountForAnonymous",
+] as const;
 
 export const useCryptoQuery = () => {
   const queryClient = useQueryClient();
@@ -90,7 +100,10 @@ export const useCryptoQuery = () => {
       if (!payload) throw new Error("Missing payload to create new coin.")
 
       // Clean invalid URL fields before sending
-      const cleanedPayload = cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl'])
+      const cleanedPayload = sanitizeOptionalNumberFields(
+        cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl']),
+        [...OPTIONAL_CRYPTO_NUMBER_FIELDS],
+      )
 
       toast.loading("Creating new coin...");
       const { message, success } = await cryptoServiceApi.createSupportedCryptoAndAdminWallet(cleanedPayload);
@@ -124,7 +137,10 @@ export const useCryptoQuery = () => {
       if (!payload) throw new Error("Missing payload to update coin.")
       
       // Clean invalid URL fields before sending
-      const cleanedPayload = cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl'])
+      const cleanedPayload = sanitizeOptionalNumberFields(
+        cleanUrlFields(payload, ['websiteUrl', 'whitepaperUrl']),
+        [...OPTIONAL_CRYPTO_NUMBER_FIELDS],
+      )
       
       const { message, success } = await cryptoServiceApi.adminUpdateSupportedCryptoAndAdminWallet(cryptoId, cleanedPayload);
       if (!success) {
