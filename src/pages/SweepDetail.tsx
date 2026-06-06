@@ -5,7 +5,7 @@ import PageHeader from '../components/global/pageHeader.tsx';
 import { useSweepQuery } from '../queries/sweep.querries.ts';
 import type { SweepWalletResult } from '../api/sweep.api.ts';
 import { cn } from '../lib/utils.ts';
-import { Clock, Globe, Target, Wallet, CheckCircle2, AlertCircle, RefreshCcw, ExternalLink } from 'lucide-react';
+import { Clock, Globe, Target, Wallet, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
 import Table, { type TableColumn } from '../components/table.tsx';
 import ConfirmModal from '../components/global/ConfirmModal.tsx';
 
@@ -41,22 +41,6 @@ function shortAddress(address: string) {
 
 function isTestnetEnvironment(value: string | null | undefined) {
   return typeof value === 'string' && value.toLowerCase() === 'testnet';
-}
-
-function getSweepTxUrl(
-  network: string | undefined,
-  blockchainEnvironment: string | undefined,
-  txHash: string,
-) {
-  if (!txHash) return null;
-
-  if (network === 'BTC') {
-    return isTestnetEnvironment(blockchainEnvironment)
-      ? `https://mempool.space/testnet/tx/${txHash}`
-      : `https://www.blockchain.com/explorer/transactions/btc/${txHash}`;
-  }
-
-  return null;
 }
 
 function isZeroOrInvalidSkippedResult(row: SweepWalletResult) {
@@ -129,13 +113,13 @@ export default function SweepDetail() {
       render: (val, row) => {
         const ws = WALLET_STATUS[val as string] ?? WALLET_STATUS.pending;
         return (
-          <div className="space-y-1">
+          <div className="space-y-1 max-w-[360px]">
             <span className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase border", ws.bg, ws.color.replace('text-', 'border-').replace('600', '200'))}>
               <span className={cn("h-1.5 w-1.5 rounded-full", ws.dot)} />
               {ws.label}
             </span>
             {row.error && (
-              <p className="text-[10px] text-red-500 font-medium max-w-[150px] truncate leading-tight" title={row.error}>
+              <p className="text-[10px] font-medium leading-tight whitespace-normal break-words text-red-500" title={row.error}>
                 {row.error}
               </p>
             )}
@@ -143,40 +127,6 @@ export default function SweepDetail() {
         );
       }
     },
-    {
-      key: 'txHash',
-      header: 'Transaction Hash',
-      render: (val) => {
-        if (!val) return <span className="text-gray-400">—</span>;
-
-        const url = getSweepTxUrl(sweep?.network, sweep?.blockchainEnvironment, val as string);
-        const content = (
-          <>
-            <span>{(val as string).slice(0, 10)}...</span>
-            <ExternalLink size={10} />
-          </>
-        );
-
-        return url ? (
-          <a
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5] hover:underline transition-all"
-            title={val as string}
-          >
-            {content}
-          </a>
-        ) : (
-          <div
-            className="flex items-center gap-1 text-[11px] font-mono text-[#575AE5]"
-            title={val as string}
-          >
-            {content}
-          </div>
-        );
-      }
-    }
   ];
 
   function openWalletDetails(row: SweepWalletResult) {
@@ -352,7 +302,7 @@ export default function SweepDetail() {
         <div className="space-y-4">
           <div className="flex items-end justify-between px-2">
             <div className="space-y-1">
-              <h3 className="text-lg font-black text-[#03034D]">Wallet Outomes</h3>
+              <h3 className="text-lg font-black text-[#03034D]">Wallet Outcomes</h3>
               <p className="text-xs font-medium text-gray-500">Detailed breakdown of each address processed in this run</p>
             </div>
             <span className="rounded-lg bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
