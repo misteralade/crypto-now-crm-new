@@ -2,6 +2,14 @@ import { z } from "zod";
 import {BasicSearchQuerySchema} from "./common.schema";
 import { BankAndCryptoType, BlockchainEnvironmentType, CryptoNetworkType } from './enum.schema'
 
+const optionalNumberSchema = z.preprocess((value) => {
+  if (value === "" || value === null || typeof value === "undefined") {
+    return undefined;
+  }
+
+  return value;
+}, z.coerce.number().min(0).optional());
+
 export const SearchSupportedCryptoWalletRequestSchema = BasicSearchQuerySchema.extend({
   createdBy: z.string().uuid().optional().describe("Optional UUID of the admin who created the cryptocurrency"),
   name: z.string().max(100).optional().describe("Optional name of the cryptocurrency to filter by"),
@@ -14,10 +22,10 @@ export const SearchSupportedCryptoWalletRequestSchema = BasicSearchQuerySchema.e
   // additionalInfo: z.record(z.any()).optional().describe("Optional additional information as key-value pairs"),
   additionalInfo: z.string().max(100).optional().describe(`Optional filter where additionalInfo contains this substring, case-insensitively`),
   isStableCoin: z.coerce.boolean().optional().describe("Optional filter by whether the cryptocurrency is a stablecoin"),
-  maxTransactionLimit: z.number().min(0).optional().describe("Optional maximum transaction limit in token units for this cryptocurrency"),
-  minTransactionLimit: z.number().min(0).optional().describe("Optional minimum transaction limit in token units for this cryptocurrency"),
-  maxTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional maximum trade amount in token units for anonymous users"),
-  minTradeAmountForAnonymous: z.number().min(0).optional().describe("Optional minimum trade amount in token units for anonymous users"),
+  maxTransactionLimit: optionalNumberSchema.describe("Optional maximum transaction limit in token units for this cryptocurrency"),
+  minTransactionLimit: optionalNumberSchema.describe("Optional minimum transaction limit in token units for this cryptocurrency"),
+  maxTradeAmountForAnonymous: optionalNumberSchema.describe("Optional maximum trade amount in token units for anonymous users"),
+  minTradeAmountForAnonymous: optionalNumberSchema.describe("Optional minimum trade amount in token units for anonymous users"),
   
   // Include Related Entities
   includeAdmin: z.coerce.boolean().default(false).optional(),
@@ -43,10 +51,10 @@ export const CreateSupportedCryptoAndAdminWalletRequestSchema = z.object({
   description: z.string().max(500).optional().describe("Optional description of the cryptocurrency"),
   isStableCoin: z.boolean().default(false).optional().describe("Optional isStableCoin"),
   logoUrl: z.string().url().optional().describe("Optional URL to the cryptocurrency's logo image"),
-  maxTransactionLimit: z.coerce.number().min(0).optional(),
-  minTransactionLimit: z.coerce.number().min(0).optional(),
-  maxTradeAmountForAnonymous: z.coerce.number().min(0).optional(),
-  minTradeAmountForAnonymous: z.coerce.number().min(0).optional(),
+  maxTransactionLimit: optionalNumberSchema,
+  minTransactionLimit: optionalNumberSchema,
+  maxTradeAmountForAnonymous: optionalNumberSchema,
+  minTradeAmountForAnonymous: optionalNumberSchema,
   buyRate: z.coerce.number().min(0).optional(),
   sellRate: z.coerce.number().min(0).optional(),
   websiteUrl: z.string().url().optional().transform((val) => val === '' ? undefined : val),
@@ -64,10 +72,10 @@ export const EditSupportedCryptoAndAdminWalletRequestSchema = z.object({
   description: z.string().max(500).optional(),
   isStableCoin: z.boolean().optional(),
   logoUrl: z.string().url().optional(),
-  maxTransactionLimit: z.coerce.number().min(0).optional(),
-  minTransactionLimit: z.coerce.number().min(0).optional(),
-  maxTradeAmountForAnonymous: z.coerce.number().min(0).optional(),
-  minTradeAmountForAnonymous: z.coerce.number().min(0).optional(),
+  maxTransactionLimit: optionalNumberSchema,
+  minTransactionLimit: optionalNumberSchema,
+  maxTradeAmountForAnonymous: optionalNumberSchema,
+  minTradeAmountForAnonymous: optionalNumberSchema,
   buyRate: z.coerce.number().min(0).optional(),
   sellRate: z.coerce.number().min(0).optional(),
   websiteUrl: z.string().url().optional(),

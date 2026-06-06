@@ -59,12 +59,12 @@ const EditCoin = () => {
               <EditTradeLimits
                 cryptoId={adminCryptoDetails?.id || ''}
                 symbol={adminCryptoDetails?.symbol || ''}
-                buyAt={Number(adminCryptoDetails?.buyRate) || 0}
-                sellAt={Number(adminCryptoDetails?.sellRate) || 0}
-                minAmount={Number(adminCryptoDetails?.minTransactionLimit) || 0}
-                maxAmount={Number(adminCryptoDetails?.maxTransactionLimit) || 0}
-                minAmountAnonymous={Number(adminCryptoDetails?.minTradeAmountForAnonymous) || 0}
-                maxAmountAnonymous={Number(adminCryptoDetails?.maxTradeAmountForAnonymous) || 0}
+                buyAt={adminCryptoDetails?.buyRate}
+                sellAt={adminCryptoDetails?.sellRate}
+                minAmount={adminCryptoDetails?.minTransactionLimit}
+                maxAmount={adminCryptoDetails?.maxTransactionLimit}
+                minAmountAnonymous={adminCryptoDetails?.minTradeAmountForAnonymous}
+                maxAmountAnonymous={adminCryptoDetails?.maxTradeAmountForAnonymous}
                 onChangeInputField={handleEditCoinInputChange}
               />
               

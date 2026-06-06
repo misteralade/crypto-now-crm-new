@@ -9,12 +9,12 @@ import { QUERY_KEYS } from "../../../../queries/querries.keys";
 interface EditTradeLimitsProps {
   cryptoId: string;
   symbol: string;
-  buyAt: number;
-  sellAt: number;
-  minAmount: number;
-  maxAmount: number;
-  minAmountAnonymous: number;
-  maxAmountAnonymous: number;
+  buyAt?: number | string;
+  sellAt?: number | string;
+  minAmount?: number | string;
+  maxAmount?: number | string;
+  minAmountAnonymous?: number | string;
+  maxAmountAnonymous?: number | string;
   onChangeInputField: (field: keyof EditSupportedCryptoAndAdminWalletRequestType, value: unknown) => void
 }
 
