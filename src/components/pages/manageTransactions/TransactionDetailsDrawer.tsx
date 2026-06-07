@@ -5,7 +5,6 @@ import { convertToMillify } from "../../../util/index.util.ts";
 import momentClient from "../../../util/moment";
 import CopyDetails from "../../global/CopyDetails";
 import { StatusBadge } from "../../global/StatusBadge";
-import { canManuallyRetryPayout } from "../../../util/transaction.util.ts";
 import { setTransactionDetailUpdateField } from "../../../redux/transaction-management.slice";
 import CustomerAccountDetails from "./CustomerAccountDetails.tsx";
 import TransactionStatusPicker from "./TransactionStatusPicker";
@@ -16,6 +15,7 @@ import type { ChangeEvent } from "react";
 import LabeledPillInput from "../../global/LabeledPillInput";
 import type { RootState } from "../../../store";
 import { Skeleton } from "../../global/Skeleton";
+import ConfirmModal from "../../global/ConfirmModal";
 
 interface TransactionDetailsDrawerProps {
   isOpen: boolean;
@@ -28,8 +28,10 @@ interface TransactionDetailsDrawerProps {
   ) => void;
   handleTransactionUpdate: () => void;
   handleTransactionReceiptUpload: (file: File) => Promise<string>;
-  handleManualPayoutRetry: (sessionId?: string) => Promise<void>;
-  retryingPayout: boolean;
+  handleRetryDepositConfirmation: (sessionId?: string) => Promise<void>;
+  handleForceTriggerPayout: (sessionId?: string) => Promise<void>;
+  retryingConfirmation: boolean;
+  forcingPayout: boolean;
 }
 
 const TransactionDetailsDrawer = ({
@@ -40,8 +42,10 @@ const TransactionDetailsDrawer = ({
   handleTransactionUpdateField,
   handleTransactionUpdate,
   handleTransactionReceiptUpload,
-  handleManualPayoutRetry,
-  retryingPayout,
+  handleRetryDepositConfirmation,
+  handleForceTriggerPayout,
+  retryingConfirmation,
+  forcingPayout,
 }: TransactionDetailsDrawerProps) => {
   const dispatch = useDispatch();
   const updatePayload = useSelector(
@@ -53,6 +57,8 @@ const TransactionDetailsDrawer = ({
   const [selectedStatus, setSelectedStatus] = useState<
     TransactionStatusType | undefined
   >(undefined);
+  const [showForcePayoutConfirmModal, setShowForcePayoutConfirmModal] =
+    useState(false);
 
   // Pre-fill update form from server when drawer opens so existing note is shown
   useEffect(() => {
@@ -131,9 +137,13 @@ const TransactionDetailsDrawer = ({
     return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`;
   };
 
-  const canRetryPayout = transaction
-    ? canManuallyRetryPayout(transaction.status)
-    : false;
+  const canRetryConfirmation =
+    transaction?.type === "SELL" &&
+    transaction?.status === "PENDING_CONFIRMATION";
+  const canForcePayout =
+    transaction?.type === "SELL" &&
+    transaction?.status !== "COMPLETED" &&
+    !!transaction?.userBankAccount;
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -324,34 +334,46 @@ const TransactionDetailsDrawer = ({
                   </section>
                 )}
 
-                {canRetryPayout && (
-                  <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-sm font-semibold text-amber-900">
-                          Manual payout retry
-                        </p>
-                        <p className="text-sm text-amber-800">
-                          Triggers the payout flow again and bypasses rail
-                          warning checks.
-                        </p>
-                      </div>
+                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm font-semibold text-amber-900">
+                        Admin payout actions
+                      </p>
+                      <p className="text-sm text-amber-800">
+                        Retry confirmation rechecks or force the payout pipeline.
+                      </p>
+                    </div>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleManualPayoutRetry(transaction.sessionId)
-                        }
-                        disabled={retryingPayout}
-                        className="inline-flex items-center justify-center rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {retryingPayout
-                          ? "Retrying..."
-                          : "Trigger payout retry"}
-                      </button>
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      {canRetryConfirmation && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleRetryDepositConfirmation(transaction.sessionId)
+                          }
+                          disabled={retryingConfirmation}
+                          className="inline-flex flex-1 items-center justify-center rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {retryingConfirmation
+                            ? "Retrying..."
+                            : "Retry confirmation"}
+                        </button>
+                      )}
+
+                      {canForcePayout && (
+                        <button
+                          type="button"
+                          onClick={() => setShowForcePayoutConfirmModal(true)}
+                          disabled={forcingPayout}
+                          className="inline-flex flex-1 items-center justify-center rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {forcingPayout ? "Triggering..." : "Trigger payout"}
+                        </button>
+                      )}
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Receipt Url */}
@@ -675,6 +697,17 @@ const TransactionDetailsDrawer = ({
             </section>
           </div>
         )}
+        <ConfirmModal
+          open={showForcePayoutConfirmModal}
+          actionType="proceed"
+          onClose={() => setShowForcePayoutConfirmModal(false)}
+          onConfirm={async () => {
+            setShowForcePayoutConfirmModal(false);
+            await handleForceTriggerPayout(transaction?.sessionId);
+          }}
+          message="This will force the payout pipeline to run even if the transaction is not in the normal payout state. Confirm only if you intend to proceed."
+          confirmText={forcingPayout ? "Triggering..." : "Force payout"}
+        />
       </aside>
     </div>
   );

@@ -15,7 +15,8 @@ export const useTransactionDetailsPage = () => {
     transactionInfo,
     loadingTransactionInfo,
     refetchTransactionInfo,
-    adminRetryPendingPayoutsMutation,
+    adminRetryDepositConfirmationMutation,
+    adminForceTriggerPayoutMutation,
   } = useTransactionQuery();
   
   const { id } = useParams({ from: '/dashboard/transaction/$id' })
@@ -55,13 +56,25 @@ export const useTransactionDetailsPage = () => {
     },
   });
 
-  const handleManualPayoutRetry = async (sessionId?: string) => {
+  const handleRetryDepositConfirmation = async (sessionId?: string) => {
     if (!sessionId) {
-      toast.error("Transaction session ID is required to retry payout");
+      toast.error("Transaction session ID is required to retry confirmation");
       return;
     }
 
-    const res = await adminRetryPendingPayoutsMutation.mutateAsync({
+    const res = await adminRetryDepositConfirmationMutation.mutateAsync(sessionId);
+    if (res?.success) {
+      await refetchTransactionInfo();
+    }
+  };
+
+  const handleForceTriggerPayout = async (sessionId?: string) => {
+    if (!sessionId) {
+      toast.error("Transaction session ID is required to trigger payout");
+      return;
+    }
+
+    const res = await adminForceTriggerPayoutMutation.mutateAsync({
       sessionId,
       forceProceed: true,
     });
@@ -86,12 +99,14 @@ export const useTransactionDetailsPage = () => {
     loadingTransactionInfo,
     ledgerEntries: transactionInfo?.ledgerEntries || [],
     exportingLedgerCsv: exportLedgerMutation.isPending,
-    retryingPayout: adminRetryPendingPayoutsMutation.isPending,
+    retryingConfirmation: adminRetryDepositConfirmationMutation.isPending,
+    forcingPayout: adminForceTriggerPayoutMutation.isPending,
     
     
     // ⚙️ Functions
     goBack,
     handleExportLedgerCsv: () => exportLedgerMutation.mutate(),
-    handleManualPayoutRetry,
+    handleRetryDepositConfirmation,
+    handleForceTriggerPayout,
   }
 }

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import {useTransactionDetailsPage} from "../hooks/pages/useTransactionDetailsPage.ts";
 import PageHeader from "../components/global/pageHeader.tsx";
@@ -17,7 +17,7 @@ import TransactionDetailsPipeline from "../components/pages/manageTransactions/d
 import { convertToMillify } from "../util/index.util.ts";
 import { Download } from "lucide-react";
 import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
-import { canManuallyRetryPayout } from "../util/transaction.util.ts";
+import ConfirmModal from "../components/global/ConfirmModal.tsx";
 
 const TransactionDetails = () => {
   const {
@@ -26,16 +26,25 @@ const TransactionDetails = () => {
     loadingTransactionInfo,
     ledgerEntries,
     exportingLedgerCsv,
-    retryingPayout,
+    retryingConfirmation,
+    forcingPayout,
     
     
     // ⚙️ Functions
     goBack,
     handleExportLedgerCsv,
-    handleManualPayoutRetry,
+    handleRetryDepositConfirmation,
+    handleForceTriggerPayout,
   } = useTransactionDetailsPage();
 
-  const canRetryPayout = transaction ? canManuallyRetryPayout(transaction.status) : false;
+  const [showForcePayoutConfirmModal, setShowForcePayoutConfirmModal] = useState(false);
+  const canRetryConfirmation =
+    transaction?.type === "SELL" &&
+    transaction?.status === "PENDING_CONFIRMATION";
+  const canForcePayout =
+    transaction?.type === "SELL" &&
+    transaction?.status !== "COMPLETED" &&
+    !!transaction?.userBankAccount;
   
   return (
     <AuthenticatedLayout>
@@ -44,14 +53,24 @@ const TransactionDetails = () => {
         onBack={goBack}
         actions={
           <div className="flex items-center gap-3">
-            {canRetryPayout && (
+            {canRetryConfirmation && (
               <button
                 type="button"
-                onClick={() => handleManualPayoutRetry(transaction?.sessionId)}
-                disabled={retryingPayout}
+                onClick={() => handleRetryDepositConfirmation(transaction?.sessionId)}
+                disabled={retryingConfirmation}
+                className="inline-flex items-center gap-2 rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {retryingConfirmation ? "Retrying..." : "Retry confirmation"}
+              </button>
+            )}
+            {canForcePayout && (
+              <button
+                type="button"
+                onClick={() => setShowForcePayoutConfirmModal(true)}
+                disabled={forcingPayout}
                 className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {retryingPayout ? "Retrying..." : "Trigger payout retry"}
+                {forcingPayout ? "Triggering..." : "Trigger payout"}
               </button>
             )}
             <button
@@ -291,6 +310,17 @@ const TransactionDetails = () => {
           <p className="text-center text-[#858585] font-medium mt-10">No transaction details available.</p>
         )}
       </div>
+      <ConfirmModal
+        open={showForcePayoutConfirmModal}
+        actionType="proceed"
+        onClose={() => setShowForcePayoutConfirmModal(false)}
+        onConfirm={async () => {
+          setShowForcePayoutConfirmModal(false);
+          await handleForceTriggerPayout(transaction?.sessionId);
+        }}
+        message="This will force the payout pipeline to run even if the transaction is not in the normal payout state. Confirm only if you intend to proceed."
+        confirmText={forcingPayout ? "Triggering..." : "Force payout"}
+      />
     </AuthenticatedLayout>
   )
 }

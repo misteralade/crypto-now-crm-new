@@ -72,6 +72,7 @@ export const mapTransactionStatus = (
     FAILED: { displayText: 'Failed', variant: 'failed' },
     EXPIRED: { displayText: 'Expired', variant: 'expired' },
     REFUNDED: { displayText: 'Refunded', variant: 'completed' },
+    PENDING_CONFIRMATION: { displayText: 'Pending Confirmation', variant: 'pending' },
     ERROR: { displayText: 'Error', variant: 'error' },
   }
 

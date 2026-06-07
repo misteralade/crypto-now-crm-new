@@ -30,8 +30,10 @@ const ManageTransactions = () => {
     handleTransactionUpdateField,
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
-    handleManualPayoutRetry,
-    retryingPayout,
+    handleRetryDepositConfirmation,
+    handleForceTriggerPayout,
+    retryingConfirmation,
+    forcingPayout,
     handlePageSizeChange: updatePageSize,
     handleExportAll,
     isFetchingTransactions,
@@ -165,8 +167,10 @@ const ManageTransactions = () => {
           handleTransactionUpdateField={handleTransactionUpdateField}
           handleTransactionUpdate={handleTransactionUpdate}
           handleTransactionReceiptUpload={handleTransactionReceiptUpload}
-          handleManualPayoutRetry={handleManualPayoutRetry}
-          retryingPayout={retryingPayout}
+          handleRetryDepositConfirmation={handleRetryDepositConfirmation}
+          handleForceTriggerPayout={handleForceTriggerPayout}
+          retryingConfirmation={retryingConfirmation}
+          forcingPayout={forcingPayout}
         />
       </div>
     </AuthenticatedLayout>

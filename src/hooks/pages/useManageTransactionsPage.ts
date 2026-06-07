@@ -49,7 +49,8 @@ export const useManageTransactionsPage = () => {
     adminUpdateTransactionMutation,
     adminUploadTransactionReceiptMutation,
     adminLockTransactionMutation,
-    adminRetryPendingPayoutsMutation,
+    adminRetryDepositConfirmationMutation,
+    adminForceTriggerPayoutMutation,
   } = useTransactionQuery({
     adminStatsTimeline: selectedStatsTimeline,
   });
@@ -119,19 +120,34 @@ export const useManageTransactionsPage = () => {
     dispatch(clearTransactionDetailUpdateField());
   }
 
-  const handleManualPayoutRetry = async (sessionId?: string) => {
+  const handleRetryDepositConfirmation = async (sessionId?: string) => {
     if (!sessionId) {
-      toast.error("Transaction session ID is required to retry payout");
+      toast.error("Transaction session ID is required to retry confirmation");
       return;
     }
 
-    const res = await adminRetryPendingPayoutsMutation.mutateAsync({
+    const res = await adminRetryDepositConfirmationMutation.mutateAsync(sessionId);
+
+    if (res?.success) {
+      await Promise.all([
+        refetchTransactionDetail(),
+        refetchSearchTransactions(),
+      ]);
+    }
+  }
+
+  const handleForceTriggerPayout = async (sessionId?: string) => {
+    if (!sessionId) {
+      toast.error("Transaction session ID is required to trigger payout");
+      return;
+    }
+
+    const res = await adminForceTriggerPayoutMutation.mutateAsync({
       sessionId,
       forceProceed: true,
     });
 
     if (res?.success) {
-      // Refresh both the drawer detail and the main table
       await Promise.all([
         refetchTransactionDetail(),
         refetchSearchTransactions(),
@@ -228,8 +244,10 @@ export const useManageTransactionsPage = () => {
     handleTransactionUpdateField,
     handleTransactionUpdate,
     handleTransactionReceiptUpload,
-    handleManualPayoutRetry,
-    retryingPayout: adminRetryPendingPayoutsMutation.isPending,
+    handleRetryDepositConfirmation,
+    handleForceTriggerPayout,
+    retryingConfirmation: adminRetryDepositConfirmationMutation.isPending,
+    forcingPayout: adminForceTriggerPayoutMutation.isPending,
     handlePageSizeChange,
     handleSelectedStatsTimelineChange,
     handleExportAll,

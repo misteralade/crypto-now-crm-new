@@ -113,6 +113,18 @@ export type AdminRetryPendingPayoutsResponse = {
   forceProceed: boolean;
 };
 
+export type AdminRetryDepositConfirmationResponse = {
+  sessionId: string;
+  attemptNumber: number;
+};
+
+export type AdminForceTriggerPayoutResponse = {
+  warning?: string;
+  existingRailTransfer?: boolean;
+  railOutcome?: string;
+  reference?: string | null;
+} | null;
+
 export type PayoutAutoApprovalLimitResponsePayload = {
   thresholdNgn: number;
   isFallback: boolean;

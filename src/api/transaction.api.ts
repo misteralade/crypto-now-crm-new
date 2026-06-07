@@ -17,6 +17,8 @@ import type {
   GetTransactionVolumeTrendAPIResponse,
   GetUsersWithTopTransactionVolumeAPIResponse,
   AdminRetryPendingPayoutsResponse,
+  AdminRetryDepositConfirmationResponse,
+  AdminForceTriggerPayoutResponse,
   SearchTransactionsAPIResponse,
   UploadAPIResponse,
 } from '../types/response.payload.types'
@@ -150,6 +152,20 @@ class TransactionServiceApi {
       '/transaction/admin/retry-pending-payouts',
       { sessionId, forceProceed },
     )) as BaseApiResponse<AdminRetryPendingPayoutsResponse>
+  }
+
+  async adminRetryDepositConfirmation(sessionId: string) {
+    return (await axiosPostRequestHandler(
+      '/transaction/admin/retry-deposit-confirmation',
+      { sessionId },
+    )) as BaseApiResponse<AdminRetryDepositConfirmationResponse>
+  }
+
+  async adminForceTriggerPayout(sessionId: string, forceProceed = false) {
+    return (await axiosPostRequestHandler(
+      '/transaction/admin/force-trigger-payout',
+      { sessionId, forceProceed },
+    )) as BaseApiResponse<AdminForceTriggerPayoutResponse>
   }
 }
 

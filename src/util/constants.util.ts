@@ -103,6 +103,7 @@ export const TRANSACTION_STATUS_OPTIONS = [
   { value: TRANSACTION_STATUS.CANCELLED, label: 'Cancelled' },
   { value: TRANSACTION_STATUS.DISPUTED, label: 'Disputed' },
   { value: TRANSACTION_STATUS.DEPOSIT_DETECTED, label: 'Deposit Detected' },
+  { value: TRANSACTION_STATUS.PENDING_CONFIRMATION, label: 'Pending Confirmation' },
   { value: TRANSACTION_STATUS.DEPOSIT_CONFIRMED, label: 'Deposit Confirmed' },
   { value: TRANSACTION_STATUS.PAYOUT_INITIATED, label: 'Payout Initiated' },
   { value: TRANSACTION_STATUS.PROCESSING, label: 'Processing' },
@@ -146,6 +147,12 @@ export const TRANSACTION_STATUS_UPDATE_OPTIONS = [
     value: TRANSACTION_STATUS.DEPOSIT_DETECTED,
     label: 'Deposit Detected',
     description: 'Deposit is visible and waiting for confirmations.',
+    scope: 'SELL',
+  },
+  {
+    value: TRANSACTION_STATUS.PENDING_CONFIRMATION,
+    label: 'Pending Confirmation',
+    description: 'Deposit was detected but is still awaiting blockchain confirmation.',
     scope: 'SELL',
   },
   {
@@ -221,6 +228,7 @@ export const ALLOWED_ADMIN_TRANSACTION_STATUS = [
   TRANSACTION_STATUS.IN_REVIEW,
   TRANSACTION_STATUS.PROCESSING,
   TRANSACTION_STATUS.AWAITING_CRYPTO,
+  TRANSACTION_STATUS.PENDING_CONFIRMATION,
   TRANSACTION_STATUS.COMPLETED,
   TRANSACTION_STATUS.FAILED,
   TRANSACTION_STATUS.CANCELLED,
@@ -321,6 +329,12 @@ export const transactionStatusStyles: Record<
     bg: 'bg-blue-50',
     dot: 'bg-blue-400',
     textColor: 'text-blue-600',
+  },
+  PENDING_CONFIRMATION: {
+    text: 'Pending Confirmation',
+    bg: 'bg-sky-50',
+    dot: 'bg-sky-400',
+    textColor: 'text-sky-600',
   },
   DEPOSIT_PENDING_MINIMUM: {
     text: 'Deposit Pending Minimum',

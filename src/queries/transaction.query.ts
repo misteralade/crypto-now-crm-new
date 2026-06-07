@@ -11,6 +11,8 @@ import type { TimelineFilter } from '../types/global.types';
 import type {
   AxiosServerError,
   AdminRetryPendingPayoutsResponse,
+  AdminRetryDepositConfirmationResponse,
+  AdminForceTriggerPayoutResponse,
   SearchTransactionsResponse,
   UsersWithTopTransactionVolume,
   WeeklyTransactionVolumeTrend,
@@ -375,6 +377,69 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     },
   })
 
+  const adminRetryDepositConfirmationMutation = useMutation({
+    mutationFn: async (sessionId: string) => {
+      toast.loading('Retrying deposit confirmation...')
+      const { data, success, message } =
+        await transactionServiceApi.adminRetryDepositConfirmation(sessionId)
+      return { success, message, data }
+    },
+    onSuccess: async (
+      res: {
+        success: boolean
+        message: string
+        data: AdminRetryDepositConfirmationResponse
+      },
+    ) => {
+      toast.dismiss()
+      if (res?.success) {
+        toast.success(res.message)
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS] })
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS] })
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS_PAGE] })
+      } else {
+        toast.error(res?.message || 'Failed to retry confirmation')
+      }
+    },
+    onError: (error: AxiosServerError) => {
+      toast.dismiss()
+      toast.error(error.response?.data.error.message || 'An unexpected error occurred')
+    },
+  })
+
+  const adminForceTriggerPayoutMutation = useMutation({
+    mutationFn: async (params: { sessionId: string; forceProceed?: boolean }) => {
+      toast.loading('Triggering payout...')
+      const { data, success, message } =
+        await transactionServiceApi.adminForceTriggerPayout(
+          params.sessionId,
+          params.forceProceed === true,
+        )
+      return { success, message, data }
+    },
+    onSuccess: async (
+      res: {
+        success: boolean
+        message: string
+        data: AdminForceTriggerPayoutResponse
+      },
+    ) => {
+      toast.dismiss()
+      if (res?.success) {
+        toast.success(res.message)
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS] })
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS] })
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTION.GET_TRANSACTION_DETAILS_PAGE] })
+      } else {
+        toast.error(res?.message || 'Failed to trigger payout')
+      }
+    },
+    onError: (error: AxiosServerError) => {
+      toast.dismiss()
+      toast.error(error.response?.data.error.message || 'An unexpected error occurred')
+    },
+  })
+
   return {
     // 🧩 Values
     transactionVolume,
@@ -409,5 +474,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     adminUploadTransactionReceiptMutation,
     adminLockTransactionMutation,
     adminRetryPendingPayoutsMutation,
+    adminRetryDepositConfirmationMutation,
+    adminForceTriggerPayoutMutation,
   }
 }

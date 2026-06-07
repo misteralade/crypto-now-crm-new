@@ -150,6 +150,15 @@ const statusConfig: Record<TransactionStatus, {
     description: 'Blockchain deposit seen, awaiting confirmations',
     isActionable: false,
   },
+  PENDING_CONFIRMATION: {
+    category: StatusCategory.AWAITING,
+    bgColor: 'bg-sky-50',
+    textColor: 'text-sky-700',
+    dotColor: 'bg-sky-500',
+    displayName: 'Pending Confirmation',
+    description: 'Deposit detected and waiting for blockchain confirmation',
+    isActionable: false,
+  },
   DEPOSIT_CONFIRMED: {
     category: StatusCategory.IN_PROGRESS,
     bgColor: 'bg-blue-50',

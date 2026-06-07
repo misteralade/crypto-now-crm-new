@@ -27,6 +27,7 @@ export const TransactionStatus = z.preprocess(
     'DISPUTED',
     'REFUNDED',
     'DEPOSIT_DETECTED',
+    'PENDING_CONFIRMATION',
     'DEPOSIT_CONFIRMED',
     'PAYOUT_INITIATED',
     'PROCESSING',
