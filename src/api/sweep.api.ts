@@ -75,6 +75,16 @@ export interface SweepWalletResult {
   inputCount?: number;
 }
 
+export interface SweepBatchSummary {
+  batchIndex: number;
+  walletCount: number;
+  txHash: string | null;
+  grossInputAmount: number;
+  feeAmount: number;
+  netAmount: number;
+  inputCount: number;
+}
+
 export interface SweepRequest {
   id: string;
   cryptocurrencyId: string;
@@ -91,6 +101,9 @@ export interface SweepRequest {
   actualTotalAmount: number;
   targetAddress: string;
   sweepResults: SweepWalletResult[] | null;
+  isBatchTransaction?: boolean;
+  batchCount?: number;
+  batchSummaries?: SweepBatchSummary[];
   failureReason: string | null;
   startedAt: string | null;
   completedAt: string | null;
