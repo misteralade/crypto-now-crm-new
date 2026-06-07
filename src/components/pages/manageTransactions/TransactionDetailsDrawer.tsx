@@ -6,7 +6,6 @@ import momentClient from "../../../util/moment";
 import CopyDetails from "../../global/CopyDetails";
 import { StatusBadge } from "../../global/StatusBadge";
 import { setTransactionDetailUpdateField } from "../../../redux/transaction-management.slice";
-import CustomerAccountDetails from "./CustomerAccountDetails.tsx";
 import TransactionStatusPicker from "./TransactionStatusPicker";
 import type { TransactionStatusType } from "../../../schemas/enum.schema";
 import type { SearchTransactionsResponse } from "../../../types/response.payload.types";
@@ -16,6 +15,10 @@ import LabeledPillInput from "../../global/LabeledPillInput";
 import type { RootState } from "../../../store";
 import { Skeleton } from "../../global/Skeleton";
 import ConfirmModal from "../../global/ConfirmModal";
+import TransactionDetailsUserProfile from "./details/TransactionDetailsUserProfile";
+import PaymentAccountDetails from "./details/PaymentAccountDetails";
+import AdminPaymentAccountDetails from "./details/AdminPaymentAccountDetails";
+import LedgerEntriesSection from "./details/LedgerEntriesSection";
 
 interface TransactionDetailsDrawerProps {
   isOpen: boolean;
@@ -53,7 +56,6 @@ const TransactionDetailsDrawer = ({
   );
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
-  const [showCustomerDetails, setShowCustomerDetails] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<
     TransactionStatusType | undefined
   >(undefined);
@@ -72,10 +74,9 @@ const TransactionDetailsDrawer = ({
     }
   }, [dispatch, isOpen, transaction]);
 
-  // Reset showCustomerDetails when drawer closes
+  // Reset transient drawer state when drawer closes
   useEffect(() => {
     if (!isOpen) {
-      setShowCustomerDetails(false);
       setSelectedStatus(undefined);
       setUploadedFile(null);
       setPreviewUrl(undefined);
@@ -107,11 +108,19 @@ const TransactionDetailsDrawer = ({
     </div>
   );
 
-  // Check if wallet/bank details are available
-  const hasWalletDetails =
-    transaction?.type === "BUY"
-      ? !!transaction.userCryptoWallet
-      : !!transaction?.userBankAccount;
+  // Hide system-generated lock entries from the activity feed.
+  const visibleTransactionActivities =
+    transaction?.transactionActivities.filter(
+      (activity) => activity.action !== "ADMIN_LOCK_TRANSACTION",
+    ) ?? [];
+  const userBankName =
+    transaction?.userBankAccount?.bankName ??
+    transaction?.userBankAccount?.bank?.name ??
+    "—";
+  const adminBankName =
+    transaction?.adminBankAccount?.bankName ??
+    transaction?.adminBankAccount?.bank?.name ??
+    "—";
 
   // Explicit rate: 1 crypto = fiat (variable by transaction currency)
   const getExchangeRateDisplay = (): string => {
@@ -336,47 +345,121 @@ const TransactionDetailsDrawer = ({
                   </section>
                 )}
 
+              </div>
+
+              <section className="grid gap-4">
+                <TransactionDetailsUserProfile
+                  userId={transaction.user?.id ?? transaction.userId}
+                  firstName={transaction.profile?.firstName ?? ""}
+                  lastName={transaction.profile?.lastName ?? ""}
+                  email={transaction.user?.email ?? transaction.email ?? ""}
+                  phone={transaction.profile?.phoneNumber ?? undefined}
+                  profileImageUrl={transaction.profile?.profileImg}
+                />
+
+                <PaymentAccountDetails
+                  type={transaction.type}
+                  hasBankAccount={!!transaction.userBankAccount}
+                  accountName={transaction.userBankAccount?.accountName}
+                  accountNumber={transaction.userBankAccount?.accountNumber}
+                  bankName={userBankName}
+                  isDeleted={transaction.userBankAccount?.isDeleted}
+                  hasCryptoWallet={!!transaction.userCryptoWallet}
+                  walletAddress={transaction.userCryptoWallet?.walletAddress}
+                  network={transaction.userCryptoWallet?.network}
+                  cryptoName={transaction.cryptocurrency?.name}
+                  cryptoSymbol={transaction.cryptocurrency?.symbol}
+                />
+
+                <AdminPaymentAccountDetails
+                  type={transaction.type}
+                  hasBankAccount={!!transaction.adminBankAccount}
+                  accountName={transaction.adminBankAccount?.accountHolderName}
+                  accountNumber={transaction.adminBankAccount?.accountNumber}
+                  bankName={adminBankName}
+                  hasCryptoWallet={!!transaction.adminCryptoWallet}
+                  walletAddress={transaction.adminCryptoWallet?.walletAddress}
+                  network={transaction.adminCryptoWallet?.network}
+                  cryptoName={transaction.cryptocurrency?.name}
+                  cryptoSymbol={transaction.cryptocurrency?.symbol}
+                />
+              </section>
+
+              {(transaction.type === "SELL" && transaction.depositAddress) ||
+              (transaction.type === "BUY" && transaction.bankTransferReference) ? (
+                <section className="grid gap-4">
+                  {transaction.type === "SELL" && transaction.depositAddress && (
+                    <div className="rounded-lg bg-white shadow-sm p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                        Custodial Deposit Address
+                      </h2>
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-500">
+                          Send and monitor funds against this deposit address.
+                        </p>
+                        <CopyDetails
+                          text={transaction.depositAddress}
+                          className="!max-w-[700px]"
+                          iconClassName="!w-8 !h-8"
+                          wrap={true}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {transaction.type === "BUY" &&
+                    transaction.bankTransferReference && (
+                      <div className="rounded-lg bg-white shadow-sm p-6">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                          Bank Transfer Reference
+                        </h2>
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-500">
+                            Use this reference to match the customer payment.
+                          </p>
+                          <CopyDetails
+                            text={transaction.bankTransferReference}
+                            className="!max-w-[700px]"
+                            iconClassName="!w-8 !h-8"
+                            wrap={true}
+                          />
+                        </div>
+                      </div>
+                    )}
+                </section>
+              ) : null}
+
+              {(canRetryConfirmation || canForcePayout) && (
                 <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-semibold text-amber-900">
-                        Admin payout actions
-                      </p>
-                      <p className="text-sm text-amber-800">
-                        Retry confirmation rechecks or force the payout pipeline.
-                      </p>
-                    </div>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    {canRetryConfirmation && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleRetryDepositConfirmation(transaction.sessionId)
+                        }
+                        disabled={retryingConfirmation}
+                        className="inline-flex flex-1 items-center justify-center rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {retryingConfirmation
+                          ? "Retrying..."
+                          : "Retry confirmation"}
+                      </button>
+                    )}
 
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      {canRetryConfirmation && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleRetryDepositConfirmation(transaction.sessionId)
-                          }
-                          disabled={retryingConfirmation}
-                          className="inline-flex flex-1 items-center justify-center rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {retryingConfirmation
-                            ? "Retrying..."
-                            : "Retry confirmation"}
-                        </button>
-                      )}
-
-                      {canForcePayout && (
-                        <button
-                          type="button"
-                          onClick={() => setShowForcePayoutConfirmModal(true)}
-                          disabled={forcingPayout}
-                          className="inline-flex flex-1 items-center justify-center rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {forcingPayout ? "Triggering..." : "Trigger payout"}
-                        </button>
-                      )}
-                    </div>
+                    {canForcePayout && (
+                      <button
+                        type="button"
+                        onClick={() => setShowForcePayoutConfirmModal(true)}
+                        disabled={forcingPayout}
+                        className="inline-flex flex-1 items-center justify-center rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {forcingPayout ? "Triggering..." : "Trigger payout"}
+                      </button>
+                    )}
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Receipt Url */}
               {transaction.type === "BUY" && (
@@ -394,7 +477,7 @@ const TransactionDetailsDrawer = ({
             </section>
 
             {/* Activity Log */}
-            {transaction.transactionActivities.length > 0 && (
+            {visibleTransactionActivities.length > 0 && (
               <Fragment>
                 <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6">
                   <h3 className="text-[14px] font-semibold text-[#828282]">
@@ -402,7 +485,7 @@ const TransactionDetailsDrawer = ({
                   </h3>
 
                   <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
-                    {transaction.transactionActivities.map((activity) => (
+                    {visibleTransactionActivities.map((activity) => (
                       <div key={activity.id}>
                         {activity.action
                           .replaceAll("_", " ")
@@ -419,113 +502,52 @@ const TransactionDetailsDrawer = ({
               </Fragment>
             )}
 
-            {/* Customer Account Details fetch + panel */}
+            <LedgerEntriesSection ledgerEntries={transaction.ledgerEntries} />
+
+            {(transaction.userNotes ||
+              transaction.adminNotes ||
+              transaction.internalNotes) && (
+              <section className="rounded-lg bg-white shadow-sm p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Notes
+                </h2>
+                <div className="space-y-4">
+                  {transaction.userNotes && (
+                    <div className="rounded-lg bg-blue-50 p-4">
+                      <p className="text-sm font-medium text-blue-900 mb-1">
+                        User Notes
+                      </p>
+                      <p className="text-sm text-blue-800">
+                        {transaction.userNotes}
+                      </p>
+                    </div>
+                  )}
+                  {transaction.adminNotes && (
+                    <div className="rounded-lg bg-purple-50 p-4">
+                      <p className="text-sm font-medium text-purple-900 mb-1">
+                        Admin Notes
+                      </p>
+                      <p className="text-sm text-purple-800">
+                        {transaction.adminNotes}
+                      </p>
+                    </div>
+                  )}
+                  {transaction.internalNotes && (
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        Internal Notes
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        {transaction.internalNotes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Admin Upload transaction receipt */}
             <section>
-              {!showCustomerDetails && (
-                <button
-                  className={`px-6 py-4 text-sm md:text-lg font-semibold border rounded-full transition-all duration-150 ${
-                    hasWalletDetails
-                      ? "border-[#03034D] text-[#03034D] cursor-pointer hover:bg-[#F0F0FF]"
-                      : "border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50"
-                  }`}
-                  onClick={() =>
-                    hasWalletDetails && setShowCustomerDetails(true)
-                  }
-                  disabled={!hasWalletDetails}
-                >
-                  {transaction.type === "BUY"
-                    ? hasWalletDetails
-                      ? "View Wallet Details"
-                      : "Wallet Details Not Available"
-                    : hasWalletDetails
-                    ? "View Bank Details"
-                    : "Bank Details Not Available"}
-                </button>
-              )}
-
-              {showCustomerDetails && (
-                <Fragment>
-                  <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6 animate-modal-content-in">
-                    <h3 className="text-[14px] font-semibold text-[#828282]">
-                      {transaction.type === "BUY"
-                        ? "WALLET DETAILS"
-                        : "BANK DETAILS"}
-                    </h3>
-                    {transaction.type === "BUY" ? (
-                      <Fragment>
-                        <CustomerAccountDetails
-                          address={
-                             
-                            transaction.userCryptoWallet
-                              ? transaction.userCryptoWallet.walletAddress
-                              : "N/A"
-                          }
-                          coinType={
-                             
-                            transaction.cryptocurrency
-                              ? transaction.cryptocurrency.symbol
-                              : "N/A"
-                          }
-                          networkType={
-                             
-                            transaction.userCryptoWallet
-                              ? transaction.userCryptoWallet.network
-                              : "N/A"
-                          }
-                        />
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <div className="flex flex-col space-y-4 text-[14px] text-[#0E0F0C] gap-2">
-                          <div className="flex justify-between items-center m-0">
-                            <div className="text-base text-[#828282]">
-                              Account name
-                            </div>
-                            <div className="font-medium text-[#0E0F0C]">
-                              { }
-                              {transaction.userBankAccount
-                                ? transaction.userBankAccount.accountName
-                                : "N/A"}
-                            </div>
-                          </div>
-
-                          <div className="flex justify-between items-center m-0">
-                            <div className="text-base text-[#828282]">
-                              Bank name
-                            </div>
-                            <div className="font-medium text-[#0E0F0C]">
-                              { }
-                              {transaction.userBankAccount
-                                ? transaction.userBankAccount.bankName
-                                : "N/A"}
-                            </div>
-                          </div>
-
-                          <div className="flex justify-between items-center m-0">
-                            <div className="text-base text-[#828282]">
-                              Account number
-                            </div>
-                            <div className="font-medium text-[#0E0F0C]">
-                              <CopyDetails
-                                text={
-                                   
-                                  transaction.userBankAccount
-                                    ? transaction.userBankAccount.accountNumber
-                                    : "N/A"
-                                }
-                                className="!max-w-[200px] !h-[25px]"
-                                iconClassName="!w-8 !h-8"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </Fragment>
-                    )}
-                  </div>
-                </Fragment>
-              )}
-
-              {/* Admin Upload transaction receipt */}
               {transaction.type === "BUY" && (
                 <section className="mt-4">
                   <div className="mt-6 bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl">

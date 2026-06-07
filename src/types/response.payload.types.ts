@@ -505,6 +505,7 @@ export type AdminBankAccountResponsePayload = {
   type: string;
   label: string;
   createdAt: Date;
+  bank?: SupportedPlatformBankAccountResponse | null;
 }
 
 export type UserBankAccountResponsePayload = {
@@ -517,6 +518,7 @@ export type UserBankAccountResponsePayload = {
   isDeleted: boolean;
   isDefault: boolean;
   createdAt: Date;
+  bank?: SupportedPlatformBankAccountResponse | null;
 }
 // End Bank Accounts
 
