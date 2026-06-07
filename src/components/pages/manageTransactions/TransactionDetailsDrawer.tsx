@@ -139,7 +139,9 @@ const TransactionDetailsDrawer = ({
 
   const canRetryConfirmation =
     transaction?.type === "SELL" &&
-    transaction?.status === "PENDING_CONFIRMATION";
+    ["DEPOSIT_DETECTED", "PENDING_CONFIRMATION"].includes(
+      transaction?.status ?? ""
+    );
   const canForcePayout =
     transaction?.type === "SELL" &&
     transaction?.status !== "COMPLETED" &&
