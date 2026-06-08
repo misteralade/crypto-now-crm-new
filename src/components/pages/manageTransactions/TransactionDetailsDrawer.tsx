@@ -336,6 +336,16 @@ const TransactionDetailsDrawer = ({
                   <StatusBadge status={transaction.status} />
                 </section>
 
+                {/* Confirmations if SELL order */}
+                {transaction.type === "SELL" && (
+                  <section className="flex justify-between items-center">
+                    <div className="text-[#828282] text-[16px]">Confirmations</div>
+                    <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px]">
+                      {transaction.confirmationCount !== undefined ? transaction.confirmationCount : 0}
+                    </div>
+                  </section>
+                )}
+
                 {transaction.failureReason && (
                   <section className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
                     <div className="text-[#828282] text-[16px]">Reason</div>

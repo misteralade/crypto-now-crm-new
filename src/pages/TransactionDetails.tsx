@@ -115,6 +115,7 @@ const TransactionDetails = () => {
                         : '—'
                   }
                   status={transaction.status}
+                  confirmationCount={transaction.confirmationCount}
                 />
                 
                 {/* Cryptocurrency Info */}

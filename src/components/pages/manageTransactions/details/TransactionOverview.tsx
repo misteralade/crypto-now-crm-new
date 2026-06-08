@@ -12,9 +12,10 @@ interface TransactionOverviewProps {
   status: string;
   /** Explicit rate string e.g. "1 BTC = $ 100,000" or "1 BTC = ₦ 140M" */
   exchangeRateDisplay: string;
+  confirmationCount?: number;
 }
 
-const TransactionOverview = ({ type: _type, amountCrypto, symbol, amountFiat: _amountFiat, amountFiatNGN, exchangeRateDisplay, status }: TransactionOverviewProps) => {
+const TransactionOverview = ({ type: _type, amountCrypto, symbol, amountFiat: _amountFiat, amountFiatNGN, exchangeRateDisplay, status, confirmationCount }: TransactionOverviewProps) => {
   return (
     <Fragment>
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -45,6 +46,15 @@ const TransactionOverview = ({ type: _type, amountCrypto, symbol, amountFiat: _a
             <p className="text-sm text-gray-500 mb-1 normal-case">Transaction Status</p>
             <StatusBadge status={status} />
           </div>
+
+          {_type === 'SELL' && (
+            <div>
+              <p className="text-sm text-gray-500 mb-1 normal-case">Blockchain Confirmations</p>
+              <p className="text-lg font-bold text-gray-900">
+                {confirmationCount !== undefined ? confirmationCount : 0}
+              </p>
+            </div>
+          )}
           
         </div>
       </div>
