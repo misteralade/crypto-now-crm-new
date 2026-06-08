@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import Sidebar from "../components/sidebar.tsx";
-import {authServiceApi} from "../api/auth.api.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {LOCAL_STORAGE_KEYS, ROUTES} from "../util/constants.util.ts";
 import { motion, AnimatePresence } from 'framer-motion'
@@ -39,23 +38,10 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
     pingAdminUser();
   }, []);
   
-  const pingAdminUser = async () => {
+  const pingAdminUser = () => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
     if (!token) {
       navigate({ to: ROUTES.LOGIN });
-      return;
-    }
-
-    try {
-      const { success } = await authServiceApi.pingAdmin();
-
-      if (!success) {
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-        navigate({ to: ROUTES.LOGIN })
-      }
-    } catch {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-      navigate({ to: ROUTES.LOGIN })
     }
   }
   

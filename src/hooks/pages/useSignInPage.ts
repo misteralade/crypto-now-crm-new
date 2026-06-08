@@ -29,14 +29,10 @@ export const useSignInPage = () => {
     if (queryPassword) setPassword(queryPassword);
   }, [queryEmail, queryPassword]);
 
-  const pingAdminUser = async () => {
-    try {
-      const { success } = await authServiceApi.pingAdmin();
-      if (success) {
-        navigate({ to: ROUTES.DASHBOARD });
-      }
-    } catch {
-      // Not authenticated — stay on login page
+  const pingAdminUser = () => {
+    const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+    if (token) {
+      navigate({ to: ROUTES.DASHBOARD });
     }
   };
 
