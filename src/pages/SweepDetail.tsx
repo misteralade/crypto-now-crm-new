@@ -89,12 +89,13 @@ export default function SweepDetail() {
     {
       key: 'walletAddress',
       header: 'Wallet Address',
+      className: 'whitespace-nowrap min-w-[280px]',
       render: (val, row) => (
-        <div className="flex items-center gap-2 group">
-          <Wallet size={14} className="text-gray-400 group-hover:text-[#575AE5] transition-colors" />
-          <span className="font-mono text-xs font-medium text-gray-700">{shortAddress(val as string)}</span>
+        <div className="flex items-center gap-2 group flex-nowrap">
+          <Wallet size={14} className="text-gray-400 group-hover:text-[#575AE5] transition-colors shrink-0" />
+          <span className="font-mono text-xs font-medium text-gray-700 shrink-0">{shortAddress(val as string)}</span>
           {isBatchSweep && row.btcBatchIndex != null && (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+            <span className="inline-flex items-center justify-center rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 shrink-0 whitespace-nowrap min-w-fit w-max">
               Batch {row.btcBatchIndex}
             </span>
           )}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { authServiceApi } from "../../api/auth.api";
-import { ROUTES } from "../../util/constants.util.ts";
+import { LOCAL_STORAGE_KEYS, ROUTES } from "../../util/constants.util.ts";
 import type { FormEvent } from "react";
 import type { AuthAPIResponse } from "../../types/response.payload.types";
 

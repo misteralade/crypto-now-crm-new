@@ -28,18 +28,18 @@ const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumbe
               </span>
             )}
           </div>
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-gray-500">Account Name</p>
-              <p className={`text-base font-medium ${isDeleted ? 'text-red-900' : 'text-gray-900'}`}>{accountName}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="col-span-1 sm:col-span-2">
+              <p className="text-xs text-gray-500">Account Number</p>
+              <CopyDetails text={accountNumber || ''} className="!max-w-[700px] text-sm" iconClassName="!w-6 !h-6" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Account Number</p>
-              <CopyDetails text={accountNumber || ''} className="!max-w-[700px]" iconClassName="!w-8 !h-8" />
+              <p className="text-xs text-gray-500">Account Name</p>
+              <p className={`text-sm font-medium ${isDeleted ? 'text-red-900' : 'text-gray-900'}`}>{accountName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Bank Name</p>
-              <p className="text-base font-medium text-gray-900">{bankName}</p>
+              <p className="text-xs text-gray-500">Bank Name</p>
+              <p className="text-sm font-medium text-gray-900 truncate" title={bankName}>{bankName}</p>
             </div>
           </div>
         </div>
@@ -47,20 +47,20 @@ const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumbe
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">User Crypto Wallet</h2>
           
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-gray-500">Wallet Address</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="col-span-1 sm:col-span-2">
+              <p className="text-xs text-gray-500">Wallet Address</p>
               <div className="flex items-center gap-2">
-                <CopyDetails text={walletAddress || ''} className="!max-w-[700px]" iconClassName="!w-8 !h-8" />
+                <CopyDetails text={walletAddress || ''} className="!max-w-[700px] text-sm" iconClassName="!w-6 !h-6" />
               </div>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Network</p>
-              <p className="text-base font-medium text-gray-900">{network}</p>
+              <p className="text-xs text-gray-500">Network</p>
+              <p className="text-sm font-medium text-gray-900">{network}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Coin</p>
-              <p className="text-base font-medium text-gray-900">
+              <p className="text-xs text-gray-500">Coin</p>
+              <p className="text-sm font-medium text-gray-900">
                 {cryptoName} ({cryptoSymbol})
               </p>
             </div>

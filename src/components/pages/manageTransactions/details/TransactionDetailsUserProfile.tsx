@@ -32,11 +32,11 @@ const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, pho
             Transactions
           </a>
         </div>
-        <div className="space-y-4">
+        <div className="flex items-center gap-4">
           <img
             src={profileImageUrl && profileImageUrl.trim() ? profileImageUrl : Logo}
             alt="User avatar"
-            className="w-20 h-20 rounded-full mx-auto object-cover"
+            className="w-14 h-14 rounded-full shrink-0 object-cover"
             onError={(e) => {
               // Fallback to logo if image fails to load
               const target = e.target as HTMLImageElement;
@@ -46,24 +46,26 @@ const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, pho
             }}
           />
           
-          <div className="space-y-3">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(firstName || lastName) && (
               <div>
-                <p className="text-sm text-gray-500">Name</p>
-                <p className="text-base font-medium text-gray-900">
+                <p className="text-xs text-gray-500">Name</p>
+                <p className="text-sm font-medium text-gray-900 truncate">
                   {firstName} {lastName}
                 </p>
               </div>
             )}
             <div>
-              <p className="text-sm text-gray-500">Email</p>
-              <p className="text-base font-medium text-gray-900 break-all">{email}</p>
+              <p className="text-xs text-gray-500">Email</p>
+              <p className="text-sm font-medium text-gray-900 truncate" title={email}>{email}</p>
             </div>
             {phone && (
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <ClickableDetails text={phone} onClick={openCallLine}/>
-                <p className="text-base font-medium text-gray-900">{phone}</p>
+              <div className="col-span-1 sm:col-span-2">
+                <p className="text-xs text-gray-500">Phone</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-sm font-medium text-gray-900">{phone}</p>
+                  <ClickableDetails text={phone} onClick={openCallLine}/>
+                </div>
               </div>
             )}
           </div>

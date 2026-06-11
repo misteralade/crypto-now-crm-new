@@ -65,27 +65,17 @@ const LedgerEntriesSection = ({
 }: LedgerEntriesSectionProps) => {
   const hasEntries = !!ledgerEntries && ledgerEntries.length > 0;
 
+  if (!hasEntries) return null;
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Ledger Entries</h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Immutable accounting rows attached to this transaction. A credit on
-            <span className="font-medium text-gray-700"> User NGN </span>
-            means the user balance increased; a credit on
-            <span className="font-medium text-gray-700"> Payout Sent </span>
-            means the failed payout was reversed, not that money was paid out successfully.
-          </p>
         </div>
       </div>
 
-      {!hasEntries ? (
-        <div className="rounded-lg border border-dashed border-[#ECECEC] bg-[#F9FAFB] px-4 py-8 text-center text-sm text-gray-500">
-          No ledger entries have been recorded for this transaction yet.
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
+      <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-0">
             <thead>
               <tr className="text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -169,7 +159,6 @@ const LedgerEntriesSection = ({
             </tbody>
           </table>
         </div>
-      )}
     </div>
   );
 };

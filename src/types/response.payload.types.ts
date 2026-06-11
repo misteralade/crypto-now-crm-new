@@ -80,6 +80,7 @@ export type SearchTransactionsResponse = {
   adminCryptoWalletId: string;
   cryptoTxHash: string;
   depositAddress?: string | null;
+  confirmationCount?: number;
   adminNotes: string;
   userNotes: string;
   internalNotes: string;
