@@ -472,14 +472,14 @@ const TransactionDetailsDrawer = ({
               )}
 
               {/* Receipt Url */}
-              {transaction.type === "BUY" && (
+              {transaction.type === "BUY" && transaction.receiptImageUrl && (
                 <div className="mt-4 flex justify-between items-start">
                   <div className="text-[#828282] mb-1 text-[16px]">
                     Uploaded receipt
                   </div>
                   <img
                     src={transaction.receiptImageUrl}
-                    alt={transaction.sessionId}
+                    alt="Uploaded receipt"
                     className="rounded-md border border-gray-200 w-48"
                   />
                 </div>
