@@ -31,7 +31,7 @@ const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumbe
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="col-span-1 sm:col-span-2">
               <p className="text-xs text-gray-500">Account Number</p>
-              <CopyDetails text={accountNumber || ''} className="!max-w-[700px] text-sm" iconClassName="!w-6 !h-6" />
+              <p className={`text-sm font-medium ${isDeleted ? 'text-red-900' : 'text-gray-900'}`}>{accountNumber}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Account Name</p>
