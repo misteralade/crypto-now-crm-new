@@ -24,7 +24,7 @@ function formatDate(value: string | Date | null | undefined) {
 
 function formatAmount(value: string | number | null | undefined) {
   if (value == null || value === "") return "0.000000";
-  return Number(value).toFixed(6);
+  return Number(value).toFixed(6).replace(/\.?0+$/, "");
 }
 
 function DetailCard({

@@ -32,9 +32,9 @@ function formatTotalBalance(symbol: string, value: number): string {
   if (value === 0) return "0";
   const upper = symbol.toUpperCase();
   if (upper === "USDT" || upper === "USDC") return value.toFixed(2);
-  if (upper === "BTC") return value.toFixed(8);
-  if (upper === "ETH" || upper === "SOL") return value.toFixed(6);
-  return value.toFixed(6);
+  if (upper === "BTC") return value.toFixed(8).replace(/\.?0+$/, "");
+  if (upper === "ETH" || upper === "SOL") return value.toFixed(6).replace(/\.?0+$/, "");
+  return value.toFixed(6).replace(/\.?0+$/, "");
 }
 
 interface BalanceCardProps {

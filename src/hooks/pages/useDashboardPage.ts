@@ -38,7 +38,7 @@ export const useDashboardPage = () => {
     dispatch(reduxSetSelectedTimeline(timeline))
   }
   
-  const handleViewTransactionDetails = (sessionId: string) => navigate( { to: `${ROUTES.TRANSACTIONS}/${sessionId}` })
+  const handleViewTransactionDetails = (sessionId: string) => navigate( { to: `/dashboard/transaction/${sessionId}` as any })
 
   const handleRetryAllPendingPayouts = () => {
     adminRetryPendingPayoutsMutation.mutate(undefined);

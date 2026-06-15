@@ -51,12 +51,12 @@ function isZeroOrInvalidSkippedResult(row: SweepWalletResult) {
   );
 }
 
-function formatBtcAmount(value: number) {
-  return Number(value).toFixed(6);
-}
+export const formatSweepAmount = (value: string | number) => {
+  return Number(value).toFixed(8).replace(/\.?0+$/, '');
+};
 
 function formatBtcFee(value: number) {
-  return Number(value).toFixed(8);
+  return Number(value).toFixed(8).replace(/\.?0+$/, '');
 }
 
 function getBatchLabel(batchIndex: number) {
@@ -107,7 +107,7 @@ export default function SweepDetail() {
       header: 'Balance',
       render: (val) => (
         <span className="font-mono text-xs font-semibold text-gray-900 tabular-nums">
-          {val !== undefined ? Number(val).toFixed(6) : '—'}
+          {val !== undefined ? Number(val).toFixed(6).replace(/\.?0+$/, '') : '—'}
         </span>
       )
     },
@@ -117,7 +117,7 @@ export default function SweepDetail() {
       render: (val, row) => (
         <div className="space-y-1">
           <span className="font-mono text-xs font-bold text-[#575AE5] tabular-nums">
-            {val ? formatBtcAmount(Number(val)) : '—'}
+            {val ? formatSweepAmount(Number(val)) : '—'}
           </span>
           {Number(row.allocatedFeeAmount ?? 0) > 0 && (
             <p className="text-[10px] font-medium text-gray-500">
@@ -321,7 +321,7 @@ export default function SweepDetail() {
                       <div className="rounded-xl bg-gray-50 p-3">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Batch amount sent</p>
                         <p className="mt-1 text-base font-black text-[#03034D] tabular-nums">
-                          {formatBtcAmount(batch.netAmount)} BTC
+                          {formatSweepAmount(batch.netAmount)} BTC
                         </p>
                       </div>
                       <div className="rounded-xl bg-amber-50 p-3">
@@ -333,7 +333,7 @@ export default function SweepDetail() {
                       <div className="rounded-xl bg-gray-50 p-3">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Gross input</p>
                         <p className="mt-1 text-sm font-bold text-[#03034D] tabular-nums">
-                          {formatBtcAmount(batch.grossInputAmount)} BTC
+                          {formatSweepAmount(batch.grossInputAmount)} BTC
                         </p>
                       </div>
                       <div className="rounded-xl bg-gray-50 p-3">
@@ -372,7 +372,7 @@ export default function SweepDetail() {
           <div className="col-span-2 sm:col-span-1 lg:col-span-1">
              <StatMiniCard 
                 label="Amount Swept" 
-                value={sweep ? Number(sweep.actualTotalAmount).toFixed(4) : '—'} 
+                value={sweep ? Number(sweep.actualTotalAmount).toFixed(4).replace(/\.?0+$/, '') : '—'} 
                 sub={sweep?.network} 
                 icon={<Wallet size={14} />} 
                 color="indigo" 

@@ -38,7 +38,7 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
   // Get the sum of every crypto - convert to Array<{ crypto: value, sumTotal: value }>
   const cryptToBalances: Array<{ crypto: string, sumTotal: string }> = !loading && data?.transactionSummary && data.transactionSummary.length > 0 ? data.transactionSummary.map((transaction) => ({
     crypto: transaction.cryptoCurrencySymbol,
-    sumTotal: Number(transaction.totalCryptoAmount).toFixed(8)
+    sumTotal: Number(transaction.totalCryptoAmount).toFixed(8).replace(/\.?0+$/, "")
   })) : [];
 
   const totalBuys = !loading && data?.transactionSummary ? data.transactionSummary.reduce((acc, item) => acc + Number(item.fiatSpentOnBuying), 0) : 0;

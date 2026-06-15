@@ -5,7 +5,7 @@ import type {TransactionStatus} from "../../schemas/enum.schema.ts";
 import type { SearchTransactionsRequestType } from "../../schemas/transaction.schema.ts";
 import momentClient from "../../util/moment.ts";
 import {useNavigate} from "@tanstack/react-router";
-import {ROUTES} from "../../util/constants.util.ts";
+
 
 export const useUserTransactionHistoryTable = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ export const useUserTransactionHistoryTable = () => {
   }
   
   const handleViewTransactionDetails = (sessionId: string) => {
-    navigate({ to: `${ROUTES.TRANSACTIONS}/${sessionId}` })
+    navigate({ to: `/dashboard/transaction/${sessionId}` as any })
   }
 
   const handlePageChange = (page: number) => {

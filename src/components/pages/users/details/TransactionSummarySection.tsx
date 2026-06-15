@@ -53,7 +53,7 @@ const TransactionSummarySection = ({ transactionSummary, loading = false }: Tran
                         {transaction.cryptoCurrencyName} ({transaction.cryptoCurrencySymbol})
                       </div>
                       <div className="text-sm text-[#667085]">
-                        {Number(transaction.totalCryptoAmount).toFixed(8)} {transaction.cryptoCurrencySymbol}
+                        {Number(transaction.totalCryptoAmount).toFixed(8).replace(/\.?0+$/, "")} {transaction.cryptoCurrencySymbol}
                       </div>
                     </div>
                   </div>

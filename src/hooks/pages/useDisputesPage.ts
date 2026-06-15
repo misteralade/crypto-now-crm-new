@@ -33,7 +33,7 @@ export const useDisputesPage = () => {
   }
   
   const handleNavigateToTransactionPage = (transactionId: string) => {
-    navigate({ to: `${ROUTES.TRANSACTIONS}/${transactionId}` })
+    navigate({ to: `/dashboard/transaction/${transactionId}` as any })
   }
   
   const handleNavigateToEditDisputePage = (disputeId: string) => {

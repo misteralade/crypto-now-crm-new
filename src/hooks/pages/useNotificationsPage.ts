@@ -10,7 +10,7 @@ import {
 import {searchNotificationInitialState} from "../../redux/states/notification.states";
 import momentClient from "../../util/moment";
 import {debounce} from "../../util/debouce.util";
-import {ROUTES, TIME_IN_MILLISECONDS} from '../../util/constants.util.ts'
+import {TIME_IN_MILLISECONDS} from '../../util/constants.util.ts'
 import type {SearchNotificationRequestType} from "../../schemas/notification.schema";
 
 export const useNotificationsPage = () => {
@@ -31,7 +31,7 @@ export const useNotificationsPage = () => {
   const [showFilterModal, setShowFilterModal] = useState(false)
 
   const handleViewTransactionDetails = (transactionId: string) => {
-    navigate({ to: `${ROUTES.TRANSACTIONS}/${transactionId}` })
+    navigate({ to: `/dashboard/transaction/${transactionId}` as any })
   }
 
   const handleSearchNotificationFieldUpdate = (field: keyof SearchNotificationRequestType, value: any ) => {

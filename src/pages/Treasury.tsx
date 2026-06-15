@@ -318,7 +318,7 @@ export default function Treasury() {
         header: "Amount Swept",
         render: (value) => (
           <span className="font-semibold tabular-nums text-gray-900 whitespace-nowrap">
-            {Number(value as string | number).toFixed(6)}
+            {Number(value as string | number).toFixed(6).replace(/\.?0+$/, "")}
           </span>
         ),
       },
