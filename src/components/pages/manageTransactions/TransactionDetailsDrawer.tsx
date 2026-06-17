@@ -266,24 +266,7 @@ const TransactionDetailsDrawer = ({
                   </div>
                 </section>
 
-                {/* Transaction Hash if Sell order */}
-                {transaction.type === "SELL" && transaction.cryptoTxHash && (
-                  <Fragment>
-                    <section className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-4">
-                      <div className="text-[#828282] text-[16px] shrink-0">
-                        Transaction Hash
-                      </div>
-                      <div className="text-[#0E0F0C] font-medium text-sm md:text-[16px] w-full sm:w-auto flex justify-end">
-                        <CopyDetails
-                          text={transaction.cryptoTxHash}
-                          wrap={true}
-                          className="!max-w-full sm:!max-w-[300px]"
-                          iconClassName="h-3 w-3"
-                        />
-                      </div>
-                    </section>
-                  </Fragment>
-                )}
+
 
                 {/* Initiation Date */}
                 <section className="flex justify-between items-center">

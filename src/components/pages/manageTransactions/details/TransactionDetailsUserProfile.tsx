@@ -21,7 +21,7 @@ const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, pho
   
   return (
     <Fragment>
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         <div className="flex justify-between">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">User Profile</h2>
           

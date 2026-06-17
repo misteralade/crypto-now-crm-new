@@ -87,14 +87,14 @@ const TransactionDetails = () => {
           </div>
         }
       />
-      <div className="p-6 mx-auto">
+      <div className="p-4 sm:p-6 mx-auto">
         {loadingTransactionInfo ? (
           <LoadingSpinner size={"lg"} fullScreen={true} message={"Loading transaction details..."} />
         ) : transaction ? (
           <Fragment>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               {/* Main Content - Left Side */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                 {/* Transaction Overview */}
                 <TransactionOverview
                   type={transaction.type}
@@ -167,7 +167,7 @@ const TransactionDetails = () => {
 
                 {/* Custodial Deposit Address (Sell) */}
                 {transaction.type === "SELL" && transaction.depositAddress ? (
-                  <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Deposit Address</h2>
                     <div>
                       <p className="text-sm text-gray-500 mb-2">User deposit address (custodial)</p>
@@ -184,7 +184,7 @@ const TransactionDetails = () => {
                 
                 {/* Bank Transfer Reference */}
                 {transaction.bankTransferReference && (
-                  <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Bank Transfer</h2>
                     <div>
                       <p className="text-sm text-gray-500 mb-2">Transfer Reference</p>
@@ -206,7 +206,7 @@ const TransactionDetails = () => {
                 
                 {/* Notes */}
                 {(transaction.userNotes || transaction.adminNotes || transaction.internalNotes) && (
-                  <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Notes</h2>
                     <div className="space-y-4">
                       {transaction.userNotes && (
@@ -233,7 +233,7 @@ const TransactionDetails = () => {
                 
                 {/* Failure Reason */}
                 {transaction.failureReason && (
-                  <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Status Reason</h2>
                     <div className="p-4 bg-red-50 rounded-lg">
                       <p className="text-sm font-medium text-red-900 mb-1">Reason</p>
@@ -243,7 +243,7 @@ const TransactionDetails = () => {
                 )}
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-6 sm:space-y-8">
                 {/* User Profile */}
                 {transaction.user && (
                   <TransactionDetailsUserProfile
@@ -266,7 +266,7 @@ const TransactionDetails = () => {
                 />
                 
                 {/* Session Info */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Session Info</h2>
                   <div>
                     <p className="text-sm text-gray-500 mb-2">Session ID</p>
@@ -277,7 +277,7 @@ const TransactionDetails = () => {
                 </div>
                 
                 {/* IDs Reference */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Reference IDs</h2>
                   <div className="space-y-3 text-xs">
                     <div>

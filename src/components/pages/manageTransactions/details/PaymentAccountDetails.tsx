@@ -19,7 +19,7 @@ const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumbe
   return (
     <Fragment>
       {type === 'SELL' && hasBankAccount ? (
-        <div className={`bg-white rounded-lg shadow-sm p-6 ${isDeleted ? 'bg-red-50/50' : ''}`}>
+        <div className={`bg-white rounded-lg shadow-sm p-4 sm:p-6 ${isDeleted ? 'bg-red-50/50' : ''}`}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">User Bank Account</h2>
             {isDeleted && (
@@ -44,7 +44,7 @@ const PaymentAccountDetails = ({ type, hasBankAccount, accountName, accountNumbe
           </div>
         </div>
       ) : type === 'BUY' && hasCryptoWallet && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">User Crypto Wallet</h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

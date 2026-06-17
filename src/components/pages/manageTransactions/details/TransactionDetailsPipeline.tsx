@@ -12,7 +12,7 @@ interface TransactionDetailsPipelineProps {
 const TransactionDetailsPipeline = ({ createdAt, updatedAt, processedAt, processedByFirstName, processedByLastName }: TransactionDetailsPipelineProps) => {
   return (
     <Fragment>
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Timeline</h2>
         <div className="space-y-4">
           <div className="flex gap-3">
