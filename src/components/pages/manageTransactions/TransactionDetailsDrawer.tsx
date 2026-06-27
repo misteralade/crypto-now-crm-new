@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, ChevronDown, ChevronUp, Clock, Eye, Edit2, Play, RefreshCw, Activity } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToMillify } from "../../../util/index.util.ts";
 import momentClient from "../../../util/moment";
@@ -61,6 +61,8 @@ const TransactionDetailsDrawer = ({
   >(undefined);
   const [showForcePayoutConfirmModal, setShowForcePayoutConfirmModal] =
     useState(false);
+  const [isLogListExpanded, setIsLogListExpanded] = useState(false);
+  const [expandedLogIds, setExpandedLogIds] = useState<Record<string, boolean>>({});
 
   // Pre-fill update form from server when drawer opens so existing note is shown
   useEffect(() => {
@@ -80,6 +82,8 @@ const TransactionDetailsDrawer = ({
       setSelectedStatus(undefined);
       setUploadedFile(null);
       setPreviewUrl(undefined);
+      setIsLogListExpanded(false);
+      setExpandedLogIds({});
     }
   }, [isOpen]);
 
@@ -472,25 +476,133 @@ const TransactionDetailsDrawer = ({
             {/* Activity Log */}
             {visibleTransactionActivities.length > 0 && (
               <Fragment>
-                <div className="bg-[#F0F0FF] p-4 border border-[#ECECEC] rounded-2xl space-y-4 mb-6 mt-6">
-                  <h3 className="text-[14px] font-semibold text-[#828282]">
-                    Activity Log
-                  </h3>
-
-                  <div className="flex flex-col gap-y-4 max-h-[200px] overflow-y-auto">
-                    {visibleTransactionActivities.map((activity) => (
-                      <div key={activity.id}>
-                        {activity.action
-                          .replaceAll("_", " ")
-                          .toLowerCase()
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}{" "}
-                        - {activity.message}{" "}
-                        {momentClient.formatToNormalisedDateAndTime(
-                          activity.createdAt
-                        )}
+                <div className="bg-[#F8F9FE] p-5 border border-[#E9EBF8] rounded-3xl space-y-4 mb-6 mt-6 shadow-sm">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-[#EBF8FF] rounded-lg">
+                        <Activity className="w-4 h-4 text-[#3182CE]" />
                       </div>
-                    ))}
+                      <h3 className="text-[15px] font-bold text-[#2D3748]">
+                        Activity Log
+                      </h3>
+                    </div>
+                    <span className="text-[12px] font-medium text-[#718096] bg-white px-2.5 py-1 rounded-full border border-[#E2E8F0]">
+                      {visibleTransactionActivities.length} {visibleTransactionActivities.length === 1 ? "activity" : "activities"}
+                    </span>
                   </div>
+
+                  <div className="flex flex-col gap-y-3">
+                    {(isLogListExpanded 
+                      ? visibleTransactionActivities 
+                      : visibleTransactionActivities.slice(0, 3)
+                    ).map((activity) => {
+                      const getMeta = (action: string) => {
+                        switch (action) {
+                          case "ADMIN_VIEW_TRANSACTION":
+                            return {
+                              icon: Eye,
+                              borderLeft: "border-l-[#3182CE]",
+                              bgIcon: "bg-[#EBF8FF] text-[#3182CE]",
+                            };
+                          case "UPDATE_TRANSACTION_STATUS":
+                            return {
+                              icon: Edit2,
+                              borderLeft: "border-l-[#805AD5]",
+                              bgIcon: "bg-[#FAF5FF] text-[#805AD5]",
+                            };
+                          case "FORCE_TRIGGER_PAYOUT":
+                          case "ADMIN_RETRY_PENDING_PAYOUT":
+                            return {
+                              icon: Play,
+                              borderLeft: "border-l-[#DD6B20]",
+                              bgIcon: "bg-[#FFFAF0] text-[#DD6B20]",
+                            };
+                          case "RETRY_DEPOSIT_CONFIRMATION":
+                            return {
+                              icon: RefreshCw,
+                              borderLeft: "border-l-[#4C51BF]",
+                              bgIcon: "bg-[#EBF4FF] text-[#4C51BF]",
+                            };
+                          default:
+                            return {
+                              icon: Clock,
+                              borderLeft: "border-l-[#718096]",
+                              bgIcon: "bg-[#F7FAFC] text-[#718096]",
+                            };
+                        }
+                      };
+
+                      const meta = getMeta(activity.action);
+                      const IconComponent = meta.icon;
+                      const isMessageLong = activity.message.length > 90;
+                      const isExpanded = !!expandedLogIds[activity.id];
+                      const displayMessage = isMessageLong && !isExpanded
+                        ? activity.message.slice(0, 90) + "..."
+                        : activity.message;
+
+                      return (
+                        <div 
+                          key={activity.id} 
+                          className={`border border-[#E2E8F0] border-l-4 ${meta.borderLeft} rounded-xl p-3.5 bg-white shadow-sm hover:shadow-md transition-all duration-300`}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-2">
+                              <div className={`p-1.5 rounded-lg ${meta.bgIcon}`}>
+                                <IconComponent className="w-3.5 h-3.5" />
+                              </div>
+                              <span className="text-[13px] font-bold text-[#2D3748]">
+                                {activity.action
+                                  .replaceAll("_", " ")
+                                  .toLowerCase()
+                                  .replace(/\b\w/g, (c) => c.toUpperCase())}
+                              </span>
+                            </div>
+                            <span className="text-[11px] font-medium text-[#A0AEC0] whitespace-nowrap">
+                              {momentClient.formatToNormalisedDateAndTime(activity.createdAt)}
+                            </span>
+                          </div>
+
+                          <div className="mt-2 text-[13px] leading-relaxed text-[#4A5568] break-words">
+                            {displayMessage}
+                          </div>
+
+                          {isMessageLong && (
+                            <button
+                              onClick={() => setExpandedLogIds(prev => ({ ...prev, [activity.id]: !prev[activity.id] }))}
+                              className="text-[11px] font-semibold text-[#3182CE] hover:text-[#2B6CB0] mt-2 inline-flex items-center gap-1 focus:outline-none transition-colors duration-150"
+                            >
+                              {isExpanded ? (
+                                <>
+                                  Show Less <ChevronUp className="w-3 h-3" />
+                                </>
+                              ) : (
+                                <>
+                                  Show More <ChevronDown className="w-3 h-3" />
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {visibleTransactionActivities.length > 3 && (
+                    <button
+                      onClick={() => setIsLogListExpanded(!isLogListExpanded)}
+                      className="w-full mt-3 py-2 px-4 bg-white border border-[#E2E8F0] text-[13px] font-semibold text-[#4A5568] hover:bg-[#F7FAFC] rounded-xl flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all duration-200"
+                    >
+                      {isLogListExpanded ? (
+                        <>
+                          Show Less Activities <ChevronUp className="w-4 h-4" />
+                        </>
+                      ) : (
+                        <>
+                          View All Activities ({visibleTransactionActivities.length}) <ChevronDown className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               </Fragment>
             )}

@@ -54,13 +54,13 @@ const TransactionDetails = () => {
         title="Transaction Details"
         onBack={goBack}
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {canRetryConfirmation && (
               <button
                 type="button"
                 onClick={() => handleRetryDepositConfirmation(transaction?.sessionId)}
                 disabled={retryingConfirmation}
-                className="inline-flex items-center gap-2 rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-full bg-[#F2994A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D98234] disabled:cursor-not-allowed disabled:opacity-60 whitespace-nowrap"
               >
                 {retryingConfirmation ? "Retrying..." : "Retry confirmation"}
               </button>
@@ -70,7 +70,7 @@ const TransactionDetails = () => {
                 type="button"
                 onClick={() => setShowForcePayoutConfirmModal(true)}
                 disabled={forcingPayout}
-                className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-full bg-[#B42318] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60 whitespace-nowrap"
               >
                 {forcingPayout ? "Triggering..." : "Trigger payout"}
               </button>
@@ -79,7 +79,7 @@ const TransactionDetails = () => {
               type="button"
               onClick={handleExportLedgerCsv}
               disabled={exportingLedgerCsv}
-              className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60 whitespace-nowrap"
             >
               <Download className="h-4 w-4" />
               {exportingLedgerCsv ? "Exporting..." : "Export Ledger CSV"}

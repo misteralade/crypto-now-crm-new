@@ -90,6 +90,7 @@ export type SearchTransactionsResponse = {
   usdAmount: number;
   createdAt: Date;
   updatedAt: Date;
+  userType?: 'REGISTERED' | 'GUEST' | 'OTHER';
   
 
   // Relations

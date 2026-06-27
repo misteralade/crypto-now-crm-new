@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import CopyIcon from "../../../assets/img/fluent_copy-16-regular.svg"
+import { Copy } from 'lucide-react'
 
 interface CustomerAccountDetailsProps {
   address: string
@@ -33,11 +31,11 @@ export default function CustomerAccountDetails({
             <button
               type="button"
               onClick={handleCopy}
-              className="p-1 rounded hover:text-black/5 cursor-pointer"
+              className="p-1 rounded text-purple-600 hover:bg-purple-50 active:scale-95 transition-all cursor-pointer"
               aria-label="Copy address"
               title="Copy address"
             >
-              <img src={CopyIcon} alt={CopyIcon} width={15} height={18}/>
+              <Copy className="h-4 w-4" />
             </button>
           </div>
         </section>

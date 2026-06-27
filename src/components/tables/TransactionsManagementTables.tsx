@@ -218,13 +218,18 @@ export const TransactionsManagementColumn = (
       </Fragment>
     ),
     render: (value) => {
+      let badgeClass = 'bg-green-100 text-green-800'
+      let label = 'Registered'
+      if (value === 'GUEST' || value === 'Anonymous') {
+        badgeClass = 'bg-orange-100 text-orange-800'
+        label = 'Guest'
+      } else if (value === 'OTHER') {
+        badgeClass = 'bg-gray-100 text-gray-800'
+        label = 'Other'
+      }
       return (
-        <span className={`text-sm text-[14px] px-3 py-1 rounded-full inline-flex items-center ${
-          value === 'Anonymous' 
-            ? 'bg-orange-100 text-orange-800' 
-            : 'bg-green-100 text-green-800'
-        }`}>
-          {value == "Anonymous" ? "Guest" : "Registered"}
+        <span className={`text-sm text-[14px] px-3 py-1 rounded-full inline-flex items-center ${badgeClass}`}>
+          {label}
         </span>
       )
     },
@@ -289,7 +294,7 @@ export const TransactionsManagementDataRow = (
       amount: `$${convertToMillify(Number(item.usdAmount))}`,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       status: item.status,
-      isAnonymous: item?.email ? 'Anonymous' : 'Registered',
+      isAnonymous: item.userType || (item?.email ? 'GUEST' : 'REGISTERED'),
       updatedAt: momentClient.formatToNormalisedDateAndTime(item.updatedAt),
     })
 

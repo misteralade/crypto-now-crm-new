@@ -22,6 +22,11 @@ const CopyDetails = ({text, className, iconClassName, wrap}: CopyDetailsProps) =
                 setResponse(`Error!: ${err}`);
             });
     };
+
+    const cleanIconClass = iconClassName
+      ? iconClassName.replace(/!?(w|h)-(8|6)/g, "").trim()
+      : "";
+
     return (
       <div
         className={`flex gap-2 items-center relative ${!wrap ? "max-w-[400px]" : "w-full"} w-3/4 md:w-fit ${className}`}
@@ -32,16 +37,25 @@ const CopyDetails = ({text, className, iconClassName, wrap}: CopyDetailsProps) =
           {text}
         </p>
 
-        <Copy
-          className={`text-purple-600 hover:cursor-pointer shrink-0 ${iconClassName || "h-4 w-4"}`}
+        <button
+          type="button"
           onClick={handleCopy}
-        />
-
-        <p
-          className={`text-accent2 text-sm absolute -top-5 right-0 transition-all duration-500`}
+          className="p-1 rounded text-purple-600 hover:bg-purple-50 active:scale-95 transition-all shrink-0 cursor-pointer flex items-center justify-center"
+          title="Copy"
+          aria-label="Copy"
         >
-          {response}
-        </p>
+          <Copy
+            className={`w-4 h-4 ${cleanIconClass}`}
+          />
+        </button>
+
+        {response && (
+          <span
+            className={`text-accent2 text-xs absolute -top-5 right-0 bg-gray-900 text-white px-2 py-0.5 rounded shadow-sm z-10 transition-all duration-300`}
+          >
+            {response}
+          </span>
+        )}
       </div>
     )
 }
