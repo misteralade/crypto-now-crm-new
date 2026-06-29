@@ -7,6 +7,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import { Switch } from "../components/ui/switch.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import PageHeader from "../components/global/pageHeader.tsx";
 import {
@@ -174,45 +175,29 @@ export default function WalletDetails() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (walletDetails) {
-                    toggleActiveMutation.mutate(!walletDetails.wallet.isActive);
-                  }
-                }}
-                disabled={toggleActiveMutation.isPending}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50",
-                  walletDetails?.wallet.isActive
-                    ? "border-emerald-200 bg-[--color-success-bg] text-[--color-success]"
-                    : "border-red-200 bg-red-50 text-red-600"
-                )}
-              >
-                {walletDetails?.wallet.isActive ? (
-                  <>
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    Active
-                  </>
-                ) : (
-                  <>
-                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                    Inactive
-                  </>
-                )}
-              </button>
+              {walletDetails && (
+                <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs font-semibold text-gray-700 shadow-sm">
+                  <span className="text-gray-400">Status:</span>
+                  <Switch
+                    checked={walletDetails.wallet.isActive}
+                    onCheckedChange={(checked) => {
+                      toggleActiveMutation.mutate(checked);
+                    }}
+                    disabled={toggleActiveMutation.isPending}
+                    className="scale-[0.7] -mx-1"
+                  />
+                  <span className={walletDetails.wallet.isActive ? "text-emerald-600" : "text-red-500"}>
+                    {walletDetails.wallet.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              )}
 
               {fromSweepId && (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D6D9FF] bg-white px-2.5 py-1 text-xs font-semibold text-[#575AE5]">
                   From sweep run
                 </span>
               )}
-              {walletDetails?.wallet.cachedBalanceUpdatedAt && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE0FF] bg-white px-2.5 py-1 text-xs font-semibold text-gray-600">
-                  Refreshed{" "}
-                  {formatDate(walletDetails.wallet.cachedBalanceUpdatedAt)}
-                </span>
-              )}
+
               {isWalletBalanceStale && (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
                   Balance may be stale

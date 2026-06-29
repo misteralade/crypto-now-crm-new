@@ -15,6 +15,15 @@ import type {
   UsersWithTopTransactionVolume,
 } from '../../types/response.payload.types'
 
+const formatCryptoAmountUpTo4Decimals = (amount: number | string | undefined, symbol?: string) => {
+  if (amount === undefined || amount === null || amount === "") return "0"
+  const num = Number(amount)
+  // Round up to 10-thousandth (4 decimal places)
+  const factor = 10000;
+  const rounded = Math.ceil(num * factor) / factor;
+  return `${rounded} ${symbol ? symbol.toUpperCase() : ""}`.trim();
+}
+
 type TransactionSummaryRow = {
   user: string
   transactionId: string
@@ -252,30 +261,6 @@ export const TransactionsManagementColumn = (
       </Fragment>
     ),
   },
-  {
-    key: 'action',
-    header: (
-      <Fragment>
-        <div className="py-3 text-left text-sm font-medium text-gray-500">
-          <span className="flex items-center gap-2"></span>
-        </div>
-      </Fragment>
-    ),
-    render: (_, row) => (
-      <Fragment>
-        <button
-          className="text-[#03034D] hover:opacity-80 text-[12px] cursor-pointer font-medium inline-flex items-center gap-1"
-          onClick={(event) => {
-            event.stopPropagation()
-            handleShowTransactionDetails(row.id)
-          }}
-        >
-          <span>View Order</span>
-          <span aria-hidden><ChevronRight size={16} /></span>
-        </button>
-      </Fragment>
-    ),
-  },
 ]
 
 export const TransactionsManagementDataRow = (
@@ -291,7 +276,7 @@ export const TransactionsManagementDataRow = (
     rowItems.push({
       id: item.sessionId,
       type: `${item.type} ${item.cryptocurrency ? `- ${item.cryptocurrency.symbol}` : ''}`,
-      amount: `$${convertToMillify(Number(item.usdAmount))}`,
+      amount: formatCryptoAmountUpTo4Decimals(item.amountCrypto, item.cryptocurrency?.symbol),
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       status: item.status,
       isAnonymous: item.userType || (item?.email ? 'GUEST' : 'REGISTERED'),
@@ -469,7 +454,7 @@ export const UserTransactionsManagementDataRow = (
       id: item.sessionId,
       date: momentClient.formatToNormalisedDateAndTime(item.createdAt),
       type: `${item.type} ${item.cryptocurrency ? `- ${item.cryptocurrency.symbol}` : ''}`,
-      amount: `$${convertToMillify(Number(item.usdAmount))}`,
+      amount: formatCryptoAmountUpTo4Decimals(item.amountCrypto, item.cryptocurrency?.symbol),
       rate: rateDisplay,
       status: item.status,
     })
