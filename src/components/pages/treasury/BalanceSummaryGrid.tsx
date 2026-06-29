@@ -54,8 +54,20 @@ function BalanceCard({ row, onRefresh, onWalletCountClick, refreshing }: Balance
       ? moment(row.oldestRefreshedAt).format("YYYY-MM-DD HH:mm:ss")
       : undefined;
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
+    if (onWalletCountClick) {
+      onWalletCountClick(row);
+    }
+  };
+
   return (
-    <div className="group relative rounded-2xl border border-[#E4E7EC] bg-white p-5 transition-all hover:border-[#C7CAFB] hover:shadow-[0_8px_24px_-12px_rgba(3,3,77,0.18)]">
+    <div
+      onClick={handleCardClick}
+      className="group relative cursor-pointer rounded-2xl border border-[#E4E7EC] bg-white p-5 transition-all hover:border-[#C7CAFB] hover:shadow-[0_8px_24px_-12px_rgba(3,3,77,0.18)]"
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-2.5">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[--color-primary-taint] text-[13px] font-bold text-[#03034D]">

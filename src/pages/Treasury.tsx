@@ -275,7 +275,15 @@ export default function Treasury() {
   }
 
   function handleWalletCountClick(row: BalanceSummaryRow) {
-    setSelectedWalletScope(row);
+    void navigate({
+      to: "/dashboard/treasury/wallets",
+      search: {
+        cryptocurrencyId: row.cryptocurrencyId,
+        network: row.network,
+        symbol: row.symbol,
+        name: row.name,
+      },
+    });
   }
 
   const columns: TableColumn<SweepRequest>[] = useMemo(

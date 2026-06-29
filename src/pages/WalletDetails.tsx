@@ -12,6 +12,7 @@ import PageHeader from "../components/global/pageHeader.tsx";
 import {
   useAdminCustodialWalletDetailsQuery,
   useAdminRefreshCustodialWalletBalanceMutation,
+  useAdminToggleCustodialWalletActiveMutation,
 } from "../queries/crypto.querries.ts";
 import { useSweepQuery } from "../queries/sweep.querries.ts";
 import { ROUTES } from "../util/constants.util.ts";
@@ -93,6 +94,8 @@ export default function WalletDetails() {
     useAdminCustodialWalletDetailsQuery(walletAddress);
   const refreshMutation =
     useAdminRefreshCustodialWalletBalanceMutation(walletAddress);
+  const toggleActiveMutation =
+    useAdminToggleCustodialWalletActiveMutation(walletAddress);
   const { useSweepStatus } = useSweepQuery();
   const { data: sweep } = useSweepStatus(fromSweepId);
 
@@ -156,45 +159,62 @@ export default function WalletDetails() {
                 {walletDetails?.wallet.network ?? "network"}
               </h2>
               <div className="flex flex-wrap items-center gap-2">
-                {env && (
+                 {env && (
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold ${env.badgeClass}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${env.badgeClass}`}
                   >
                     {env.label}
                   </span>
                 )}
-                <p className="text-pretty text-sm text-[#4B4E60]">
+                <p className="text-pretty text-xs text-[#667085]">
                   Review the wallet balance, ownership details, and the sweep
                   row that led here.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {walletDetails?.wallet.isActive ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-[--color-success-bg] px-3 py-1.5 text-sm font-semibold text-[--color-success]">
-                  <ShieldCheck className="h-4 w-4" />
-                  Active
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-600">
-                  Inactive
-                </span>
-              )}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (walletDetails) {
+                    toggleActiveMutation.mutate(!walletDetails.wallet.isActive);
+                  }
+                }}
+                disabled={toggleActiveMutation.isPending}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50",
+                  walletDetails?.wallet.isActive
+                    ? "border-emerald-200 bg-[--color-success-bg] text-[--color-success]"
+                    : "border-red-200 bg-red-50 text-red-600"
+                )}
+              >
+                {walletDetails?.wallet.isActive ? (
+                  <>
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Active
+                  </>
+                ) : (
+                  <>
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                    Inactive
+                  </>
+                )}
+              </button>
 
               {fromSweepId && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D6D9FF] bg-white px-3 py-1.5 text-sm font-semibold text-[#575AE5]">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D6D9FF] bg-white px-2.5 py-1 text-xs font-semibold text-[#575AE5]">
                   From sweep run
                 </span>
               )}
               {walletDetails?.wallet.cachedBalanceUpdatedAt && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE0FF] bg-white px-3 py-1.5 text-sm font-semibold text-gray-600">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE0FF] bg-white px-2.5 py-1 text-xs font-semibold text-gray-600">
                   Refreshed{" "}
                   {formatDate(walletDetails.wallet.cachedBalanceUpdatedAt)}
                 </span>
               )}
               {isWalletBalanceStale && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
                   Balance may be stale
                 </span>
               )}

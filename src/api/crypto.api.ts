@@ -89,6 +89,10 @@ class CryptoServiceApi {
   async adminGenerateUserCustodialWallets(userId: string) {
     return await axiosPostRequestHandler(`/custodial-wallet/admin/${userId}/generate/all`, {}) as AdminGenerateUserCustodialWalletsAPIResponse;
   }
+
+  async adminToggleCustodialWalletActive(walletAddress: string, isActive: boolean) {
+    return await axiosPostRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}/toggle-active`, { isActive }) as BaseApiResponse;
+  }
 }
 
 export const cryptoServiceApi = CryptoServiceApi.getInstance();

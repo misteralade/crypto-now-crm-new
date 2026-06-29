@@ -249,13 +249,50 @@ export const useAdminRefreshCustodialWalletBalanceMutation = (walletAddress: str
     onSuccess: async () => {
       toast.dismiss();
       toast.success('Wallet balance refreshed.');
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_CUSTODIAL_WALLET_DETAILS, walletAddress],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_CUSTODIAL_WALLET_DETAILS, walletAddress],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_TREASURY_WALLETS],
+        }),
+      ]);
     },
     onError: (error: unknown) => {
       toast.dismiss();
       const message = error instanceof Error ? error.message : 'Failed to refresh wallet balance.';
+      toast.error(message);
+    },
+  });
+};
+
+export const useAdminToggleCustodialWalletActiveMutation = (walletAddress: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: [QUERY_KEYS.CRYPTO.ADMIN_REFRESH_CUSTODIAL_WALLET_BALANCE, "toggle-active", walletAddress],
+    mutationFn: async (isActive: boolean) => {
+      if (!walletAddress) throw new Error('Missing wallet address.');
+      toast.loading(isActive ? 'Activating wallet...' : 'Deactivating wallet...');
+      const { message, success } = await cryptoServiceApi.adminToggleCustodialWalletActive(walletAddress, isActive);
+      if (!success) throw new Error(message);
+      return isActive;
+    },
+    onSuccess: async () => {
+      toast.dismiss();
+      toast.success('Wallet status updated successfully.');
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_CUSTODIAL_WALLET_DETAILS, walletAddress],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_TREASURY_WALLETS],
+        }),
+      ]);
+    },
+    onError: (error: unknown) => {
+      toast.dismiss();
+      const message = error instanceof Error ? error.message : 'Failed to update wallet status.';
       toast.error(message);
     },
   });
