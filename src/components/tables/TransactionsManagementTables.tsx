@@ -1,4 +1,4 @@
-import {ArrowUpRight, ChevronDown, ChevronRight, Download} from 'lucide-react'
+import {ArrowUpRight, ChevronDown, Download} from 'lucide-react'
 import { Fragment } from 'react'
 import { convertToMillify } from '../../util/index.util.ts'
 import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
@@ -126,7 +126,7 @@ export const UsersWithTopTransactionDataRow = (
 // Start Transactions Management Tables
 export const TransactionsManagementColumn = (
   handleSortBy: (columnKey: string) => void,
-  handleShowTransactionDetails: (sessionId: string) => void,
+  _handleShowTransactionDetails: (sessionId: string) => void,
   handleViewTransactionDetails: (sessionId: string) => void,
 ): Array<TableColumn<TransactionManagementRow>> => [
   {

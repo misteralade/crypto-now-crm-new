@@ -10,6 +10,7 @@ import { cleanUrlFields } from '../util/url.util'
 import { sanitizeOptionalNumberFields } from '../util/number.util'
 import type {AxiosServerError} from "../types/response.payload.types";
 import type {RootState} from "../store";
+import type {CreateAdminWalletRequestType} from "../schemas/crypto.schema";
 
 const OPTIONAL_CRYPTO_NUMBER_FIELDS = [
   "buyRate",
@@ -336,6 +337,112 @@ export const useAdminGenerateUserCustodialWalletsMutation = (userId: string | un
     onError: (error: Error) => {
       toast.dismiss();
       toast.error(error.message || "Failed to generate custodial wallets.");
+    },
+  });
+};
+
+export const useAdminGeneratePlatformFuelingWalletMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ cryptoId, network }: { cryptoId: string; network: string }) => {
+      toast.loading("Generating platform fueling wallet...");
+      const { data, message, success } = await cryptoServiceApi.adminGeneratePlatformFuelingWallet(cryptoId, network);
+      if (!success) throw new Error(message);
+      return data;
+    },
+    onSuccess: async () => {
+      toast.dismiss();
+      toast.success("Platform fueling wallet generated successfully.");
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ALL_SUPPORTED_CRYPTO_CURRENCIES],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ADMIN_GET_SUPPORTED_CRYPTO_CURRENCY],
+      });
+    },
+    onError: (error: Error) => {
+      toast.dismiss();
+      toast.error(error.message || "Failed to generate platform fueling wallet.");
+    },
+  });
+};
+
+export const useAdminCreatePlatformWalletMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: CreateAdminWalletRequestType) => {
+      toast.loading("Creating wallet...");
+      const { message, success } = await cryptoServiceApi.adminCreatePlatformWallet(payload);
+      if (!success) throw new Error(message);
+      return { message, success };
+    },
+    onSuccess: async ({ message }) => {
+      toast.dismiss();
+      toast.success(message || "Wallet created successfully.");
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ALL_SUPPORTED_CRYPTO_CURRENCIES],
+      });
+    },
+    onError: (error: Error) => {
+      toast.dismiss();
+      toast.error(error.message || "Failed to create wallet.");
+    },
+  });
+};
+
+export const useAdminDeletePlatformWalletMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (walletId: string) => {
+      toast.loading("Deleting wallet...");
+      const { message, success } = await cryptoServiceApi.adminDeletePlatformWallet(walletId);
+      if (!success) throw new Error(message);
+      return { message, success };
+    },
+    onSuccess: async ({ message }) => {
+      toast.dismiss();
+      toast.success(message || "Wallet deleted successfully.");
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ALL_SUPPORTED_CRYPTO_CURRENCIES],
+      });
+    },
+    onError: (error: Error) => {
+      toast.dismiss();
+      toast.error(error.message || "Failed to delete wallet.");
+    },
+  });
+};
+
+export const useAdminUpdatePlatformWalletMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      walletId: string;
+      cryptoId: string;
+      network: string;
+      walletType: "SENDING" | "RECEIVING";
+      walletAddress: string;
+      walletLabel?: string;
+    }) => {
+      toast.loading("Updating wallet...");
+      const { message, success } = await cryptoServiceApi.adminUpdatePlatformWallet(payload);
+      if (!success) throw new Error(message);
+      return { message, success };
+    },
+    onSuccess: async ({ message }) => {
+      toast.dismiss();
+      toast.success(message || "Wallet updated successfully.");
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CRYPTO.ALL_SUPPORTED_CRYPTO_CURRENCIES],
+      });
+    },
+    onError: (error: Error) => {
+      toast.dismiss();
+      toast.error(error.message || "Failed to update wallet.");
     },
   });
 };

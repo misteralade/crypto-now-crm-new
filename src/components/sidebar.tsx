@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {Link, useNavigate, useRouterState} from '@tanstack/react-router'
-import { History, LogOut, ChevronLeft, ChevronRight, Wallet } from 'lucide-react'
+import { History, LogOut, ChevronLeft, ChevronRight, Wallet, Landmark } from 'lucide-react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import logo from '../assets/img/logo.svg'
@@ -48,7 +48,7 @@ const navItems = [
   },
   {
     path: ROUTES.COIN_MANAGEMENT,
-    label: 'Coin Management',
+    label: 'Coin/Wallet Management',
     icon: (props: { className?: string }) => (
       <img
         src="/icons/btc.svg"
@@ -56,6 +56,11 @@ const navItems = [
         className={`${props.className ?? ''} w-5 h-5 brightness-[5]`}
       />
     ),
+  },
+  {
+    path: ROUTES.ADMIN_WALLETS,
+    label: 'Admin Wallets',
+    icon: Landmark,
   },
   {
     path: ROUTES.MANAGE_FIAT,

@@ -29,8 +29,9 @@ export const searchSupportedCryptoInitialState: SearchSupportedCryptoWalletReque
   includeUserCryptoWallets: false,
 
   // BasicSearchQuerySchema fields
+  // No pagination in the Coin/Wallet Management UI — fetch the full (small) list of supported cryptos in one page.
   page: 1,
-  size: 10,
+  size: 100,
   sortModel: {
     colId: 'createdAt',
     orderBy: 'DESC',

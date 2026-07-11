@@ -37,6 +37,7 @@ export const ROUTES = {
   COIN_MANAGEMENT: '/dashboard/coin-management',
   ADD_COIN: '/dashboard/coin-management/add-coin',
   EDIT_COIN: '/dashboard/coin-management/$coinId',
+  ADMIN_WALLETS: '/dashboard/admin-wallets',
   MANAGE_FIAT: '/dashboard/manage-fiat',
   TREASURY: '/dashboard/treasury',
   AUDIT_TRAILS: '/dashboard/audit-trails',

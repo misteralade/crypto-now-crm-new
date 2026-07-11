@@ -1,27 +1,19 @@
 import { useState } from "react";
-import { CRYPTO_NETWORK_OPTIONS } from "../../../../util/constants.util.ts";
+import { Link } from "@tanstack/react-router";
+import { CRYPTO_NETWORK_OPTIONS, ROUTES } from "../../../../util/constants.util.ts";
 import type { EditSupportedCryptoAndAdminWalletRequestType } from "../../../../schemas/crypto.schema";
 import type { AdminCryptoWalletResponsePayload } from "../../../../types/response.payload.types";
 import { PillInput } from "../../../ui/input";
 import { Switch } from "../../../ui/switch";
 import { Checkbox } from "../../../ui/checkbox";
+import { ArrowRight } from "lucide-react";
 
 const ACTIVE_NETWORKS = CRYPTO_NETWORK_OPTIONS.filter(
   (opt) => opt.value !== undefined,
 ) as Array<{ value: string; label: string }>;
 
-type WalletEntryFormState = {
-  network: string;
-  walletAddress: string;
-  blockchainEnvironment: "testnet" | "mainnet";
-};
-
-const walletKey = (
-  network: string,
-  blockchainEnvironment: "testnet" | "mainnet",
-) => `${network}:${blockchainEnvironment}`;
-
 interface EditCoinDetailsProps {
+  cryptoId: string;
   name: string;
   symbol: string;
   networks?: string[];
@@ -35,180 +27,112 @@ interface EditCoinDetailsProps {
 }
 
 const EditCoinDetails = ({
+  cryptoId,
   name,
   symbol,
   networks = [],
   active,
-  blockchainEnvironment,
   adminCryptoWallets = [],
   onChangeInputField,
 }: EditCoinDetailsProps) => {
   const [isActive, setIsActive] = useState(active);
-  const [selectedNetworks, setSelectedNetworks] = useState<string[]>(networks);
-  const currentBlockchainEnvironment = blockchainEnvironment;
-  const currentBlockchainEnvironmentLabel =
-    currentBlockchainEnvironment === "mainnet" ? "MAINNET" : "TESTNET";
+  const selectedNetworks = networks; // readonly
 
-  const initialWalletEntries = adminCryptoWallets.reduce<
-    Record<string, WalletEntryFormState>
-  >((acc, w) => {
-    if (w.network) {
-      const blockchainEnvironment = w.blockchainEnvironment ?? "mainnet";
-      acc[walletKey(w.network, blockchainEnvironment)] = {
-        network: w.network,
-        walletAddress: w.walletAddress,
-        blockchainEnvironment,
-      };
-    }
-    return acc;
-  }, {});
-  const [walletEntries, setWalletEntries] =
-    useState<Record<string, WalletEntryFormState>>(initialWalletEntries);
-
-  const walletEntriesForNetwork = (network: string) =>
-    [
-      {
-        key: walletKey(network, currentBlockchainEnvironment),
-        network,
-        walletAddress:
-          walletEntries[walletKey(network, currentBlockchainEnvironment)]?.walletAddress ??
-          "",
-        blockchainEnvironment: currentBlockchainEnvironment,
-      },
-    ];
-
-  const emitWallets = (
-    entries: Record<string, WalletEntryFormState>,
-    networksToUse: string[],
-  ) => {
-    const wallets = Object.values(entries)
-      .filter((entry) => networksToUse.includes(entry.network))
-      .filter((entry) => entry.walletAddress.trim().length > 0)
-      .map((entry) => ({
-        network: entry.network,
-        walletAddress: entry.walletAddress,
-        blockchainEnvironment: entry.blockchainEnvironment,
-      }));
-    onChangeInputField("wallets", wallets);
-  };
-
-  const handleNetworkToggle = (networkValue: string) => {
-    const updated = selectedNetworks.includes(networkValue)
-      ? selectedNetworks.filter((n) => n !== networkValue)
-      : [...selectedNetworks, networkValue];
-    setSelectedNetworks(updated);
-    onChangeInputField("networks", updated);
-
-    const nextEntries: Record<string, WalletEntryFormState> =
-      selectedNetworks.includes(networkValue)
-        ? (Object.fromEntries(
-            Object.entries(walletEntries).filter(
-              ([, entry]) => entry.network !== networkValue,
-            ),
-          ) as Record<string, WalletEntryFormState>)
-        : walletEntries;
-
-    setWalletEntries(nextEntries);
-    emitWallets(nextEntries, updated);
-  };
-
-  const handleWalletAddressChange = (
-    network: string,
-    blockchainEnvironment: "testnet" | "mainnet",
-    address: string,
-  ) => {
-    const key = walletKey(network, blockchainEnvironment);
-    const updated: Record<string, WalletEntryFormState> = {
-      ...walletEntries,
-      [key]: {
-        network,
-        walletAddress: address,
-        blockchainEnvironment,
-      },
-    };
-    setWalletEntries(updated);
-    emitWallets(updated, selectedNetworks);
-  };
+  const walletCounts = adminCryptoWallets.reduce(
+    (acc, w) => {
+      if (w.walletType === "SENDING") acc.sending += 1;
+      else if (w.walletType === "RECEIVING") acc.receiving += 1;
+      else if (w.walletType === "FUELING") acc.fueling += 1;
+      return acc;
+    },
+    { sending: 0, receiving: 0, fueling: 0 },
+  );
 
   return (
-    <div className="mb-8">
-      <h3 className="text-[24px] font-medium text-[#0E0F0C] mb-6">
-        Coin Details
-      </h3>
+    <div className="space-y-6">
+      {/* SECTION 1: SUPPORTED CRYPTO (READ-ONLY) */}
+      <div className="bg-white border border-[#E9E7E2] rounded-3xl p-6 shadow-sm space-y-6">
+        <div>
+          <h3 className="text-xl font-bold text-[#0E0F0C]">Supported Crypto (Basic Info)</h3>
+          <p className="text-xs text-gray-500 mt-1">This section is read-only and displays basic asset information configured in the system.</p>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-x-8 mb-6">
-        <PillInput
-          label="Coin Name"
-          placeholder="e.g. Bitcoin"
-          value={name}
-          id="name"
-          onChange={(e) => onChangeInputField("name", e.target.value)}
-        />
-        <PillInput
-          label="Symbol"
-          placeholder={symbol}
-          value={symbol}
-          disabled
-          id="symbol"
-        />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-x-8">
+          <PillInput
+            label="Coin Name"
+            placeholder="e.g. Bitcoin"
+            value={name}
+            id="name"
+            disabled
+          />
+          <PillInput
+            label="Symbol"
+            placeholder={symbol}
+            value={symbol}
+            disabled
+            id="symbol"
+          />
+        </div>
 
-      {/* Supported Networks */}
-      <div className="mb-6">
-        <label className="block text-[13px] font-medium text-[#454745] mb-3">
-          Supported Networks
-        </label>
-        <div className="flex flex-col gap-4">
-          {ACTIVE_NETWORKS.map((opt) => (
-            <div key={opt.value} className="flex flex-col gap-3">
+        <div className="bg-[#F8F9FA] p-5 rounded-2xl border border-[#ECECEC]">
+          <label className="block text-[11px] font-semibold text-[#03034D] uppercase tracking-wider mb-3">
+            Active Networks
+          </label>
+          <div className="flex flex-wrap gap-4">
+            {ACTIVE_NETWORKS.map((opt) => (
               <Checkbox
+                key={opt.value}
                 id={`network-${opt.value}`}
                 label={`${opt.value} — ${opt.label}`}
                 checked={selectedNetworks.includes(opt.value)}
-                onCheckedChange={() => handleNetworkToggle(opt.value)}
+                disabled
+                onCheckedChange={() => {}}
               />
-              {selectedNetworks.includes(opt.value) && (
-                <div className="ml-7 grid gap-3">
-                  {walletEntriesForNetwork(opt.value).map((entry) => (
-                    <div
-                      key={`${opt.value}-${entry.blockchainEnvironment}`}
-                      className="grid gap-3 rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-[#03034D]">
-                          Environment
-                        </span>
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${entry.blockchainEnvironment === "mainnet" ? "bg-[#FFF7ED] text-[#C2410C]" : "bg-[#EFF6FF] text-[#2563EB]"}`}
-                        >
-                          {currentBlockchainEnvironmentLabel}
-                        </span>
-                      </div>
-                      <PillInput
-                        label={`${opt.value} Deposit Wallet Address`}
-                        placeholder={`Enter ${opt.value} wallet address`}
-                        value={entry.walletAddress}
-                        onChange={(e) =>
-                          handleWalletAddressChange(
-                            opt.value,
-                            entry.blockchainEnvironment,
-                            e.target.value,
-                          )
-                        }
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:gap-x-8 gap-6 mb-6">
+      {/* SECTION 2: WALLETS SUMMARY (READ-ONLY, LINKS OUT) */}
+      <div className="bg-white border border-[#E9E7E2] rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="flex justify-between items-start gap-4 flex-wrap sm:flex-nowrap">
+          <div>
+            <h3 className="text-xl font-bold text-[#03034D]">Wallets</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Sending, receiving, and fueling wallets are managed on the dedicated Admin Wallets page.
+            </p>
+          </div>
+          <Link
+            to={ROUTES.ADMIN_WALLETS}
+            search={{ cryptoId }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-xl transition-all whitespace-nowrap"
+          >
+            Manage Wallets
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div className="rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4 text-center">
+            <div className="text-2xl font-bold text-[#03034D]">{walletCounts.sending}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Sending Wallets</div>
+          </div>
+          <div className="rounded-2xl border border-[#ECECEC] bg-[#FCFCFE] p-4 text-center">
+            <div className="text-2xl font-bold text-[#03034D]">{walletCounts.receiving}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Receiving Wallets</div>
+          </div>
+          <div className="rounded-2xl border border-[#ECECEC] bg-[#F4F4F7] p-4 text-center">
+            <div className="text-2xl font-bold text-[#03034D]">{walletCounts.fueling}</div>
+            <div className="text-[11px] text-gray-500 mt-1">Fueling Wallets</div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 3: COIN STATUS */}
+      <div className="bg-white border border-[#E9E7E2] rounded-3xl p-6 shadow-sm">
         <div>
-          <label className="block text-[13px] font-medium text-[#454745] mb-3">
-            Status
+          <label className="block text-[13px] font-semibold text-[#454745] mb-3">
+            Coin Status
           </label>
           <Switch
             id="isActive"

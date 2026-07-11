@@ -47,6 +47,7 @@ const EditCoin = () => {
               />
 
               <EditCoinDetails
+                cryptoId={adminCryptoDetails?.id || ''}
                 onChangeInputField={handleEditCoinInputChange}
                 name={adminCryptoDetails?.name || ''}
                 symbol={adminCryptoDetails?.symbol || ''}

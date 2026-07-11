@@ -7,6 +7,7 @@ import {
 import type {
   CreateSupportedCryptoAndAdminWalletRequestType, EditSupportedCryptoAndAdminWalletRequestType,
   SearchSupportedCryptoWalletRequestSchema,
+  CreateAdminWalletRequestType,
 } from '../schemas/crypto.schema.js'
 import type {
   BaseApiResponse, GetAllSupportedCryptoAPIResponse, GetSupportedCryptoAPIResponse,
@@ -91,7 +92,36 @@ class CryptoServiceApi {
   }
 
   async adminToggleCustodialWalletActive(walletAddress: string, isActive: boolean) {
-    return await axiosPostRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}/toggle-active`, { isActive }) as BaseApiResponse;
+    return await axiosPostRequestHandler(`/custodial-wallet/admin/address/${encodeURIComponent(walletAddress)}/toggle-active`, { isActive }) as BaseApiResponse<null>;
+  }
+
+  async adminGeneratePlatformFuelingWallet(cryptoId: string, network: string) {
+    return await axiosPostRequestHandler(`/crypto/admin/wallet/fueling/generate`, { cryptoId, network }) as BaseApiResponse<any>;
+  }
+
+  async adminCreatePlatformWallet(payload: CreateAdminWalletRequestType) {
+    return await axiosPostRequestHandler(`/crypto/admin/wallet/create`, payload) as BaseApiResponse<null>;
+  }
+
+  async adminDeletePlatformWallet(walletId: string) {
+    return await axiosDeleteRequestHandler(`/crypto/admin/wallet/${encodeURIComponent(walletId)}`) as BaseApiResponse<null>;
+  }
+
+  async adminUpdatePlatformWallet(payload: {
+    walletId: string;
+    cryptoId: string;
+    network: string;
+    walletType: "SENDING" | "RECEIVING";
+    walletAddress: string;
+    walletLabel?: string;
+  }) {
+    return await axiosPatchRequestHandler(`/crypto/admin/wallet/${encodeURIComponent(payload.walletId)}`, {
+      cryptoId: payload.cryptoId,
+      network: payload.network,
+      walletType: payload.walletType,
+      walletAddress: payload.walletAddress,
+      walletLabel: payload.walletLabel,
+    }) as BaseApiResponse<null>;
   }
 }
 

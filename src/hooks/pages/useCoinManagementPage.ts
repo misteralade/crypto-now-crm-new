@@ -7,12 +7,10 @@ import {
   clearEditCoinPayload, setDeleteCoinId,
   setEditCoinId,
   setEditCoinPayloadField,
-  setSearchSupportedCrypto,
   setSearchSupportedCryptoField,
 } from '../../redux/coin-management.slice'
 import { useCryptoQuery } from '../../queries/crypto.querries'
 import { ROUTES } from "../../util/constants.util.ts";
-import {searchSupportedCryptoInitialState} from "../../redux/states/initial-coin-management.states";
 import type { SearchSupportedCryptoData } from "../../types/response.payload.types";
 import { cryptoServiceApi } from '../../api/crypto.api';
 
@@ -22,8 +20,7 @@ export const useCoinManagementPage = () => {
   const { supportedCrypto, loadingSupportedCrypto, updateCryptoCurrencyMutation, adminDeleteCryptoCurrencyMutation } = useCryptoQuery()
 
   const [query, setQuery] = useState('')
-  const [pageSize, setPageSize] = useState<number>(10);
-  
+
   // Modals
   const [deleteCoinModal, setDeleteCoinModal] = useState(false);
   const [selectedCoin, setSelectedCoin] = useState<SearchSupportedCryptoData | null>(null);
@@ -40,21 +37,6 @@ export const useCoinManagementPage = () => {
     dispatch(setSearchSupportedCryptoField({
       field: "searchField",
       value: "symbol",
-    }));
-  }
-
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    dispatch(setSearchSupportedCrypto({
-      ...searchSupportedCryptoInitialState,
-      size: size,
-    }))
-  }
-
-  const handlePageChange = (page: number) => {
-    dispatch(setSearchSupportedCryptoField({
-      field: 'page',
-      value: page,
     }));
   }
 
@@ -111,7 +93,6 @@ export const useCoinManagementPage = () => {
     query,
     supportedCrypto,
     loadingSupportedCrypto,
-    pageSize,
     deleteCoinModal,
     selectedCoin,
     loadingCoinDetails,
@@ -119,8 +100,6 @@ export const useCoinManagementPage = () => {
     // ⚙️ Functions
     openAddCoin,
     handleCoinSearchChange,
-    handlePageSizeChange,
-    handlePageChange,
     handleViewCoinDetails,
     handleOpenCoinDetails,
     handleCloseCoinDetails,

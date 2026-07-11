@@ -48,7 +48,7 @@ const PageHeader = ({ title, subtitle, actions, className, onBack }: PageHeaderP
   const sidebarToggle = useSidebarToggle()
 
   return (
-    <div className={`sticky top-0 z-20 w-full border-b border-gray-100 bg-white ${className ?? ''}`}>
+    <div className={`sticky top-0 z-20 bg-white rounded-br-[24px] rounded-bl-none shadow-sm -mt-6 -mx-6 w-[calc(100%+48px)] mb-6 ${className ?? ''}`}>
       <div className="flex w-full flex-col gap-2 px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex w-full items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">

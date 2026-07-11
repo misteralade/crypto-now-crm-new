@@ -5,7 +5,6 @@ import {
   SearchSupportedCryptoDataRow,
 } from '../components/tables/CoinManagementTables'
 import Table from '../components/table'
-import TableFooter from "../components/tables/TableFooter";
 import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import CoinManagementControls from "../components/pages/coinManagement/CoinManagementControls.tsx";
@@ -18,15 +17,12 @@ const CoinManagement = () => {
     query,
     supportedCrypto,
     loadingSupportedCrypto,
-    pageSize,
     deleteCoinModal,
     selectedCoin,
 
     // ⚙️ Functions
     openAddCoin,
     handleCoinSearchChange,
-    handlePageSizeChange,
-    handlePageChange,
     handleViewCoinDetails,
     handleOpenCoinDetails,
     handleCloseCoinDetails,
@@ -51,7 +47,7 @@ const CoinManagement = () => {
   return (
     <AuthenticatedLayout>
       <div className="p-6 mx-auto">
-        <PageHeader title="Coin Management" />
+        <PageHeader title="Coin/Wallet Management" />
         
         {/* Controls */}
         <CoinManagementControls
@@ -69,15 +65,6 @@ const CoinManagement = () => {
               onRowClick={(row) => handleOpenCoinDetails(row.id)}
             />
           </div>
-
-          <TableFooter
-            currentPage={supportedCrypto?.page || 1}
-            totalPages={supportedCrypto?.totalPages || 1}
-            pageSize={pageSize}
-            totalItems={supportedCrypto?.count || 100}
-            onPageChange={handlePageChange}
-            onPageSizeChange={handlePageSizeChange}
-          />
         </div>
       </div>
       

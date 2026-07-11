@@ -4,7 +4,7 @@ import type { EditPlatformExchangeRateRequestType } from "../../schemas/rate.sch
 export const createAdminBankInitialState: CreateBankAccountRequestType = {
   accountHolderName: "",
   accountNumber: "",
-  accountType: "BOTH",
+  accountType: "RECEIVING",
   bankId: "",
   instructions: undefined,
   isActive: false,

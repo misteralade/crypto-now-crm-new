@@ -355,6 +355,9 @@ export type AdminCryptoWalletResponsePayload = {
   walletAddress: string;
   isActive: string;
   network: string;
+  walletType?: string;
+  derivationPath?: string;
+  walletLabel?: string;
   blockchainEnvironment: "testnet" | "mainnet";
   createdAt: Date;
 }

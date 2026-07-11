@@ -234,7 +234,7 @@ export default function TreasuryWalletsPage() {
 
         <PageHeader
           title={`${symbol} Custodial Wallets`}
-          description={`Viewing all generated custodial wallets for ${name} on ${network} network.`}
+          subtitle={`Viewing all generated custodial wallets for ${name} on ${network} network.`}
         />
 
         <div className="rounded-2xl border border-[#EEF1FF] bg-[linear-gradient(180deg,#F8F9FF_0%,#FFFFFF_100%)] p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">

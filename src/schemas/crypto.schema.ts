@@ -54,7 +54,7 @@ export const WalletEntrySchema = z.object({
   network: CryptoNetworkType,
   walletAddress: z.string().min(1).max(255),
   walletLabel: z.string().min(1).max(100).optional(),
-  walletType: BankAndCryptoType.default("BOTH").optional(),
+  walletType: BankAndCryptoType.default("RECEIVING").optional(),
   blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
 
@@ -75,7 +75,7 @@ export const CreateSupportedCryptoAndAdminWalletRequestSchema = z.object({
   whitepaperUrl: z.string().url().optional().transform((val) => val === '' ? undefined : val),
   additionalInfo: z.record(z.any()).optional(),
   networks: z.array(z.string()).min(1, "Select at least one network"),
-  wallets: z.array(WalletEntrySchema).min(1, "Provide a wallet address for each selected network"),
+  wallets: z.array(WalletEntrySchema).optional(),
   isActive: z.boolean().default(true).optional(),
   blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
@@ -101,7 +101,18 @@ export const EditSupportedCryptoAndAdminWalletRequestSchema = z.object({
   blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
 });
 
+export const CreateAdminWalletRequestSchema = z.object({
+  cryptoId: z.string().uuid().describe("UUID of the cryptocurrency to create a wallet for"),
+  walletAddress: z.string().min(1).max(255).describe("Public address of the cryptocurrency wallet"),
+  walletLabel: z.string().min(1).max(100).optional().describe("Optional label for the wallet"),
+  walletType: z.enum(["SENDING", "RECEIVING"]),
+  blockchainEnvironment: BlockchainEnvironmentType.default("testnet").optional(),
+  isActive: z.boolean().default(true).optional(),
+  network: CryptoNetworkType,
+});
+
 export type WalletEntryType = z.infer<typeof WalletEntrySchema>;
+export type CreateAdminWalletRequestType = z.infer<typeof CreateAdminWalletRequestSchema>;
 
 export type SearchSupportedCryptoWalletRequestSchema = z.infer<typeof SearchSupportedCryptoWalletRequestSchema>;
 export type CreateSupportedCryptoAndAdminWalletRequestType = z.infer<typeof CreateSupportedCryptoAndAdminWalletRequestSchema>;

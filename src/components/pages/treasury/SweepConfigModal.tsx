@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import { useSweepQuery } from "../../../queries/sweep.querries.ts";
-import { useCryptoQuery } from "../../../queries/crypto.querries.ts";
+import { useCryptoQuery, useAdminGeneratePlatformFuelingWalletMutation } from "../../../queries/crypto.querries.ts";
 import { toast } from "react-toastify";
 import LabeledPillSelect from "../../global/LabeledPillSelect.tsx";
 import { useNavigate } from "@tanstack/react-router";
@@ -174,6 +174,30 @@ export default function SweepConfigModal({
       selectedCrypto.networks!.includes(opt.value)
     );
   }, [selectedCrypto]);
+
+  const generateFuelingWalletMutation = useAdminGeneratePlatformFuelingWalletMutation();
+
+  const hasFuelingWallet = useMemo(() => {
+    if (!cryptocurrencyId || !network || !selectedCrypto) return true;
+    if (network === "SOLANA" || network === "BTC") return true;
+
+    const fuelingWallet = selectedCrypto.adminCryptoWallets?.find(
+      (w) => w.network === network && w.walletType === "FUELING" && w.isActive
+    );
+    return !!fuelingWallet;
+  }, [selectedCrypto, network, cryptocurrencyId]);
+
+  const handleGenerateFuelingWallet = async () => {
+    if (!cryptocurrencyId || !network) return;
+    try {
+      await generateFuelingWalletMutation.mutateAsync({
+        cryptoId: cryptocurrencyId,
+        network: network,
+      });
+    } catch (e) {
+      // handled
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -561,6 +585,32 @@ export default function SweepConfigModal({
               <p className="text-[12px] leading-5 text-[#667085]">
                 This chooses the chain those balances live on. Preview only works after both fields are set.
               </p>
+
+              {!hasFuelingWallet && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 space-y-3">
+                  <div className="flex gap-2.5 items-start">
+                    <svg className="h-5 w-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                      <h4 className="text-xs font-bold text-red-800">
+                        Fueling Wallet Required
+                      </h4>
+                      <p className="text-[11px] text-red-700 leading-normal mt-1">
+                        Sweeping {symbol} on {network} requires a platform-managed fueling wallet to fund gas/transaction fees. No active fueling wallet is currently configured.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleGenerateFuelingWallet}
+                    disabled={generateFuelingWalletMutation.isPending}
+                    className="w-full h-9 rounded-lg bg-red-600 hover:bg-red-700 text-xs font-semibold text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {generateFuelingWalletMutation.isPending ? "Generating..." : "Generate Fueling Wallet"}
+                  </button>
+                </div>
+              )}
 
               <div className="space-y-1.5">
                 <label

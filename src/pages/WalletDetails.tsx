@@ -3,7 +3,6 @@ import {
   Copy,
   ExternalLink,
   RotateCcw,
-  ShieldCheck,
   Wallet,
 } from "lucide-react";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
