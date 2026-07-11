@@ -364,11 +364,19 @@ export default function SweepConfigModal({
     staleTime: 30000, // 30 seconds
   });
 
-  // Check if fueling wallet has sufficient balance for estimated fees
+  // Check if fueling wallet has sufficient balance for estimated fees.
+  // Only relevant when fees are paid from a separate native-asset wallet —
+  // when fees are deducted from the swept asset itself, no fueling wallet is involved.
   const insufficientFuelBalance = useMemo(() => {
     if (!previewData || !fuelingWalletBalance) return false;
+    if (previewData.feeHandling !== "paid_from_source_native_balance") return false;
     return fuelingWalletBalance.balance < previewData.estimatedFeeAmount;
   }, [previewData, fuelingWalletBalance]);
+
+  const showFuelingWalletCard =
+    !!fuelingWallet &&
+    !!previewData &&
+    previewData.feeHandling === "paid_from_source_native_balance";
 
   if (!shouldRender) return null;
   const previewAmountToSweep = showPreview && previewData
@@ -889,7 +897,7 @@ export default function SweepConfigModal({
                   </p>
                 </div>
 
-                {fuelingWallet && (
+                {showFuelingWalletCard && (
                   <div className={`border-t border-[#ECEFFD] pt-2 space-y-1 px-2 py-2 rounded-lg ${insufficientFuelBalance ? 'bg-red-50' : ''}`}>
                     <div className="flex items-center gap-1.5">
                       <p className="text-xs font-semibold text-[--color-text-primary]">
