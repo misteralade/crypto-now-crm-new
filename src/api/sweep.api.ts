@@ -123,7 +123,6 @@ export interface SweepRequest {
     dustThresholdOverride?: number;
     targetWalletAddresses?: string[];
     note?: string;
-    autoFuel?: boolean;
     maxTotalAmount?: number;
   } | null;
 }

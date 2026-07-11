@@ -95,7 +95,7 @@ const WalletCardSection = ({ walletType, cryptos, defaultCryptoId: _defaultCrypt
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-[#03034D]">{w.cryptoSymbol}</span>
                 </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1">
                   <button
                     type="button"
                     onClick={(e) => {

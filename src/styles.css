@@ -190,3 +190,12 @@
   }
 }
 
+/* Custom react-toastify overrides for mobile viewports */
+@media (max-width: 640px) {
+  .Toastify__toast {
+    font-size: 12px !important;
+    padding: 10px 14px !important;
+    min-height: 44px !important;
+  }
+}
+

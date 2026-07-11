@@ -215,8 +215,7 @@ const FuelingWalletsSection = ({ cryptos }: FuelingWalletsSectionProps) => {
       <div>
         <h3 className="text-xl font-bold text-[#03034D]">Gas Funding (Fueling) Wallets</h3>
         <p className="text-xs text-gray-500 mt-1">
-          System-derived wallets used exclusively to fund transaction fees (gas) for sweeping assets on
-          native networks (ETH/TRX). These are read-only — generated directly from the platform's HD wallet seed.
+          System-derived wallets used exclusively to fund transaction fees (gas) for sweeping assets.
         </p>
       </div>
 

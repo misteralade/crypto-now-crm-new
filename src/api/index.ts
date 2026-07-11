@@ -61,7 +61,8 @@ export const axiosPostRequestHandler = async (
     return request.data as BaseApiResponse<any>;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw error;
+      const msg = error.response?.data?.message || error.response?.data?.error?.message || error.message;
+      throw new Error(msg);
     } else {
       throw new Error("An unexpected error occurred");
     }
@@ -75,7 +76,8 @@ export const axiosPutRequestHandler = async (url: string, data: any) => {
     return request.data as BaseApiResponse<any>;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw error;
+      const msg = error.response?.data?.message || error.response?.data?.error?.message || error.message;
+      throw new Error(msg);
     } else {
       throw new Error("An unexpected error occurred");
     }
@@ -89,7 +91,8 @@ export const axiosDeleteRequestHandler = async (url: string) => {
     return request.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw error;
+      const msg = error.response?.data?.message || error.response?.data?.error?.message || error.message;
+      throw new Error(msg);
     } else {
       throw new Error("An unexpected error occurred");
     }
@@ -105,7 +108,8 @@ export const axiosGetRequestHandler = async (url: string, params?: any) => {
     return request.data as BaseApiResponse<any>;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw error;
+      const msg = error.response?.data?.message || error.response?.data?.error?.message || error.message;
+      throw new Error(msg);
     } else {
       throw new Error("An unexpected error occurred");
     }
@@ -113,14 +117,15 @@ export const axiosGetRequestHandler = async (url: string, params?: any) => {
 };
 
 export const axiosPatchRequestHandler = async (url: string, params?: any) => {
-  try{
+  try {
     const request = await API_KIT.patch(url, params);
 
     return request.data as BaseApiResponse<any>;
-  }catch(error){
-    if(axios.isAxiosError(error)){
-      throw error;
-    }else{
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const msg = error.response?.data?.message || error.response?.data?.error?.message || error.message;
+      throw new Error(msg);
+    } else {
       throw new Error("An unexpected error occurred");
     }
   }
