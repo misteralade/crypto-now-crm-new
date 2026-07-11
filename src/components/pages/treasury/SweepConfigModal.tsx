@@ -814,12 +814,6 @@ export default function SweepConfigModal({
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#667085]">Live on-chain balance</span>
-                  <span className="font-semibold tabular-nums text-[--color-text-primary]">
-                    {previewData.liveBalanceAmount.toFixed(amountDecimals)} {symbol}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
                   <span className="text-[#667085]">Estimated network fees</span>
                   <span className="font-semibold tabular-nums text-[#667085]">
                     {previewData.estimatedFeeAmount.toFixed(
