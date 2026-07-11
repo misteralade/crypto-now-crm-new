@@ -1,10 +1,10 @@
-import { useMemo } from 'react'
-import { useCoinManagementPage } from '../hooks/pages/useCoinManagementPage'
+import { useMemo } from "react";
+import { useCoinManagementPage } from "../hooks/pages/useCoinManagementPage";
 import {
   SearchSupportedCryptoColumn,
   SearchSupportedCryptoDataRow,
-} from '../components/tables/CoinManagementTables'
-import Table from '../components/table'
+} from "../components/tables/CoinManagementTables";
+import Table from "../components/table";
 import PageHeader from "../components/global/pageHeader.tsx";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
 import CoinManagementControls from "../components/pages/coinManagement/CoinManagementControls.tsx";
@@ -30,32 +30,35 @@ const CoinManagement = () => {
     handleDeleteCryptoCurrency,
     toggleDeleteCoinModal,
     handleConfirmDeleteCryptoCurrency,
-  } = useCoinManagementPage()
+  } = useCoinManagementPage();
 
-  const columns = useMemo(() => SearchSupportedCryptoColumn(
-    handleViewCoinDetails,
-    handleDeleteCryptoCurrency,
-    handleDisableCoin,
-  ), [])
-  
+  const columns = useMemo(
+    () =>
+      SearchSupportedCryptoColumn(
+        handleViewCoinDetails,
+        handleDeleteCryptoCurrency,
+        handleDisableCoin,
+      ),
+    [],
+  );
+
   const data = useMemo(
-     
     () => SearchSupportedCryptoDataRow(supportedCrypto?.supportedCryptos) ?? [],
     [supportedCrypto?.supportedCryptos, loadingSupportedCrypto],
-  )
+  );
 
   return (
     <AuthenticatedLayout>
       <div className="p-6 mx-auto">
-        <PageHeader title="Coin/Wallet Management" />
-        
+        <PageHeader title="Coin Management" />
+
         {/* Controls */}
         <CoinManagementControls
           onAddCoin={openAddCoin}
           searchValue={query}
           onSearchChange={handleCoinSearchChange}
         />
-        
+
         <div className="mt-4 space-y-4">
           <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
             <Table
@@ -67,7 +70,7 @@ const CoinManagement = () => {
           </div>
         </div>
       </div>
-      
+
       <ConfirmModal
         open={deleteCoinModal}
         actionType="delete"
@@ -83,7 +86,7 @@ const CoinManagement = () => {
         onClose={handleCloseCoinDetails}
       />
     </AuthenticatedLayout>
-  )
-}
+  );
+};
 
-export default CoinManagement
+export default CoinManagement;

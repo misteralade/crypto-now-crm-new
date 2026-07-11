@@ -2,6 +2,7 @@ import { Fragment, useState, useEffect } from "react";
 import { useParams, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { LoadingSpinner } from "../components/global/LoadingSpinner";
+import SelectField from "../components/global/SelectField";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout";
 import { useCryptoQuery } from "../queries/crypto.querries";
 import {
@@ -24,6 +25,7 @@ const EditWalletPage = () => {
     walletLabel?: string;
     blockchainEnvironment: "testnet" | "mainnet";
     walletType: "SENDING" | "RECEIVING" | "FUELING";
+    isActive: boolean;
   } | null>(null);
 
   const [formData, setFormData] = useState({
@@ -32,6 +34,7 @@ const EditWalletPage = () => {
     walletType: "SENDING" as "SENDING" | "RECEIVING",
     walletAddress: "",
     walletLabel: "",
+    isActive: true,
   });
 
   const [supportedNetworks, setSupportedNetworks] = useState<string[]>([]);
@@ -55,6 +58,7 @@ const EditWalletPage = () => {
           walletLabel: wallet.walletLabel,
           blockchainEnvironment: wallet.blockchainEnvironment,
           walletType: wallet.walletType,
+          isActive: typeof wallet.isActive === "boolean" ? wallet.isActive : wallet.isActive === "true" || (wallet.isActive as any) === 1,
         };
       }
       return null;
@@ -68,6 +72,7 @@ const EditWalletPage = () => {
         walletType: foundWallet.walletType as "SENDING" | "RECEIVING",
         walletAddress: foundWallet.walletAddress,
         walletLabel: foundWallet.walletLabel || "",
+        isActive: foundWallet.isActive ?? true,
       });
 
       // Set supported networks for the selected crypto
@@ -110,6 +115,10 @@ const EditWalletPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleToggleActive = () => {
+    setFormData((prev) => ({ ...prev, isActive: !prev.isActive }));
+  };
+
   const handleSave = () => {
     if (!walletData || !formData.cryptoId || !formData.network) return;
 
@@ -121,6 +130,7 @@ const EditWalletPage = () => {
         walletType: formData.walletType,
         walletAddress: formData.walletAddress,
         walletLabel: formData.walletLabel,
+        isActive: formData.isActive,
       },
       {
         onSuccess: () => {
@@ -136,7 +146,8 @@ const EditWalletPage = () => {
     formData.network !== walletData?.network ||
     formData.walletType !== walletData?.walletType ||
     formData.walletAddress !== walletData?.walletAddress ||
-    formData.walletLabel !== (walletData?.walletLabel || "");
+    formData.walletLabel !== (walletData?.walletLabel || "") ||
+    formData.isActive !== (walletData?.isActive ?? true);
 
   return (
     <AuthenticatedLayout>
@@ -169,47 +180,37 @@ const EditWalletPage = () => {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {/* Cryptocurrency Dropdown */}
-                    <div>
-                      <label htmlFor="crypto" className="block text-xs font-semibold text-gray-700 mb-2 uppercase">
-                        Cryptocurrency
-                      </label>
-                      <select
-                        id="crypto"
-                        value={formData.cryptoId}
-                        onChange={handleCryptoChange}
-                        className="w-full px-4 py-2.5 border border-[#E9E7E2] rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
-                      >
-                        <option value="">Select a cryptocurrency</option>
-                        {(allSupportedCrypto ?? []).map((crypto) => (
-                          <option key={crypto.id} value={crypto.id}>
-                            {crypto.symbol} - {crypto.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <SelectField
+                      id="crypto"
+                      label="Cryptocurrency"
+                      value={formData.cryptoId}
+                      onChange={handleCryptoChange}
+                    >
+                      <option value="">Select a cryptocurrency</option>
+                      {(allSupportedCrypto ?? []).map((crypto) => (
+                        <option key={crypto.id} value={crypto.id}>
+                          {crypto.symbol} - {crypto.name}
+                        </option>
+                      ))}
+                    </SelectField>
 
                     {/* Network Dropdown */}
-                    <div>
-                      <label htmlFor="network" className="block text-xs font-semibold text-gray-700 mb-2 uppercase">
-                        Network
-                      </label>
-                      <select
-                        id="network"
-                        value={formData.network}
-                        onChange={handleNetworkChange}
-                        disabled={!formData.cryptoId || supportedNetworks.length === 0}
-                        className="w-full px-4 py-2.5 border border-[#E9E7E2] rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white disabled:bg-gray-50 disabled:text-gray-400"
-                      >
-                        <option value="">
-                          {!formData.cryptoId ? "Select cryptocurrency first" : "Select a network"}
+                    <SelectField
+                      id="network"
+                      label="Network"
+                      value={formData.network}
+                      onChange={handleNetworkChange}
+                      disabled={!formData.cryptoId || supportedNetworks.length === 0}
+                    >
+                      <option value="">
+                        {!formData.cryptoId ? "Select cryptocurrency first" : "Select a network"}
+                      </option>
+                      {supportedNetworks.map((network) => (
+                        <option key={network} value={network}>
+                          {network}
                         </option>
-                        {supportedNetworks.map((network) => (
-                          <option key={network} value={network}>
-                            {network}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                      ))}
+                    </SelectField>
 
                     {/* Environment (Read-only) */}
                     <div>
@@ -224,20 +225,15 @@ const EditWalletPage = () => {
                     </div>
 
                     {/* Wallet Type Dropdown */}
-                    <div>
-                      <label htmlFor="walletType" className="block text-xs font-semibold text-gray-700 mb-2 uppercase">
-                        Wallet Type
-                      </label>
-                      <select
-                        id="walletType"
-                        value={formData.walletType}
-                        onChange={handleWalletTypeChange}
-                        className="w-full px-4 py-2.5 border border-[#E9E7E2] rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
-                      >
-                        <option value="SENDING">Buy Payout (Sending)</option>
-                        <option value="RECEIVING">Sweep Target (Receiving)</option>
-                      </select>
-                    </div>
+                    <SelectField
+                      id="walletType"
+                      label="Wallet Type"
+                      value={formData.walletType}
+                      onChange={handleWalletTypeChange}
+                    >
+                      <option value="SENDING">Buy Payout (Sending)</option>
+                      <option value="RECEIVING">Sweep Target (Receiving)</option>
+                    </SelectField>
                   </div>
 
                   {/* Divider */}
@@ -273,6 +269,34 @@ const EditWalletPage = () => {
                       className="w-full px-4 py-2.5 border border-[#E9E7E2] rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                       placeholder="e.g., Hot Wallet, Reserve Fund"
                     />
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-[#E9E7E2]" />
+
+                  {/* Active Status Toggle */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 uppercase">
+                        Wallet Status
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {formData.isActive ? "Active" : "Inactive"} - Sweep operations will {formData.isActive ? "include" : "skip"} this wallet
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleToggleActive}
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                        formData.isActive ? "bg-indigo-600" : "bg-gray-300"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                          formData.isActive ? "translate-x-7" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
               ) : (

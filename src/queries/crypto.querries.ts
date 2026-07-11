@@ -427,6 +427,7 @@ export const useAdminUpdatePlatformWalletMutation = () => {
       walletType: "SENDING" | "RECEIVING";
       walletAddress: string;
       walletLabel?: string;
+      isActive: boolean;
     }) => {
       toast.loading("Updating wallet...");
       const { message, success } = await cryptoServiceApi.adminUpdatePlatformWallet(payload);
@@ -446,3 +447,17 @@ export const useAdminUpdatePlatformWalletMutation = () => {
     },
   });
 };
+
+export const useAdminGetWalletBalanceMutation = () => {
+  return useMutation({
+    mutationFn: async (walletId: string) => {
+      const { data, message, success } = await cryptoServiceApi.adminGetPlatformWalletBalance(walletId);
+      if (!success || !data) throw new Error(message || "Failed to fetch balance");
+      return data;
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to fetch wallet balance.");
+    },
+  });
+};
+

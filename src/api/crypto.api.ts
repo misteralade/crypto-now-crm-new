@@ -114,6 +114,7 @@ class CryptoServiceApi {
     walletType: "SENDING" | "RECEIVING";
     walletAddress: string;
     walletLabel?: string;
+    isActive: boolean;
   }) {
     return await axiosPatchRequestHandler(`/crypto/admin/wallet/${encodeURIComponent(payload.walletId)}`, {
       cryptoId: payload.cryptoId,
@@ -121,7 +122,15 @@ class CryptoServiceApi {
       walletType: payload.walletType,
       walletAddress: payload.walletAddress,
       walletLabel: payload.walletLabel,
+      isActive: payload.isActive,
     }) as BaseApiResponse<null>;
+  }
+
+  async adminGetPlatformWalletBalance(walletId: string) {
+    return await axiosGetRequestHandler(`/crypto/admin/wallet/${encodeURIComponent(walletId)}/balance`) as BaseApiResponse<{
+      balance: number;
+      symbol: string;
+    }>;
   }
 }
 
