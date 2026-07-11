@@ -358,6 +358,8 @@ export type AdminCryptoWalletResponsePayload = {
   walletType?: string;
   derivationPath?: string;
   walletLabel?: string;
+  cachedBalance?: string | number;
+  cachedBalanceUpdatedAt?: string | null;
   blockchainEnvironment: "testnet" | "mainnet";
   createdAt: Date;
 }

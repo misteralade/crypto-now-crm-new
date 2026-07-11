@@ -16,24 +16,19 @@ const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you
 
   useEffect(() => {
     if (open) {
-      if (!shouldRender) {
-        setShouldRender(true)
-      }
+      setShouldRender(true)
       if (isClosing) {
         setIsClosing(false)
       }
-      return
+    } else if (shouldRender) {
+      setIsClosing(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsClosing(false)
+      }, 200)
+      return () => clearTimeout(timer)
     }
-
-    if (!shouldRender || isClosing) return
-
-    setIsClosing(true)
-    const timer = setTimeout(() => {
-      setShouldRender(false)
-      setIsClosing(false)
-    }, 200)
-    return () => clearTimeout(timer)
-  }, [open, shouldRender, isClosing])
+  }, [open, shouldRender])
 
   if (!shouldRender) return null;
 

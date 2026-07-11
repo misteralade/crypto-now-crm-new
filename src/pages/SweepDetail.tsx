@@ -356,10 +356,10 @@ export default function SweepDetail() {
         )}
 
         {isTestnetEnvironment(sweep?.blockchainEnvironment) && (
-          <section className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            This sweep used Bitcoin testnet. A `success` here means a testnet
+          <section className="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+            This sweep used the <strong className="font-semibold">{sweep?.network || 'blockchain'}</strong> testnet. A `success` here means a testnet
             transaction was broadcast and confirmed on the testnet explorer, not
-            that real mainnet BTC reached a production wallet.
+            that real mainnet assets reached a production wallet.
           </section>
         )}
 

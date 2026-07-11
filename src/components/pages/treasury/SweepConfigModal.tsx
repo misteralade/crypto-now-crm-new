@@ -315,7 +315,7 @@ export default function SweepConfigModal({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, isClosing]);
+  }, [open]);
 
   // Reset flow whenever the modal closes; reopening applies fresh defaults from cached totals.
   useEffect(() => {
@@ -326,23 +326,20 @@ export default function SweepConfigModal({
       if (isClosing) {
         setIsClosing(false);
       }
-      return;
+    } else if (shouldRender) {
+      setIsClosing(true);
+      setPreviewRequested(false);
+      setMaxAmountInput("");
+      setDustThresholdInput("");
+      setAmountTouched(false);
+      setShowDustThreshold(false);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+        setIsClosing(false);
+      }, 200);
+      return () => clearTimeout(timer);
     }
-
-    if (!shouldRender || isClosing) return;
-
-    setIsClosing(true);
-    setPreviewRequested(false);
-    setMaxAmountInput("");
-    setDustThresholdInput("");
-    setAmountTouched(false);
-    setShowDustThreshold(false);
-    const timer = setTimeout(() => {
-      setShouldRender(false);
-      setIsClosing(false);
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [open, shouldRender, isClosing]);
+  }, [open, shouldRender]);
 
   // Get fueling wallet for gas check
   const fuelingWallet = useMemo(() => {

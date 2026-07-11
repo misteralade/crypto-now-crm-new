@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Zap, RefreshCw } from "lucide-react";
+import { Zap, RefreshCw, Copy, Check } from "lucide-react";
 import type { SearchSupportedCryptoData } from "../../../types/response.payload.types";
 import {
   useAdminGeneratePlatformFuelingWalletMutation,
@@ -23,12 +23,30 @@ const FuelingWalletCard = ({
     cryptoSymbol: string;
     cryptoName: string;
     network: string;
-    fuelingWallet?: { id: string; walletAddress: string };
+    fuelingWallet?: {
+      id: string;
+      walletAddress: string;
+      cachedBalance?: string | number;
+      cachedBalanceUpdatedAt?: string | null;
+    };
   };
   onGenerate: () => void;
   isGenerating: boolean;
 }) => {
-  const [balanceData, setBalanceData] = useState<{ balance: number; symbol: string } | null>(null);
+  const [balanceData, setBalanceData] = useState<{
+    balance: number;
+    symbol: string;
+    updatedAt?: Date | string | null;
+  } | null>(
+    row.fuelingWallet?.cachedBalance != null
+      ? {
+          balance: Number(row.fuelingWallet.cachedBalance),
+          symbol: row.network === "ERC20" ? "ETH" : "TRX",
+          updatedAt: row.fuelingWallet.cachedBalanceUpdatedAt,
+        }
+      : null
+  );
+  const [copied, setCopied] = useState(false);
   const balanceMutation = useAdminGetWalletBalanceMutation();
 
   const depositAsset = row.network === "ERC20" ? "ETH (Ethereum)" : "TRX (Tron)";
@@ -41,6 +59,24 @@ const FuelingWalletCard = ({
         setBalanceData(data);
       },
     });
+  };
+
+  const handleCopy = () => {
+    if (!row.fuelingWallet?.walletAddress) return;
+    navigator.clipboard.writeText(row.fuelingWallet.walletAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const formatTime = (dateInput: Date | string | null | undefined) => {
+    if (!dateInput) return "";
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return "";
+    return (
+      date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) +
+      " " +
+      date.toLocaleDateString([], { month: "short", day: "numeric" })
+    );
   };
 
   return (
@@ -79,15 +115,29 @@ const FuelingWalletCard = ({
           </span>
         </div>
 
-        <div className="rounded-xl bg-[#F4F4F7] p-3 border border-[#E4E7EC] space-y-1">
+        <div className="rounded-xl bg-[#F4F4F7] p-3 border border-[#E4E7EC] space-y-1 relative group">
           <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider block">
             Admin Deposit Wallet Address
           </span>
-          <div className="font-mono text-xs text-gray-700 break-all select-all font-medium leading-relaxed mt-1">
+          <div className="font-mono text-xs text-gray-700 break-all select-all font-medium leading-relaxed mt-1 pr-8">
             {row.fuelingWallet?.walletAddress ?? (
               <span className="italic text-indigo-600 font-medium">Not generated yet</span>
             )}
           </div>
+          {row.fuelingWallet && (
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="absolute top-3 right-3 p-1 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-white transition-all border border-transparent hover:border-gray-200"
+              title="Copy Address"
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+            </button>
+          )}
         </div>
 
         {row.fuelingWallet && (
@@ -97,6 +147,11 @@ const FuelingWalletCard = ({
               <span className="font-bold text-[#03034D] text-sm mt-0.5 block">
                 {balanceData !== null ? `${balanceData.balance.toFixed(4)} ${balanceData.symbol}` : "—"}
               </span>
+              {balanceData?.updatedAt && (
+                <span className="text-[10px] text-gray-400 block mt-0.5">
+                  Last checked: {formatTime(balanceData.updatedAt)}
+                </span>
+              )}
             </div>
             <button
               type="button"
