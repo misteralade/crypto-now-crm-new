@@ -181,7 +181,8 @@ export default function SweepDetail() {
       className="inline-flex items-center gap-2 rounded-full bg-[#03034D] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#050568] disabled:cursor-not-allowed disabled:opacity-60"
     >
       <RefreshCcw size={14} className={cn(restartSweepMutation.isPending && 'animate-spin')} />
-      Restart Sweep
+      <span className="hidden sm:inline">Restart Sweep</span>
+      <span className="sm:hidden">Restart</span>
     </button>
   ) : null;
 
