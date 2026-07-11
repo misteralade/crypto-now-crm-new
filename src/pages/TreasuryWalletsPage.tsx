@@ -221,20 +221,10 @@ export default function TreasuryWalletsPage() {
   return (
     <AuthenticatedLayout>
       <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/treasury" })}
-            className="flex items-center gap-1 hover:text-[#03034D] transition-colors"
-          >
-            <ArrowLeft className="h-3 w-3" />
-            Back to Treasury
-          </button>
-        </div>
-
         <PageHeader
           title={`${symbol} Custodial Wallets`}
           subtitle={`Viewing all generated custodial wallets for ${name} on ${network} network.`}
+          onBack={() => navigate({ to: "/dashboard/treasury" })}
         />
 
         <div className="rounded-2xl border border-[#EEF1FF] bg-[linear-gradient(180deg,#F8F9FF_0%,#FFFFFF_100%)] p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -145,7 +145,7 @@ const FuelingWalletCard = ({
             <div>
               <span className="text-gray-500 font-medium block">Native Gas Balance</span>
               <span className="font-bold text-[#03034D] text-sm mt-0.5 block">
-                {balanceData !== null ? `${balanceData.balance.toFixed(4)} ${balanceData.symbol}` : "—"}
+                {balanceData !== null ? `${Number(balanceData.balance).toFixed(8).replace(/\.?0+$/, '')} ${balanceData.symbol}` : "—"}
               </span>
               {balanceData?.updatedAt && (
                 <span className="text-[10px] text-gray-400 block mt-0.5">
@@ -157,11 +157,10 @@ const FuelingWalletCard = ({
               type="button"
               onClick={handleRefresh}
               disabled={balanceMutation.isPending}
-              className="px-3 py-1.5 text-indigo-600 hover:bg-indigo-50 disabled:bg-gray-100 rounded-lg transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 font-semibold text-xs border border-indigo-100 bg-white"
-              title="Refresh native balance"
+              className="p-2 text-indigo-600 hover:bg-indigo-50 disabled:bg-gray-100 rounded-lg transition-all disabled:opacity-50 flex items-center justify-center border border-indigo-100 bg-white shadow-sm shrink-0"
+              title={balanceMutation.isPending ? "Syncing..." : "Sync Balance"}
             >
               <RefreshCw className={`h-3.5 w-3.5 ${balanceMutation.isPending ? "animate-spin" : ""}`} />
-              {balanceMutation.isPending ? "Syncing..." : "Sync Balance"}
             </button>
           </div>
         )}

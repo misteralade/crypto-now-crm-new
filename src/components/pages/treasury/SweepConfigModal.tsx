@@ -234,8 +234,11 @@ export default function SweepConfigModal({
     !isBtcLimitedSweepUi &&
     dustThresholdInput.trim().length > 0 &&
     parsedDustThresholdOverride === undefined;
+  // Only treat the amount as an explicit cap once the admin has actually edited the field —
+  // otherwise the auto-filled cached-balance default would silently submit as a maxTotalAmount
+  // cap the admin never chose (see SweepConfigModal auto-fill effect below).
   const previewMaxTotalAmount =
-    !isBtcLimitedSweepUi && parsedMaxAmount !== undefined
+    !isBtcLimitedSweepUi && amountTouched && parsedMaxAmount !== undefined
       ? parsedMaxAmount
       : undefined;
   const previewDustThresholdOverride =
@@ -403,7 +406,7 @@ export default function SweepConfigModal({
                     dustThresholdOverride: parsedDustThresholdOverride,
                   }
                 : {}),
-              ...(parsedMaxAmount !== undefined
+              ...(amountTouched && parsedMaxAmount !== undefined
                 ? { maxTotalAmount: parsedMaxAmount }
                 : {}),
             }
@@ -670,6 +673,12 @@ export default function SweepConfigModal({
                 {isBtcLimitedSweepUi && (
                   <p className="text-xs text-[#667085]">
                     Custom amount caps are not supported for BTC yet.
+                  </p>
+                )}
+                {!isBtcLimitedSweepUi && !amountTouched && maxAmountInput && (
+                  <p className="text-xs text-[#667085]">
+                    Showing the current cached total as a reference — this sweep will not be
+                    capped unless you edit the amount.
                   </p>
                 )}
                 {maxAmountInvalid && (
