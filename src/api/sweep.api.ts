@@ -30,6 +30,16 @@ export interface SweepPreviewData {
   oldestRefreshedAt: string | null;
   /** Number of wallets in this scope that have never been reconciled from chain */
   neverRefreshedCount: number;
+  /**
+   * Present only when feeHandling is paid_from_source_native_balance (ERC20/TRC20).
+   * Tells you directly whether the platform's fueling wallet can cover gas for this sweep.
+   */
+  fuelingWalletStatus: {
+    address: string;
+    balance: number;
+    requiredEstimate: number;
+    sufficient: boolean;
+  } | null;
 }
 
 // Per-asset row driving the Treasury summary grid.

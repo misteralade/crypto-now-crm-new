@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
-import { useQuery } from "@tanstack/react-query";
 import { useSweepQuery } from "../../../queries/sweep.querries.ts";
 import { useCryptoQuery, useAdminGeneratePlatformFuelingWalletMutation } from "../../../queries/crypto.querries.ts";
-import { cryptoServiceApi } from "../../../api/crypto.api.ts";
 import { toast } from "react-toastify";
 import LabeledPillSelect from "../../global/LabeledPillSelect.tsx";
 import { useNavigate } from "@tanstack/react-router";
 import { LoadingSpinner } from "../../global/LoadingSpinner.tsx";
-import { QUERY_KEYS } from "../../../queries/querries.keys.ts";
 
 interface SweepConfigModalProps {
   open: boolean;
@@ -84,7 +81,7 @@ function getZeroSweepReason(
         previewData.walletsBlockedByFee,
         "wallet is",
         "wallets are"
-      )} below the live BTC fee floor`
+      )} blocked by network fees (insufficient gas or native balance)`
     );
   }
 
@@ -94,7 +91,7 @@ function getZeroSweepReason(
         previewData.walletsWithoutSpendableBalance,
         "wallet has",
         "wallets have"
-      )} no spendable BTC UTXOs`
+      )} no spendable balance`
     );
   }
 
@@ -104,7 +101,7 @@ function getZeroSweepReason(
         previewData.walletsMissingSweepSetup,
         "wallet is",
         "wallets are"
-      )} missing BTC sweep setup`
+      )} missing sweep configuration`
     );
   }
 
@@ -112,12 +109,7 @@ function getZeroSweepReason(
     return `No ${symbol || "BTC"} wallet is sweepable right now.`;
   }
 
-  const feeNote =
-    previewData.estimatedFeeAmount === 0 && previewData.walletsSweepable === 0
-      ? ` That is why the estimated network fee is 0 ${symbol || "BTC"} too: nothing qualifies for a live sweep.`
-      : "";
-
-  return `${reasons.join(", ")}.${feeNote}`;
+  return `${reasons.join(", ")}.`;
 }
 
 export default function SweepConfigModal({
@@ -341,39 +333,13 @@ export default function SweepConfigModal({
     }
   }, [open, shouldRender]);
 
-  // Get fueling wallet for gas check
-  const fuelingWallet = useMemo(() => {
-    if (!selectedCrypto?.adminCryptoWallets) return null;
-    return selectedCrypto.adminCryptoWallets.find(
-      (w) => w.network === network && w.walletType === "FUELING" && w.isActive
-    );
-  }, [selectedCrypto, network]);
-
-  // Fetch fueling wallet balance
-  const { data: fuelingWalletBalance } = useQuery({
-    queryKey: [QUERY_KEYS.CRYPTO.PLATFORM_WALLET_BALANCE, fuelingWallet?.id],
-    queryFn: async () => {
-      if (!fuelingWallet?.id) return null;
-      const { data, success } = await cryptoServiceApi.adminGetPlatformWalletBalance(fuelingWallet.id);
-      return success ? data : null;
-    },
-    enabled: !!fuelingWallet?.id,
-    staleTime: 30000, // 30 seconds
-  });
-
-  // Check if fueling wallet has sufficient balance for estimated fees.
-  // Only relevant when fees are paid from a separate native-asset wallet —
-  // when fees are deducted from the swept asset itself, no fueling wallet is involved.
-  const insufficientFuelBalance = useMemo(() => {
-    if (!previewData || !fuelingWalletBalance) return false;
-    if (previewData.feeHandling !== "paid_from_source_native_balance") return false;
-    return fuelingWalletBalance.balance < previewData.estimatedFeeAmount;
-  }, [previewData, fuelingWalletBalance]);
-
-  const showFuelingWalletCard =
-    !!fuelingWallet &&
-    !!previewData &&
-    previewData.feeHandling === "paid_from_source_native_balance";
+  // The backend computes fueling wallet balance vs. required gas using the exact same
+  // estimate that determined walletsBlockedByFee, so we read it straight off the preview
+  // instead of polling a separate balance endpoint client-side (which could disagree with
+  // the numbers that actually decided the block).
+  const fuelingWalletStatus = previewData?.fuelingWalletStatus ?? null;
+  const insufficientFuelBalance = !!fuelingWalletStatus && !fuelingWalletStatus.sufficient;
+  const showFuelingWalletCard = !!fuelingWalletStatus;
 
   if (!shouldRender) return null;
   const previewAmountToSweep = showPreview && previewData
@@ -422,9 +388,9 @@ export default function SweepConfigModal({
       toast.error("Amount must be a positive number");
       return;
     }
-    if (insufficientFuelBalance && fuelingWalletBalance && previewData) {
+    if (insufficientFuelBalance && fuelingWalletStatus && previewData) {
       toast.error(
-        `Fueling wallet has insufficient balance. Required: ${previewData.estimatedFeeAmount.toFixed(6)} ${previewData.feeAssetSymbol}, Available: ${fuelingWalletBalance.balance.toFixed(6)} ${fuelingWalletBalance.symbol}`
+        `Fueling wallet has insufficient balance. Required: ~${fuelingWalletStatus.requiredEstimate.toFixed(6)} ${previewData.feeAssetSymbol}, Available: ${fuelingWalletStatus.balance.toFixed(6)} ${previewData.feeAssetSymbol}`
       );
       return;
     }
@@ -894,40 +860,40 @@ export default function SweepConfigModal({
                   </p>
                 </div>
 
-                {showFuelingWalletCard && (
-                  <div className={`border-t border-[#ECEFFD] pt-2 space-y-1 px-2 py-2 rounded-lg ${insufficientFuelBalance ? 'bg-red-50' : ''}`}>
+                {showFuelingWalletCard && fuelingWalletStatus && (
+                  <div className={`border-t border-[#ECEFFD] pt-2 space-y-1 px-2 py-2 rounded-lg ${insufficientFuelBalance ? 'bg-red-50 border border-red-200' : ''}`}>
                     <div className="flex items-center gap-1.5">
                       <p className="text-xs font-semibold text-[--color-text-primary]">
                         Fueling Wallet
                       </p>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${insufficientFuelBalance ? 'bg-red-100 text-red-700' : 'bg-[#DCDDFD] text-[#03034D]'}`}>
-                        {insufficientFuelBalance ? 'Low Balance' : 'Gas Fees'}
+                        {insufficientFuelBalance ? 'No Gas' : 'Gas Fees'}
                       </span>
                     </div>
-                    <p className="font-mono text-[11px] text-[#03034D]">
-                      {formatWalletAddress(fuelingWallet.walletAddress || "")}
-                    </p>
+                    {fuelingWalletStatus.address && (
+                      <p className="font-mono text-[11px] text-[#03034D]">
+                        {formatWalletAddress(fuelingWalletStatus.address)}
+                      </p>
+                    )}
                     <div className="space-y-1 mt-2">
-                      {previewData.estimatedFeeAmount > 0 && (
-                        <div className="flex justify-between text-[10px]">
-                          <span className="text-[#667085]">Required:</span>
-                          <span className="text-[#03034D] font-semibold">
-                            ~{previewData.estimatedFeeAmount.toFixed(6)} {previewData.feeAssetSymbol}
-                          </span>
-                        </div>
-                      )}
-                      {fuelingWalletBalance && (
-                        <div className={`flex justify-between text-[10px] ${insufficientFuelBalance ? 'text-red-600' : 'text-[#667085]'}`}>
-                          <span>Available:</span>
-                          <span className="font-semibold">
-                            {fuelingWalletBalance.balance.toFixed(6)} {fuelingWalletBalance.symbol}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-[#667085]">Estimated required:</span>
+                        <span className="text-[#03034D] font-semibold">
+                          ~{fuelingWalletStatus.requiredEstimate.toFixed(6)} {previewData.feeAssetSymbol}
+                        </span>
+                      </div>
+                      <div className={`flex justify-between text-[10px] ${insufficientFuelBalance ? 'text-red-600' : 'text-[#667085]'}`}>
+                        <span>Available:</span>
+                        <span className="font-semibold">
+                          {fuelingWalletStatus.balance.toFixed(6)} {previewData.feeAssetSymbol}
+                        </span>
+                      </div>
                     </div>
                     {insufficientFuelBalance && (
-                      <p className="text-[10px] text-red-600 font-semibold mt-2">
-                        ⚠️ Insufficient balance for estimated gas fees
+                      <p className="text-[10px] text-red-700 font-semibold mt-2">
+                        {fuelingWalletStatus.address
+                          ? `No ${previewData.feeAssetSymbol} in the fueling wallet to cover gas — top it up before sweeping.`
+                          : `No active fueling wallet configured for this network — gas cannot be funded.`}
                       </p>
                     )}
                   </div>
