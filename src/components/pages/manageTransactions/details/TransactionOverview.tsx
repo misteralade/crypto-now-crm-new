@@ -1,5 +1,6 @@
 import {Fragment} from "react";
-import {convertToMillify, formatNumber} from "../../../../util/index.util.ts";
+import {formatNumber} from "../../../../util/index.util.ts";
+import {formatCompact} from "../../../../util/asset-precision";
 import {StatusBadge} from "../../../global/StatusBadge.tsx";
 
 interface TransactionOverviewProps {
@@ -31,7 +32,7 @@ const TransactionOverview = ({ type: _type, amountCrypto, symbol, amountFiat: _a
           <div>
             <p className="text-sm text-gray-500 mb-1">Fiat Amount (NGN)</p>
             <p className="text-2xl font-bold text-gray-900">
-              ₦ {convertToMillify(amountFiatNGN, 3)}
+              ₦ {formatCompact(amountFiatNGN, "NGN", 3)}
             </p>
           </div>
           

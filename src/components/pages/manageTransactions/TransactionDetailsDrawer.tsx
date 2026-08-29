@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { Upload, X, ChevronDown, ChevronUp, Clock, Eye, Edit2, Play, RefreshCw, Activity } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { convertToMillify } from "../../../util/index.util.ts";
+import { formatCompact } from "../../../util/asset-precision";
 import momentClient from "../../../util/moment";
 import CopyDetails from "../../global/CopyDetails";
 import { StatusBadge } from "../../global/StatusBadge";
@@ -136,18 +136,18 @@ const TransactionDetailsDrawer = ({
       const rate = Number(transaction.exchangeRate.rate);
       const platformRate = Number(transaction.exchangeRate.platformRate);
       if (currency === "USD") {
-        return `1 ${symbol} = $ ${convertToMillify(rate, 2)}`;
+        return `1 ${symbol} = $ ${formatCompact(rate, "USD", 2)}`;
       }
-      return `1 ${symbol} = ₦ ${convertToMillify(platformRate * rate, 2)}`;
+      return `1 ${symbol} = ₦ ${formatCompact(platformRate * rate, "NGN", 2)}`;
     }
     const amountCrypto = Number(transaction.amountCrypto);
     if (amountCrypto <= 0) return "—";
     if (currency === "USD") {
       const val = Number(transaction.amountFiat) / amountCrypto;
-      return `1 ${symbol} = $ ${convertToMillify(val, 2)}`;
+      return `1 ${symbol} = $ ${formatCompact(val, "USD", 2)}`;
     }
     const val = Number(transaction.amountFiatNGN || 0) / amountCrypto;
-    return `1 ${symbol} = ₦ ${convertToMillify(val, 2)}`;
+    return `1 ${symbol} = ₦ ${formatCompact(val, "NGN", 2)}`;
   };
 
   const canRetryConfirmation =
@@ -305,12 +305,12 @@ const TransactionDetailsDrawer = ({
                           ? transaction.cryptocurrency.symbol
                           : ""}{" "}
                         (₦{" "}
-                        {convertToMillify(Number(transaction.amountFiatNGN))})
+                        {formatCompact(Number(transaction.amountFiatNGN), "NGN")})
                       </Fragment>
                     ) : (
                       <Fragment>
                         ₦ {Number(transaction.amountFiatNGN).toLocaleString()} (
-                        ${convertToMillify(Number(transaction.usdAmount))})
+                        ${formatCompact(Number(transaction.usdAmount), "USD")})
                       </Fragment>
                     )}
                   </div>

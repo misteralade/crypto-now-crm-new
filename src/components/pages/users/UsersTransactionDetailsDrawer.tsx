@@ -6,7 +6,7 @@ import type {
   SummarisedUserProfileResponsePayload,
   UserBankAccountResponsePayload
 } from "../../../types/response.payload.types.ts";
-import { convertToMillify } from '../../../util/index.util.ts';
+import { formatCompact } from '../../../util/asset-precision';
 import { Skeleton } from '../../global/Skeleton.tsx';
 
 interface UserTransactionDetailsDrawerProps {
@@ -205,14 +205,14 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
                 <div className="mt-4 flex items-center justify-between text-[16px]">
                   <div className="text-[#667085]">Total Buys</div>
                   <div className="text-[#101828] font-medium">
-                    <div className="text-[#101828] font-medium">₦{convertToMillify(totalBuys)}</div>
+                    <div className="text-[#101828] font-medium">₦{formatCompact(totalBuys, "NGN")}</div>
                   </div>
                 </div>
 
                 <div className="mt-4 flex items-center justify-between text-[16px]">
                   <div className="text-[#667085]">Total Sells</div>
                   <div className="text-[#101828] font-medium">
-                    <div className="text-[#101828] font-medium">₦{convertToMillify(totalSells)}</div>
+                    <div className="text-[#101828] font-medium">₦{formatCompact(totalSells, "NGN")}</div>
                   </div>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import {ArrowUpRight, ChevronDown, Download} from 'lucide-react'
 import { Fragment } from 'react'
-import { convertToMillify } from '../../util/index.util.ts'
+import { formatCompact } from '../../util/asset-precision'
 import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
 import momentClient from '../../util/moment'
 import {
@@ -111,7 +111,7 @@ export const UsersWithTopTransactionDataRow = (
     rowItems.push({
       user: `${item.userFirstName} ${item.userLastName}`,
       transactionId: item.sessionId,
-      amount: convertToMillify(Number(item.amountFiat)),
+      amount: formatCompact(Number(item.amountFiat), "NGN"),
       date: item.createdAt,
       status: item.status,
     })
@@ -440,14 +440,14 @@ export const UserTransactionsManagementDataRow = (
         const rate = Number(item.exchangeRate.rate)
         const platformRate = Number(item.exchangeRate.platformRate)
         rateDisplay = currency === 'USD'
-          ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
-          : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`
+          ? `1 ${symbol} = $ ${formatCompact(rate, "USD", 2)}`
+          : `1 ${symbol} = ₦ ${formatCompact(rate * platformRate, "NGN", 2)}`
       } else {
         const effective = currency === 'USD'
           ? Number(item.amountFiat) / amountCrypto
           : Number(item.amountFiatNGN || 0) / amountCrypto
         const fiatSym = currency === 'USD' ? '$' : '₦'
-        rateDisplay = `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`
+        rateDisplay = `1 ${symbol} = ${fiatSym} ${formatCompact(effective, currency ?? "NGN", 2)}`
       }
     }
     rowItems.push({

@@ -10,7 +10,7 @@ import DisputeAdminNotes from "../components/pages/disputes/edit/DisputeAdminNot
 import TransactionDetails from "../components/pages/disputes/edit/TransactionDetails.tsx";
 import DisputeUserInformation from "../components/pages/disputes/edit/DisputeUserInformation.tsx";
 import DisputeStatusUpdateModal from "../components/pages/disputes/edit/modal/DisputeStatusUpdateModal.tsx";
-import { convertToMillify } from "../util/index.util.ts";
+import { formatCompact } from "../util/asset-precision";
 
 const EditDisputes = () => {
   const {
@@ -198,14 +198,14 @@ const EditDisputes = () => {
                                 const rate = Number(tx.exchangeRate.rate);
                                 const platformRate = Number(tx.exchangeRate.platformRate);
                                 return currency === 'USD'
-                                  ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
-                                  : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`;
+                                  ? `1 ${symbol} = $ ${formatCompact(rate, "USD", 2)}`
+                                  : `1 ${symbol} = ₦ ${formatCompact(rate * platformRate, "NGN", 2)}`;
                               }
                               const effective = currency === 'USD'
                                 ? Number(tx.amountFiat) / amountCrypto
                                 : Number(tx.amountFiatNGN || 0) / amountCrypto;
                               const fiatSym = currency === 'USD' ? '$' : '₦';
-                              return `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`;
+                              return `1 ${symbol} = ${fiatSym} ${formatCompact(effective, currency ?? "NGN", 2)}`;
                             })()}
                             walletAddress={transactionDetails.userCryptoWallet?.walletAddress || ''}
                             walletNetwork={transactionDetails.userCryptoWallet?.network || ''}

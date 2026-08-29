@@ -1,6 +1,7 @@
 import {Fragment} from "react";
 import {StatusBadge} from "../../../global/StatusBadge.tsx";
-import {convertToMillify, formatNumber} from "../../../../util/index.util.ts";
+import {formatNumber} from "../../../../util/index.util.ts";
+import {formatCompact} from "../../../../util/asset-precision";
 
 interface TransactionDetailsProps {
   sessionId: string;
@@ -58,7 +59,7 @@ const TransactionDetails = ({ sessionId, type, status, cryptoAmount, cryptoSymbo
             <div>
               <p className="text-xs text-gray-500 mb-1">Fiat Amount</p>
               <p className="text-sm font-semibold text-gray-900">
-                {currency} {convertToMillify(Number(fiatAmount))}
+                {currency} {formatCompact(Number(fiatAmount), currency)}
               </p>
             </div>
           </div>

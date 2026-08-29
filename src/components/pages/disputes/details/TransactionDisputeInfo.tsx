@@ -2,7 +2,8 @@ import {Fragment} from "react";
 import CopyDetails from "../../../global/CopyDetails.tsx";
 import type { TransactionStatus } from "../../../../schemas/enum.schema.ts";
 import {getStatusColor, getStatusDot} from "../../../../util/transaction.util.ts";
-import {convertToMillify, formatNumber} from "../../../../util/index.util.ts";
+import {formatNumber} from "../../../../util/index.util.ts";
+import {formatCompact} from "../../../../util/asset-precision";
 
 interface TransactionDisputeInfoProps {
   sessionId: string;
@@ -57,7 +58,7 @@ const TransactionDisputeInfo = ({sessionId, transactionType, status, cryptoAmoun
             <div>
               <p className="text-xs text-gray-500 mb-1">Fiat Amount</p>
               <p className="text-sm font-semibold text-gray-900">
-                {fiatCurrency} {convertToMillify(Number(fiatAmount || 0))}
+                {fiatCurrency} {formatCompact(Number(fiatAmount || 0), fiatCurrency)}
               </p>
             </div>
           </div>

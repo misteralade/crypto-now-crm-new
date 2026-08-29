@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
-import {convertToMillify} from "../../util/index.util.ts";
+import {formatCompact} from "../../util/asset-precision";
 import momentClient from "../../util/moment";
 import {StatusColumn} from "./global";
 import type { SearchSupportedCryptoData } from "../../types/response.payload.types";
@@ -231,8 +231,8 @@ export const SearchSupportedCryptoDataRow = (data: Array<SearchSupportedCryptoDa
       coin: item.symbol,
       isStableCoin: item.isStableCoin,
       networks: item.networks ?? [],
-      tradeLimit: `${convertToMillify(Number(item.minTransactionLimit))} ${item.symbol} - ${convertToMillify(Number(item.maxTransactionLimit))} ${item.symbol}`,
-      tradeLimitAnonymous: `${convertToMillify(Number(item.minTradeAmountForAnonymous))} ${item.symbol} - ${convertToMillify(Number(item.maxTradeAmountForAnonymous))} ${item.symbol}`,
+      tradeLimit: `${formatCompact(Number(item.minTransactionLimit), item.symbol)} ${item.symbol} - ${formatCompact(Number(item.maxTransactionLimit), item.symbol)} ${item.symbol}`,
+      tradeLimitAnonymous: `${formatCompact(Number(item.minTradeAmountForAnonymous), item.symbol)} ${item.symbol} - ${formatCompact(Number(item.maxTradeAmountForAnonymous), item.symbol)} ${item.symbol}`,
       logoUrl: item.logoUrl,
       status: item.isActive,
       createdAt: momentClient.formatToNormalisedDateAndTime(item.createdAt),

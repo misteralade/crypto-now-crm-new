@@ -5,6 +5,7 @@ import { PillInput } from '../../../ui/input'
 import { currencyServiceApi } from "../../../../api/currency.api";
 import { rateServiceApi } from "../../../../api/rate.api";
 import { QUERY_KEYS } from "../../../../queries/querries.keys";
+import { formatForDisplayLocalized } from "../../../../util/asset-precision";
 
 interface EditTradeLimitsProps {
   cryptoId: string;
@@ -19,20 +20,6 @@ interface EditTradeLimitsProps {
 }
 
 const TARGET_CRYPTO_UNITS = 2;
-
-function formatNumber(value: number, maximumFractionDigits = 8) {
-  return new Intl.NumberFormat("en-NG", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits,
-  }).format(value);
-}
-
-function formatMoney(value: number) {
-  return new Intl.NumberFormat("en-NG", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
 
 const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous, onChangeInputField }: EditTradeLimitsProps) => {
   const [buyRate, setBuyRate] = useState<string>(String(buyAt ?? ''));
@@ -165,10 +152,10 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
               <p className="text-xs text-[#6A6B89] mt-1">Uses the Sell Rate field.</p>
               <div className="mt-4 space-y-2 text-sm text-[#0E0F0C]">
                 <p>
-                  {formatNumber(normalizedPreviewCryptoUnits, 4)} {symbol} × ${formatNumber(coinGeckoRate, 2)} USD × ₦{formatNumber(sellToUserRate, 2)}/USD
+                  {formatForDisplayLocalized(normalizedPreviewCryptoUnits, symbol)} {symbol} × ${formatForDisplayLocalized(coinGeckoRate, "USD")} USD × ₦{formatForDisplayLocalized(sellToUserRate, "NGN")}/USD
                 </p>
                 <p className="text-base font-semibold text-[#03034D]">
-                  = ₦{formatMoney(sellToUserPreview)}
+                  = ₦{formatForDisplayLocalized(sellToUserPreview, "NGN")}
                 </p>
               </div>
             </div>
@@ -178,10 +165,10 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
               <p className="text-xs text-[#6A6B89] mt-1">Uses the Buy Rate field.</p>
               <div className="mt-4 space-y-2 text-sm text-[#0E0F0C]">
                 <p>
-                  {formatNumber(normalizedPreviewCryptoUnits, 4)} {symbol} × ${formatNumber(coinGeckoRate, 2)} USD × ₦{formatNumber(buyFromUserRate, 2)}/USD
+                  {formatForDisplayLocalized(normalizedPreviewCryptoUnits, symbol)} {symbol} × ${formatForDisplayLocalized(coinGeckoRate, "USD")} USD × ₦{formatForDisplayLocalized(buyFromUserRate, "NGN")}/USD
                 </p>
                 <p className="text-base font-semibold text-[#03034D]">
-                  = ₦{formatMoney(buyFromUserPreview)}
+                  = ₦{formatForDisplayLocalized(buyFromUserPreview, "NGN")}
                 </p>
               </div>
             </div>

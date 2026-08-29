@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { convertToMillify } from '../../../../util/index.util'
+import { formatCompact } from '../../../../util/asset-precision'
 import type { TransactionSummaryResponsePayload } from '../../../../types/response.payload.types'
 
 interface TransactionSummarySectionProps {
@@ -59,7 +59,7 @@ const TransactionSummarySection = ({ transactionSummary, loading = false }: Tran
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-[#0E0F0C]">
-                      ₦{convertToMillify(Number(transaction.totalFiatAmount), 3)}
+                      ₦{formatCompact(Number(transaction.totalFiatAmount), "NGN", 3)}
                     </div>
                     <div className="text-sm text-[#667085]">
                       {transaction.transactionCount} transactions
@@ -77,13 +77,13 @@ const TransactionSummarySection = ({ transactionSummary, loading = false }: Tran
               <div className="p-4 bg-[#F9FAFB] rounded-lg">
                 <div className="text-sm text-[#667085] mb-1">Total Buys</div>
                 <div className="text-xl font-semibold text-[#0E0F0C]">
-                  ₦{convertToMillify(totalBuys, 3)}
+                  ₦{formatCompact(totalBuys, "NGN", 3)}
                 </div>
               </div>
               <div className="p-4 bg-[#F9FAFB] rounded-lg">
                 <div className="text-sm text-[#667085] mb-1">Total Sells</div>
                 <div className="text-xl font-semibold text-[#0E0F0C]">
-                  ₦{convertToMillify(totalSells, 3)}
+                  ₦{formatCompact(totalSells, "NGN", 3)}
                 </div>
               </div>
             </div>

@@ -14,7 +14,7 @@ import CopyDetails from "../components/global/CopyDetails.tsx";
 import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
-import { convertToMillify } from "../util/index.util.ts";
+import { formatCompact } from "../util/asset-precision";
 import { Download } from "lucide-react";
 import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
 import ConfirmModal from "../components/global/ConfirmModal.tsx";
@@ -106,12 +106,12 @@ const TransactionDetails = () => {
                   exchangeRateDisplay={
                     transaction.exchangeRate && Number(transaction.amountCrypto) > 0
                       ? transaction.currency === 'USD'
-                        ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${convertToMillify(Number(transaction.exchangeRate.rate), 2)}`
-                        : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${convertToMillify(Number(transaction.exchangeRate.rate) * Number(transaction.exchangeRate.platformRate), 2)}`
+                        ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${formatCompact(Number(transaction.exchangeRate.rate), "USD", 2)}`
+                        : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${formatCompact(Number(transaction.exchangeRate.rate) * Number(transaction.exchangeRate.platformRate), "NGN", 2)}`
                       : Number(transaction.amountCrypto) > 0
                         ? transaction.currency === 'USD'
-                          ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${convertToMillify(Number(transaction.amountFiat) / Number(transaction.amountCrypto), 2)}`
-                          : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${convertToMillify(Number(transaction.amountFiatNGN || 0) / Number(transaction.amountCrypto), 2)}`
+                          ? `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = $ ${formatCompact(Number(transaction.amountFiat) / Number(transaction.amountCrypto), "USD", 2)}`
+                          : `1 ${transaction.cryptocurrency?.symbol || 'CRYPTO'} = ₦ ${formatCompact(Number(transaction.amountFiatNGN || 0) / Number(transaction.amountCrypto), "NGN", 2)}`
                         : '—'
                   }
                   status={transaction.status}

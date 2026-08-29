@@ -7,7 +7,7 @@ import {useDisputeDetailsPage} from "../hooks/pages/useDisputeDetailsPage.ts";
 import DisputeInformation from "../components/pages/disputes/details/DisputeInformation.tsx";
 import TransactionDisputeInfo from "../components/pages/disputes/details/TransactionDisputeInfo.tsx";
 import {getDisputeStatusColor} from "../util/dispute.constants.util.ts";
-import { convertToMillify } from "../util/index.util.ts";
+import { formatCompact } from "../util/asset-precision";
 
 const DisputeDetails = () => {
   const {
@@ -87,14 +87,14 @@ const DisputeDetails = () => {
                           const rate = Number(tx.exchangeRate.rate);
                           const platformRate = Number(tx.exchangeRate.platformRate);
                           return currency === 'USD'
-                            ? `1 ${symbol} = $ ${convertToMillify(rate, 2)}`
-                            : `1 ${symbol} = ₦ ${convertToMillify(rate * platformRate, 2)}`;
+                            ? `1 ${symbol} = $ ${formatCompact(rate, "USD", 2)}`
+                            : `1 ${symbol} = ₦ ${formatCompact(rate * platformRate, "NGN", 2)}`;
                         }
                         const effective = currency === 'USD'
                           ? Number(tx.amountFiat) / amountCrypto
                           : Number(tx.amountFiatNGN || 0) / amountCrypto;
                         const fiatSym = currency === 'USD' ? '$' : '₦';
-                        return `1 ${symbol} = ${fiatSym} ${convertToMillify(effective, 2)}`;
+                        return `1 ${symbol} = ${fiatSym} ${formatCompact(effective, currency ?? "NGN", 2)}`;
                       })()}
                     />
                     

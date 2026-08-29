@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import {DisputeStatusBadge} from "../global/StatusBadge.tsx";
 import type { TableColumn } from "../table.tsx";
 import type {AdminSearchDisputes} from "../../types/response.payload.types.ts";
-import {convertToMillify} from "../../util/index.util.ts";
+import {formatCompact} from "../../util/asset-precision";
 import momentClient from "../../util/moment.ts";
 
 export const DisputeManagementColumn = (
@@ -156,7 +156,7 @@ export const DisputeManagementDataRow = (
       id: item.id,
       initiator: item?.creator ? `${item.creator.profile?.firstName} ${item.creator.profile?.lastName}` : 'Anonymous',
       transactionId: item.transaction.sessionId,
-      amount: convertToMillify(Number(item.transaction.amountFiat)),
+      amount: formatCompact(Number(item.transaction.amountFiat), "NGN"),
       date: momentClient.formatToTransactionInitiationDate(item.createdAt),
       status: item.status,
     })

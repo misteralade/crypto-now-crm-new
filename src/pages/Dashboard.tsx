@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import {useDashboardPage} from "../hooks/pages/useDashboardPage";
-import { convertToMillify } from '../util/index.util.ts';
+import { formatCompact } from '../util/asset-precision';
 import { UsersWithTopTransactionColumn, UsersWithTopTransactionDataRow } from '../components/tables/TransactionsManagementTables';
 import type {TransactionTypeByPercentage, WeeklyTransactionVolumeTrend } from '../types/response.payload.types';
 import type {TimelineFilter} from "../types/global.types";
@@ -45,7 +45,7 @@ const Dashboard = () => {
   } = useDashboardPage()
   
   const numberOfTransactionsDisplay = !loadingTransactionCount
-    ? convertToMillify(transactionCount || 0)
+    ? new Intl.NumberFormat("en-US", { notation: "compact" }).format(transactionCount || 0)
     : 'Loading...'
   const columns = useMemo(() => UsersWithTopTransactionColumn(handleViewTransactionDetails), [ handleViewTransactionDetails ])
   const data = useMemo(
@@ -108,7 +108,7 @@ const Dashboard = () => {
           {loadingTransactionVolume ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Total Volume"
-              value={`₦${convertToMillify(Number(transactionVolume?.totalFiatVolume))}`}
+              value={`₦${formatCompact(Number(transactionVolume?.totalFiatVolume), "NGN")}`}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<TrendingUp className="w-4 h-4" />}
             />
