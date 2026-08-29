@@ -17,6 +17,7 @@ import {
 import { useSweepQuery } from "../queries/sweep.querries.ts";
 import { ROUTES } from "../util/constants.util.ts";
 import { cn } from "../lib/utils.ts";
+import { formatForDisplayLocalized } from "../util/asset-precision.ts";
 
 function formatDate(value: string | Date | null | undefined) {
   if (!value) return "Not available";
@@ -373,11 +374,19 @@ export default function WalletDetails() {
                   />
                   <DetailCard
                     label="Current Buy Rate"
-                    value={walletDetails.cryptocurrency?.buyRate ?? "-"}
+                    value={
+                      walletDetails.cryptocurrency?.buyRate
+                        ? `₦${formatForDisplayLocalized(Number(walletDetails.cryptocurrency.buyRate), "NGN")}`
+                        : "-"
+                    }
                   />
                   <DetailCard
                     label="Current Sell Rate"
-                    value={walletDetails.cryptocurrency?.sellRate ?? "-"}
+                    value={
+                      walletDetails.cryptocurrency?.sellRate
+                        ? `₦${formatForDisplayLocalized(Number(walletDetails.cryptocurrency.sellRate), "NGN")}`
+                        : "-"
+                    }
                   />
                   <DetailCard
                     label="Created"
