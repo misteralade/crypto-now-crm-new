@@ -5,7 +5,7 @@ import { PillInput } from '../../../ui/input'
 import { currencyServiceApi } from "../../../../api/currency.api";
 import { rateServiceApi } from "../../../../api/rate.api";
 import { QUERY_KEYS } from "../../../../queries/querries.keys";
-import { formatForDisplay, formatForDisplayLocalized } from "../../../../util/asset-precision";
+import { formatForDisplayLocalized } from "../../../../util/asset-precision";
 
 interface EditTradeLimitsProps {
   cryptoId: string;
@@ -21,20 +21,27 @@ interface EditTradeLimitsProps {
 
 const TARGET_CRYPTO_UNITS = 2;
 
-/** Strip the raw numeric(18,8) string's trailing zeros down to a plain, editable decimal. */
-const toEditableNumberString = (value: number | string | undefined, symbolOrCode: string): string => {
+/**
+ * Strip a raw numeric(18,8) string's trailing zeros down to a plain, editable decimal —
+ * WITHOUT rounding to any asset's displayDecimals. These fields (buyRate/sellRate/trade
+ * limits) are edited and resubmitted verbatim, so every significant digit the DB holds
+ * must round-trip; only the "...00000000" padding artifact should be removed.
+ * e.g. "1500.75000000" -> "1500.75" (not "1501", which is what NGN's displayDecimals:0
+ * would produce via formatForDisplay and would silently corrupt the rate on save).
+ */
+const toEditableNumberString = (value: number | string | undefined): string => {
   if (value === undefined || value === '') return '';
-  const num = Number(value);
-  return Number.isFinite(num) ? formatForDisplay(num, symbolOrCode) : String(value);
+  const str = String(value);
+  return str.includes('.') ? str.replace(/0+$/, '').replace(/\.$/, '') : str;
 };
 
 const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous, onChangeInputField }: EditTradeLimitsProps) => {
-  const [buyRate, setBuyRate] = useState<string>(toEditableNumberString(buyAt, 'NGN'));
-  const [sellRate, setSellRate] = useState<string>(toEditableNumberString(sellAt, 'NGN'));
-  const [minTradeAmount, setMinTradeAmount] = useState<string>(toEditableNumberString(minAmount, symbol));
-  const [maxTradeAmount, setMaxTradeAmount] = useState<string>(toEditableNumberString(maxAmount, symbol));
-  const [minTradeAmountForAnonymous, setMinTradeAmountForAnonymous] = useState<string>(toEditableNumberString(minAmountAnonymous, symbol));
-  const [maxTradeAmountForAnonymous, setMaxTradeAmountForAnonymous] = useState<string>(toEditableNumberString(maxAmountAnonymous, symbol));
+  const [buyRate, setBuyRate] = useState<string>(toEditableNumberString(buyAt));
+  const [sellRate, setSellRate] = useState<string>(toEditableNumberString(sellAt));
+  const [minTradeAmount, setMinTradeAmount] = useState<string>(toEditableNumberString(minAmount));
+  const [maxTradeAmount, setMaxTradeAmount] = useState<string>(toEditableNumberString(maxAmount));
+  const [minTradeAmountForAnonymous, setMinTradeAmountForAnonymous] = useState<string>(toEditableNumberString(minAmountAnonymous));
+  const [maxTradeAmountForAnonymous, setMaxTradeAmountForAnonymous] = useState<string>(toEditableNumberString(maxAmountAnonymous));
   const [previewCryptoUnits, setPreviewCryptoUnits] = useState<string>(String(TARGET_CRYPTO_UNITS));
 
   const { data: currencies } = useQuery({
@@ -67,13 +74,13 @@ const EditTradeLimits = ({ cryptoId, symbol, buyAt, sellAt, minAmount, maxAmount
   });
 
   useEffect(() => {
-    setBuyRate(toEditableNumberString(buyAt, 'NGN'));
-    setSellRate(toEditableNumberString(sellAt, 'NGN'));
-    setMinTradeAmount(toEditableNumberString(minAmount, symbol));
-    setMaxTradeAmount(toEditableNumberString(maxAmount, symbol));
-    setMinTradeAmountForAnonymous(toEditableNumberString(minAmountAnonymous, symbol));
-    setMaxTradeAmountForAnonymous(toEditableNumberString(maxAmountAnonymous, symbol));
-  }, [buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous, symbol]);
+    setBuyRate(toEditableNumberString(buyAt));
+    setSellRate(toEditableNumberString(sellAt));
+    setMinTradeAmount(toEditableNumberString(minAmount));
+    setMaxTradeAmount(toEditableNumberString(maxAmount));
+    setMinTradeAmountForAnonymous(toEditableNumberString(minAmountAnonymous));
+    setMaxTradeAmountForAnonymous(toEditableNumberString(maxAmountAnonymous));
+  }, [buyAt, sellAt, minAmount, maxAmount, minAmountAnonymous, maxAmountAnonymous]);
 
   const coinGeckoRate = Number(liveExchangeRate?.coinGeckoRate ?? 0);
   const sellToUserRate = Number(buyRate ?? 0);

@@ -17,7 +17,18 @@ import {
 import { useSweepQuery } from "../queries/sweep.querries.ts";
 import { ROUTES } from "../util/constants.util.ts";
 import { cn } from "../lib/utils.ts";
-import { formatForDisplayLocalized } from "../util/asset-precision.ts";
+/**
+ * Strip a raw numeric(18,8) rate string's trailing zeros without rounding to any
+ * asset's displayDecimals — this is an exact configured rate (e.g. "1500.75000000"),
+ * not a fiat amount, so NGN's 0-decimal display rule would silently hide real precision
+ * (e.g. render "1500.75" as "₦1,501").
+ */
+const formatExactRate = (value: string | number): string => {
+  const str = String(value);
+  const trimmed = str.includes(".") ? str.replace(/0+$/, "").replace(/\.$/, "") : str;
+  const num = Number(trimmed);
+  return Number.isFinite(num) ? num.toLocaleString() : trimmed;
+};
 
 function formatDate(value: string | Date | null | undefined) {
   if (!value) return "Not available";
@@ -376,7 +387,7 @@ export default function WalletDetails() {
                     label="Current Buy Rate"
                     value={
                       walletDetails.cryptocurrency?.buyRate
-                        ? `₦${formatForDisplayLocalized(Number(walletDetails.cryptocurrency.buyRate), "NGN")}`
+                        ? `₦${formatExactRate(walletDetails.cryptocurrency.buyRate)}`
                         : "-"
                     }
                   />
@@ -384,7 +395,7 @@ export default function WalletDetails() {
                     label="Current Sell Rate"
                     value={
                       walletDetails.cryptocurrency?.sellRate
-                        ? `₦${formatForDisplayLocalized(Number(walletDetails.cryptocurrency.sellRate), "NGN")}`
+                        ? `₦${formatExactRate(walletDetails.cryptocurrency.sellRate)}`
                         : "-"
                     }
                   />
