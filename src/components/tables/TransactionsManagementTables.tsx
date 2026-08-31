@@ -1,6 +1,7 @@
 import {ArrowUpRight, ChevronDown, Download} from 'lucide-react'
 import { Fragment } from 'react'
 import { formatCompact } from '../../util/asset-precision'
+import { getTransactionAmountFiatNGN } from '../../util/transaction.util'
 import CopyDetails, {ClickableDetails} from '../global/CopyDetails'
 import momentClient from '../../util/moment'
 import {
@@ -111,7 +112,7 @@ export const UsersWithTopTransactionDataRow = (
     rowItems.push({
       user: `${item.userFirstName} ${item.userLastName}`,
       transactionId: item.sessionId,
-      amount: formatCompact(Number(item.amountFiat), "NGN"),
+      amount: formatCompact(getTransactionAmountFiatNGN(item), "NGN"),
       date: item.createdAt,
       status: item.status,
     })

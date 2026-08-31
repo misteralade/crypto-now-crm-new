@@ -156,7 +156,7 @@ export const DisputeManagementDataRow = (
       id: item.id,
       initiator: item?.creator ? `${item.creator.profile?.firstName} ${item.creator.profile?.lastName}` : 'Anonymous',
       transactionId: item.transaction.sessionId,
-      amount: formatCompact(Number(item.transaction.amountFiat), "NGN"),
+      amount: formatCompact(Number(item.transaction.amountFiatNGN), "NGN"),
       date: momentClient.formatToTransactionInitiationDate(item.createdAt),
       status: item.status,
     })

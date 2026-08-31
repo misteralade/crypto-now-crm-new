@@ -1,5 +1,24 @@
 import type {TransactionStatus} from "../schemas/enum.schema.ts";
 
+/**
+ * amountFiat is stored in the transaction's own settlement/display currency
+ * (USD for stablecoin trades), not always NGN — anywhere the amount is shown
+ * with a ₦ symbol must convert through stableToFiatRate first. Prefer
+ * amountFiatNGN directly when the response type already has it.
+ */
+export function getTransactionAmountFiatNGN(tx: {
+  amountFiat: string | number;
+  currency: string;
+  stableToFiatRate: string | number;
+}): number {
+  const amountFiat = Number(tx.amountFiat ?? 0);
+  const stableToFiatRate = Number(tx.stableToFiatRate ?? 0);
+  if (tx.currency === "NGN") return amountFiat;
+  if (tx.currency === "USD" && stableToFiatRate > 0)
+    return amountFiat * stableToFiatRate;
+  return amountFiat;
+}
+
 const MANUAL_PAYOUT_RETRY_STATUSES = new Set<TransactionStatus>([
   "PENDING_PAYOUT",
   "PAYOUT_FAILED",
