@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface ConfirmModalProps {
   open: boolean;
@@ -53,7 +54,12 @@ const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you
     },
   }[actionType];
 
-  return (
+  // Rendered via a portal to document.body — callers like TransactionDetailsDrawer
+  // mount this inside a `transform`-animated (translate-x) drawer, which creates a
+  // new containing block for `position: fixed` descendants. Without the portal, the
+  // "fixed inset-0" backdrop below ends up positioned relative to that drawer instead
+  // of the viewport, clipping the dialog into the drawer's corner instead of centering it.
+  return createPortal(
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 ${isClosing ? 'animate-modal-backdrop-out' : 'animate-modal-backdrop-in'}`}>
       <div className={`bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center ${isClosing ? 'animate-modal-content-out' : 'animate-modal-content-in'}`}>
         <div className={`w-14 h-14 rounded-full ${config.iconBg} flex items-center justify-center mx-auto mb-4`}>
@@ -79,7 +85,8 @@ const ConfirmModal = ({ open, actionType, onClose, onConfirm, message = "Are you
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
