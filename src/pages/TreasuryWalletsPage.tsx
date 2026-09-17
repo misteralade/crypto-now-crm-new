@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ExternalLink, ArrowLeft, RefreshCw, Copy } from "lucide-react";
+import { ExternalLink, RefreshCw, Copy } from "lucide-react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { toast } from "react-toastify";
 import AuthenticatedLayout from "../layout/AuthenticatedLayout.tsx";
