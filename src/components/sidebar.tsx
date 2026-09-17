@@ -14,6 +14,7 @@ import {
 import logo from "../assets/img/logo.svg";
 import { LOCAL_STORAGE_KEYS, ROUTES } from "../util/constants.util.ts";
 import { useAdminAuth } from "../hooks/useAdminAuth";
+import { NAV_ITEM_PERMISSIONS } from "../util/permissions.util";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(false);
@@ -196,7 +197,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const navigate = useNavigate();
   const currentPath = routerState.location.pathname;
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const { canManageAdmins } = useAdminAuth();
+  const { hasAnyPermission, loading: loadingAdminAuth } = useAdminAuth();
 
   const handleLogout = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
@@ -248,11 +249,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navItems
               .filter((item) => {
-                // Only show Manage Admins to admins with admin-management permission
-                if (item.path === ROUTES.MANAGE_ADMINS) {
-                  return canManageAdmins;
-                }
-                return true;
+                const requiredPermissions = NAV_ITEM_PERMISSIONS[item.path];
+                if (!requiredPermissions) return true;
+                // Hold off showing permission-gated items until we know what the
+                // admin actually has, so nothing flashes then disappears.
+                if (loadingAdminAuth) return false;
+                return hasAnyPermission(requiredPermissions);
               })
               .map((item) => {
                 const Icon = item.icon;

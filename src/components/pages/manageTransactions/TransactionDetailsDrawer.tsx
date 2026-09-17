@@ -18,6 +18,7 @@ import ConfirmModal from "../../global/ConfirmModal";
 import TransactionDetailsUserProfile from "./details/TransactionDetailsUserProfile";
 import PaymentAccountDetails from "./details/PaymentAccountDetails";
 import AdminPaymentAccountDetails from "./details/AdminPaymentAccountDetails";
+import TransactionContext from "./details/TransactionContext";
 import LedgerEntriesSection from "./details/LedgerEntriesSection";
 
 interface TransactionDetailsDrawerProps {
@@ -347,6 +348,8 @@ const TransactionDetailsDrawer = ({
                   phone={transaction.profile?.phoneNumber ?? undefined}
                   profileImageUrl={transaction.profile?.profileImg}
                 />
+
+                <TransactionContext transaction={transaction} />
 
                 <PaymentAccountDetails
                   type={transaction.type}

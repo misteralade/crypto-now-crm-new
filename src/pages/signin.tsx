@@ -5,7 +5,6 @@ import { useSignInPage } from "../hooks/pages/useSignInPage";
 import CustomButton from "../components/global/Button";
 import { ROUTES } from '../util/constants.util'
 import { PillInput } from '../components/ui/input'
-import { Switch } from '../components/ui/switch'
 import { Eye, EyeOff } from 'lucide-react'
 
 const Signin = () => {
@@ -14,13 +13,11 @@ const Signin = () => {
     email,
     password,
     showPassword,
-    keepLoggedIn,
     isLoading,
     handleSubmit,
     setEmail,
     setPassword,
     setShowPassword,
-    setKeepLoggedIn,
   } = useSignInPage();
 
   return (
@@ -81,13 +78,6 @@ const Signin = () => {
               Forgot password?
             </Link>
           </div>
-
-          <Switch
-            id="keep-logged-in"
-            label="Keep me logged in for 7 days"
-            checked={keepLoggedIn}
-            onCheckedChange={(checked) => setKeepLoggedIn(checked)}
-          />
 
           <div className="pt-2">
             <CustomButton

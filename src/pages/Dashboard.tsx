@@ -15,8 +15,13 @@ import { SummaryCardSkeleton } from '../components/global/Skeleton';
 
 import PendingPayoutsCard from '../components/pages/dashboard/PendingPayoutsCard';
 import InReviewTransactionsCard from '../components/pages/dashboard/InReviewTransactionsCard';
+import { useAdminAuth } from '../hooks/useAdminAuth';
+import { PERMISSIONS } from '../util/permissions.util';
 
 const Dashboard = () => {
+  const { hasPermission } = useAdminAuth();
+  const canViewTransactions = hasPermission(PERMISSIONS.TRANSACTION.VIEW);
+  const canViewUsers = hasPermission(PERMISSIONS.USER.VIEW);
   const {
     // States
     transactionVolume,
@@ -91,80 +96,94 @@ const Dashboard = () => {
 
         {/* Metric cards */}
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
-          <PendingPayoutsCard 
-            count={weeklyUserSummary?.pendingPayoutsCount || 0}
-            loading={loadingWeeklyUserSummary}
-            onRetry={handleRetryAllPendingPayouts}
-            onView={handleViewPendingPayouts}
-            retrying={retryingPayouts}
-          />
+          {canViewUsers && (
+            <PendingPayoutsCard
+              count={weeklyUserSummary?.pendingPayoutsCount || 0}
+              loading={loadingWeeklyUserSummary}
+              onRetry={handleRetryAllPendingPayouts}
+              onView={handleViewPendingPayouts}
+              retrying={retryingPayouts}
+            />
+          )}
 
-          <InReviewTransactionsCard
-            count={adminTransactionStats?.inReview || 0}
-            loading={loadingAdminTransactionStats}
-            onView={handleViewInReviewTransactions}
-          />
+          {canViewTransactions && (
+            <InReviewTransactionsCard
+              count={adminTransactionStats?.inReview || 0}
+              loading={loadingAdminTransactionStats}
+              onView={handleViewInReviewTransactions}
+            />
+          )}
 
-          {loadingTransactionVolume ? <SummaryCardSkeleton /> : (
+          {canViewTransactions && (loadingTransactionVolume ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Total Volume"
               value={`₦${formatCompact(Number(transactionVolume?.totalFiatVolume), "NGN")}`}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<TrendingUp className="w-4 h-4" />}
             />
-          )}
+          ))}
 
-          {loadingTransactionCount ? <SummaryCardSkeleton /> : (
+          {canViewTransactions && (loadingTransactionCount ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Transactions"
               value={numberOfTransactionsDisplay}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<Hash className="w-4 h-4" />}
             />
-          )}
+          ))}
 
-          {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
+          {canViewUsers && (loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="New Users"
               value={formatCount(weeklyUserSummary?.newUsersCount)}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<Users className="w-4 h-4" />}
             />
-          )}
+          ))}
 
-          {loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
+          {canViewUsers && (loadingWeeklyUserSummary ? <SummaryCardSkeleton /> : (
             <ShortSummaryCard
               title="Active Users"
               value={formatCount(weeklyUserSummary?.activeUsersCount)}
               time={timelineLabels[selectedTimeline] || ''}
               icon={<UserCheck className="w-4 h-4" />}
             />
-          )}
+          ))}
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-          <div className="xl:col-span-2">
-            <VolumeTrend
-              loading={loadingTransactionVolumeTrend}
-              data={transactionVolumeTrend as Array<WeeklyTransactionVolumeTrend>}
-            />
+        {canViewTransactions && (
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
+            <div className="xl:col-span-2">
+              <VolumeTrend
+                loading={loadingTransactionVolumeTrend}
+                data={transactionVolumeTrend as Array<WeeklyTransactionVolumeTrend>}
+              />
+            </div>
+            <div>
+              <PieGraph
+                loading={loadingTransactionTypeByPercentage}
+                data={transactionTypeByPercentage as Array<TransactionTypeByPercentage>}
+              />
+            </div>
           </div>
-          <div>
-            <PieGraph
-              loading={loadingTransactionTypeByPercentage}
-              data={transactionTypeByPercentage as Array<TransactionTypeByPercentage>}
-            />
-          </div>
-        </div>
+        )}
 
         {/* High value transactions */}
-        <div>
-          <h3 className="text-[18px] font-semibold text-[#0E0F0C] mb-4">High Value Transactions</h3>
-          <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
-            <Table data={data} columns={columns} loading={loadingUsersWithTopTransactionVolume} />
+        {canViewTransactions && (
+          <div>
+            <h3 className="text-[18px] font-semibold text-[#0E0F0C] mb-4">High Value Transactions</h3>
+            <div className="bg-white rounded-2xl border border-[#ECECEC] overflow-hidden">
+              <Table data={data} columns={columns} loading={loadingUsersWithTopTransactionVolume} />
+            </div>
           </div>
-        </div>
+        )}
+
+        {!canViewTransactions && !canViewUsers && (
+          <div className="bg-white rounded-2xl border border-[#ECECEC] p-10 text-center text-[#9A9A9A]">
+            You don't have permission to view any dashboard data yet.
+          </div>
+        )}
       </div>
     </AuthenticatedLayout>
   )

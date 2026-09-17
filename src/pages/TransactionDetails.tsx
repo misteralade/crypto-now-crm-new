@@ -14,6 +14,7 @@ import CopyDetails from "../components/global/CopyDetails.tsx";
 import TransactionDetailsUserProfile
   from "../components/pages/manageTransactions/details/TransactionDetailsUserProfile.tsx";
 import TransactionDetailsPipeline from "../components/pages/manageTransactions/details/TransactionDetailsPipeline.tsx";
+import TransactionContext from "../components/pages/manageTransactions/details/TransactionContext.tsx";
 import { formatCompact } from "../util/asset-precision";
 import { Download } from "lucide-react";
 import LedgerEntriesSection from "../components/pages/manageTransactions/details/LedgerEntriesSection.tsx";
@@ -117,7 +118,10 @@ const TransactionDetails = () => {
                   status={transaction.status}
                   confirmationCount={transaction.confirmationCount}
                 />
-                
+
+                {/* Transaction Context Flow */}
+                <TransactionContext transaction={transaction} />
+
                 {/* Cryptocurrency Info */}
                 {transaction.cryptocurrency && (
                   <CryptoCurrencyInfo

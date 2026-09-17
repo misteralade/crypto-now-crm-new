@@ -16,7 +16,6 @@ export const useSignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -50,7 +49,6 @@ export const useSignInPage = () => {
       const { success, message, data }: AuthAPIResponse = await authServiceApi.login({
         email,
         password,
-        keepLoggedIn,
       });
 
       if (!success) {
@@ -79,7 +77,6 @@ export const useSignInPage = () => {
     email,
     password,
     showPassword,
-    keepLoggedIn,
     isLoading,
 
     // ⚙️ Functions
@@ -87,6 +84,5 @@ export const useSignInPage = () => {
     setEmail,
     setPassword,
     setShowPassword,
-    setKeepLoggedIn,
   };
 };
