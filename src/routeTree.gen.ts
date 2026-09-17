@@ -9,12 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Verify2faRouteImport } from './routes/verify-2fa'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTestimonialsRouteImport } from './routes/dashboard/testimonials'
 import { Route as DashboardSupportedCurrenciesRouteImport } from './routes/dashboard/supported-currencies'
+import { Route as DashboardSecurityRouteImport } from './routes/dashboard/security'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard/notifications'
 import { Route as DashboardManageFiatRouteImport } from './routes/dashboard/manage-fiat'
 import { Route as DashboardManageAdminsRouteImport } from './routes/dashboard/manage-admins'
@@ -42,6 +44,11 @@ import { Route as DashboardDisputesEditIdRouteImport } from './routes/dashboard/
 import { Route as DashboardAdminWalletsEditWalletIdRouteImport } from './routes/dashboard/admin-wallets/edit.$walletId'
 import { Route as DashboardAdminWalletsAddWalletTypeRouteImport } from './routes/dashboard/admin-wallets/add.$walletType'
 
+const Verify2faRoute = Verify2faRouteImport.update({
+  id: '/verify-2fa',
+  path: '/verify-2fa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -73,6 +80,11 @@ const DashboardSupportedCurrenciesRoute =
     path: '/dashboard/supported-currencies',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardSecurityRoute = DashboardSecurityRouteImport.update({
+  id: '/dashboard/security',
+  path: '/dashboard/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
   id: '/dashboard/notifications',
   path: '/dashboard/notifications',
@@ -221,11 +233,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-2fa': typeof Verify2faRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRouteWithChildren
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
   '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -255,11 +269,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-2fa': typeof Verify2faRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRouteWithChildren
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
   '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -290,11 +306,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-2fa': typeof Verify2faRoute
   '/dashboard/audit-trails': typeof DashboardAuditTrailsRoute
   '/dashboard/kyc-tier-limits': typeof DashboardKycTierLimitsRoute
   '/dashboard/manage-admins': typeof DashboardManageAdminsRouteWithChildren
   '/dashboard/manage-fiat': typeof DashboardManageFiatRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
   '/dashboard/supported-currencies': typeof DashboardSupportedCurrenciesRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -326,11 +344,13 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/reset-password'
+    | '/verify-2fa'
     | '/dashboard/audit-trails'
     | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/security'
     | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard/'
@@ -360,11 +380,13 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/reset-password'
+    | '/verify-2fa'
     | '/dashboard/audit-trails'
     | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/security'
     | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard'
@@ -394,11 +416,13 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/reset-password'
+    | '/verify-2fa'
     | '/dashboard/audit-trails'
     | '/dashboard/kyc-tier-limits'
     | '/dashboard/manage-admins'
     | '/dashboard/manage-fiat'
     | '/dashboard/notifications'
+    | '/dashboard/security'
     | '/dashboard/supported-currencies'
     | '/dashboard/testimonials'
     | '/dashboard/'
@@ -429,11 +453,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  Verify2faRoute: typeof Verify2faRoute
   DashboardAuditTrailsRoute: typeof DashboardAuditTrailsRoute
   DashboardKycTierLimitsRoute: typeof DashboardKycTierLimitsRoute
   DashboardManageAdminsRoute: typeof DashboardManageAdminsRouteWithChildren
   DashboardManageFiatRoute: typeof DashboardManageFiatRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardSecurityRoute: typeof DashboardSecurityRoute
   DashboardSupportedCurrenciesRoute: typeof DashboardSupportedCurrenciesRoute
   DashboardTestimonialsRoute: typeof DashboardTestimonialsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -461,6 +487,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-2fa': {
+      id: '/verify-2fa'
+      path: '/verify-2fa'
+      fullPath: '/verify-2fa'
+      preLoaderRoute: typeof Verify2faRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -501,6 +534,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/supported-currencies'
       fullPath: '/dashboard/supported-currencies'
       preLoaderRoute: typeof DashboardSupportedCurrenciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/security': {
+      id: '/dashboard/security'
+      path: '/dashboard/security'
+      fullPath: '/dashboard/security'
+      preLoaderRoute: typeof DashboardSecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/notifications': {
@@ -705,11 +745,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  Verify2faRoute: Verify2faRoute,
   DashboardAuditTrailsRoute: DashboardAuditTrailsRoute,
   DashboardKycTierLimitsRoute: DashboardKycTierLimitsRoute,
   DashboardManageAdminsRoute: DashboardManageAdminsRouteWithChildren,
   DashboardManageFiatRoute: DashboardManageFiatRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardSecurityRoute: DashboardSecurityRoute,
   DashboardSupportedCurrenciesRoute: DashboardSupportedCurrenciesRoute,
   DashboardTestimonialsRoute: DashboardTestimonialsRoute,
   DashboardIndexRoute: DashboardIndexRoute,

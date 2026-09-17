@@ -30,6 +30,31 @@ class AuthServiceApi {
   async confirmPasswordReset(payload: { token: string; password: string; confirmPassword: string }): Promise<BaseApiResponse<null>> {
     return await axiosPatchRequestHandler("/admin/auth/password-reset/confirm", payload) as BaseApiResponse<null>;
   }
+
+  async getOwnProfile(): Promise<BaseApiResponse<{
+    id: string;
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImg: string | null;
+    twoFactorEnabled: boolean;
+    role: string;
+  }>> {
+    return await axiosGetRequestHandler("/admin/auth/profile") as any;
+  }
+
+  async toggleTwoFactorAuthentication(): Promise<BaseApiResponse<null>> {
+    return await axiosPatchRequestHandler("/admin/auth/two-factor-authentication", {}) as BaseApiResponse<null>;
+  }
+
+  async verifyTwoFactorAuthenticationCode(code: string): Promise<BaseApiResponse<null>> {
+    return await axiosPostRequestHandler("/admin/auth/two-factor-authentication/verify", { code }) as BaseApiResponse<null>;
+  }
+
+  async resendTwoFactorAuthenticationCode(email: string): Promise<BaseApiResponse<null>> {
+    return await axiosGetRequestHandler("/admin/auth/two-factor-authentication/resend-code", { email }) as BaseApiResponse<null>;
+  }
 }
 
 export const authServiceApi = AuthServiceApi.getInstance();

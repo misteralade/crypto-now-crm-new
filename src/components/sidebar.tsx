@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Wallet,
   Landmark,
+  ShieldCheck,
 } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -177,6 +178,11 @@ const navItems = [
         className={`${props.className ?? ""} w-5 h-5 brightness-[5]`}
       />
     ),
+  },
+  {
+    path: ROUTES.SECURITY,
+    label: "Security",
+    icon: ShieldCheck,
   },
 ];
 

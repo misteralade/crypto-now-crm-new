@@ -47,7 +47,7 @@ export const useSignInPage = () => {
     }
 
     try {
-      const { success, message }: AuthAPIResponse = await authServiceApi.login({
+      const { success, message, data }: AuthAPIResponse = await authServiceApi.login({
         email,
         password,
         keepLoggedIn,
@@ -55,6 +55,11 @@ export const useSignInPage = () => {
 
       if (!success) {
         setError(message || "Login failed. Please check your credentials.");
+      } else if ((data as any)?.twoFactorRequired) {
+        navigate({
+          to: ROUTES.VERIFY_TWO_FACTOR,
+          search: { email },
+        });
       } else {
         navigate({ to: ROUTES.DASHBOARD });
       }
