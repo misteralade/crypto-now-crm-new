@@ -196,7 +196,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const navigate = useNavigate();
   const currentPath = routerState.location.pathname;
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const { isSuperAdmin } = useAdminAuth();
+  const { canManageAdmins } = useAdminAuth();
 
   const handleLogout = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
@@ -248,9 +248,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navItems
               .filter((item) => {
-                // Only show Manage Admins to Super Admins
+                // Only show Manage Admins to admins with admin-management permission
                 if (item.path === ROUTES.MANAGE_ADMINS) {
-                  return isSuperAdmin;
+                  return canManageAdmins;
                 }
                 return true;
               })

@@ -40,6 +40,7 @@ class AuthServiceApi {
     profileImg: string | null;
     twoFactorEnabled: boolean;
     role: string;
+    permissions: string[];
   }>> {
     return await axiosGetRequestHandler("/admin/auth/profile") as any;
   }
