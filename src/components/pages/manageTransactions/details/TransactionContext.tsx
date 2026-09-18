@@ -18,7 +18,7 @@ const TransactionContext = ({ transaction }: TransactionContextProps) => {
             <div className="p-4 bg-blue-50 rounded-lg">
               <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">From (User)</div>
               <div className="text-sm font-medium text-gray-900">
-                {transaction.userBankAccount.bankName || 'Bank Account'}
+                {transaction.userBankAccount.bank?.name || 'Bank Account'}
               </div>
               <div className="text-xs text-gray-600 mt-1">
                 {transaction.userBankAccount.accountName}
@@ -36,7 +36,7 @@ const TransactionContext = ({ transaction }: TransactionContextProps) => {
             <div className="p-4 bg-green-50 rounded-lg">
               <div className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">Fiat Received At (Admin)</div>
               <div className="text-sm font-medium text-gray-900">
-                {transaction.adminBankAccount.bankName || 'Bank Account'}
+                {transaction.adminBankAccount.bank?.name || 'Bank Account'}
               </div>
               <div className="text-xs text-gray-600 mt-1">
                 {transaction.adminBankAccount.accountHolderName}
@@ -50,16 +50,16 @@ const TransactionContext = ({ transaction }: TransactionContextProps) => {
           </div>
 
           {/* To: User's Crypto Wallet */}
-          {transaction.userCryptoWallet && (
+          {transaction.walletAddress && (
             <div className="p-4 bg-purple-50 rounded-lg">
               <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-2">Crypto Received At</div>
               <div className="text-sm font-medium text-gray-900">
-                {transaction.userCryptoWallet.network}
+                {transaction.walletNetwork}
               </div>
               <div className="text-xs text-gray-600 mt-2">Wallet Address</div>
               <div className="mt-2">
                 <CopyDetails
-                  text={transaction.userCryptoWallet.walletAddress || ''}
+                  text={transaction.walletAddress || ''}
                   wrap={true}
                   className="!max-w-full"
                   iconClassName="!w-6 !h-6"
@@ -79,40 +79,16 @@ const TransactionContext = ({ transaction }: TransactionContextProps) => {
 
         <div className="space-y-4">
           {/* From: User's Crypto Wallet */}
-          {transaction.userCryptoWallet && (
+          {transaction.walletAddress && (
             <div className="p-4 bg-purple-50 rounded-lg">
               <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-2">From (User Crypto)</div>
               <div className="text-sm font-medium text-gray-900">
-                {transaction.userCryptoWallet.network}
+                {transaction.walletNetwork}
               </div>
               <div className="text-xs text-gray-600 mt-2">Wallet Address</div>
               <div className="mt-2">
                 <CopyDetails
-                  text={transaction.userCryptoWallet.walletAddress || ''}
-                  wrap={true}
-                  className="!max-w-full"
-                  iconClassName="!w-6 !h-6"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Arrow */}
-          <div className="flex justify-center py-2">
-            <ArrowRight className="w-5 h-5 text-gray-400 rotate-90" />
-          </div>
-
-          {/* To: Admin Wallet (custodial) */}
-          {transaction.adminCryptoWallet && (
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">Received At (Custodial)</div>
-              <div className="text-sm font-medium text-gray-900">
-                {transaction.adminCryptoWallet.network}
-              </div>
-              <div className="text-xs text-gray-600 mt-2">Wallet Address</div>
-              <div className="mt-2">
-                <CopyDetails
-                  text={transaction.adminCryptoWallet.walletAddress || ''}
+                  text={transaction.walletAddress || ''}
                   wrap={true}
                   className="!max-w-full"
                   iconClassName="!w-6 !h-6"
@@ -131,7 +107,7 @@ const TransactionContext = ({ transaction }: TransactionContextProps) => {
             <div className="p-4 bg-green-50 rounded-lg">
               <div className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">Fiat Paid To</div>
               <div className="text-sm font-medium text-gray-900">
-                {transaction.userBankAccount.bankName || 'Bank Account'}
+                {transaction.userBankAccount.bank?.name || 'Bank Account'}
               </div>
               <div className="text-xs text-gray-600 mt-1">
                 {transaction.userBankAccount.accountName}

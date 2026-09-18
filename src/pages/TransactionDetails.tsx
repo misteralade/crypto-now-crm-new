@@ -137,7 +137,7 @@ const TransactionDetails = () => {
                   hasBankAccount={transaction.userBankAccount ? true : false}
                   accountName={transaction.userBankAccount?.accountName}
                   accountNumber={transaction.userBankAccount?.accountNumber}
-                  bankName={transaction.userBankAccount?.bankName}
+                  bankName={transaction.userBankAccount?.bank?.name}
                   isDeleted={transaction.userBankAccount?.isDeleted}
                   hasCryptoWallet={transaction?.userCryptoWallet ? true : false}
                   walletAddress={transaction.userCryptoWallet?.walletAddress}
@@ -152,7 +152,7 @@ const TransactionDetails = () => {
                   hasBankAccount={transaction?.adminBankAccount ? true : false}
                   accountName={transaction.adminBankAccount?.accountHolderName}
                   accountNumber={transaction.adminBankAccount?.accountNumber}
-                  bankName={transaction.adminBankAccount?.bankName}
+                  bankName={transaction.adminBankAccount?.bank?.name}
                   hasCryptoWallet={transaction?.adminCryptoWallet ? true : false}
                   walletAddress={transaction.adminCryptoWallet?.walletAddress}
                   network={transaction.adminCryptoWallet?.network}

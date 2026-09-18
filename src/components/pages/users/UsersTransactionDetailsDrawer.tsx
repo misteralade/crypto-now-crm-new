@@ -160,7 +160,7 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
                           <div className="my-0.5 flex items-center justify-between text-[16px]">
                             <div className="text-[#667085]">Bank name</div>
                             <div className={`font-medium w-fit ${bankDetail.isDeleted ? 'text-red-700' : 'text-[#101828]'}`}>
-                              {bankDetail.bankName}
+                              {bankDetail.bank?.name}
                             </div>
                           </div>
 

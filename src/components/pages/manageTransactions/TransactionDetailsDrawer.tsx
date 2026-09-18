@@ -118,8 +118,8 @@ const TransactionDetailsDrawer = ({
     transaction?.transactionActivities.filter(
       (activity) => activity.action !== "ADMIN_LOCK_TRANSACTION",
     ) ?? [];
-  const userBankName = transaction?.userBankAccount?.bankName;
-  const adminBankName = transaction?.adminBankAccount?.bankName;
+  const userBankName = transaction?.userBankAccount?.bank?.name;
+  const adminBankName = transaction?.adminBankAccount?.bank?.name;
 
   // Explicit rate: 1 crypto = fiat (variable by transaction currency)
   const getExchangeRateDisplay = (): string => {

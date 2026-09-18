@@ -16,11 +16,11 @@ const AccountCard = ({
   return (
     <section className="relative p-5 rounded-2xl border border-[#ECECEC] bg-white shadow-sm overflow-hidden">
       {/* Translucent Bank Logo Background */}
-      {account.bankLogo && (
+      {account.bank?.logoUrl && (
         <div
           className="absolute inset-0 opacity-5 bg-no-repeat bg-right bg-contain pointer-events-none"
           style={{
-            backgroundImage: `url(${account.bankLogo})`,
+            backgroundImage: `url(${account.bank?.logoUrl})`,
             backgroundPosition: 'right 20px center',
           }}
         />
@@ -48,7 +48,7 @@ const AccountCard = ({
           <div className="flex items-center justify-between">
             <div className="text-[#828282]">Bank Name</div>
             <div className="text-[#101828] font-medium">
-              {account.bankName || '--'}
+              {account.bank?.name || '--'}
             </div>
           </div>
         </div>

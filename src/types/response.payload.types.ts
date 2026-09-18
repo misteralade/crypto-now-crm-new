@@ -501,8 +501,6 @@ export type SupportedPlatformBankAccountResponse = {
 
 export type AdminBankAccountResponsePayload = {
   id: string;
-  bankName: string;
-  bankLogo: string;
   accountNumber: string;
   accountHolderName: string;
   isActive: boolean
@@ -512,20 +510,18 @@ export type AdminBankAccountResponsePayload = {
   type: string;
   label: string;
   createdAt: Date;
-  bank?: SupportedPlatformBankAccountResponse | null;
+  bank: SupportedPlatformBankAccountResponse;
 }
 
 export type UserBankAccountResponsePayload = {
   id: string;
   userId: string;
-  bankName: string;
-  bankLogo: string;
   accountName: string;
   accountNumber: string;
   isDeleted: boolean;
   isDefault: boolean;
   createdAt: Date;
-  bank?: SupportedPlatformBankAccountResponse | null;
+  bank: SupportedPlatformBankAccountResponse;
 }
 // End Bank Accounts
 

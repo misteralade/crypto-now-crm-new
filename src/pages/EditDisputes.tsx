@@ -210,7 +210,7 @@ const EditDisputes = () => {
                             walletAddress={transactionDetails.userCryptoWallet?.walletAddress || ''}
                             walletNetwork={transactionDetails.userCryptoWallet?.network || ''}
                             accountName={transactionDetails.userBankAccount?.accountName || ''}
-                            bankName={transactionDetails.userBankAccount?.bankName || ''}
+                            bankName={transactionDetails.userBankAccount?.bank?.name || ''}
                           />
                         )}
                       </div>

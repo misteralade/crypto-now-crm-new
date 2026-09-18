@@ -56,7 +56,7 @@ const BankDetailsSection = ({ bankDetails, loading = false }: BankDetailsSection
                       Bank Name
                     </label>
                     <div className={`font-medium ${bank.isDeleted ? 'text-red-900' : 'text-[#0E0F0C]'}`}>
-                      {bank.bankName}
+                      {bank.bank?.name}
                     </div>
                   </div>
 
