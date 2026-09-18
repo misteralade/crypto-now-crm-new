@@ -23,6 +23,7 @@ const ManageAdmins = () => {
     showFilter,
     allPermissions,
     selectedPermissions,
+    createAdmin,
     allRoles,
     loadingAllRoles,
     fromDate,
@@ -115,6 +116,7 @@ const ManageAdmins = () => {
         <CreateAdminModal
           open={showAddNewAdmin}
           roles={allRoles || []}
+          createAdmin={createAdmin}
           onClose={toggleAddNewAdmin}
           handleCreateAdminFieldChange={handleCreateAdminFieldChange}
           onCreate={handleCreateAdmin}

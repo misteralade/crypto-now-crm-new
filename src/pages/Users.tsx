@@ -25,6 +25,8 @@ const Users = () => {
     loadingUserProfileSummary,
     pageSize,
     searchQuery,
+    statusFilter,
+    hasDisputeFilter,
 
     // ⚙️ Functions
     toggleFilter,
@@ -32,6 +34,7 @@ const Users = () => {
     handleChangeCreatedAtTo,
     handleResetFilters,
     handleStatusFilterChange,
+    handleHasDisputeChange,
     handleCloseDetails,
     handleUpdateUserStatus,
     handleResetUserPassword,
@@ -127,11 +130,14 @@ const Users = () => {
           open={filterOpen}
           createdAtFrom={createdAtFrom}
           createdAtTo={createdAtTo}
+          statusFilter={statusFilter}
+          hasDisputeFilter={hasDisputeFilter}
           onClose={toggleFilter}
           onReset={handleResetFilters}
           handleChangeCreatedAtFrom={handleChangeCreatedAtFrom}
           handleChangeCreatedAtTo={handleChangeCreatedAtTo}
           handleStatusFilterChange={handleStatusFilterChange}
+          handleHasDisputeChange={handleHasDisputeChange}
         />
       </div>
     </AuthenticatedLayout>

@@ -9,14 +9,17 @@ export interface FilterModalProps {
   open: boolean
   createdAtFrom: Date | undefined
   createdAtTo: Date | undefined
+  statusFilter?: string
+  hasDisputeFilter?: boolean
   onClose: () => void
   onReset: () => void
   handleChangeCreatedAtFrom: (date: Date) => void
   handleChangeCreatedAtTo: (date: Date) => void
   handleStatusFilterChange: (status: string) => void
+  handleHasDisputeChange: (hasDispute: boolean) => void
 }
 
-const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, onClose, onReset, handleChangeCreatedAtFrom, handleChangeCreatedAtTo, handleStatusFilterChange }: FilterModalProps) => {
+const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, statusFilter, hasDisputeFilter, onClose, onReset, handleChangeCreatedAtFrom, handleChangeCreatedAtTo, handleStatusFilterChange, handleHasDisputeChange }: FilterModalProps) => {
   const [isClosing, setIsClosing] = useState(false)
   const [shouldRender, setShouldRender] = useState(open)
 
@@ -66,6 +69,7 @@ const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, onClose, onReset, 
 
             <LabeledSelect
               label="Account Status"
+              value={statusFilter || '__empty__'}
               options={userStatusOptions.map((s) => ({ value: s.value || '__empty__', label: s.label }))}
               onValueChange={(v) => handleStatusFilterChange(v === '__empty__' ? '' : v)}
             />
@@ -73,7 +77,12 @@ const UsersFilterModal = ({ open, createdAtFrom, createdAtTo, onClose, onReset, 
             <div>
               <p className="text-[12px] font-semibold text-[#667085] mb-2.5 uppercase tracking-wide">Disputes</p>
               <div className="flex items-center gap-3 rounded-xl bg-[#F5F5FF] px-4 py-3">
-                <Checkbox id="has-dispute" label="Has active dispute" />
+                <Checkbox
+                  id="has-dispute"
+                  label="Has active dispute"
+                  checked={!!hasDisputeFilter}
+                  onCheckedChange={(checked) => handleHasDisputeChange(checked === true)}
+                />
               </div>
             </div>
           </div>

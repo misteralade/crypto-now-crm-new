@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {toast} from "react-toastify";
 import { useAdminQuery } from "../../queries/admin.querries";
 import {
@@ -15,9 +15,11 @@ import {debounce} from "../../util/debouce.util";
 import {TIME_IN_MILLISECONDS} from "../../util/constants.util.ts";
 import momentClient from "../../util/moment";
 import type {CreateNewAdminRequestType, SearchAdminRequestType} from "../../schemas/admin.schema";
+import type {RootState} from "../../store";
 
 export const useManageAdminPage = () => {
   const dispatch = useDispatch();
+  const createAdmin = useSelector((state: RootState) => state.admin.create.admin);
   const {
     // 🧩 Values
     allPermissions,
@@ -231,6 +233,7 @@ export const useManageAdminPage = () => {
     selectedPermissions,
     roleName,
     roleDescription,
+    createAdmin,
     allRoles,
     loadingAllRoles,
     fromDate,

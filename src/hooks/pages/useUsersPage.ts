@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "@tanstack/react-router";
 import {useUserQuery} from "../../queries/user.query";
 import {
@@ -14,12 +14,14 @@ import momentClient from "../../util/moment";
 import {adminSearchUsersInitialState} from "../../redux/states/initial-users-management.states";
 import type {AdminSearchUserRequestType} from "../../schemas/user.schema";
 import type {UserStatusVariant} from "../../types/global.types";
+import type {RootState} from "../../store";
 import {debounce} from "../../util/debouce.util.ts";
 import {TIME_IN_MILLISECONDS, ROUTES} from "../../util/constants.util.ts";
 
 export const useUsersPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const searchUsers = useSelector((state: RootState) => state.user.search.users);
   const {
     adminSearchUsers,
     loadingAdminSearchUsers,
@@ -63,6 +65,10 @@ export const useUsersPage = () => {
   const handleStatusFilterChange = (status: string) => {
     const updatedStatus = status.toUpperCase() === 'all' ? undefined : status.toUpperCase();
     handleUpdateSearchUserField("status", updatedStatus);
+  }
+
+  const handleHasDisputeChange = (hasDispute: boolean) => {
+    handleUpdateSearchUserField("hasDispute", hasDispute || undefined);
   }
 
   const handleResetFilters = () => {
@@ -152,6 +158,8 @@ export const useUsersPage = () => {
     loadingUserProfileSummary,
     pageSize,
     searchQuery,
+    statusFilter: searchUsers.status,
+    hasDisputeFilter: searchUsers.hasDispute,
 
     // ⚙️ Functions
     toggleFilter,
@@ -160,6 +168,7 @@ export const useUsersPage = () => {
     handleChangeCreatedAtTo,
     handleResetFilters,
     handleStatusFilterChange,
+    handleHasDisputeChange,
     handleViewUserDetails,
     handleCloseDetails,
     handleUpdateUserStatus,

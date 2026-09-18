@@ -10,16 +10,19 @@ import CustomButton from '../../global/Button'
 interface CreateAdminModalProps {
   open: boolean;
   roles: Array<RolesResponsePayload>;
+  createAdmin: CreateNewAdminRequestType;
   onClose: () => void;
   onCreate: () => void;
   handleCreateAdminFieldChange: (field: (keyof CreateNewAdminRequestType), value: any) => void;
 }
 
-const CreateAdminModal = ({ open, roles, onClose, onCreate, handleCreateAdminFieldChange }: CreateAdminModalProps) => {
+const CreateAdminModal = ({ open, roles, createAdmin, onClose, onCreate, handleCreateAdminFieldChange }: CreateAdminModalProps) => {
   const rolesOptions = [
     { value: '', label: 'Select role' },
     ...roles.map((role: RolesResponsePayload) => ({ value: role.id, label: role.name })),
   ]
+
+  const selectedRole = roles.find((role) => role.id === createAdmin.roleId);
 
   return (
     <AnimatePresence>
@@ -74,11 +77,19 @@ const CreateAdminModal = ({ open, roles, onClose, onCreate, handleCreateAdminFie
                   placeholder="john_doe"
                   onChange={(e) => handleCreateAdminFieldChange("username", e.target.value)}
                 />
-                <LabeledSelect
-                  label="Role"
-                  options={rolesOptions}
-                  onValueChange={(v) => handleCreateAdminFieldChange("roleId", v === '__empty__' ? '' : v)}
-                />
+                <div>
+                  <LabeledSelect
+                    label="Role"
+                    value={createAdmin.roleId || ''}
+                    options={rolesOptions}
+                    onValueChange={(v) => handleCreateAdminFieldChange("roleId", v === '__empty__' ? '' : v)}
+                  />
+                  {selectedRole?.description && (
+                    <p className="-mt-3 ml-1 text-[13px] italic text-[#9A9A9A]">
+                      {selectedRole.description}
+                    </p>
+                  )}
+                </div>
                 <div className="flex items-center h-full pt-2">
                   <Switch
                     id="isActive"
