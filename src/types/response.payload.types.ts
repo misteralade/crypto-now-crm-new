@@ -91,7 +91,8 @@ export type SearchTransactionsResponse = {
   createdAt: Date;
   updatedAt: Date;
   userType?: 'REGISTERED' | 'GUEST' | 'OTHER';
-  
+  walletAddress?: string | null;
+  walletNetwork?: string | null;
 
   // Relations
   user?: UserResponsePayload;
