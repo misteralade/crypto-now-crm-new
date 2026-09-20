@@ -24,13 +24,13 @@ const DisputeUserInformation = ({ disputeId, userId, firstName, lastName, email,
   
   const navigateToUserTransactions = () => {
     if (userId) {
-      navigate({ to: `${ROUTES.USERS}/${userId}` });
+      navigate({ to: ROUTES.USER_TRANSACTIONS.replace('$userId', userId) });
     }
   }
   
   const navigateToAllDisputes = () => navigate({ to: ROUTES.DISPUTES });
   
-  const navigateToDisputes = () => navigate({ to: `${ROUTES.DISPUTES}/${disputeId}` });
+  const navigateToDisputes = () => navigate({ to: ROUTES.DISPUTE_DETAILS.replace('$id', disputeId) });
   
   return (
     <Fragment>

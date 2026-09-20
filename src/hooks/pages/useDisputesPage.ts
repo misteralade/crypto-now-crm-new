@@ -24,7 +24,7 @@ export const useDisputesPage = () => {
   const [pageSize, setPageSize] = useState(10);
   
   const handleViewDisputeDetails = (disputeId: string) => {
-    navigate({ to: `${ROUTES.DISPUTES}/${disputeId}` })
+    navigate({ to: ROUTES.DISPUTE_DETAILS.replace('$id', disputeId) })
   }
   
   const handleShowTransactionDetails = (transactionId: string) => {
