@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import {useTransactionQuery} from "../../queries/transaction.query";
 import {
   clearTransactionDetailSessionId,
@@ -23,16 +24,25 @@ import type {AxiosServerError, SearchTransactionsResponse} from "../../types/res
 
 export const useManageTransactionsPage = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [selectedStatsTimeline, setSelectedStatsTimeline] =
     useState<TimelineFilter>('all')
-  
-  // Ensure userId is always undefined for manage transactions page
+
+  // Arriving with ?userId=<id> (e.g. from a user's profile "Transactions" link,
+  // or a transaction's "Transactions" link) scopes this same page to that user
+  // instead of duplicating the table in a separate route.
+  const { userId: filteredUserId } = useSearch({ from: '/dashboard/transactions/' })
+
   useEffect(() => {
     dispatch(setSearchTransactionsField({
       field: 'userId',
-      value: undefined,
+      value: filteredUserId,
     }))
-  }, [dispatch])
+  }, [dispatch, filteredUserId])
+
+  const clearUserFilter = () => {
+    navigate({ to: '/dashboard/transactions', search: { userId: undefined } })
+  }
   const {
     // Queries
     searchTransactions,
@@ -72,7 +82,7 @@ export const useManageTransactionsPage = () => {
     dispatch(setSearchTransactions({
       ...searchTransactionsInitialState,
       size: size,
-      userId: undefined, // Explicitly ensure userId is not set
+      userId: filteredUserId,
     }))
   }
   
@@ -237,6 +247,7 @@ export const useManageTransactionsPage = () => {
     adminTransactionStats,
     loadingAdminTransactionStats,
     selectedStatsTimeline,
+    filteredUserId,
 
     // ⚙️ Functions
     handleSortBy,
@@ -253,5 +264,6 @@ export const useManageTransactionsPage = () => {
     handleExportAll,
     handleRefreshTransactions: refetchSearchTransactions,
     isFetchingTransactions: fetchingSearchTransactions,
+    clearUserFilter,
   }
 }

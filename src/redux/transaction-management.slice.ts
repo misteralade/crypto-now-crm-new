@@ -1,7 +1,6 @@
 import { createSlice} from "@reduxjs/toolkit";
 import {
   searchTransactionsInitialState,
-  searchUserTransactionHistoryInitialState,
   updateTransactionInitialState
 } from "./states/initial-transaction-management.states";
 import type {SearchTransactionsRequestType, UpdateTransactionStatusRequestType} from "../schemas/transaction.schema";
@@ -12,7 +11,6 @@ const transactionManagementSlice = createSlice({
   initialState: {
     search: {
       transactions: searchTransactionsInitialState,
-      userTransactionHistory: searchUserTransactionHistoryInitialState,
     },
     details: {
       transactionSessionId: undefined as string | undefined,
@@ -35,20 +33,10 @@ const transactionManagementSlice = createSlice({
     setSearchTransactions: (state, action: PayloadAction<SearchTransactionsRequestType>) => {
       state.search.transactions = action.payload;
     },
-    setSearchUserTransactionHistoryField: (state, action: PayloadAction<{ field: keyof SearchTransactionsRequestType; value: any }>) => {
-      const { field, value } = action.payload;
-      state.search.userTransactionHistory[field] = value;
-    },
-    setSearchUserTransactionHistory: (state, action: PayloadAction<SearchTransactionsRequestType>) => {
-      state.search.userTransactionHistory = action.payload;
-    },
 
     // Clears
     clearSearchTransactions: (state) => {
       state.search.transactions = { ...searchTransactionsInitialState };
-    },
-    clearSearchUserTransactionHistory: (state) => {
-      state.search.userTransactionHistory = { ...searchUserTransactionHistoryInitialState };
     },
     clearTransactionDetailSessionId: (state) => {
       state.details.transactionSessionId = undefined;
@@ -64,13 +52,10 @@ export const {
   setTransactionDetailSessionId,
   setTransactionDetailUpdateField,
   setSearchTransactions,
-  setSearchUserTransactionHistoryField,
-  setSearchUserTransactionHistory,
 
   clearSearchTransactions,
   clearTransactionDetailSessionId,
   clearTransactionDetailUpdateField,
-  clearSearchUserTransactionHistory,
 } = transactionManagementSlice.actions;
 
 export default transactionManagementSlice.reducer;

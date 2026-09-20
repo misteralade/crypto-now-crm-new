@@ -39,7 +39,6 @@ import { Route as DashboardDisputeIdRouteImport } from './routes/dashboard/dispu
 import { Route as DashboardCustodialWalletWalletAddressRouteImport } from './routes/dashboard/custodial-wallet/$walletAddress'
 import { Route as DashboardCoinManagementAddCoinRouteImport } from './routes/dashboard/coin-management/add-coin'
 import { Route as DashboardCoinManagementCoinIdRouteImport } from './routes/dashboard/coin-management/$coinId'
-import { Route as DashboardUsersTransactionHistoryUserIdRouteImport } from './routes/dashboard/users/transaction-history/$userId'
 import { Route as DashboardDisputesEditIdRouteImport } from './routes/dashboard/disputes/edit/$id'
 import { Route as DashboardAdminWalletsEditWalletIdRouteImport } from './routes/dashboard/admin-wallets/edit.$walletId'
 import { Route as DashboardAdminWalletsAddWalletTypeRouteImport } from './routes/dashboard/admin-wallets/add.$walletType'
@@ -205,12 +204,6 @@ const DashboardCoinManagementCoinIdRoute =
     path: '/dashboard/coin-management/$coinId',
     getParentRoute: () => rootRouteImport,
   } as any)
-const DashboardUsersTransactionHistoryUserIdRoute =
-  DashboardUsersTransactionHistoryUserIdRouteImport.update({
-    id: '/dashboard/users/transaction-history/$userId',
-    path: '/dashboard/users/transaction-history/$userId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const DashboardDisputesEditIdRoute = DashboardDisputesEditIdRouteImport.update({
   id: '/dashboard/disputes/edit/$id',
   path: '/dashboard/disputes/edit/$id',
@@ -263,7 +256,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin-wallets/add/$walletType': typeof DashboardAdminWalletsAddWalletTypeRoute
   '/dashboard/admin-wallets/edit/$walletId': typeof DashboardAdminWalletsEditWalletIdRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
-  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -299,7 +291,6 @@ export interface FileRoutesByTo {
   '/dashboard/admin-wallets/add/$walletType': typeof DashboardAdminWalletsAddWalletTypeRoute
   '/dashboard/admin-wallets/edit/$walletId': typeof DashboardAdminWalletsEditWalletIdRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
-  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -336,7 +327,6 @@ export interface FileRoutesById {
   '/dashboard/admin-wallets/add/$walletType': typeof DashboardAdminWalletsAddWalletTypeRoute
   '/dashboard/admin-wallets/edit/$walletId': typeof DashboardAdminWalletsEditWalletIdRoute
   '/dashboard/disputes/edit/$id': typeof DashboardDisputesEditIdRoute
-  '/dashboard/users/transaction-history/$userId': typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -374,7 +364,6 @@ export interface FileRouteTypes {
     | '/dashboard/admin-wallets/add/$walletType'
     | '/dashboard/admin-wallets/edit/$walletId'
     | '/dashboard/disputes/edit/$id'
-    | '/dashboard/users/transaction-history/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -410,7 +399,6 @@ export interface FileRouteTypes {
     | '/dashboard/admin-wallets/add/$walletType'
     | '/dashboard/admin-wallets/edit/$walletId'
     | '/dashboard/disputes/edit/$id'
-    | '/dashboard/users/transaction-history/$userId'
   id:
     | '__root__'
     | '/'
@@ -446,7 +434,6 @@ export interface FileRouteTypes {
     | '/dashboard/admin-wallets/add/$walletType'
     | '/dashboard/admin-wallets/edit/$walletId'
     | '/dashboard/disputes/edit/$id'
-    | '/dashboard/users/transaction-history/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -482,7 +469,6 @@ export interface RootRouteChildren {
   DashboardAdminWalletsAddWalletTypeRoute: typeof DashboardAdminWalletsAddWalletTypeRoute
   DashboardAdminWalletsEditWalletIdRoute: typeof DashboardAdminWalletsEditWalletIdRoute
   DashboardDisputesEditIdRoute: typeof DashboardDisputesEditIdRoute
-  DashboardUsersTransactionHistoryUserIdRoute: typeof DashboardUsersTransactionHistoryUserIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -697,13 +683,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCoinManagementCoinIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/users/transaction-history/$userId': {
-      id: '/dashboard/users/transaction-history/$userId'
-      path: '/dashboard/users/transaction-history/$userId'
-      fullPath: '/dashboard/users/transaction-history/$userId'
-      preLoaderRoute: typeof DashboardUsersTransactionHistoryUserIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard/disputes/edit/$id': {
       id: '/dashboard/disputes/edit/$id'
       path: '/dashboard/disputes/edit/$id'
@@ -777,8 +756,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardAdminWalletsEditWalletIdRoute:
     DashboardAdminWalletsEditWalletIdRoute,
   DashboardDisputesEditIdRoute: DashboardDisputesEditIdRoute,
-  DashboardUsersTransactionHistoryUserIdRoute:
-    DashboardUsersTransactionHistoryUserIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

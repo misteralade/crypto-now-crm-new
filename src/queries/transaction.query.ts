@@ -154,8 +154,6 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
   const transactionCount = weeklyTransactionCount
   const loadingTransactionCount = loadingWeeklyTransactionCount
 
-  const searchUserTransactionHistory = useSelector((state: RootState) => state.transactionManagement.search.userTransactionHistory);
-
   const { data: searchTransactions, isLoading: loadingSearchTransactions, isFetching: fetchingSearchTransactions, refetch: refetchSearchTransactions } = useQuery({
     queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchTransaction],
     queryFn: async () => {
@@ -170,24 +168,7 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
 
       return null;
     },
-    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction && !matchRoute({ to: ROUTES.USER_TRANSACTIONS }),
-  });
-
-  const { data: searchUserTransactions, isLoading: loadingSearchUserTransactions, isFetching: fetchingSearchUserTransactions, refetch: refetchSearchUserTransactions } = useQuery({
-    queryKey: [QUERY_KEYS.TRANSACTION.SEARCH_TRANSACTIONS, searchUserTransactionHistory],
-    queryFn: async () => {
-      const payload = (store.getState() as RootState).transactionManagement.search.userTransactionHistory
-      if (!payload) return null;
-
-      const { data, success } = await transactionServiceApi.searchTransactions(payload);
-
-      if (success) {
-        return data;
-      }
-
-      return null;
-    },
-    enabled: !!matchRoute({ to: ROUTES.USER_TRANSACTIONS }) && !!searchUserTransactionHistory,
+    enabled: !!(matchRoute({ to: ROUTES.TRANSACTIONS }) || matchRoute({ to: ROUTES.USERS_DETAILS })) && !!searchTransaction,
   });
 
   const { data: transactionDetail, isLoading: loadingTransactionDetails, refetch: refetchTransactionDetail } = useQuery({
@@ -454,12 +435,8 @@ export const useTransactionQuery = (options?: UseTransactionQueryOptions) => {
     loadingUsersWithTopTransactionVolume,
     searchTransactions,
     loadingSearchTransactions,
-    searchUserTransactions,
-    loadingSearchUserTransactions,
     fetchingSearchTransactions,
-    fetchingSearchUserTransactions,
     refetchSearchTransactions,
-    refetchSearchUserTransactions,
     transactionDetail,
     loadingTransactionDetails,
     refetchTransactionDetail,

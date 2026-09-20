@@ -96,7 +96,7 @@ export const useUserQuery = () => {
         return null
       },
       enabled:
-        (!!matchRoute({ to: ROUTES.USERS_DETAILS }) || !!matchRoute({ to: ROUTES.USER_TRANSACTIONS })) &&
+        !!matchRoute({ to: ROUTES.USERS_DETAILS }) &&
         !!(store.getState() as RootState).user.details.userId,
   });
 

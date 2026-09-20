@@ -95,8 +95,8 @@ export const useUsersPage = () => {
   }
 
   const handleNavigateToTransactionHistory = (userId: string) => {
-    // Navigate to transaction history page
-    navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', userId)}` })
+    // Navigate to the main Transactions page, scoped to this user
+    navigate({ to: ROUTES.TRANSACTIONS, search: { userId } as any })
   }
 
   const handleViewUserDetails = (userId: string) => {

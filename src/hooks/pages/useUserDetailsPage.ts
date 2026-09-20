@@ -32,7 +32,7 @@ export const useUserDetailsPage = () => {
 
   const handleNavigateToTransactionHistory = () => {
     if (userId) {
-      navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', userId)}` })
+      navigate({ to: ROUTES.TRANSACTIONS, search: { userId } as any })
     }
   }
 

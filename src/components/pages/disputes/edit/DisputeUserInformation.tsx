@@ -24,7 +24,7 @@ const DisputeUserInformation = ({ disputeId, userId, firstName, lastName, email,
   
   const navigateToUserTransactions = () => {
     if (userId) {
-      navigate({ to: ROUTES.USER_TRANSACTIONS.replace('$userId', userId) });
+      navigate({ to: ROUTES.TRANSACTIONS, search: { userId } as any });
     }
   }
   

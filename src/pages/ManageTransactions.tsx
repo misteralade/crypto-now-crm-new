@@ -37,6 +37,8 @@ const ManageTransactions = () => {
     handlePageSizeChange: updatePageSize,
     handleExportAll,
     isFetchingTransactions,
+    filteredUserId,
+    clearUserFilter,
   } = useManageTransactionsPage();
 
   const {
@@ -101,6 +103,21 @@ const ManageTransactions = () => {
         subtitle="Monitor and manage all system transactions"
       />
       <div className="p-3 sm:p-6 mx-auto space-y-5">
+        {filteredUserId && (
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-[#ECECEC] bg-[#F9FAFB] px-4 py-2.5">
+            <span className="text-sm text-[#03034D]">
+              Showing transactions for this user only
+            </span>
+            <button
+              type="button"
+              onClick={clearUserFilter}
+              className="text-sm font-medium text-[#5B5EA6] hover:underline"
+            >
+              Clear filter
+            </button>
+          </div>
+        )}
+
         <ManageTransactionsControls
           onOpenFilter={toggleApplyFilter}
           searchValue={query}

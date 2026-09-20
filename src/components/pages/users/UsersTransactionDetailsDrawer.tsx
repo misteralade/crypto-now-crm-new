@@ -46,7 +46,7 @@ const UserTransactionDetailsDrawer = ({ open, onClose, loading, data }: UserTran
 
   const navigateToTransactionHistory = () => {
     if (data?.user.id) {
-      navigate({ to: `${ROUTES.USER_TRANSACTIONS.replace('$userId', data.user.id)}` })
+      navigate({ to: ROUTES.TRANSACTIONS, search: { userId: data.user.id } as any })
     }
   }
 

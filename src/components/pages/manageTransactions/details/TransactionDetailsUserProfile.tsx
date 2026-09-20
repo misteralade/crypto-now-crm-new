@@ -27,7 +27,7 @@ const TransactionDetailsUserProfile = ({ userId, firstName, lastName, email, pho
           
           <a
             className="text-sm text-blue-600 hover:underline cursor-pointer"
-            href={ROUTES.USER_TRANSACTIONS.replace('$userId', userId)}
+            href={`${ROUTES.TRANSACTIONS}?userId=${userId}`}
           >
             Transactions
           </a>
