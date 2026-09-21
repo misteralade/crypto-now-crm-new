@@ -143,32 +143,33 @@ const ManageTransactionFilterModal = ({
       ?.label ?? "All statuses";
 
   const summaryItems = [
-    {
-      label: "Date",
-      value: `${formatDateLabel(fromDate)} → ${formatDateLabel(toDate)}`,
-    },
-    {
-      label: "Amount",
-      value: `${formatMoneyLabel(minAmountRange)} → ${formatMoneyLabel(maxAmountRange)}`,
-    },
-    {
-      label: "Crypto",
-      value: selectedCrypto
-        ? `${selectedCrypto.name} (${selectedCrypto.symbol.toUpperCase()})`
-        : "All cryptocurrencies",
-    },
-    {
-      label: "Status",
-      value: selectedStatusLabel,
-    },
-  ];
+    fromDate || toDate
+      ? {
+          label: "Date",
+          value: `${formatDateLabel(fromDate)} → ${formatDateLabel(toDate)}`,
+        }
+      : null,
+    minAmountRange !== undefined || maxAmountRange !== undefined
+      ? {
+          label: "Amount",
+          value: `${formatMoneyLabel(minAmountRange)} → ${formatMoneyLabel(maxAmountRange)}`,
+        }
+      : null,
+    selectedCrypto
+      ? {
+          label: "Crypto",
+          value: `${selectedCrypto.name} (${selectedCrypto.symbol.toUpperCase()})`,
+        }
+      : null,
+    selectedStatus !== "ALL"
+      ? {
+          label: "Status",
+          value: selectedStatusLabel,
+        }
+      : null,
+  ].filter((item): item is { label: string; value: string } => item !== null);
 
-  const activeFilterCount = [
-    fromDate || toDate,
-    minAmountRange !== undefined || maxAmountRange !== undefined,
-    selectedCryptoId,
-    selectedStatus !== "ALL",
-  ].filter(Boolean).length;
+  const activeFilterCount = summaryItems.length;
 
   if (!shouldRender) return null;
 
@@ -223,19 +224,21 @@ const ManageTransactionFilterModal = ({
                 </button>
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                {summaryItems.map((item) => (
-                  <span
-                    key={item.label}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#E6E9F4] bg-[#F7F8FF] px-3 py-2 text-[12px] text-[#344054]"
-                  >
-                    <span className="font-semibold text-[#667085]">
-                      {item.label}
+              {summaryItems.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {summaryItems.map((item) => (
+                    <span
+                      key={item.label}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#E6E9F4] bg-[#F7F8FF] px-3 py-2 text-[12px] text-[#344054]"
+                    >
+                      <span className="font-semibold text-[#667085]">
+                        {item.label}
+                      </span>
+                      <span className="text-[#03034D]">{item.value}</span>
                     </span>
-                    <span className="text-[#03034D]">{item.value}</span>
-                  </span>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
 
               <div className="mt-6 grid gap-4">
                 <SectionCard

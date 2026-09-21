@@ -1,8 +1,11 @@
 import {useState, useEffect} from "react";
 import { useDispatch } from 'react-redux'
+import { useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import {useTransactionQuery} from "../../queries/transaction.query";
+import {userServiceApi} from "../../api/user.api";
+import {QUERY_KEYS} from "../../queries/querries.keys";
 import {
   clearTransactionDetailSessionId,
   clearTransactionDetailUpdateField,
@@ -43,6 +46,24 @@ export const useManageTransactionsPage = () => {
   const clearUserFilter = () => {
     navigate({ to: '/dashboard/transactions', search: { userId: undefined } })
   }
+
+  // Fetch just enough about the filtered user to name them in the
+  // "Showing transactions for this user only" banner.
+  const { data: filteredUserSummary } = useQuery({
+    queryKey: [QUERY_KEYS.USER.GET_USER_PROFILE_SUMMARY, filteredUserId],
+    queryFn: async () => {
+      if (!filteredUserId) return null
+      const { data, success } = await userServiceApi.getUserProfileSummary(filteredUserId)
+      return success ? data : null
+    },
+    enabled: !!filteredUserId,
+  })
+
+  const filteredUserName = filteredUserSummary
+    ? [filteredUserSummary.user.profile?.firstName, filteredUserSummary.user.profile?.lastName]
+        .filter(Boolean)
+        .join(' ') || filteredUserSummary.user.email
+    : undefined
   const {
     // Queries
     searchTransactions,
@@ -248,6 +269,7 @@ export const useManageTransactionsPage = () => {
     loadingAdminTransactionStats,
     selectedStatsTimeline,
     filteredUserId,
+    filteredUserName,
 
     // ⚙️ Functions
     handleSortBy,

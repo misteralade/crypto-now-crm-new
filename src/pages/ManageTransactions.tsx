@@ -38,6 +38,7 @@ const ManageTransactions = () => {
     handleExportAll,
     isFetchingTransactions,
     filteredUserId,
+    filteredUserName,
     clearUserFilter,
   } = useManageTransactionsPage();
 
@@ -106,7 +107,11 @@ const ManageTransactions = () => {
         {filteredUserId && (
           <div className="flex items-center justify-between gap-3 rounded-xl border border-[#ECECEC] bg-[#F9FAFB] px-4 py-2.5">
             <span className="text-sm text-[#03034D]">
-              Showing transactions for this user only
+              Showing transactions for{" "}
+              <span className="font-semibold">
+                {filteredUserName ?? "this user"}
+              </span>{" "}
+              only
             </span>
             <button
               type="button"
